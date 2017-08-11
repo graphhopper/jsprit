@@ -24,19 +24,19 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 public abstract class AbstractForwardVehicleRoutingTransportCosts implements VehicleRoutingTransportCosts {
 
     @Override
-    public abstract double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle);
+    public abstract double getTransportTime(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle);
 
     @Override
-    public abstract double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle);
+    public abstract double getTransportCost(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle);
 
     @Override
-    public double getBackwardTransportTime(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
-        return getTransportTime(from, to, arrivalTime, driver, vehicle);
+    public double getBackwardTransportTime(Location from, Location to, double arrivalTime, double setupDuration, Driver driver, Vehicle vehicle) {
+        return getTransportTime(from, to, arrivalTime, setupDuration, driver, vehicle);
     }
 
     @Override
-    public double getBackwardTransportCost(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
-        return getTransportCost(from, to, arrivalTime, driver, vehicle);
+    public double getBackwardTransportCost(Location from, Location to, double arrivalTime, double setupDuration, Driver driver, Vehicle vehicle) {
+        return getTransportCost(from, to, arrivalTime, setupDuration, driver, vehicle);
     }
 
 }

@@ -28,6 +28,8 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
     private Capacity capacity;
 
+    public double setupTime;
+
     private double arrTime;
 
     private double endTime;
@@ -44,6 +46,7 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
     private DeliverService(DeliverService deliveryActivity) {
         this.delivery = deliveryActivity.getJob();
+        this.setupTime = deliveryActivity.getSetupArrival();
         this.arrTime = deliveryActivity.getArrTime();
         this.endTime = deliveryActivity.getEndTime();
         capacity = deliveryActivity.getSize();
@@ -89,6 +92,11 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     }
 
     @Override
+    public double getSetupArrival() {
+        return setupTime;
+    }
+
+    @Override
     public double getArrTime() {
         return arrTime;
     }
@@ -96,6 +104,11 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     @Override
     public double getEndTime() {
         return endTime;
+    }
+
+    @Override
+    public void setSetupTime(double setupTime) {
+        this.setupTime = setupTime;
     }
 
     @Override
@@ -122,11 +135,17 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupDuration()) + "]";
     }
 
     @Override
     public Capacity getSize() {
         return capacity;
+    }
+
+    @Override
+    public double getSetupDuration() {
+        return delivery.getSetupDuration();
     }
 }

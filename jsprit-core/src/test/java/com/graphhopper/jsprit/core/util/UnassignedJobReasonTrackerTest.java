@@ -125,7 +125,7 @@ public class UnassignedJobReasonTrackerTest {
         MaxDistanceConstraint distanceConstraint = new MaxDistanceConstraint(stateManager, maxDistance, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, departureTime, null, vehicle);
+                return vrp.getTransportCosts().getTransportCost(from, to, departureTime, 0, null, vehicle);
             }
         }, distMap);
         constraintManager.addConstraint(distanceConstraint, ConstraintManager.Priority.CRITICAL);

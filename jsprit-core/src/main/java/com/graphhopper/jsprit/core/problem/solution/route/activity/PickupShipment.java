@@ -27,6 +27,8 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 
     private Shipment shipment;
 
+    public double setupTime;
+
     private double endTime;
 
     private double arrTime;
@@ -42,6 +44,7 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 
     private PickupShipment(PickupShipment pickupShipmentActivity) {
         this.shipment = (Shipment) pickupShipmentActivity.getJob();
+        this.setupTime = pickupShipmentActivity.getSetupArrival();
         this.arrTime = pickupShipmentActivity.getArrTime();
         this.endTime = pickupShipmentActivity.getEndTime();
         setIndex(pickupShipmentActivity.getIndex());
@@ -85,8 +88,18 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     }
 
     @Override
+    public double getSetupDuration() {
+        return shipment.getPickupSetupDuration();
+    }
+
+    @Override
     public double getOperationTime() {
         return shipment.getPickupServiceTime();
+    }
+
+    @Override
+    public double getSetupArrival() {
+        return setupTime;
     }
 
     @Override
@@ -97,6 +110,11 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     @Override
     public double getEndTime() {
         return endTime;
+    }
+
+    @Override
+    public void setSetupTime(double setupTime) {
+        this.setupTime = setupTime;
     }
 
     @Override
@@ -118,7 +136,8 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupDuration()) + "]";
     }
 
     @Override

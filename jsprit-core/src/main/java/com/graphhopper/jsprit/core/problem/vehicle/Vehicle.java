@@ -79,8 +79,12 @@ public interface Vehicle extends HasId, HasIndex {
     public Object getUserData();
 
     public abstract Break getBreak();
+
+    public abstract double getCoefSetupTime();
+
     // Switch to this as soon as we switct to Java 8:
     // default Object getUserData() {
     // return null;
     // };
+
 }

@@ -24,6 +24,8 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 
 public class ServiceActivity extends AbstractActivity implements TourActivity.JobActivity {
 
+    public double setupTime;
+
     public double arrTime;
 
     public double endTime;
@@ -31,6 +33,16 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     private double theoreticalEarliest;
 
     private double theoreticalLatest;
+
+    @Override
+    public double getSetupArrival() {
+        return setupTime;
+    }
+
+    @Override
+    public void setSetupTime(double setupTime) {
+        this.setupTime = setupTime;
+    }
 
     /**
      * @return the arrTime
@@ -77,6 +89,7 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
 
     protected ServiceActivity(ServiceActivity serviceActivity) {
         this.service = serviceActivity.getJob();
+        this.setupTime = serviceActivity.getSetupArrival();
         this.arrTime = serviceActivity.getArrTime();
         this.endTime = serviceActivity.getEndTime();
         setIndex(serviceActivity.getIndex());
@@ -156,7 +169,8 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupDuration()) + "]";
     }
 
     @Override
@@ -172,6 +186,11 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     @Override
     public Capacity getSize() {
         return service.getSize();
+    }
+
+    @Override
+    public double getSetupDuration() {
+        return service.getSetupDuration();
     }
 
 

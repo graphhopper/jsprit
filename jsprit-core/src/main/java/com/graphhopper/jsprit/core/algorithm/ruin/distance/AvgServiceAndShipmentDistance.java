@@ -84,7 +84,7 @@ public class AvgServiceAndShipmentDistance implements JobDistance {
 
     private double calcDist(Location location_i, Location location_j) {
         try {
-            return costs.getTransportCost(location_i, location_j, 0.0, null, null);
+            return costs.getTransportCost(location_i, location_j, 0.0, 0., null, null);
         } catch (IllegalStateException e) {
             // now try the euclidean distance between these two services
         }

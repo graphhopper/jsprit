@@ -27,6 +27,8 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
 
     public static int counter = 0;
 
+    public double setupTime;
+
     public double arrTime;
 
     public double endTime;
@@ -35,11 +37,21 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
 
     private double duration;
 
+    @Override
+    public double getSetupArrival() {
+        return setupTime;
+    }
+
     /**
      * @return the arrTime
      */
     public double getArrTime() {
         return arrTime;
+    }
+
+    @Override
+    public void setSetupTime(double setupTime) {
+        this.setupTime = setupTime;
     }
 
     /**
@@ -86,6 +98,7 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     protected BreakActivity(BreakActivity breakActivity) {
         counter++;
         this.aBreak = (Break) breakActivity.getJob();
+        this.setupTime = breakActivity.getSetupArrival();
         this.arrTime = breakActivity.getArrTime();
         this.endTime = breakActivity.getEndTime();
         this.location = breakActivity.getLocation();
@@ -164,7 +177,8 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
         return "[type=" + getName() + "][location=" + getLocation()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupDuration()) + "]";
     }
 
     @Override
@@ -190,6 +204,11 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     @Override
     public Capacity getSize() {
         return aBreak.getSize();
+    }
+
+    @Override
+    public double getSetupDuration() {
+        return aBreak.getSetupDuration();
     }
 
 

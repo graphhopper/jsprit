@@ -126,7 +126,7 @@ public class VehicleDependentTraveledDistanceTest {
             new MaxDistanceConstraint(new StateManager(vrp), traveledDistanceId, new TransportDistance() {
                 @Override
                 public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                    return vrp.getTransportCosts().getTransportTime(from, to, departureTime, null, vehicle);
+                    return vrp.getTransportCosts().getTransportTime(from, to, departureTime, 0, null, vehicle);
                 }
             }, maxDistanceMap);
         JobInsertionContext context = new JobInsertionContext(route, pickup, vehicle, null, 0);
@@ -147,7 +147,7 @@ vehicle2 (max distance): 180.0
             new MaxDistanceConstraint(stateManager, traveledDistanceId, new TransportDistance() {
                 @Override
                 public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                    return vrp.getTransportCosts().getTransportTime(from, to, departureTime, null, vehicle);
+                    return vrp.getTransportCosts().getTransportTime(from, to, departureTime, 0, null, vehicle);
                 }
             }, maxDistanceMap);
         JobInsertionContext context = new JobInsertionContext(route, newDelivery, vehicle, null, 0);
@@ -167,7 +167,7 @@ vehicle2 (max distance): 180.0
             new MaxDistanceConstraint(stateManager, traveledDistanceId, new TransportDistance() {
                 @Override
                 public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                    return vrp.getTransportCosts().getTransportTime(from, to, departureTime, null, vehicle);
+                    return vrp.getTransportCosts().getTransportTime(from, to, departureTime, 0, null, vehicle);
                 }
             }, maxDistanceMap);
         JobInsertionContext context = new JobInsertionContext(route, newDelivery, vehicle2, null, 0);
@@ -287,7 +287,7 @@ vehicle2 (max distance): 180.0
             new MaxDistanceConstraint(stateManager, traveledDistanceId, new TransportDistance() {
                 @Override
                 public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                    return vrp.getTransportCosts().getTransportTime(from, to, departureTime, null, vehicle);
+                    return vrp.getTransportCosts().getTransportTime(from, to, departureTime, 0, null, vehicle);
                 }
             }, maxDistanceMap);
         Assert.assertTrue(maxDistanceConstraint.fulfilled(context,
@@ -334,7 +334,7 @@ vehicle2 (max distance): 180.0
             new MaxDistanceConstraint(stateManager, traveledDistanceId, new TransportDistance() {
                 @Override
                 public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                    return vrp.getTransportCosts().getTransportTime(from, to, departureTime, null, vehicle);
+                    return vrp.getTransportCosts().getTransportTime(from, to, departureTime, 0, null, vehicle);
                 }
             }, maxDistanceMap);
         Assert.assertTrue(maxDistanceConstraint.fulfilled(context,

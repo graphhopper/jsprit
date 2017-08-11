@@ -87,7 +87,7 @@ public class UpdateVariableCosts implements ActivityVisitor, StateUpdater {
     public void visit(TourActivity act) {
         timeTracker.visit(act);
 
-        double transportCost = this.transportCost.getTransportCost(prevAct.getLocation(), act.getLocation(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
+        double transportCost = this.transportCost.getTransportCost(prevAct.getLocation(), act.getLocation(), startTimeAtPrevAct, act.getSetupDuration(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
         double actCost = activityCost.getActivityCost(act, timeTracker.getActArrTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 
         totalOperationCost += transportCost;
@@ -102,7 +102,7 @@ public class UpdateVariableCosts implements ActivityVisitor, StateUpdater {
     @Override
     public void finish() {
         timeTracker.finish();
-        double transportCost = this.transportCost.getTransportCost(prevAct.getLocation(), vehicleRoute.getEnd().getLocation(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
+        double transportCost = this.transportCost.getTransportCost(prevAct.getLocation(), vehicleRoute.getEnd().getLocation(), startTimeAtPrevAct, 0., vehicleRoute.getDriver(), vehicleRoute.getVehicle());
         double actCost = activityCost.getActivityCost(vehicleRoute.getEnd(), timeTracker.getActEndTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
 
         totalOperationCost += transportCost;

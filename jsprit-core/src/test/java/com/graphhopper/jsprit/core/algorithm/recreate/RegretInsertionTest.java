@@ -408,7 +408,7 @@ public class RegretInsertionTest {
             }
 
             private double getCost(Location loc1, Location loc2) {
-                return vrp.getTransportCosts().getTransportCost(loc1, loc2, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(loc1, loc2, 0., 0., null, null);
             }
         };
 

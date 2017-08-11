@@ -36,10 +36,11 @@ public final class End extends AbstractActivity implements TourActivity {
 
     private double endTime = -1;
 
-
     private double theoretical_earliestOperationStartTime;
 
     private double theoretical_latestOperationStartTime;
+
+    public double setupTime;
 
     private double arrTime;
 
@@ -125,6 +126,16 @@ public final class End extends AbstractActivity implements TourActivity {
     }
 
     @Override
+    public double getSetupArrival() {
+        return setupTime;
+    }
+
+    @Override
+    public void setSetupTime(double setupTime) {
+        this.setupTime = setupTime;
+    }
+
+    @Override
     public double getArrTime() {
         return this.arrTime;
     }
@@ -143,6 +154,11 @@ public final class End extends AbstractActivity implements TourActivity {
     @Override
     public Capacity getSize() {
         return capacity;
+    }
+
+    @Override
+    public double getSetupDuration() {
+        return 0.;
     }
 
 }

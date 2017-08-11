@@ -203,8 +203,11 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 
 
     @Override
-    public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
-        return getTime(from.getId(), to.getId());
+    public double getTransportTime(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
+        double currentSetupDuration = 0.;
+        if (!from.equals(to) && vehicle != null)
+            currentSetupDuration = setupDuration * vehicle.getCoefSetupTime();
+        return getTime(from.getId(), to.getId()) + currentSetupDuration;
     }
 
 
@@ -255,10 +258,13 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
     }
 
     @Override
-    public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+    public double getTransportCost(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
         if (vehicle == null) return getDistance(from.getId(), to.getId());
         VehicleCostParams costParams = vehicle.getType().getVehicleCostParams();
-        return costParams.perDistanceUnit * getDistance(from.getId(), to.getId()) + costParams.perTransportTimeUnit * getTime(from.getId(), to.getId());
+        double setupCost = 0.;
+        if (!from.equals(to))
+            setupCost += setupDuration * vehicle.getCoefSetupTime() * vehicle.getType().getVehicleCostParams().perSetupTimeUnit;
+        return costParams.perDistanceUnit * getDistance(from.getId(), to.getId()) + costParams.perTransportTimeUnit * getTime(from.getId(), to.getId()) + setupCost;
     }
 
 }

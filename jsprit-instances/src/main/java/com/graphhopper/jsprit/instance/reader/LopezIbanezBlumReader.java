@@ -91,10 +91,10 @@ public class LopezIbanezBlumReader {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new LopezIbanezBlumReader(builder).read("input/Dumas/n20w20.001.txt");
         VehicleRoutingProblem vrp = builder.build();
-        System.out.println("0->1: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(0), Location.newInstance(1), 0, null, null));
-        System.out.println("0->20: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(0), Location.newInstance(20), 0, null, null));
-        System.out.println("4->18: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(4), Location.newInstance(18), 0, null, null));
-        System.out.println("20->8: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(20), Location.newInstance(8), 0, null, null));
+        System.out.println("0->1: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(0), Location.newInstance(1), 0, 0, null, null));
+        System.out.println("0->20: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(0), Location.newInstance(20), 0, 0, null, null));
+        System.out.println("4->18: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(4), Location.newInstance(18), 0, 0, null, null));
+        System.out.println("20->8: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(20), Location.newInstance(8), 0, 0, null, null));
         System.out.println("18: " + ((Service) vrp.getJobs().get("" + 18)).getTimeWindow().getStart() + " " + ((Service) vrp.getJobs().get("" + 18)).getTimeWindow().getEnd());
         System.out.println("20: " + ((Service) vrp.getJobs().get("" + 20)).getTimeWindow().getStart() + " " + ((Service) vrp.getJobs().get("" + 20)).getTimeWindow().getEnd());
         System.out.println("1: " + ((Service) vrp.getJobs().get("" + 1)).getTimeWindow().getStart() + " " + ((Service) vrp.getJobs().get("" + 1)).getTimeWindow().getEnd());

@@ -97,12 +97,12 @@ public class TestCalculatesServiceInsertion {
         costs = new AbstractForwardVehicleRoutingTransportCosts() {
 
             @Override
-            public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+            public double getTransportTime(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
                 return ManhattanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
             }
 
             @Override
-            public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+            public double getTransportCost(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
                 return vehicle.getType().getVehicleCostParams().perDistanceUnit * ManhattanDistanceCalculator.calculateDistance(locations.getCoord(from.getId()), locations.getCoord(to.getId()));
             }
         };
@@ -232,12 +232,12 @@ public class TestCalculatesServiceInsertion {
         AbstractForwardVehicleRoutingTransportCosts routingCosts = new AbstractForwardVehicleRoutingTransportCosts() {
 
             @Override
-            public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
-                return getTransportCost(from, to, departureTime, driver, vehicle);
+            public double getTransportTime(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
+                return getTransportCost(from, to, departureTime, setupDuration, driver, vehicle);
             }
 
             @Override
-            public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+            public double getTransportCost(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
                 return EuclideanDistanceCalculator.calculateDistance(coords.get(from.getId()), coords.get(to.getId()));
             }
         };

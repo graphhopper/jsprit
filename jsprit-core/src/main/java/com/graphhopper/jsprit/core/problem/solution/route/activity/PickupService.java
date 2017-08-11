@@ -27,6 +27,8 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 
     private Service pickup;
 
+    public double setupTime;
+
     private double arrTime;
 
     private double depTime;
@@ -46,6 +48,7 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 
     private PickupService(PickupService pickupActivity) {
         this.pickup = pickupActivity.getJob();
+        this.setupTime = pickupActivity.getSetupArrival();
         this.arrTime = pickupActivity.getArrTime();
         this.depTime = pickupActivity.getEndTime();
         setIndex(pickupActivity.getIndex());
@@ -89,6 +92,11 @@ public final class PickupService extends AbstractActivity implements PickupActiv
     }
 
     @Override
+    public double getSetupArrival() {
+        return setupTime;
+    }
+
+    @Override
     public double getArrTime() {
         return arrTime;
     }
@@ -96,6 +104,11 @@ public final class PickupService extends AbstractActivity implements PickupActiv
     @Override
     public double getEndTime() {
         return depTime;
+    }
+
+    @Override
+    public void setSetupTime(double setupTime) {
+        this.setupTime = setupTime;
     }
 
     @Override
@@ -122,12 +135,18 @@ public final class PickupService extends AbstractActivity implements PickupActiv
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupDuration()) + "]";
     }
 
     @Override
     public Capacity getSize() {
         return pickup.getSize();
+    }
+
+    @Override
+    public double getSetupDuration() {
+        return pickup.getSetupDuration();
     }
 
 }

@@ -221,7 +221,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location fromLocationId, Location toLocationId, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(fromLocationId, toLocationId, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(fromLocationId, toLocationId, 0., 0., null, null);
             }
         });
 
@@ -302,7 +302,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertTrue(true);
@@ -313,7 +313,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -325,7 +325,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Iterator<VehicleRoute> iterator = solution.getRoutes().iterator();
@@ -340,7 +340,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -352,7 +352,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Iterator<VehicleRoute> iterator = solution.getRoutes().iterator();
@@ -367,7 +367,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -379,7 +379,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -391,7 +391,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -403,7 +403,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -415,7 +415,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -427,7 +427,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -439,7 +439,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -451,7 +451,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -463,7 +463,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -475,7 +475,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -487,7 +487,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -499,7 +499,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -511,7 +511,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -523,7 +523,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -535,7 +535,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -548,7 +548,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -561,7 +561,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -573,7 +573,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(6, analyser.getNumberOfPickups(), 0.01);
@@ -584,7 +584,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(0, analyser.getNumberOfPickupsAtBeginning(), 0.01);
@@ -596,7 +596,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(4, analyser.getNumberOfPickups(), 0.01);
@@ -608,7 +608,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(2, analyser.getNumberOfPickupsAtBeginning(), 0.01);
@@ -619,7 +619,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -631,7 +631,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -644,7 +644,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -657,7 +657,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -669,7 +669,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(30, analyser.getLoadPickedUp().get(0), 0.01);
@@ -680,7 +680,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(0, analyser.getLoadAtBeginning().get(0), 0.01);
@@ -692,7 +692,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(50, analyser.getLoadPickedUp().get(0), 0.01);
@@ -704,7 +704,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(40, analyser.getLoadAtBeginning().get(0), 0.01);
@@ -715,7 +715,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -727,7 +727,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -740,7 +740,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -753,7 +753,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -765,7 +765,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(2, analyser.getNumberOfDeliveries(), 0.01);
@@ -776,7 +776,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(4, analyser.getNumberOfDeliveriesAtEnd(), 0.01);
@@ -788,7 +788,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(4, analyser.getNumberOfDeliveries(), 0.01);
@@ -800,7 +800,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(2, analyser.getNumberOfDeliveriesAtEnd(), 0.01);
@@ -811,7 +811,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -823,7 +823,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -836,7 +836,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -849,7 +849,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -861,7 +861,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(20, analyser.getLoadDelivered().get(0), 0.01);
@@ -872,7 +872,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(10, analyser.getLoadAtEnd().get(0), 0.01);
@@ -884,7 +884,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -897,7 +897,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Assert.assertEquals(20, analyser.getLoadAtEnd().get(0), 0.01);
@@ -908,7 +908,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -920,7 +920,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -932,7 +932,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -944,7 +944,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -956,7 +956,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -968,7 +968,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -980,7 +980,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -992,7 +992,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1004,7 +1004,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1016,7 +1016,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1028,7 +1028,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1040,7 +1040,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1052,7 +1052,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1064,7 +1064,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1076,7 +1076,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1088,7 +1088,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1100,7 +1100,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1113,7 +1113,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1125,7 +1125,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1137,7 +1137,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1149,7 +1149,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1161,7 +1161,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1173,7 +1173,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1185,7 +1185,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1197,7 +1197,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1209,7 +1209,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1221,7 +1221,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1233,7 +1233,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1245,7 +1245,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1257,7 +1257,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1269,7 +1269,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1281,7 +1281,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1293,7 +1293,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1308,7 +1308,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1325,7 +1325,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1340,7 +1340,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1353,7 +1353,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1372,7 +1372,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1388,7 +1388,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1403,7 +1403,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1418,7 +1418,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1433,7 +1433,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1448,7 +1448,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1463,7 +1463,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1478,7 +1478,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1493,7 +1493,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1508,7 +1508,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1523,7 +1523,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1536,7 +1536,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1552,7 +1552,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1568,7 +1568,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1584,7 +1584,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1600,7 +1600,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1616,7 +1616,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1631,7 +1631,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1646,7 +1646,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1661,7 +1661,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1676,7 +1676,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1691,7 +1691,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1706,7 +1706,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1721,7 +1721,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1736,7 +1736,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1751,7 +1751,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1766,7 +1766,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1781,7 +1781,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1795,7 +1795,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1809,7 +1809,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1825,7 +1825,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1840,7 +1840,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1855,7 +1855,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1870,7 +1870,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1885,7 +1885,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1900,7 +1900,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1915,7 +1915,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1930,7 +1930,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1945,7 +1945,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1960,7 +1960,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1975,7 +1975,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -1990,7 +1990,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2005,7 +2005,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2020,7 +2020,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2035,7 +2035,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2050,7 +2050,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2065,7 +2065,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2080,7 +2080,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2095,7 +2095,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2110,7 +2110,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2128,7 +2128,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
 
@@ -2146,7 +2146,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
 
@@ -2165,7 +2165,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
 
@@ -2184,7 +2184,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
 
@@ -2203,7 +2203,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
 
@@ -2222,7 +2222,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
 
@@ -2235,7 +2235,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2248,7 +2248,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2261,7 +2261,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2274,7 +2274,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2287,7 +2287,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2300,7 +2300,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2313,7 +2313,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
@@ -2327,7 +2327,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
 
@@ -2343,7 +2343,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Boolean violated = analyser.hasSkillConstraintViolation();
@@ -2355,7 +2355,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Boolean violated = analyser.hasBackhaulConstraintViolation();
@@ -2368,7 +2368,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Boolean violated = analyser.hasBackhaulConstraintViolation();
@@ -2381,7 +2381,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Boolean violated = analyser.hasShipmentConstraintViolation();
@@ -2394,7 +2394,7 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
             @Override
             public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
+                return vrp.getTransportCosts().getTransportCost(from, to, 0., 0., null, null);
             }
         });
         Boolean violated = analyser.hasSkillConstraintViolation();

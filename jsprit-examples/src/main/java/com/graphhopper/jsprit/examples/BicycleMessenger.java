@@ -108,7 +108,7 @@ public class BicycleMessenger {
         @Override
         public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
             //make sure vehicle can manage direct path
-            double arrTime_at_nextAct_onDirectRoute = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            double arrTime_at_nextAct_onDirectRoute = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime, nextAct.getSetupDuration(), iFacts.getNewDriver(), iFacts.getNewVehicle());
             Double latest_arrTime_at_nextAct = stateManager.getActivityState(nextAct, latest_act_arrival_time_stateId, Double.class);
             if (latest_arrTime_at_nextAct == null)
                 latest_arrTime_at_nextAct = nextAct.getTheoreticalLatestOperationStartTime();
@@ -117,7 +117,7 @@ public class BicycleMessenger {
                 return ConstraintsStatus.NOT_FULFILLED_BREAK;
             }
 
-            double arrTime_at_newAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            double arrTime_at_newAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, nextAct.getSetupDuration(), iFacts.getNewDriver(), iFacts.getNewVehicle());
             //local impact
             //no matter whether it is a pickupShipment or deliverShipment activities. both arrivalTimes must be < 3*best.
             double directTimeOfNearestMessenger = bestMessengers.get(((JobActivity) newAct).getJob().getId());
@@ -128,12 +128,12 @@ public class BicycleMessenger {
 
             //impact on whole route, since insertion of newAct shifts all subsequent activities forward in time
             double departureTime_at_newAct = arrTime_at_newAct + newAct.getOperationTime();
-            double latest_arrTime_at_newAct = latest_arrTime_at_nextAct - routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), departureTime_at_newAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            double latest_arrTime_at_newAct = latest_arrTime_at_nextAct - routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), departureTime_at_newAct, nextAct.getSetupDuration(), iFacts.getNewDriver(), iFacts.getNewVehicle());
             if (arrTime_at_newAct > latest_arrTime_at_newAct) {
                 return ConstraintsStatus.NOT_FULFILLED;
             }
 
-            double arrTime_at_nextAct = departureTime_at_newAct + routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), departureTime_at_newAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            double arrTime_at_nextAct = departureTime_at_newAct + routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), departureTime_at_newAct, nextAct.getSetupDuration(), iFacts.getNewDriver(), iFacts.getNewVehicle());
             //here you need an activity state
             if (arrTime_at_nextAct > latest_arrTime_at_nextAct) {
                 return ConstraintsStatus.NOT_FULFILLED;
@@ -214,7 +214,7 @@ public class BicycleMessenger {
         public void visit(TourActivity currAct) {
             double timeOfNearestMessenger = bestMessengers.get(((JobActivity) currAct).getJob().getId());
             double potential_latest_arrTime_at_currAct =
-                latest_arrTime_at_prevAct - routingCosts.getBackwardTransportTime(currAct.getLocation(), prevAct.getLocation(), latest_arrTime_at_prevAct, route.getDriver(), route.getVehicle()) - currAct.getOperationTime();
+                latest_arrTime_at_prevAct - routingCosts.getBackwardTransportTime(currAct.getLocation(), prevAct.getLocation(), latest_arrTime_at_prevAct, prevAct.getSetupDuration(), route.getDriver(), route.getVehicle()) - currAct.getOperationTime();
             double latest_arrTime_at_currAct = Math.min(3 * timeOfNearestMessenger, potential_latest_arrTime_at_currAct);
             stateManager.putActivityState(currAct, latest_act_arrival_time_stateId, latest_arrTime_at_currAct);
             assert currAct.getArrTime() <= latest_arrTime_at_currAct : "this must not be since it breaks condition; actArrTime: " + currAct.getArrTime() + " latestArrTime: " + latest_arrTime_at_currAct + " vehicle: " + route.getVehicle().getId();
@@ -351,8 +351,8 @@ public class BicycleMessenger {
 
     static double getTimeOfDirectRoute(Job job, Vehicle v, VehicleRoutingTransportCosts routingCosts) {
         Shipment envelope = (Shipment) job;
-        return routingCosts.getTransportTime(v.getStartLocation(), envelope.getPickupLocation(), 0.0, DriverImpl.noDriver(), v) +
-            routingCosts.getTransportTime(envelope.getPickupLocation(), envelope.getDeliveryLocation(), 0.0, DriverImpl.noDriver(), v);
+        return routingCosts.getTransportTime(v.getStartLocation(), envelope.getPickupLocation(), 0.0, envelope.getPickupSetupDuration(), DriverImpl.noDriver(), v) +
+            routingCosts.getTransportTime(envelope.getPickupLocation(), envelope.getDeliveryLocation(), 0.0, envelope.getDeliverySetupDuration(), DriverImpl.noDriver(), v);
     }
 
     private static void readEnvelopes(Builder problemBuilder) throws IOException {

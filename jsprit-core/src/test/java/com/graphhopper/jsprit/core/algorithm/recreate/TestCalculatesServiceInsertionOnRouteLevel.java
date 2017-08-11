@@ -86,13 +86,13 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
             VehicleRoutingTransportCosts routingCosts = CostFactory.createManhattanCosts();
 
             @Override
-            public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+            public double getTransportTime(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
                 return 0;
             }
 
             @Override
-            public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
-                double tpCosts = routingCosts.getTransportCost(from, to, departureTime, driver, vehicle);
+            public double getTransportCost(Location from, Location to, double departureTime, double setupDuration, Driver driver, Vehicle vehicle) {
+                double tpCosts = routingCosts.getTransportCost(from, to, departureTime, setupDuration, driver, vehicle);
                 if (vehicle.getId().equals("v1")) return tpCosts;
                 return 2. * tpCosts;
             }

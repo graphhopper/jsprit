@@ -66,6 +66,7 @@ public class UpdateActivityTimes implements ActivityVisitor, StateUpdater {
     @Override
     public void visit(TourActivity activity) {
         timeTracker.visit(activity);
+        activity.setSetupTime(timeTracker.getActSetupTime());
         activity.setArrTime(timeTracker.getActArrTime());
         activity.setEndTime(timeTracker.getActEndTime());
     }

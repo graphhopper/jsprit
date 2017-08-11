@@ -101,7 +101,7 @@ public class DBSCANClusterer {
             double sum = 0;
             for (Location loc_1 : l1.getLocations()) {
                 for (Location loc_2 : l2.getLocations()) {
-                    sum += costs.getTransportCost(loc_1, loc_2, 0, null, null);
+                    sum += costs.getTransportCost(loc_1, loc_2, 0, 0, null, null);
                     count++;
                 }
             }
@@ -207,7 +207,7 @@ public class DBSCANClusterer {
             TourActivity act1 = RandomUtils.nextItem(r.getActivities(), random);
             TourActivity act2 = RandomUtils.nextItem(r.getActivities(), random);
             double dist = costs.getTransportCost(act1.getLocation(), act2.getLocation(),
-                0., null, r.getVehicle());
+                0., act2.getSetupDuration(), null, r.getVehicle());
             if (dist < min) min = dist;
             sum += dist;
         }
