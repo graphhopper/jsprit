@@ -74,7 +74,7 @@ public final class BestInsertion extends AbstractInsertionStrategy {
             for (VehicleRoute vehicleRoute : vehicleRoutes) {
                 InsertionData iData = bestInsertionCostCalculator.getInsertionData(vehicleRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
                 if (iData instanceof InsertionData.NoInsertionFound) {
-                    empty.getFailedConstraintNames().addAll(iData.getFailedConstraintNames());
+                    empty.getFailedConstraints().addAll(iData.getFailedConstraints());
                     continue;
                 }
                 if (iData.getInsertionCost() < bestInsertionCost + noiseMaker.makeNoise()) {
@@ -90,11 +90,11 @@ public final class BestInsertion extends AbstractInsertionStrategy {
                     vehicleRoutes.add(newRoute);
                 }
             } else {
-                empty.getFailedConstraintNames().addAll(newIData.getFailedConstraintNames());
+                empty.getFailedConstraints().addAll(newIData.getFailedConstraints());
             }
             if (bestInsertion == null) {
                 badJobs.add(unassignedJob);
-                markUnassigned(unassignedJob, empty.getFailedConstraintNames());
+                markUnassigned(unassignedJob, empty.getFailedConstraints());
             }
             else insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
         }

@@ -35,6 +35,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.util.FailedConstraintInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +112,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         InsertionData noInsertion = checkRouteContraints(insertionContext, constraintManager);
         if (noInsertion != null) return noInsertion;
 
-        Collection<String> failedActivityConstraints = new ArrayList<>();
+        Collection<FailedConstraintInfo> failedActivityConstraints = new ArrayList<>();
 
         /*
         check soft constraints at route level
@@ -170,7 +171,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         }
         if(insertionIndex == InsertionData.NO_INDEX) {
             InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
-            emptyInsertionData.getFailedConstraintNames().addAll(failedActivityConstraints);
+            emptyInsertionData.getFailedConstraints().addAll(failedActivityConstraints);
             return emptyInsertionData;
         }
         InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);

@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.util.FailedConstraintInfo;
 
 import java.util.List;
 
@@ -30,13 +31,13 @@ class ScoredJob {
 
     static class BadJob extends ScoredJob {
 
-        BadJob(Job job, List<String> failedConstraintNames) {
-            super(job, 0., getEmptyInsertion(failedConstraintNames), null, false);
+        BadJob(Job job, List<FailedConstraintInfo> failedConstraints) {
+            super(job, 0., getEmptyInsertion(failedConstraints), null, false);
         }
 
-        private static InsertionData getEmptyInsertion(List<String> failedConstraintNames) {
+        private static InsertionData getEmptyInsertion(List<FailedConstraintInfo> failedConstraints) {
             InsertionData empty = new InsertionData.NoInsertionFound();
-            empty.getFailedConstraintNames().addAll(failedConstraintNames);
+            empty.getFailedConstraints().addAll(failedConstraints);
             return empty;
         }
     }

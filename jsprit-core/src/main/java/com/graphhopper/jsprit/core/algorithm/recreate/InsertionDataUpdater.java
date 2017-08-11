@@ -23,6 +23,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+import com.graphhopper.jsprit.core.util.FailedConstraintInfo;
 
 import java.util.*;
 
@@ -79,7 +80,7 @@ class InsertionDataUpdater {
             InsertionData secondBest = null;
             TreeSet<VersionedInsertionData> priorityQueue = priorityQueues[j.getIndex()];
             Iterator<VersionedInsertionData> iterator = priorityQueue.iterator();
-            List<String> failedConstraintNames = new ArrayList<>();
+            List<FailedConstraintInfo> failedConstraints = new ArrayList<>();
             while(iterator.hasNext()){
                 VersionedInsertionData versionedIData = iterator.next();
                 if(bestRoute != null){
@@ -88,7 +89,7 @@ class InsertionDataUpdater {
                     }
                 }
                 if (versionedIData.getiData() instanceof InsertionData.NoInsertionFound) {
-                    failedConstraintNames.addAll(versionedIData.getiData().getFailedConstraintNames());
+                    failedConstraints.addAll(versionedIData.getiData().getFailedConstraints());
                     continue;
                 }
                 if(!(versionedIData.getRoute().getVehicle() instanceof VehicleImpl.NoVehicle)) {
@@ -140,9 +141,9 @@ class InsertionDataUpdater {
                 } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
                     secondBest = iData;
                 }
-            } else failedConstraintNames.addAll(iData.getFailedConstraintNames());
+            } else failedConstraints.addAll(iData.getFailedConstraints());
             if (best == null) {
-                badJobs.add(new ScoredJob.BadJob(j, failedConstraintNames));
+                badJobs.add(new ScoredJob.BadJob(j, failedConstraints));
                 continue;
             }
             double score = score(j, best, secondBest, scoringFunction);

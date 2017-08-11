@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.util.FailedConstraintInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class InsertionData {
         return events;
     }
 
-    private List<String> reasons = new ArrayList<>();
+    private List<FailedConstraintInfo> reasons = new ArrayList<>();
 
     /**
      * @return the additionalTime
@@ -85,11 +86,11 @@ public class InsertionData {
         return additionalTime;
     }
 
-    public void addFailedConstrainName(String name) {
-        reasons.add(name);
+    public void addFailedConstrainInfo(FailedConstraintInfo failedConstraintInfo) {
+        reasons.add(failedConstraintInfo);
     }
 
-    public List<String> getFailedConstraintNames() {
+    public List<FailedConstraintInfo> getFailedConstraints() {
         return reasons;
     }
 

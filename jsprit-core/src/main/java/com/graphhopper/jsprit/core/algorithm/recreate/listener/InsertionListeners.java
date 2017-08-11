@@ -21,6 +21,7 @@ import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.util.FailedConstraintInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,10 +76,10 @@ public class InsertionListeners {
         }
     }
 
-    public void informJobUnassignedListeners(Job unassigned, List<String> reasons) {
+    public void informJobUnassignedListeners(Job unassigned, List<FailedConstraintInfo> failedConstraints) {
         for (InsertionListener l : listeners) {
             if (l instanceof JobUnassignedListener) {
-                ((JobUnassignedListener) l).informJobUnassigned(unassigned, reasons);
+                ((JobUnassignedListener) l).informJobUnassigned(unassigned, failedConstraints);
             }
         }
     }
