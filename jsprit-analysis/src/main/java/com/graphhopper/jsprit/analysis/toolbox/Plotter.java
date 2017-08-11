@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -270,20 +271,21 @@ public class Plotter {
      *
      * @param pngFileName - path and filename
      * @param plotTitle   - title that appears on top of image
+     * @return BufferedImage image to write
      */
-    public void plot(String pngFileName, String plotTitle) {
+    public BufferedImage plot(String pngFileName, String plotTitle) {
         String filename = pngFileName;
         if (!pngFileName.endsWith(".png")) filename += ".png";
         if (plotSolutionAsWell) {
-            plot(vrp, routes, filename, plotTitle);
+            return plot(vrp, routes, filename, plotTitle);
         } else if (!(vrp.getInitialVehicleRoutes().isEmpty())) {
-            plot(vrp, vrp.getInitialVehicleRoutes(), filename, plotTitle);
+            return plot(vrp, vrp.getInitialVehicleRoutes(), filename, plotTitle);
         } else {
-            plot(vrp, null, filename, plotTitle);
+            return plot(vrp, null, filename, plotTitle);
         }
     }
 
-    private void plot(VehicleRoutingProblem vrp, final Collection<VehicleRoute> routes, String pngFile, String title) {
+    private BufferedImage plot(VehicleRoutingProblem vrp, final Collection<VehicleRoute> routes, String pngFile, String title) {
         log.info("plot to {}", pngFile);
         XYSeriesCollection problem;
         XYSeriesCollection solution = null;
@@ -295,7 +297,7 @@ public class Plotter {
             if (routes != null) solution = makeSolutionSeries(vrp, routes);
         } catch (NoLocationFoundException e) {
             log.warn("cannot plot vrp, since coord is missing");
-            return;
+            return null;
         }
         final XYPlot plot = createPlot(problem, shipments, solution);
         JFreeChart chart = new JFreeChart(title, plot);
@@ -305,6 +307,7 @@ public class Plotter {
         chart.addLegend(legend);
 
         save(chart, pngFile);
+        return chart.createBufferedImage(1024, 1024);
 
     }
 
@@ -368,8 +371,8 @@ public class Plotter {
         for (int i = 0; i < shipments.getSeriesCount(); i++) {
             shipmentsRenderer.setSeriesPaint(i, Color.DARK_GRAY);
             shipmentsRenderer.setSeriesStroke(i, new BasicStroke(
-                1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                1.f, new float[]{4.0f, 4.0f}, 0.0f
+                    1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                    1.f, new float[]{4.0f, 4.0f}, 0.0f
             ));
         }
         return shipmentsRenderer;
@@ -461,7 +464,7 @@ public class Plotter {
     }
 
     private XYSeriesCollection makeSolutionSeries(VehicleRoutingProblem vrp, Collection<VehicleRoute> routes) throws NoLocationFoundException {
-        Map<String,Coordinate> coords = makeMap(vrp.getAllLocations());
+        Map<String, Coordinate> coords = makeMap(vrp.getAllLocations());
         XYSeriesCollection coll = new XYSeriesCollection();
         int counter = 1;
         for (VehicleRoute route : routes) {
@@ -487,7 +490,7 @@ public class Plotter {
 
     private Map<String, Coordinate> makeMap(Collection<Location> allLocations) {
         Map<String, Coordinate> coords = new HashMap<String, Coordinate>();
-        for(Location l : allLocations) coords.put(l.getId(),l.getCoordinate());
+        for (Location l : allLocations) coords.put(l.getId(), l.getCoordinate());
         return coords;
     }
 
