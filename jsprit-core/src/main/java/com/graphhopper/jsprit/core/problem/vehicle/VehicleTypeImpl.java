@@ -264,6 +264,7 @@ public class VehicleTypeImpl implements VehicleType {
         }
 
         public Builder addCapacityDimension(String dimIndex, int dimVal) {
+            if (dimVal < 0) throw new IllegalArgumentException("capacity value cannot be negative");
             if (capacityDimensions != null)
                 throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
                     "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
