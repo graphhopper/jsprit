@@ -22,11 +22,9 @@ import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.ManhattanCosts;
@@ -91,12 +89,7 @@ public class CapacityConstraint_IT {
         vra.setMaxIterations(2000);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
 
-        SolutionAnalyser sa = new SolutionAnalyser(vrp, solution, new TransportDistance() {
-            @Override
-            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return new ManhattanCosts().getDistance(from,to, 0d, null);
-            }
-        });
+        SolutionAnalyser sa = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
 
         for(VehicleRoute r : solution.getRoutes()){
             Capacity loadAtBeginning = sa.getLoadAtBeginning(r);

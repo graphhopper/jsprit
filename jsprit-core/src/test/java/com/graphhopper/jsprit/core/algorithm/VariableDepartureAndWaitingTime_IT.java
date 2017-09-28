@@ -25,7 +25,6 @@ import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
-import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Service;
@@ -82,12 +81,7 @@ public class VariableDepartureAndWaitingTime_IT {
                     .setObjectiveFunction(new SolutionCostCalculator() {
                         @Override
                         public double getCosts(VehicleRoutingProblemSolution solution) {
-                            SolutionAnalyser sa = new SolutionAnalyser(vrp, solution, new TransportDistance() {
-                                @Override
-                                public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                                    return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
-                                }
-                            });
+                            SolutionAnalyser sa = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
                             return sa.getWaitingTime() + sa.getDistance();
                         }
                     })

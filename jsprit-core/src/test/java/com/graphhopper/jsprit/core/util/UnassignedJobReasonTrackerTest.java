@@ -26,7 +26,6 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.MaxDistanceConstraint;
-import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -122,12 +121,7 @@ public class UnassignedJobReasonTrackerTest {
         StateId maxDistance = stateManager.createStateId("max-distance");
         Map<Vehicle, Double> distMap = new HashMap<>();
         distMap.put(vehicle, 100d);
-        MaxDistanceConstraint distanceConstraint = new MaxDistanceConstraint(stateManager, maxDistance, new TransportDistance() {
-            @Override
-            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, departureTime, null, vehicle);
-            }
-        }, distMap);
+        MaxDistanceConstraint distanceConstraint = new MaxDistanceConstraint(stateManager, maxDistance, vrp.getTransportCosts(), distMap);
         constraintManager.addConstraint(distanceConstraint, ConstraintManager.Priority.CRITICAL);
 
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager, constraintManager)

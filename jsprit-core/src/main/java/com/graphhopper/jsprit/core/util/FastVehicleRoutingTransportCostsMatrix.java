@@ -19,7 +19,6 @@ package com.graphhopper.jsprit.core.util;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
-import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -32,7 +31,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
  *
  * @author schroeder
  */
-public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRoutingTransportCosts implements TransportDistance {
+public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRoutingTransportCosts {
 
     /**
      * Builder that builds the matrix.

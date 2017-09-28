@@ -20,7 +20,6 @@ package com.graphhopper.jsprit.core.util;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
-import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
@@ -28,7 +27,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
  * @author stefan schroeder
  */
 
-public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCosts implements TransportDistance {
+public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCosts {
 
     private double speed = 1.;
 

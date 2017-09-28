@@ -83,6 +83,11 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 
         costs = new AbstractForwardVehicleRoutingTransportCosts() {
 
+            @Override
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                return 0;
+            }
+
             VehicleRoutingTransportCosts routingCosts = CostFactory.createManhattanCosts();
 
             @Override

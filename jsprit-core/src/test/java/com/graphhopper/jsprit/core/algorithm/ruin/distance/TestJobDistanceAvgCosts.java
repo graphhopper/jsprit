@@ -31,6 +31,11 @@ public class TestJobDistanceAvgCosts {
         VehicleRoutingTransportCosts costs = new VehicleRoutingTransportCosts() {
 
             @Override
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                return 0;
+            }
+
+            @Override
             public double getBackwardTransportTime(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
 
                 return 0;
@@ -64,6 +69,11 @@ public class TestJobDistanceAvgCosts {
     public void whenVehicleAndDriverIsNull_And_CostsDoesNotProvideAMethodForThis_throwException() {
 //		(expected=NullPointerException.class)
         VehicleRoutingTransportCosts costs = new VehicleRoutingTransportCosts() {
+
+            @Override
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                return 0;
+            }
 
             @Override
             public double getBackwardTransportTime(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
