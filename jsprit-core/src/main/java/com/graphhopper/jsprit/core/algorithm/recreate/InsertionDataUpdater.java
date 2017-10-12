@@ -18,13 +18,20 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-
-import java.util.*;
 
 /**
  * Created by schroeder on 15/10/15.
@@ -33,13 +40,15 @@ class InsertionDataUpdater {
 
     static boolean update(boolean addAllAvailable, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, TreeSet<VersionedInsertionData> insertionDataSet, int updateRound, Job unassignedJob, Collection<VehicleRoute> routes) {
         for (VehicleRoute route : routes) {
-            Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
+            Collection<Vehicle> relevantVehicles = new ArrayList<>();
             if (!(route.getVehicle() instanceof VehicleImpl.NoVehicle)) {
                 relevantVehicles.add(route.getVehicle());
                 if (addAllAvailable && !initialVehicleIds.contains(route.getVehicle().getId())) {
                     relevantVehicles.addAll(fleetManager.getAvailableVehicles(route.getVehicle()));
                 }
-            } else relevantVehicles.addAll(fleetManager.getAvailableVehicles());
+            } else {
+                relevantVehicles.addAll(fleetManager.getAvailableVehicles());
+            }
             for (Vehicle v : relevantVehicles) {
                 double depTime = v.getEarliestDeparture();
                 InsertionData iData = insertionCostsCalculator.getInsertionData(route, unassignedJob, v, depTime, route.getDriver(), Double.MAX_VALUE);
@@ -67,13 +76,16 @@ class InsertionDataUpdater {
         };
     }
 
-    static ScoredJob getBest(boolean switchAllowed, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, ScoringFunction scoringFunction, TreeSet<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, List<Job> unassignedJobList, List<Job> badJobs) {
+    static ScoredJob getBest(boolean switchAllowed, Set<String> initialVehicleIds, VehicleFleetManager fleetManager,
+            JobInsertionCostsCalculator insertionCostsCalculator, ScoringFunction scoringFunction,
+            Map<String, TreeSet<VersionedInsertionData>> priorityQueues, Map<VehicleRoute, Integer> updates,
+            List<Job> unassignedJobList, List<Job> badJobs) {
         ScoredJob bestScoredJob = null;
         for (Job j : unassignedJobList) {
             VehicleRoute bestRoute = null;
             InsertionData best = null;
             InsertionData secondBest = null;
-            TreeSet<VersionedInsertionData> priorityQueue = priorityQueues[j.getIndex()];
+            TreeSet<VersionedInsertionData> priorityQueue = priorityQueues.get(j.getId());
             Iterator<VersionedInsertionData> iterator = priorityQueue.iterator();
             while (iterator.hasNext()) {
                 VersionedInsertionData versionedIData = iterator.next();
@@ -82,11 +94,17 @@ class InsertionDataUpdater {
                         continue;
                     }
                 }
-                if (versionedIData.getiData() instanceof InsertionData.NoInsertionFound) continue;
+                if (versionedIData.getiData() instanceof InsertionData.NoInsertionFound) {
+                    continue;
+                }
                 if (!(versionedIData.getRoute().getVehicle() instanceof VehicleImpl.NoVehicle)) {
                     if (versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle()) {
-                        if (!switchAllowed) continue;
-                        if (initialVehicleIds.contains(versionedIData.getRoute().getVehicle().getId())) continue;
+                        if (!switchAllowed) {
+                            continue;
+                        }
+                        if (initialVehicleIds.contains(versionedIData.getRoute().getVehicle().getId())) {
+                            continue;
+                        }
                     }
                 }
                 if (versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle()) {
@@ -98,10 +116,14 @@ class InsertionDataUpdater {
                             for (Event e : oldData.getEvents()) {
                                 if (e instanceof SwitchVehicle) {
                                     newData.getEvents().add(new SwitchVehicle(versionedIData.getRoute(), available, oldData.getVehicleDepartureTime()));
-                                } else newData.getEvents().add(e);
+                                } else {
+                                    newData.getEvents().add(e);
+                                }
                             }
                             versionedIData = new VersionedInsertionData(newData, versionedIData.getVersion(), versionedIData.getRoute());
-                        } else continue;
+                        } else {
+                            continue;
+                        }
                     }
                 }
                 int currentDataVersion = updates.get(versionedIData.getRoute());
@@ -137,7 +159,9 @@ class InsertionDataUpdater {
             ScoredJob scoredJob;
             if (bestRoute == emptyRoute) {
                 scoredJob = new ScoredJob(j, score, best, bestRoute, true);
-            } else scoredJob = new ScoredJob(j, score, best, bestRoute, false);
+            } else {
+                scoredJob = new ScoredJob(j, score, best, bestRoute, false);
+            }
 
             if (bestScoredJob == null) {
                 bestScoredJob = scoredJob;

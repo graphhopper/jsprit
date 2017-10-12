@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.graphhopper.jsprit.core.problem.HasId;
-import com.graphhopper.jsprit.core.problem.HasIndex;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Skills;
@@ -33,7 +32,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
  *
  * @author schroeder
  */
-public interface Job extends HasId, HasIndex {
+public interface Job extends HasId {
 
     /**
      * Returns the unique identifier (id) of a job.

@@ -24,7 +24,6 @@ import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.SizeDimension;
 import com.graphhopper.jsprit.core.problem.Skills;
-import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.Builder.FriendlyHandshake;
 import com.graphhopper.jsprit.core.problem.job.CustomJob.BuilderBase.ActivityType;
 import com.graphhopper.jsprit.core.problem.job.CustomJob.BuilderBase.BuilderActivityInfo;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
@@ -456,15 +455,15 @@ public class Service extends AbstractJob {
         // This is unused being a legacy implementation
     }
 
-    @Override
-    public int getIndex() {
-        return theRealJob.getIndex();
-    }
-
-    @Override
-    public void impl_setIndex(FriendlyHandshake handshake, int index) {
-        theRealJob.impl_setIndex(handshake, index);
-    }
+    //    @Override
+    //    public int getIndex() {
+    //        return theRealJob.getIndex();
+    //    }
+    //
+    // @Override
+    // public void impl_setIndex(FriendlyHandshake handshake, int index) {
+    // theRealJob.impl_setIndex(handshake, index);
+    // }
 
     @Override
     public List<Location> getAllLocations() {

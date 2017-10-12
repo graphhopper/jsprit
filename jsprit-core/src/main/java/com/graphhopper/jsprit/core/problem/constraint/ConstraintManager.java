@@ -17,18 +17,19 @@
  */
 package com.graphhopper.jsprit.core.problem.constraint;
 
-import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 
 /**
  * Manager that manage hard- and soft constraints, both on route and activity level.
@@ -61,38 +62,31 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 
     private boolean skillconstraintSet = false;
 
-    private final DependencyType[] dependencyTypes;
+    private final HashMap<String, DependencyType> dependencyTypes;
 
     public ConstraintManager(VehicleRoutingProblem vrp, RouteAndActivityStateGetter stateManager) {
         this.vrp = vrp;
         this.stateManager = stateManager;
-        dependencyTypes = new DependencyType[vrp.getJobs().size() + 1];
+        dependencyTypes = new HashMap<>(vrp.getJobs().size() + 1);
     }
 
     public ConstraintManager(VehicleRoutingProblem vrp, RouteAndActivityStateGetter stateManager, Collection<Constraint> constraints) {
         this.vrp = vrp;
         this.stateManager = stateManager;
-        dependencyTypes = new DependencyType[vrp.getJobs().size() + 1];
+        dependencyTypes = new HashMap<>(vrp.getJobs().size() + 1);
         resolveConstraints(constraints);
     }
 
-    public DependencyType[] getDependencyTypes() {
+    public HashMap<String, DependencyType> getDependencyTypes() {
         return dependencyTypes;
     }
 
     public void setDependencyType(String jobId, DependencyType dependencyType) {
-        Job job = vrp.getJobs().get(jobId);
-        if (job != null) {
-            dependencyTypes[job.getIndex()] = dependencyType;
-        }
+        dependencyTypes.put(jobId, dependencyType);
     }
 
     public DependencyType getDependencyType(String jobId) {
-        Job job = vrp.getJobs().get(jobId);
-        if (job != null) {
-            return dependencyTypes[job.getIndex()];
-        }
-        return DependencyType.NO_TYPE;
+        return dependencyTypes.getOrDefault(jobId, DependencyType.NO_TYPE);
     }
 
     private void resolveConstraints(Collection<Constraint> constraints) {
@@ -145,7 +139,7 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
         }
     }
 
-//	public void add
+    //	public void add
 
     public void addConstraint(HardActivityConstraint actLevelConstraint, Priority priority) {
         actLevelConstraintManager.addConstraint(actLevelConstraint, priority);
@@ -174,7 +168,7 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
     }
 
     public Collection<Constraint> getConstraints() {
-        List<Constraint> constraints = new ArrayList<Constraint>();
+        List<Constraint> constraints = new ArrayList<>();
         constraints.addAll(actLevelConstraintManager.getAllConstraints());
         constraints.addAll(routeLevelConstraintManager.getConstraints());
         constraints.addAll(softActivityConstraintManager.getConstraints());

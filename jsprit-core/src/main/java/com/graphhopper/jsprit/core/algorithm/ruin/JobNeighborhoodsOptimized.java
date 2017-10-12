@@ -18,14 +18,21 @@
 
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.util.StopWatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 /**
  * Created by schroeder on 07/01/15.
@@ -50,9 +57,8 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
 
         @Override
         public boolean hasNext() {
-            if (index < noItems && index < itemArray.length) {
+            if (index < noItems && index < itemArray.length)
                 return true;
-            }
             return false;
         }
 
@@ -73,6 +79,8 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
 
     private VehicleRoutingProblem vrp;
 
+    private Map<Job, Integer> jobIndexMapping;
+
     private int[][] neighbors;
 
     private Job[] jobs;
@@ -90,12 +98,16 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
         this.capacity = capacity;
         neighbors = new int[vrp.getJobsInclusiveInitialJobsInRoutes().size() + 1][capacity];
         jobs = new Job[vrp.getJobsInclusiveInitialJobsInRoutes().size() + 1];
+        jobIndexMapping = new HashMap<>();
+        for (Job job : vrp.getJobsInclusiveInitialJobsInRoutes().values()) {
+            jobIndexMapping.put(job, jobIndexMapping.size());
+        }
         logger.debug("initialize {}", this);
     }
 
     @Override
     public Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo) {
-        int[] neighbors = this.neighbors[neighborTo.getIndex() - 1];
+        int[] neighbors = this.neighbors[jobIndexMapping.get(neighborTo)];
         return new ArrayIterator(nNeighbors, neighbors, jobs);
     }
 
@@ -116,36 +128,37 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         for (Job job_i : vrp.getJobsInclusiveInitialJobsInRoutes().values()) {
-            jobs[job_i.getIndex()] = job_i;
-            List<ReferencedJob> jobList = new ArrayList<ReferencedJob>(vrp.getJobsInclusiveInitialJobsInRoutes().values().size());
+            jobs[jobIndexMapping.get(job_i)] = job_i;
+            List<ReferencedJob> jobList = new ArrayList<>(vrp.getJobsInclusiveInitialJobsInRoutes().values().size());
             for (Job job_j : vrp.getJobsInclusiveInitialJobsInRoutes().values()) {
-                if (job_i == job_j) continue;
+                if (job_i == job_j) {
+                    continue;
+                }
                 double distance = jobDistance.getDistance(job_i, job_j);
-                if (distance > maxDistance) maxDistance = distance;
+                if (distance > maxDistance) {
+                    maxDistance = distance;
+                }
                 ReferencedJob referencedJob = new ReferencedJob(job_j, distance);
                 jobList.add(referencedJob);
             }
             Collections.sort(jobList, getComparator());
             int[] jobIndices = new int[capacity];
             for (int index = 0; index < capacity; index++) {
-                jobIndices[index] = jobList.get(index).getJob().getIndex();
+                jobIndices[index] = jobIndexMapping.get(jobList.get(index).getJob());
             }
-            neighbors[job_i.getIndex() - 1] = jobIndices;
+            neighbors[jobIndexMapping.get(job_i)] = jobIndices;
         }
         stopWatch.stop();
         logger.debug("pre-processing comp-time: {}", stopWatch);
     }
 
     private Comparator<ReferencedJob> getComparator() {
-        return new Comparator<ReferencedJob>() {
-            @Override
-            public int compare(ReferencedJob o1, ReferencedJob o2) {
-                if (o1.getDistance() < o2.getDistance()) {
-                    return -1;
-                } else if (o1.getDistance() > o2.getDistance()) {
-                    return 1;
-                } else return 0;
-            }
+        return (o1, o2) -> {
+            if (o1.getDistance() < o2.getDistance())
+                return -1;
+            else if (o1.getDistance() > o2.getDistance())
+                return 1;
+            else return 0;
         };
     }
 

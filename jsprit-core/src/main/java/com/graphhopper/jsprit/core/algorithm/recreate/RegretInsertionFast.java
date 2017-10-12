@@ -18,15 +18,24 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.DependencyType;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 /**
  * Insertion based on regret approach.
@@ -52,7 +61,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
 
     private boolean switchAllowed = true;
 
-    private DependencyType[] dependencyTypes = null;
+    private Map<String, DependencyType> dependencyTypes = null;
 
     public RegretInsertionFast(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, VehicleFleetManager fleetManager) {
         super(vehicleRoutingProblem);
@@ -79,12 +88,12 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
         this.switchAllowed = switchAllowed;
     }
 
-    public void setDependencyTypes(DependencyType[] dependencyTypes) {
+    public void setDependencyTypes(Map<String, DependencyType> dependencyTypes) {
         this.dependencyTypes = dependencyTypes;
     }
 
     private Set<String> getInitialVehicleIds(VehicleRoutingProblem vehicleRoutingProblem) {
-        Set<String> ids = new HashSet<String>();
+        Set<String> ids = new HashSet<>();
         for (VehicleRoute r : vehicleRoutingProblem.getInitialVehicleRoutes()) {
             ids.add(r.getVehicle().getId());
         }
@@ -104,37 +113,37 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
      */
     @Override
     public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
-        List<Job> badJobs = new ArrayList<Job>(unassignedJobs.size());
+        List<Job> badJobs = new ArrayList<>(unassignedJobs.size());
 
-//        Iterator<Job> jobIterator = unassignedJobs.iterator();
-//        while (jobIterator.hasNext()){
-//            Job job = jobIterator.next();
-//            if(job instanceof Break){
-//                VehicleRoute route = InsertionDataUpdater.findRoute(routes, job);
-//                if(route == null){
-//                    badJobs.add(job);
-//                }
-//                else {
-//                    InsertionData iData = insertionCostsCalculator.getInsertionData(route, job, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
-//                    if (iData instanceof InsertionData.NoInsertionFound) {
-//                        badJobs.add(job);
-//                    } else {
-//                        insertJob(job, iData, route);
-//                    }
-//                }
-//                jobIterator.remove();
-//            }
-//        }
+        //        Iterator<Job> jobIterator = unassignedJobs.iterator();
+        //        while (jobIterator.hasNext()){
+        //            Job job = jobIterator.next();
+        //            if(job instanceof Break){
+        //                VehicleRoute route = InsertionDataUpdater.findRoute(routes, job);
+        //                if(route == null){
+        //                    badJobs.add(job);
+        //                }
+        //                else {
+        //                    InsertionData iData = insertionCostsCalculator.getInsertionData(route, job, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
+        //                    if (iData instanceof InsertionData.NoInsertionFound) {
+        //                        badJobs.add(job);
+        //                    } else {
+        //                        insertJob(job, iData, route);
+        //                    }
+        //                }
+        //                jobIterator.remove();
+        //            }
+        //        }
 
-        List<Job> jobs = new ArrayList<Job>(unassignedJobs);
-        TreeSet<VersionedInsertionData>[] priorityQueues = new TreeSet[vrp.getJobs().values().size() + 2];
+        List<Job> jobs = new ArrayList<>(unassignedJobs);
+        Map<String, TreeSet<VersionedInsertionData>> priorityQueues = new HashMap<>(vrp.getJobs().values().size() + 2);
         VehicleRoute lastModified = null;
         boolean firstRun = true;
         int updateRound = 0;
-        Map<VehicleRoute, Integer> updates = new HashMap<VehicleRoute, Integer>();
+        Map<VehicleRoute, Integer> updates = new HashMap<>();
         while (!jobs.isEmpty()) {
-            List<Job> unassignedJobList = new ArrayList<Job>(jobs);
-            List<Job> badJobList = new ArrayList<Job>();
+            List<Job> unassignedJobList = new ArrayList<>(jobs);
+            List<Job> badJobList = new ArrayList<>();
             if (!firstRun && lastModified == null)
                 throw new IllegalStateException("last modified route is null. this should not be.");
             if (firstRun) {
@@ -143,7 +152,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
             } else {
                 //update for all routes || remove history and only update modified route
                 updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound, firstRun, lastModified, updates);
-//                updates.put(lastModified,updateRound);
+                //                updates.put(lastModified,updateRound);
             }
             updateRound++;
             ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, scoringFunction, priorityQueues, updates, unassignedJobList, badJobList);
@@ -154,7 +163,9 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
                 insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
                 jobs.remove(bestScoredJob.getJob());
                 lastModified = bestScoredJob.getRoute();
-            } else lastModified = null;
+            } else {
+                lastModified = null;
+            }
             for (Job bad : badJobList) {
                 jobs.remove(bad);
                 badJobs.add(bad);
@@ -163,25 +174,40 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
         return badJobs;
     }
 
-    private void updateInsertionData(TreeSet<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, List<Job> unassignedJobList, int updateRound, boolean firstRun, VehicleRoute lastModified, Map<VehicleRoute, Integer> updates) {
+    private void updateInsertionData(Map<String, TreeSet<VersionedInsertionData>> priorityQueues,
+            Collection<VehicleRoute> routes, List<Job> unassignedJobList, int updateRound, boolean firstRun,
+            VehicleRoute lastModified, Map<VehicleRoute, Integer> updates) {
         for (Job unassignedJob : unassignedJobList) {
-            if (priorityQueues[unassignedJob.getIndex()] == null) {
-                priorityQueues[unassignedJob.getIndex()] = new TreeSet<VersionedInsertionData>(InsertionDataUpdater.getComparator());
+            String unassignedJobId = unassignedJob.getId();
+            if (priorityQueues.get(unassignedJobId) == null) {
+                priorityQueues.put(unassignedJobId,
+                        new TreeSet<>(InsertionDataUpdater.getComparator()));
             }
             if (firstRun) {
-                InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes);
-                for (VehicleRoute r : routes) updates.put(r, updateRound);
+                InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator,
+                        priorityQueues.get(unassignedJobId), updateRound, unassignedJob, routes);
+                for (VehicleRoute r : routes) {
+                    updates.put(r, updateRound);
+                }
             } else {
-                if (dependencyTypes == null || dependencyTypes[unassignedJob.getIndex()] == null) {
-                    InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, Arrays.asList(lastModified));
+                if (dependencyTypes == null || dependencyTypes.get(unassignedJobId) == null) {
+                    InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager,
+                            insertionCostsCalculator, priorityQueues.get(unassignedJobId), updateRound, unassignedJob,
+                            Arrays.asList(lastModified));
                     updates.put(lastModified, updateRound);
                 } else {
-                    DependencyType dependencyType = dependencyTypes[unassignedJob.getIndex()];
+                    DependencyType dependencyType = dependencyTypes.get(unassignedJobId);
                     if (dependencyType.equals(DependencyType.INTER_ROUTE) || dependencyType.equals(DependencyType.INTRA_ROUTE)) {
-                        InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes);
-                        for (VehicleRoute r : routes) updates.put(r, updateRound);
+                        InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager,
+                                insertionCostsCalculator, priorityQueues.get(unassignedJobId), updateRound,
+                                unassignedJob, routes);
+                        for (VehicleRoute r : routes) {
+                            updates.put(r, updateRound);
+                        }
                     } else {
-                        InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, Arrays.asList(lastModified));
+                        InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager,
+                                insertionCostsCalculator, priorityQueues.get(unassignedJobId), updateRound,
+                                unassignedJob, Arrays.asList(lastModified));
                         updates.put(lastModified, updateRound);
                     }
                 }

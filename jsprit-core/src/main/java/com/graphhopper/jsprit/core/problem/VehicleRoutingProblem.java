@@ -246,7 +246,7 @@ public class VehicleRoutingProblem {
         public Builder addJob(AbstractJob job) {
             if (tentativeJobs.containsKey(job.getId()))
                 throw new IllegalArgumentException("vehicle routing problem already contains a service or shipment with id " + job.getId() + ". make sure you use unique ids for all services and shipments");
-            job.impl_setIndex(FRIENDLY_HANDSHAKE, jobIndexCounter);
+            // job.impl_setIndex(FRIENDLY_HANDSHAKE, jobIndexCounter);
             incJobIndexCounter();
             tentativeJobs.put(job.getId(), job);
             addLocationToTentativeLocations(job);
