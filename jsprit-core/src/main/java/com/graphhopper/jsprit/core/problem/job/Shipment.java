@@ -516,10 +516,10 @@ public class Shipment extends AbstractJob {
         // This is unused being a legacy implementation
     }
 
-    @Override
-    public int getIndex() {
-        return theRealJob.getIndex();
-    }
+    // @Override
+    // public int getIndex() {
+    // return theRealJob.getIndex();
+    // }
 
     @Override
     public Object getUserData() {
@@ -556,10 +556,10 @@ public class Shipment extends AbstractJob {
         return theRealJob.toString();
     }
 
-    @Override
-    public void impl_setIndex(int index) {
-        theRealJob.impl_setIndex(index);
-    }
+    // @Override
+    // public void impl_setIndex(FriendlyHandshake handshake, int index) {
+    // theRealJob.impl_setIndex(handshake, index);
+    // }
 
 
     @Override

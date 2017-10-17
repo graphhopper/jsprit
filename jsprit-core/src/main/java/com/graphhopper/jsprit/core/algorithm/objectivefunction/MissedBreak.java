@@ -29,17 +29,13 @@ public class MissedBreak extends RouteLevelSolutionCostComponent {
     @Override
     protected double calculateRouteLevelCost(VehicleRoutingProblem problem, VehicleRoute route) {
         for (TourActivity act : route.getActivities()) {
-            if (act instanceof BreakActivity) {
+            if (act instanceof BreakActivity)
                 return 0d;
-            }
         }
         if (route.getVehicle().getBreak() != null) {
-            if (route.getEnd().getArrTime() > route.getVehicle().getBreak().getActivity().getSingleTimeWindow()
-                            .getEnd()) {
+            if (route.getEnd().getArrTime() > route.getVehicle().getBreak().getActivity().getBreakTimeWindow().getEnd())
                 return 4 * (getMaxCosts() * 2 + route.getVehicle().getBreak().getActivity().getOperationTime()
-                                * route.getVehicle().getType().getVehicleCostParams().perServiceTimeUnit);
-
-            }
+                        * route.getVehicle().getType().getVehicleCostParams().perServiceTimeUnit);
         }
         return 0d;
     }

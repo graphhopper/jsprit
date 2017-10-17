@@ -363,8 +363,11 @@ public class Service extends AbstractJob {
      * @return time window
      *
      */
+    @Deprecated
     public TimeWindow getTimeWindow() {
-        return theRealActivity.getSingleTimeWindow();
+        if (getTheRealActivity().getTimeWindows().size() > 1)
+            throw new IllegalArgumentException("More than one time window in. " + this);
+        return getTheRealActivity().getTimeWindows().iterator().next();
     }
 
     /**
@@ -452,15 +455,15 @@ public class Service extends AbstractJob {
         // This is unused being a legacy implementation
     }
 
-    @Override
-    public int getIndex() {
-        return theRealJob.getIndex();
-    }
-
-    @Override
-    public void impl_setIndex(int index) {
-        theRealJob.impl_setIndex(index);
-    }
+    //    @Override
+    //    public int getIndex() {
+    //        return theRealJob.getIndex();
+    //    }
+    //
+    // @Override
+    // public void impl_setIndex(FriendlyHandshake handshake, int index) {
+    // theRealJob.impl_setIndex(handshake, index);
+    // }
 
     @Override
     public List<Location> getAllLocations() {

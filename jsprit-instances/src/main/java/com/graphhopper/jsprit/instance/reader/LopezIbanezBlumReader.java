@@ -91,6 +91,10 @@ public class LopezIbanezBlumReader {
         close(reader);
     }
 
+    private static TimeWindow getFirstTimeWindow(ServiceJob job) {
+        return job.getActivity().getTimeWindows().iterator().next();
+    }
+
     public static void main(String[] args) {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new LopezIbanezBlumReader(builder).read("input/Dumas/n20w20.001.txt");
@@ -99,12 +103,12 @@ public class LopezIbanezBlumReader {
         System.out.println("0->20: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(0), Location.newInstance(20), 0, null, null));
         System.out.println("4->18: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(4), Location.newInstance(18), 0, null, null));
         System.out.println("20->8: " + vrp.getTransportCosts().getTransportCost(Location.newInstance(20), Location.newInstance(8), 0, null, null));
-        System.out.println("18: " + ((ServiceJob) vrp.getJobs().get("" + 18)).getActivity().getSingleTimeWindow().getStart() + " "
-                + ((ServiceJob) vrp.getJobs().get("" + 18)).getActivity().getSingleTimeWindow().getEnd());
-        System.out.println("20: " + ((ServiceJob) vrp.getJobs().get("" + 20)).getActivity().getSingleTimeWindow().getStart() + " "
-                + ((ServiceJob) vrp.getJobs().get("" + 20)).getActivity().getSingleTimeWindow().getEnd());
-        System.out.println("1: " + ((ServiceJob) vrp.getJobs().get("" + 1)).getActivity().getSingleTimeWindow().getStart() + " "
-                + ((ServiceJob) vrp.getJobs().get("" + 1)).getActivity().getSingleTimeWindow().getEnd());
+        System.out.println("18: " + getFirstTimeWindow(((ServiceJob) vrp.getJobs().get("" + 18))).getStart() + " "
+                + getFirstTimeWindow(((ServiceJob) vrp.getJobs().get("" + 18))).getEnd());
+        System.out.println("20: " + getFirstTimeWindow(((ServiceJob) vrp.getJobs().get("" + 20))).getStart() + " "
+                + getFirstTimeWindow(((ServiceJob) vrp.getJobs().get("" + 20))).getEnd());
+        System.out.println("1: " + getFirstTimeWindow(((ServiceJob) vrp.getJobs().get("" + 1))).getStart() + " "
+                + getFirstTimeWindow(((ServiceJob) vrp.getJobs().get("" + 1))).getEnd());
     }
 
     private void close(BufferedReader reader) {

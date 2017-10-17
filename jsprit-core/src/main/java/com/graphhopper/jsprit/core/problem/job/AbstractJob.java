@@ -380,23 +380,28 @@ public abstract class AbstractJob implements Job {
     AbstractJob() {
     }
 
-    @Override
-    public int getIndex() {
-        return index;
-    }
+    // @Override
+    // public int getIndex() {
+    // return index;
+    // }
 
-    /**
-     * Sets the index of the job within the problem.
-     * <p>
-     * <b>This method isn't part of the public API and should not be called!</b>
-     * </p>
-     *
-     * @param index
-     *            The index.
-     */
-    public void impl_setIndex(int index) {
-        this.index = index;
-    }
+    //
+    // /**
+    // * Sets the index of the job within the problem.
+    // * <p>
+    // * <b>This method isn't part of the public API and should not be called!
+    // If
+    // * it is still called, it will throw {@link IllegalStateException}.</b>
+    // * </p>
+    // *
+    // * @param index
+    // * The index.
+    // */
+    // public void impl_setIndex(FriendlyHandshake handshake, int index) {
+    // if (handshake == null)
+    // throw new IllegalStateException();
+    // this.index = index;
+    // }
 
     /**
      * @return User-specific domain data associated with the job

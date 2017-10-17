@@ -251,7 +251,8 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         assertEquals(2, readVrp.getJobs().size());
 
-        TimeWindow tw = ((ShipmentJob) readVrp.getJobs().get("1")).getPickupActivity().getSingleTimeWindow();
+        TimeWindow tw = ((ShipmentJob) readVrp.getJobs().get("1")).getPickupActivity().getTimeWindows().iterator()
+            .next();
         assertEquals(1.0, tw.getStart(), 0.01);
         assertEquals(2.0, tw.getEnd(), 0.01);
     }
@@ -286,7 +287,8 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem readVrp = vrpToReadBuilder.build();
         assertEquals(2, readVrp.getJobs().size());
 
-        TimeWindow tw = ((ShipmentJob) readVrp.getJobs().get("1")).getDeliveryActivity().getSingleTimeWindow();
+        TimeWindow tw = ((ShipmentJob) readVrp.getJobs().get("1")).getDeliveryActivity().getTimeWindows().iterator()
+            .next();
         assertEquals(3.0, tw.getStart(), 0.01);
         assertEquals(4.0, tw.getEnd(), 0.01);
     }
@@ -455,9 +457,8 @@ public class VrpXMLWriterTest {
 
     private Vehicle getVehicle(String v1, VehicleRoutingProblem readVrp) {
         for (Vehicle v : readVrp.getVehicles()) {
-            if (v.getId().equals(v1)) {
+            if (v.getId().equals(v1))
                 return v;
-            }
         }
         return null;
     }
@@ -899,9 +900,8 @@ public class VrpXMLWriterTest {
 
     private Vehicle getVehicle(String string, Collection<Vehicle> vehicles) {
         for (Vehicle v : vehicles) {
-            if (string.equals(v.getId())) {
+            if (string.equals(v.getId()))
                 return v;
-            }
         }
         return null;
     }
@@ -920,16 +920,16 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v1).addService(s1).addService(s2).build();
-        List<VehicleRoute> routes = new ArrayList<VehicleRoute>();
+        List<VehicleRoute> routes = new ArrayList<>();
         routes.add(route);
         VehicleRoutingProblemSolution solution = new VehicleRoutingProblemSolution(routes, 10.);
-        List<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>();
+        List<VehicleRoutingProblemSolution> solutions = new ArrayList<>();
         solutions.add(solution);
 
         new VrpXMLWriter(vrp, solutions).write(infileName);
 
         VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        List<VehicleRoutingProblemSolution> solutionsToRead = new ArrayList<VehicleRoutingProblemSolution>();
+        List<VehicleRoutingProblemSolution> solutionsToRead = new ArrayList<>();
         new VrpXMLReader(vrpToReadBuilder, solutionsToRead).read(infileName);
 
         assertEquals(1, solutionsToRead.size());
@@ -951,17 +951,17 @@ public class VrpXMLWriterTest {
         VehicleRoutingProblem vrp = builder.addJob(s1).addJob(s2).build();
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v1).addService(s1).build();
-        List<VehicleRoute> routes = new ArrayList<VehicleRoute>();
+        List<VehicleRoute> routes = new ArrayList<>();
         routes.add(route);
         VehicleRoutingProblemSolution solution = new VehicleRoutingProblemSolution(routes, 10.);
         solution.getUnassignedJobs().add(s2);
-        List<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>();
+        List<VehicleRoutingProblemSolution> solutions = new ArrayList<>();
         solutions.add(solution);
 
         new VrpXMLWriter(vrp, solutions).write(infileName);
 
         VehicleRoutingProblem.Builder vrpToReadBuilder = VehicleRoutingProblem.Builder.newInstance();
-        List<VehicleRoutingProblemSolution> solutionsToRead = new ArrayList<VehicleRoutingProblemSolution>();
+        List<VehicleRoutingProblemSolution> solutionsToRead = new ArrayList<>();
         new VrpXMLReader(vrpToReadBuilder, solutionsToRead).read(infileName);
 
         assertEquals(1, solutionsToRead.size());

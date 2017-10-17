@@ -50,7 +50,7 @@ public class BreakScheduling implements InsertionStartsListener, JobInsertedList
 
     private final EventListeners eventListeners;
 
-    private Set<VehicleRoute> modifiedRoutes = new HashSet<VehicleRoute>();
+    private Set<VehicleRoute> modifiedRoutes = new HashSet<>();
 
     public BreakScheduling(VehicleRoutingProblem vrp, StateManager stateManager, ConstraintManager constraintManager) {
         this.stateManager = stateManager;
@@ -69,7 +69,7 @@ public class BreakScheduling implements InsertionStartsListener, JobInsertedList
                 stateManager.removed(aBreak, inRoute);
                 stateManager.reCalculateStates(inRoute);
             }
-            if (inRoute.getEnd().getArrTime() > aBreak.getActivity().getTimeWindow().getEnd()) {
+            if (inRoute.getEnd().getArrTime() > aBreak.getActivity().getBreakTimeWindow().getEnd()) {
                 InsertionData iData = breakInsertionCalculator.getInsertionData(inRoute, aBreak, inRoute.getVehicle(), inRoute.getDepartureTime(), inRoute.getDriver(), Double.MAX_VALUE);
                 if (!(iData instanceof InsertionData.NoInsertionFound)) {
                     logger.trace("insert: [jobId={}]{}", aBreak.getId(), iData);
@@ -96,7 +96,7 @@ public class BreakScheduling implements InsertionStartsListener, JobInsertedList
                 logger.trace("ruin: {}", aBreak.getId());
             }
         }
-        List<Break> breaks = new ArrayList<Break>();
+        List<Break> breaks = new ArrayList<>();
         for (Job j : unassignedJobs) {
             if (j instanceof Break) {
                 breaks.add((Break) j);
@@ -119,7 +119,7 @@ public class BreakScheduling implements InsertionStartsListener, JobInsertedList
         for (VehicleRoute route : vehicleRoutes) {
             Break aBreak = route.getVehicle().getBreak();
             if (aBreak != null && !route.getTourActivities().servesJob(aBreak)) {
-                if (route.getEnd().getArrTime() > aBreak.getActivity().getTimeWindow().getEnd()) {
+                if (route.getEnd().getArrTime() > aBreak.getActivity().getBreakTimeWindow().getEnd()) {
                     InsertionData iData = breakInsertionCalculator.getInsertionData(route, aBreak, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
                     if (!(iData instanceof InsertionData.NoInsertionFound)) {
                         logger.trace("insert: [jobId={}]{}", aBreak.getId(), iData);

@@ -54,7 +54,7 @@ public class ServiceJobTest {
 
     @Test
     public void noName() {
-        Set<ServiceJob> serviceSet = new HashSet<ServiceJob>();
+        Set<ServiceJob> serviceSet = new HashSet<>();
         ServiceJob one = new ServiceJob.Builder("service").addSizeDimension(0, 10).setLocation(Location.newInstance("foo")).build();
         ServiceJob two = new ServiceJob.Builder("service").addSizeDimension(0, 10).setLocation(Location.newInstance("fo")).build();
         serviceSet.add(one);
@@ -72,18 +72,18 @@ public class ServiceJobTest {
     @Test
     public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo() {
         ServiceJob one = new ServiceJob.Builder("s").setLocation(Location.newInstance("foofoo"))
-                        .addSizeDimension(0, 2)
-                        .addSizeDimension(1, 4)
-                        .build();
+                .addSizeDimension(0, 2)
+                .addSizeDimension(1, 4)
+                .build();
         assertEquals(2, one.getActivity().getLoadChange().getNuOfDimensions());
     }
 
     @Test
     public void sizeAtStartAndEndShouldBeCorrect() {
         ServiceJob one = new ServiceJob.Builder("s").setLocation(Location.newInstance("foofoo"))
-                        .addSizeDimension(0, 2)
-                        .addSizeDimension(1, 4)
-                        .build();
+                .addSizeDimension(0, 2)
+                .addSizeDimension(1, 4)
+                .build();
         assertTrue(one.getSizeAtEnd().equals(one.getActivity().getLoadChange()));
         assertTrue(one.getSizeAtStart().equals(SizeDimension.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).build()));
     }
@@ -91,7 +91,7 @@ public class ServiceJobTest {
     @Test
     public void whenShipmentIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero() {
         ServiceJob one = new ServiceJob.Builder("s").setLocation(Location.newInstance("foofoo"))
-                        .build();
+                .build();
         assertEquals(1, one.getActivity().getLoadChange().getNuOfDimensions());
         assertEquals(0, one.getActivity().getLoadChange().get(0));
     }
@@ -99,7 +99,7 @@ public class ServiceJobTest {
     @Test
     public void whenShipmentIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly() {
         ServiceJob one = new ServiceJob.Builder("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
-                        .build();
+                .build();
         assertEquals(1, one.getActivity().getLoadChange().getNuOfDimensions());
         assertEquals(1, one.getActivity().getLoadChange().get(0));
     }
@@ -167,14 +167,14 @@ public class ServiceJobTest {
     @Test
     public void whenSettingTimeWindow_itShouldBeSetCorrectly() {
         ServiceJob s = new ServiceJob.Builder("s").setLocation(Location.newInstance("loc")).setTimeWindow(TimeWindow.newInstance(1.0, 2.0)).build();
-        assertEquals(1.0, s.getActivity().getSingleTimeWindow().getStart(), 0.01);
-        assertEquals(2.0, s.getActivity().getSingleTimeWindow().getEnd(), 0.01);
+        assertEquals(1.0, s.getActivity().getTimeWindows().iterator().next().getStart(), 0.01);
+        assertEquals(2.0, s.getActivity().getTimeWindows().iterator().next().getEnd(), 0.01);
     }
 
     @Test
     public void whenAddingSkills_theyShouldBeAddedCorrectly() {
         ServiceJob s = new ServiceJob.Builder("s").setLocation(Location.newInstance("loc"))
-                        .addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
+                .addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
         assertTrue(s.getRequiredSkills().containsSkill("drill"));
         assertTrue(s.getRequiredSkills().containsSkill("drill"));
         assertTrue(s.getRequiredSkills().containsSkill("ScrewDriver"));
@@ -183,7 +183,7 @@ public class ServiceJobTest {
     @Test
     public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly() {
         ServiceJob s = new ServiceJob.Builder("s").setLocation(Location.newInstance("loc"))
-                        .addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
+                .addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
         assertTrue(s.getRequiredSkills().containsSkill("drill"));
         assertTrue(s.getRequiredSkills().containsSkill("drilL"));
     }
@@ -193,9 +193,9 @@ public class ServiceJobTest {
         TimeWindow tw1 = TimeWindow.newInstance(1.0, 2.0);
         TimeWindow tw2 = TimeWindow.newInstance(3.0, 5.0);
         ServiceJob s = new ServiceJob.Builder("s").setLocation(Location.newInstance("loc"))
-                        .addTimeWindow(tw1)
-                        .addTimeWindow(tw2)
-                        .build();
+                .addTimeWindow(tw1)
+                .addTimeWindow(tw2)
+                .build();
         assertEquals(2, s.getActivity().getTimeWindows().size());
         assertThat(s.getActivity().getTimeWindows(), hasItem(is(tw1)));
         assertThat(s.getActivity().getTimeWindows(), hasItem(is(tw2)));
@@ -204,16 +204,16 @@ public class ServiceJobTest {
     @Test
     public void whenAddingTimeWindow_itShouldBeSetCorrectly() {
         ServiceJob s = new ServiceJob.Builder("s").setLocation(Location.newInstance("loc"))
-                        .addTimeWindow(TimeWindow.newInstance(1.0, 2.0)).build();
-        assertEquals(1.0, s.getActivity().getSingleTimeWindow().getStart(), 0.01);
-        assertEquals(2.0, s.getActivity().getSingleTimeWindow().getEnd(), 0.01);
+                .addTimeWindow(TimeWindow.newInstance(1.0, 2.0)).build();
+        assertEquals(1.0, s.getActivity().getTimeWindows().iterator().next().getStart(), 0.01);
+        assertEquals(2.0, s.getActivity().getTimeWindows().iterator().next().getEnd(), 0.01);
     }
 
 
     @Test
     public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly() {
         ServiceJob s = new ServiceJob.Builder("s").setLocation(Location.newInstance("loc"))
-                        .addRequiredSkill("screwDriver").build();
+                .addRequiredSkill("screwDriver").build();
         assertFalse(s.getRequiredSkills().containsSkill("drill"));
         assertFalse(s.getRequiredSkills().containsSkill("drilL"));
     }
@@ -221,15 +221,15 @@ public class ServiceJobTest {
     @Test
     public void nameShouldBeAssigned() {
         ServiceJob s = new ServiceJob.Builder("s").setLocation(Location.newInstance("loc"))
-                        .setName("name").build();
+                .setName("name").build();
         assertEquals("name", s.getName());
     }
 
     @Test
     public void shouldKnowMultipleTimeWindows() {
         ServiceJob s = new ServiceJob.Builder("s").setLocation(Location.newInstance("loc"))
-                        .addTimeWindow(TimeWindow.newInstance(0., 10.)).addTimeWindow(TimeWindow.newInstance(20., 30.))
-                        .setName("name").build();
+                .addTimeWindow(TimeWindow.newInstance(0., 10.)).addTimeWindow(TimeWindow.newInstance(20., 30.))
+                .setName("name").build();
         assertEquals(2, s.getActivity().getTimeWindows().size());
     }
 
@@ -252,21 +252,21 @@ public class ServiceJobTest {
     @Test
     public void whenSettingPriorities_itShouldBeSetCorrectly() {
         ServiceJob s = new ServiceJob.Builder("s").setLocation(Location.newInstance("loc"))
-                        .setPriority(1).build();
+                .setPriority(1).build();
         assertEquals(1, s.getPriority());
     }
 
     @Test
     public void whenSettingPriorities_itShouldBeSetCorrectly2() {
         ServiceJob s = new ServiceJob.Builder("s").setLocation(Location.newInstance("loc"))
-                        .setPriority(3).build();
+                .setPriority(3).build();
         assertEquals(3, s.getPriority());
     }
 
     @Test
     public void whenNotSettingPriorities_defaultShouldBe2() {
         ServiceJob s = new ServiceJob.Builder("s").setLocation(Location.newInstance("loc"))
-                        .build();
+                .build();
         assertEquals(2, s.getPriority());
     }
 
