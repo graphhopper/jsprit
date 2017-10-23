@@ -235,6 +235,13 @@ public class Shipment extends AbstractJob {
             return this;
         }
 
+        public Builder addAllSizeDimensions(Capacity size) {
+            for (int i = 0; i < size.getNuOfDimensions(); i++) {
+                addSizeDimension(i, size.get(i));
+            }
+            return this;
+        }
+
 
         /**
          * Builds the shipment.
@@ -254,6 +261,13 @@ public class Shipment extends AbstractJob {
 
         public Builder addRequiredSkill(String skill) {
             skillBuilder.addSkill(skill);
+            return this;
+        }
+
+        public Builder addAllRequiredSkills(Skills skills) {
+            for (String s : skills.values()) {
+                addRequiredSkill(s);
+            }
             return this;
         }
 

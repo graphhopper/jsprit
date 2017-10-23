@@ -232,7 +232,7 @@ public class Service extends AbstractJob {
 
         public Builder<T> addAllSizeDimensions(Capacity size){
             for(int i=0;i<size.getNuOfDimensions();i++){
-                capacityBuilder.addDimension(i,size.get(i));
+                addSizeDimension(i, size.get(i));
             }
             return this;
         }
