@@ -17,14 +17,14 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.problem.AbstractJob;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
+
+import java.util.Collection;
 
 
 /**
@@ -277,6 +277,11 @@ public class Shipment extends AbstractJob {
             return this;
         }
 
+        public Builder addAllDeliveryTimeWindows(Collection<TimeWindow> timeWindow) {
+            for (TimeWindow tw : timeWindow) addDeliveryTimeWindow(tw);
+            return this;
+        }
+
         public Builder addPickupTimeWindow(TimeWindow timeWindow) {
             if(timeWindow == null) throw new IllegalArgumentException("time-window arg must not be null");
             if(!pickupTimeWindowAdded){
@@ -289,6 +294,11 @@ public class Shipment extends AbstractJob {
 
         public Builder addPickupTimeWindow(double earliest, double latest) {
             return addPickupTimeWindow(TimeWindow.newInstance(earliest, latest));
+        }
+
+        public Builder addAllPickupTimeWindows(Collection<TimeWindow> timeWindow) {
+            for (TimeWindow tw : timeWindow) addPickupTimeWindow(tw);
+            return this;
         }
 
         /**

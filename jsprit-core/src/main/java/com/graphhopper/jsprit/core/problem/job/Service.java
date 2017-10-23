@@ -17,8 +17,6 @@
  */
 package com.graphhopper.jsprit.core.problem.job;
 
-import java.util.Collection;
-
 import com.graphhopper.jsprit.core.problem.AbstractJob;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -27,6 +25,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindows;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
+
+import java.util.Collection;
 
 /**
  * Service implementation of a job.
@@ -192,6 +192,11 @@ public class Service extends AbstractJob {
 
         public Builder<T> addTimeWindow(double earliest, double latest) {
             return addTimeWindow(TimeWindow.newInstance(earliest, latest));
+        }
+
+        public Builder<T> addAllTimeWindows(Collection<TimeWindow> timeWindows) {
+            for (TimeWindow tw : timeWindows) addTimeWindow(tw);
+            return this;
         }
 
         /**
