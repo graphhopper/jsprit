@@ -23,9 +23,9 @@ public class Coordinate {
         return new Coordinate(x, y);
     }
 
-    private double x;
+    private final double x;
 
-    private double y;
+    private final double y;
 
     public Coordinate(double x, double y) {
         super();
