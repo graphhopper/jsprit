@@ -12,3 +12,4 @@
 # Eclipse
 .project
 .classpath
+/.settings/
