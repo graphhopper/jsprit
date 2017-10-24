@@ -448,6 +448,21 @@ public class Shipment extends AbstractJob {
         return pickupTimeWindows.getTimeWindows();
     }
 
+    
+    /**
+     * Returns a string with the shipment's attributes.
+     * <p>
+     * <p>String is built as follows: [attr1=val1][attr2=val2]...
+     */
+    @Override
+    public String toString() {
+        return "[id=" + id + "][name=" + name + "][pickupLocation=" + pickupLocation_
+                + "][deliveryLocation=" + deliveryLocation_ + "][capacity=" + capacity
+                + "][pickupServiceTime=" + pickupServiceTime + "][deliveryServiceTime="
+                + deliveryServiceTime + "][pickupTimeWindow=" + pickupTimeWindow
+                + "][deliveryTimeWindow=" + deliveryTimeWindow + "]";
+    }
+
 
     @Override
     public int hashCode() {
