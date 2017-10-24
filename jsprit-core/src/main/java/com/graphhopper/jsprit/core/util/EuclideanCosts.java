@@ -58,11 +58,7 @@ public class EuclideanCosts extends AbstractForwardVehicleRoutingTransportCosts 
     }
 
     private double calculateDistance(Location fromLocation, Location toLocation) {
-        Coordinate from = null;
-        Coordinate to = null;
-        from = fromLocation.getCoordinate();
-        to = toLocation.getCoordinate();
-        return calculateDistance(from, to);
+        return calculateDistance(fromLocation.getCoordinate(), toLocation.getCoordinate());
     }
 
     private double calculateDistance(Coordinate from, Coordinate to) {
