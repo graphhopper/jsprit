@@ -72,8 +72,6 @@ public class Service extends AbstractJob {
 
         protected double serviceTime;
 
-        protected TimeWindow timeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
-
         protected Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
 
         protected Capacity capacity;
@@ -98,7 +96,7 @@ public class Service extends AbstractJob {
 		Builder(String id){
 			this.id = id;
 			timeWindows = new TimeWindowsImpl();
-			timeWindows.add(timeWindow);
+			timeWindows.add(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
 		}
 
         /**
@@ -176,7 +174,6 @@ public class Service extends AbstractJob {
 
         public Builder<T> setTimeWindow(TimeWindow tw){
             if(tw == null) throw new IllegalArgumentException("time-window arg must not be null");
-            this.timeWindow = tw;
             this.timeWindows = new TimeWindowsImpl();
             timeWindows.add(tw);
             return this;

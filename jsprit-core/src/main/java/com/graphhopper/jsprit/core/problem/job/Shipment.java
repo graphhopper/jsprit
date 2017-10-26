@@ -61,10 +61,6 @@ public class Shipment extends AbstractJob {
 
         private double deliveryServiceTime = 0.0;
 
-        private TimeWindow deliveryTimeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
-
-        private TimeWindow pickupTimeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
-
         private Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
 
         private Capacity capacity;
@@ -107,9 +103,9 @@ public class Shipment extends AbstractJob {
             if (id == null) throw new IllegalArgumentException("id must not be null");
             this.id = id;
             pickupTimeWindows = new TimeWindowsImpl();
-            pickupTimeWindows.add(pickupTimeWindow);
+            pickupTimeWindows.add(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
             deliveryTimeWindows = new TimeWindowsImpl();
-            deliveryTimeWindows.add(deliveryTimeWindow);
+            deliveryTimeWindows.add(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
         }
 
         /**
@@ -169,7 +165,6 @@ public class Shipment extends AbstractJob {
          */
         public Builder setPickupTimeWindow(TimeWindow timeWindow) {
             if (timeWindow == null) throw new IllegalArgumentException("delivery time-window must not be null");
-            this.pickupTimeWindow = timeWindow;
             this.pickupTimeWindows = new TimeWindowsImpl();
             this.pickupTimeWindows.add(timeWindow);
             return this;
@@ -215,7 +210,6 @@ public class Shipment extends AbstractJob {
          */
         public Builder setDeliveryTimeWindow(TimeWindow timeWindow) {
             if (timeWindow == null) throw new IllegalArgumentException("delivery time-window must not be null");
-            this.deliveryTimeWindow = timeWindow;
             this.deliveryTimeWindows = new TimeWindowsImpl();
             this.deliveryTimeWindows.add(timeWindow);
             return this;
