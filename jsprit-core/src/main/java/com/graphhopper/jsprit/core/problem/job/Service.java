@@ -93,7 +93,9 @@ public class Service extends AbstractJob {
         private int priority = 2;
         protected Object userData;
 
-		protected double maxTimeInVehicle = Double.MAX_VALUE;Builder(String id){
+		protected double maxTimeInVehicle = Double.MAX_VALUE;
+		
+		Builder(String id){
 			this.id = id;
 			timeWindows = new TimeWindowsImpl();
 			timeWindows.add(timeWindow);
@@ -266,8 +268,6 @@ public class Service extends AbstractJob {
 
     private final double serviceTime;
 
-    private final TimeWindow timeWindow;
-
     private final Capacity size;
 
     private final Skills skills;
@@ -276,7 +276,7 @@ public class Service extends AbstractJob {
 
     private final Location location;
 
-    private final TimeWindows timeWindowManager;
+    private final TimeWindows timeWindows;
 
     private final int priority;
 
@@ -286,18 +286,18 @@ public class Service extends AbstractJob {
         setUserData(builder.userData);
         id = builder.id;
         serviceTime = builder.serviceTime;
-        timeWindow = builder.timeWindow;
         type = builder.type;
         size = builder.capacity;
         skills = builder.skills;
         name = builder.name;
         location = builder.location;
-        timeWindowManager = builder.timeWindows;
+        timeWindows = builder.timeWindows;
         priority = builder.priority;
-	maxTimeInVehicle = builder.maxTimeInVehicle;}
+	    maxTimeInVehicle = builder.maxTimeInVehicle;
+	}
 
     public Collection<TimeWindow> getTimeWindows(){
-        return timeWindowManager.getTimeWindows();
+        return timeWindows.getTimeWindows();
     }
 
     @Override
@@ -332,7 +332,7 @@ public class Service extends AbstractJob {
      *
      */
     public TimeWindow getTimeWindow() {
-        return timeWindowManager.getTimeWindows().iterator().next();
+        return timeWindows.getTimeWindows().iterator().next();
     }
 
     /**
@@ -349,9 +349,10 @@ public class Service extends AbstractJob {
      */
     @Override
     public String toString() {
-        return "[id=" + id + "][name=" + name + "][type=" + type + "][location=" + location + "][capacity=" + size + "][serviceTime=" + serviceTime + "][timeWindow=" + timeWindow + "]";
+        return "[id=" + id + "][name=" + name + "][type=" + type + "][location=" + location
+                + "][capacity=" + size + "][serviceTime=" + serviceTime + "][timeWindows="
+                + timeWindows + "]";
     }
-
 
     @Override
     public int hashCode() {

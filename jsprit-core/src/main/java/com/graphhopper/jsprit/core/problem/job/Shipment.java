@@ -349,10 +349,6 @@ public class Shipment extends AbstractJob {
 
     private final double deliveryServiceTime;
 
-    private final TimeWindow deliveryTimeWindow;
-
-    private final TimeWindow pickupTimeWindow;
-
     private final Capacity capacity;
 
     private final Skills skills;
@@ -375,9 +371,7 @@ public class Shipment extends AbstractJob {
         setUserData(builder.userData);
         this.id = builder.id;
         this.pickupServiceTime = builder.pickupServiceTime;
-        this.pickupTimeWindow = builder.pickupTimeWindow;
         this.deliveryServiceTime = builder.deliveryServiceTime;
-        this.deliveryTimeWindow = builder.deliveryTimeWindow;
         this.capacity = builder.capacity;
         this.skills = builder.skills;
         this.name = builder.name;
@@ -459,8 +453,8 @@ public class Shipment extends AbstractJob {
         return "[id=" + id + "][name=" + name + "][pickupLocation=" + pickupLocation_
                 + "][deliveryLocation=" + deliveryLocation_ + "][capacity=" + capacity
                 + "][pickupServiceTime=" + pickupServiceTime + "][deliveryServiceTime="
-                + deliveryServiceTime + "][pickupTimeWindow=" + pickupTimeWindow
-                + "][deliveryTimeWindow=" + deliveryTimeWindow + "]";
+                + deliveryServiceTime + "][pickupTimeWindows=" + pickupTimeWindows
+                + "][deliveryTimeWindows=" + deliveryTimeWindows + "]";
     }
 
 
