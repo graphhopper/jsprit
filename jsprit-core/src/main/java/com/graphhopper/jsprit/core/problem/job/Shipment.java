@@ -349,10 +349,6 @@ public class Shipment extends AbstractJob {
 
     private final double deliveryServiceTime;
 
-    private final TimeWindow deliveryTimeWindow;
-
-    private final TimeWindow pickupTimeWindow;
-
     private final Capacity capacity;
 
     private final Skills skills;
@@ -375,9 +371,7 @@ public class Shipment extends AbstractJob {
         setUserData(builder.userData);
         this.id = builder.id;
         this.pickupServiceTime = builder.pickupServiceTime;
-        this.pickupTimeWindow = builder.pickupTimeWindow;
         this.deliveryServiceTime = builder.deliveryServiceTime;
-        this.deliveryTimeWindow = builder.deliveryTimeWindow;
         this.capacity = builder.capacity;
         this.skills = builder.skills;
         this.name = builder.name;
@@ -446,6 +440,21 @@ public class Shipment extends AbstractJob {
 
     public Collection<TimeWindow> getPickupTimeWindows() {
         return pickupTimeWindows.getTimeWindows();
+    }
+
+    
+    /**
+     * Returns a string with the shipment's attributes.
+     * <p>
+     * <p>String is built as follows: [attr1=val1][attr2=val2]...
+     */
+    @Override
+    public String toString() {
+        return "[id=" + id + "][name=" + name + "][pickupLocation=" + pickupLocation_
+                + "][deliveryLocation=" + deliveryLocation_ + "][capacity=" + capacity
+                + "][pickupServiceTime=" + pickupServiceTime + "][deliveryServiceTime="
+                + deliveryServiceTime + "][pickupTimeWindows=" + pickupTimeWindows
+                + "][deliveryTimeWindows=" + deliveryTimeWindows + "]";
     }
 
 

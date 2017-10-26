@@ -48,4 +48,12 @@ public class TimeWindowsImpl implements TimeWindows {
         return Collections.unmodifiableCollection(timeWindows);
     }
 
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer(timeWindows.size() * 60);
+        for (TimeWindow tw : timeWindows) {
+            sb.append("[timeWindow=").append(tw).append("]");
+        }
+        return sb.toString();
+    }
 }
