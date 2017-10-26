@@ -47,6 +47,7 @@ install: true
 
 script:
   - mvn clean test verify -B
+  - mvn clean package
 
 notifications:
   email:
@@ -55,3 +56,11 @@ notifications:
 cache:
   directories:
     - $HOME/.m2
+
+deploy:
+  provider: script
+  script: "mvn deploy --settings .travis.settings.xml -DskipTests=true -B"
+  skip_cleanup: true
+  on:
+    branch: master
+
