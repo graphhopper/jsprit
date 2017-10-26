@@ -203,6 +203,14 @@
     <!-- mvn clean deploy -P release -->
     <profiles>
         <profile>
+            <id>selected-build</id>
+            <modules>
+                <module>jsprit-core</module>
+                <module>jsprit-io</module>
+                <module>jsprit-analysis</module>
+            </modules>
+        </profile>
+        <profile>
             <id>release</id>
             <activation>
                 <activeByDefault>false</activeByDefault>

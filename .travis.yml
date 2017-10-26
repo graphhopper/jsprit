@@ -59,7 +59,7 @@ cache:
 
 deploy:
   provider: script
-  script: "mvn deploy --settings .travis.settings.xml -DskipTests=true -B"
+  script: "mvn deploy --settings .travis.settings.xml -DskipTests=true -B -P selected-build"
   skip_cleanup: true
   on:
     branch: master
