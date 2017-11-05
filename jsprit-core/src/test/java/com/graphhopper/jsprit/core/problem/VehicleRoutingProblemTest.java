@@ -281,6 +281,11 @@ public class VehicleRoutingProblemTest {
         builder.setRoutingCost(new AbstractForwardVehicleRoutingTransportCosts() {
 
             @Override
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                return 0;
+            }
+
+            @Override
             public double getTransportTime(Location from, Location to,
                                            double departureTime, Driver driver, Vehicle vehicle) {
                 return 0;

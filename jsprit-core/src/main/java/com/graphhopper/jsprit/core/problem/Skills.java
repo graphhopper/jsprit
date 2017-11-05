@@ -109,7 +109,7 @@ public class Skills {
      * @return true if skill is included, false otherwise
      */
     public boolean containsSkill(String skill) {
-        return skills.contains(skill.toLowerCase());
+        return skills.contains(skill.trim().toLowerCase());// trim to be consistent with addSkill()
     }
 
     @Override

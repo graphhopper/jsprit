@@ -25,15 +25,12 @@ import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.problem.Capacity;
-import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.ServiceDeliveriesFirstConstraint;
-import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.io.problem.VrpXMLReader;
 import com.graphhopper.jsprit.util.Examples;
@@ -125,14 +122,7 @@ public class VRPWithBackhaulsExample2 {
 //		plotter.setLabel(Plotter.Label.SIZE);
         plotter.plot("output/vrpwbh_christophides_vrpnc1_solution.png", "vrpwbh_vrpnc1");
 
-        SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
-
-            @Override
-            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-                return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
-            }
-
-        });
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
 
         for (VehicleRoute route : solution.getRoutes()) {
             System.out.println("------");

@@ -22,7 +22,6 @@ package com.graphhopper.jsprit.core.util;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
-import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
@@ -30,7 +29,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 /**
  * @author stefan schroeder
  */
-public class EuclideanCosts extends AbstractForwardVehicleRoutingTransportCosts implements TransportDistance {
+public class EuclideanCosts extends AbstractForwardVehicleRoutingTransportCosts {
 
     public int speed = 1;
 
@@ -59,14 +58,7 @@ public class EuclideanCosts extends AbstractForwardVehicleRoutingTransportCosts 
     }
 
     private double calculateDistance(Location fromLocation, Location toLocation) {
-        Coordinate from = null;
-        Coordinate to = null;
-        if (fromLocation.getCoordinate() != null & toLocation.getCoordinate() != null) {
-            from = fromLocation.getCoordinate();
-            to = toLocation.getCoordinate();
-        }
-        if (from == null || to == null) throw new NullPointerException();
-        return calculateDistance(from, to);
+        return calculateDistance(fromLocation.getCoordinate(), toLocation.getCoordinate());
     }
 
     private double calculateDistance(Coordinate from, Coordinate to) {
