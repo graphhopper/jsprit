@@ -33,19 +33,19 @@ public class ActivityTimeTracker implements ActivityVisitor {
 
     private final ForwardTransportTime transportTime;
 
-    private final VehicleRoutingActivityCosts activityCosts;
+    protected final VehicleRoutingActivityCosts activityCosts;
 
-    private TourActivity prevAct = null;
+    protected TourActivity prevAct = null;
 
-    private double startAtPrevAct;
+    protected double startAtPrevAct;
 
-    private VehicleRoute route;
+    protected VehicleRoute route;
 
     private boolean beginFirst = false;
 
-    private double actArrTime;
+    protected double actArrTime;
 
-    private double actEndTime;
+    protected double actEndTime;
 
     private ActivityPolicy activityPolicy = ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
 
