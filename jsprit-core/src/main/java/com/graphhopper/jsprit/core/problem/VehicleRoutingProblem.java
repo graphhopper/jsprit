@@ -447,7 +447,6 @@ public class VehicleRoutingProblem {
             return new VehicleRoutingProblem(this);
         }
 
-        @SuppressWarnings("UnusedDeclaration")
         public Builder addLocation(String locationId, Coordinate coordinate) {
             tentative_coordinates.put(locationId, coordinate);
             return this;
@@ -473,7 +472,6 @@ public class VehicleRoutingProblem {
          * @param vehicles vehicles to be added
          * @return this builder
          */
-        @SuppressWarnings("deprecation")
         public Builder addAllVehicles(Collection<? extends Vehicle> vehicles) {
             for (Vehicle v : vehicles) {
                 addVehicle(v);
