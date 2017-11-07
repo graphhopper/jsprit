@@ -86,7 +86,7 @@ public class LuiShenReader {
                 if (counter == 10) {
                     createVehicles(vehicleFile, costScenario, customerId, coord, start, end);
                 } else {
-                    Service service = Service.Builder.newInstance("" + counter).addSizeDimension(0, demand)
+                    Service service = Service.Builder.newInstance("" + (counter - 10)).addSizeDimension(0, demand)
                         .setLocation(Location.Builder.newInstance().setCoordinate(coord).setId(customerId).build()).setServiceTime(serviceTime)
                         .setTimeWindow(TimeWindow.newInstance(start, end)).build();
                     vrpBuilder.addJob(service);

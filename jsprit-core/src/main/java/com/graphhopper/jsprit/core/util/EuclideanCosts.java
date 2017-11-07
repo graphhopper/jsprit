@@ -42,42 +42,32 @@ public class EuclideanCosts extends AbstractForwardVehicleRoutingTransportCosts 
 
     @Override
     public double getTransportCost(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
-        double distance;
-        try {
-            distance = calculateDistance(from, to);
-        } catch (NullPointerException e) {
-            throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
+        double distance = calculateDistance(from, to);
+        if (vehicle != null && vehicle.getType() != null) {
+            return distance * vehicle.getType().getVehicleCostParams().perDistanceUnit;
         }
-        double costs = distance;
-        if (vehicle != null) {
-            if (vehicle.getType() != null) {
-                costs = distance * vehicle.getType().getVehicleCostParams().perDistanceUnit;
-            }
-        }
-        return costs;
+        return distance;
     }
 
-    private double calculateDistance(Location fromLocation, Location toLocation) {
+    double calculateDistance(Location fromLocation, Location toLocation) {
         return calculateDistance(fromLocation.getCoordinate(), toLocation.getCoordinate());
     }
 
-    private double calculateDistance(Coordinate from, Coordinate to) {
-        return EuclideanDistanceCalculator.calculateDistance(from, to) * detourFactor;
+    double calculateDistance(Coordinate from, Coordinate to) {
+        try {
+            return EuclideanDistanceCalculator.calculateDistance(from, to) * detourFactor;
+        } catch (NullPointerException e) {
+            throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
+        }
     }
 
     @Override
     public double getTransportTime(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
-        double distance;
-        try {
-            distance = calculateDistance(from, to);
-        } catch (NullPointerException e) {
-            throw new NullPointerException("cannot calculate euclidean distance. coordinates are missing. either add coordinates or use another transport-cost-calculator.");
-        }
-        return distance / speed;
+        return calculateDistance(from, to) / speed;
     }
 
     @Override
     public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
-        return calculateDistance(from, to);
+            return calculateDistance(from, to);
     }
 }
