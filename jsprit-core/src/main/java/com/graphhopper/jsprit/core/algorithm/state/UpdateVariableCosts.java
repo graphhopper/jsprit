@@ -75,6 +75,13 @@ public class UpdateVariableCosts implements ActivityVisitor, StateUpdater {
         timeTracker = new ActivityTimeTracker(transportCosts, activityPolicy, activityCosts);
     }
 
+    public UpdateVariableCosts(VehicleRoutingActivityCosts activityCosts, VehicleRoutingTransportCosts transportCosts, StateManager stateManager, ActivityTimeTracker.ActivityPolicy activityPolicy, ActivityTimeTracker timeTracker) {
+        this.activityCost = activityCosts;
+        this.transportCost = transportCosts;
+        this.states = stateManager;
+        this.timeTracker = timeTracker;
+    }
+
     @Override
     public void begin(VehicleRoute route) {
         vehicleRoute = route;

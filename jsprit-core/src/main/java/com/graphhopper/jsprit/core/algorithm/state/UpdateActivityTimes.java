@@ -55,6 +55,9 @@ public class UpdateActivityTimes implements ActivityVisitor, StateUpdater {
     public UpdateActivityTimes(ForwardTransportTime transportTime, ActivityTimeTracker.ActivityPolicy activityPolicy, VehicleRoutingActivityCosts activityCosts) {
         timeTracker = new ActivityTimeTracker(transportTime, activityPolicy, activityCosts);
     }
+    public UpdateActivityTimes(ActivityTimeTracker timeTracker) {
+        this.timeTracker = timeTracker;
+    }
 
     @Override
     public void begin(VehicleRoute route) {
