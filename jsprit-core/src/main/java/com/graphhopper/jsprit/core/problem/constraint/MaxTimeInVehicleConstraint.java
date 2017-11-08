@@ -143,52 +143,6 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
                 }
             }
         }
-
-
-//        if(newActIsPickup || iFacts.getAssociatedActivities().size() == 1) {
-//            double latest;
-//            if (iFacts.getRoute().isEmpty()) latest = Double.MAX_VALUE;
-//            else if (nextAct instanceof End) {
-//                latest = stateManager.getRouteState(iFacts.getRoute(), iFacts.getNewVehicle(), latestStartId, Double.class);
-//            } else latest = stateManager.getActivityState(nextAct, iFacts.getNewVehicle(), latestStartId, Double.class);
-//
-//            if (nextActStart > latest) {
-//                return ConstraintsStatus.NOT_FULFILLED;
-//            }
-//
-//        } else {
-//            boolean isShipment = iFacts.getAssociatedActivities().size() == 2;
-//            if (newActIsDelivery && isShipment) {
-//                StateManager localStateManager = new StateManager(vrp);
-//                StateId stateId = localStateManager.createStateId("local-slack");
-//                UpdateMaxTimeInVehicle updateMaxTimeInVehicle = new UpdateMaxTimeInVehicle(localStateManager, stateId, transportTime, activityCosts);
-//                updateMaxTimeInVehicle.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
-//                    @Override
-//                    public Collection<Vehicle> get(VehicleRoute route) {
-//                        return Arrays.asList(iFacts.getNewVehicle());
-//                    }
-//                });
-//                updateMaxTimeInVehicle.begin(iFacts.getRoute());
-//                List<TourActivity> tourActivities = new ArrayList<>(iFacts.getRoute().getActivities());
-//                tourActivities.add(iFacts.getRelatedActivityContext().getInsertionIndex(), iFacts.getAssociatedActivities().get(0));
-//                for (TourActivity act : tourActivities) {
-//                    updateMaxTimeInVehicle.visit(act);
-//                }
-//                updateMaxTimeInVehicle.finish(tourActivities, iFacts.getJob());
-//
-//                double latest;
-//                if (iFacts.getRoute().isEmpty()) latest = Double.MAX_VALUE;
-//                else if (nextAct instanceof End) {
-//                    latest = localStateManager.getRouteState(iFacts.getRoute(), iFacts.getNewVehicle(), stateId, Double.class);
-//                } else
-//                    latest = localStateManager.getActivityState(nextAct, iFacts.getNewVehicle(), stateId, Double.class);
-//
-//                if (nextActStart > latest) {
-//                    return ConstraintsStatus.NOT_FULFILLED;
-//                }
-//
-//            }
-//        }
         return ConstraintsStatus.FULFILLED;
     }
 
@@ -196,8 +150,4 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
         return Math.max(arrTime, act.getTheoreticalEarliestOperationStartTime());
     }
 
-//    private double getMaxTime(String jobId) {
-//        if(maxTimes.containsKey(jobId)) return maxTimes.get(jobId);
-//        else return Double.MAX_VALUE;
-//    }
 }

@@ -129,7 +129,7 @@ public class MaxTimeInVehicleConstraintTest {
         c.getAssociatedActivities().add(acts.get(1));
 
         Assert.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, constraint.fulfilled(c, route.getStart(), acts.get(0), route.getActivities().get(0), 0));
-        Assert.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, constraint.fulfilled(c, act(route, 0), acts.get(0), act(route, 1), 20));
+        Assert.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, constraint.fulfilled(c, act(route, 0), acts.get(0), act(route, 1), 20));
         Assert.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, constraint.fulfilled(c, act(route,1), acts.get(0), route.getEnd(), 40));
 
         //insert pickup at 0
@@ -315,7 +315,7 @@ public class MaxTimeInVehicleConstraintTest {
         c.getAssociatedActivities().add(acts.get(0));
         c.getAssociatedActivities().add(acts.get(1));
 
-        Assert.assertEquals("pickup shipment cannot happen at first pos. since d2 has max in-vehicle time", HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, constraint.fulfilled(c, r.getStart(), acts.get(0), r.getActivities().get(0), 0));
+        Assert.assertEquals("pickup shipment cannot happen at first pos. since d2 has max in-vehicle time", HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, constraint.fulfilled(c, r.getStart(), acts.get(0), r.getActivities().get(0), 0));
         Assert.assertEquals("pickup shipment can happen at second pos.", HardActivityConstraint.ConstraintsStatus.FULFILLED, constraint.fulfilled(c, r.getActivities().get(0), acts.get(0), r.getActivities().get(1), 10));
         Assert.assertEquals("d2 has been delivered so pickup shipment is possible", HardActivityConstraint.ConstraintsStatus.FULFILLED, constraint.fulfilled(c, r.getActivities().get(1), acts.get(0), r.getEnd(), 30));
     }
