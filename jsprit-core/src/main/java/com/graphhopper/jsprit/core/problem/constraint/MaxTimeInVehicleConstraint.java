@@ -109,7 +109,7 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
         double directNextActStart = Math.max(directArrTimeNextAct, nextAct.getTheoreticalEarliestOperationStartTime());
         double additionalTimeOfNewAct = (nextActStart - prevActDepTime) - (directNextActStart - prevActDepTime);
         if (additionalTimeOfNewAct > minSlack) {
-            if (newActIsPickup) return ConstraintsStatus.NOT_FULFILLED_BREAK;
+            if (newActIsPickup) return ConstraintsStatus.NOT_FULFILLED;
             else return ConstraintsStatus.NOT_FULFILLED;
         }
         if (newActIsDelivery) {
