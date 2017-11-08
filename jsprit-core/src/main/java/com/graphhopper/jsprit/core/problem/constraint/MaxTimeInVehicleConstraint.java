@@ -73,7 +73,7 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
         //************ 1. check whether insertion of new shipment satisfies own max-in-vehicle-constraint
         double newActArrival = prevActDepTime + transportTime.getTransportTime(prevAct.getLocation(),newAct.getLocation(),prevActDepTime,iFacts.getNewDriver(),iFacts.getNewVehicle());
         double newActStart = Math.max(newActArrival, newAct.getTheoreticalEarliestOperationStartTime());
-        double newActDeparture = newActStart + activityCosts.getActivityDuration(newAct, newActArrival, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double newActDeparture = newActStart + activityCosts.getActivityDuration(prevAct, newAct, newActArrival, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double nextActArrival = newActDeparture + transportTime.getTransportTime(newAct.getLocation(),nextAct.getLocation(),newActDeparture,iFacts.getNewDriver(),iFacts.getNewVehicle());
         double nextActStart = Math.max(nextActArrival,nextAct.getTheoreticalEarliestOperationStartTime());
         if(newAct instanceof DeliveryActivity){
@@ -93,7 +93,7 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
             if(iFacts.getAssociatedActivities().size() == 1){
                 double maxTimeInVehicle = ((TourActivity.JobActivity)newAct).getJob().getMaxTimeInVehicle();
                 //ToDo - estimate in vehicle time of pickups here - This seems to trickier than I thought
-                double nextActDeparture = nextActStart + activityCosts.getActivityDuration(nextAct, nextActArrival, iFacts.getNewDriver(), iFacts.getNewVehicle());
+                double nextActDeparture = nextActStart + activityCosts.getActivityDuration(prevAct, nextAct, nextActArrival, iFacts.getNewDriver(), iFacts.getNewVehicle());
 //                if(!nextAct instanceof End)
                 double timeToEnd = 0; //newAct.end + tt(newAct,nextAct) + t@nextAct + t_to_end
                 if(timeToEnd > maxTimeInVehicle) return ConstraintsStatus.NOT_FULFILLED;
