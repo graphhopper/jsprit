@@ -35,12 +35,12 @@ public class ExampleActivityCostFunction implements VehicleRoutingActivityCosts 
 
 
     @Override
-    public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+    public double getActivityCost(TourActivity prevAct, TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
         if (arrivalTime == Time.TOURSTART || arrivalTime == Time.UNDEFINED) {
             return 0.0;
         } else {
             //waiting + act-time
-            double endTime = Math.max(arrivalTime, tourAct.getTheoreticalEarliestOperationStartTime()) + getActivityDuration(tourAct,arrivalTime,driver,vehicle);
+            double endTime = Math.max(arrivalTime, tourAct.getTheoreticalEarliestOperationStartTime()) + getActivityDuration(prevAct, tourAct,arrivalTime,driver,vehicle);
             double timeAtAct = endTime - arrivalTime;
 
             double totalCost = timeAtAct * parameter_timeAtAct;
@@ -58,7 +58,7 @@ public class ExampleActivityCostFunction implements VehicleRoutingActivityCosts 
     }
 
     @Override
-    public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+    public double getActivityDuration(TourActivity prevAct, TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
         return tourAct.getOperationTime();
     }
 

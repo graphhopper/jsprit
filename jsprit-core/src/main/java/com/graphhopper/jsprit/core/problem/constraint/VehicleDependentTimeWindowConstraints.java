@@ -109,12 +109,12 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
         }
         //			log.info("check insertion of " + newAct + " between " + prevAct + " and " + nextAct + ". prevActDepTime=" + prevActDepTime);
         double arrTimeAtNewAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double endTimeAtNewAct = Math.max(arrTimeAtNewAct, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct, arrTimeAtNewAct,iFacts.getNewDriver(),iFacts.getNewVehicle());
+        double endTimeAtNewAct = Math.max(arrTimeAtNewAct, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(prevAct, newAct, arrTimeAtNewAct,iFacts.getNewDriver(),iFacts.getNewVehicle());
         double latestArrTimeAtNewAct =
             Math.min(newAct.getTheoreticalLatestOperationStartTime(),
                 latestArrTimeAtNextAct -
                     routingCosts.getBackwardTransportTime(newAct.getLocation(), nextActLocation, latestArrTimeAtNextAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
-                    - activityCosts.getActivityDuration(newAct, arrTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
+                    - activityCosts.getActivityDuration(prevAct, newAct, arrTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
             );
 
 			/*
