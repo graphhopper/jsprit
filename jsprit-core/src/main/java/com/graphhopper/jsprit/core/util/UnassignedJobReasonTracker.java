@@ -32,12 +32,13 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
     public static String getMostLikelyFailedConstraintName(Frequency failedConstraintNamesFrequency) {
         if (failedConstraintNamesFrequency == null) return "no reason found";
         Iterator<Map.Entry<Comparable<?>, Long>> entryIterator = failedConstraintNamesFrequency.entrySetIterator();
-        int maxCount = 0;
+        long maxCount = 0;
         String mostLikely = null;
         while (entryIterator.hasNext()) {
             Map.Entry<Comparable<?>, Long> entry = entryIterator.next();
             if (entry.getValue() > maxCount) {
                 Comparable<?> key = entry.getKey();
+                maxCount = entry.getValue();
                 mostLikely = key.toString();
             }
         }
