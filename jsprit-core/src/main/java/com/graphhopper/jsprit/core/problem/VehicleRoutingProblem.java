@@ -116,8 +116,6 @@ public class VehicleRoutingProblem {
 
         };
 
-        private int jobIndexCounter = 1;
-
         private int vehicleIndexCounter = 1;
 
         private int activityIndexCounter = 1;
@@ -131,10 +129,6 @@ public class VehicleRoutingProblem {
         private final DefaultShipmentActivityFactory shipmentActivityFactory = new DefaultShipmentActivityFactory();
 
         private final DefaultTourActivityFactory serviceActivityFactory = new DefaultTourActivityFactory();
-
-        private void incJobIndexCounter() {
-            jobIndexCounter++;
-        }
 
         private void incActivityIndexCounter() {
             activityIndexCounter++;
@@ -235,8 +229,6 @@ public class VehicleRoutingProblem {
                 throw new IllegalArgumentException("vehicle routing problem already contains a service or shipment with id " + job.getId() + ". make sure you use unique ids for all services and shipments");
             if (!(job instanceof Service || job instanceof Shipment))
                 throw new IllegalArgumentException("job must be either a service or a shipment");
-            job.setIndex(jobIndexCounter);
-            incJobIndexCounter();
             tentativeJobs.put(job.getId(), job);
             addLocationToTentativeLocations(job);
             return this;
@@ -441,6 +433,15 @@ public class VehicleRoutingProblem {
                     addJobToFinalJobMapAndCreateActivities(job);
                 }
             }
+            
+            int jobIndexCounter = 1;
+            for (Job job : jobs.values()) {
+                ((AbstractJob)job).setIndex(jobIndexCounter++);
+            }
+            for (String jobId : jobsInInitialRoutes) {
+                ((AbstractJob)tentativeJobs.get(jobId)).setIndex(jobIndexCounter++);
+            }
+            
             boolean hasBreaks = addBreaksToActivityMap();
             if (hasBreaks && fleetSize.equals(FleetSize.INFINITE))
                 throw new UnsupportedOperationException("breaks are not yet supported when dealing with infinite fleet. either set it to finite or omit breaks.");
