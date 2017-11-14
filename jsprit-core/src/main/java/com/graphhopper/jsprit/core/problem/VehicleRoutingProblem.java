@@ -81,7 +81,7 @@ public class VehicleRoutingProblem {
 
         private Map<String, Job> tentativeJobs = new LinkedHashMap<String, Job>();
 
-        private Set<String> jobsInInitialRoutes = new HashSet<String>();
+        private Set<Job> jobsInInitialRoutes = new HashSet<>();
 
         private Map<String, Coordinate> tentative_coordinates = new HashMap<String, Coordinate>();
 
@@ -308,7 +308,7 @@ public class VehicleRoutingProblem {
                 incActivityIndexCounter();
                 if (act instanceof TourActivity.JobActivity) {
                     Job job = ((TourActivity.JobActivity) act).getJob();
-                    jobsInInitialRoutes.add(job.getId());
+                    jobsInInitialRoutes.add(job);
                     addLocationToTentativeLocations(job);
                     registerJobAndActivity(abstractAct, job);
                 }
@@ -429,7 +429,7 @@ public class VehicleRoutingProblem {
                 transportCosts = new CrowFlyCosts(getLocations());
             }
             for (Job job : tentativeJobs.values()) {
-                if (!jobsInInitialRoutes.contains(job.getId())) {
+                if (!jobsInInitialRoutes.contains(job)) {
                     addJobToFinalJobMapAndCreateActivities(job);
                 }
             }
@@ -438,8 +438,8 @@ public class VehicleRoutingProblem {
             for (Job job : jobs.values()) {
                 ((AbstractJob)job).setIndex(jobIndexCounter++);
             }
-            for (String jobId : jobsInInitialRoutes) {
-                ((AbstractJob)tentativeJobs.get(jobId)).setIndex(jobIndexCounter++);
+            for (Job job : jobsInInitialRoutes) {
+                ((AbstractJob)job).setIndex(jobIndexCounter++);
             }
             
             boolean hasBreaks = addBreaksToActivityMap();
