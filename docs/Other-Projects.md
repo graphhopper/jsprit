@@ -15,6 +15,9 @@ VROOM is an optimization engine written in C++14 that aim at providing good solu
 #### [Hipster4j](http://www.hipster4j.org/)
 Hipster is an easy to use yet powerful and flexible type-safe library for heuristic search, written in pure Java. It relies on a flexible model with generic operators to define search problems. So you can also model and solve vehicle routing problems.
 
+#### [OscaR](https://bitbucket.org/oscarlib/oscar/wiki/Home)
+OscaR, an Open Source Toolbox for Optimising Logistics and Supply Chain Systems.
+
 ### Territory Design
 
 #### [OpenDoorLogistics](http://www.opendoorlogistics.com)
