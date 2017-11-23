@@ -427,11 +427,11 @@ public class VehicleRoutingAlgorithms {
         return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, null, null);
     }
 
-    public static VehicleRoutingAlgorithm readAndCreateAlgorithm(VehicleRoutingProblem vrp, int nThreads, String configFileName, SolutionCostCalculator solutionCostCalculator) {
+    public static VehicleRoutingAlgorithm readAndCreateAlgorithm(VehicleRoutingProblem vrp, int nThreads, String configFileName, StateManager stateMan, SolutionCostCalculator solutionCostCalculator) {
         AlgorithmConfig algorithmConfig = new AlgorithmConfig();
         AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
         xmlReader.read(configFileName);
-        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, null, solutionCostCalculator);
+        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, stateMan, solutionCostCalculator);
     }
 
     private static class OpenRouteStateVerifier implements StateUpdater, ReverseActivityVisitor {
