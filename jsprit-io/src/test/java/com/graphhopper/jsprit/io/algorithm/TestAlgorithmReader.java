@@ -28,8 +28,10 @@ import com.graphhopper.jsprit.core.algorithm.ruin.RuinStrategy;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.selector.SolutionSelector;
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithms.ModKey;
@@ -42,12 +44,16 @@ import junit.framework.Assert;
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 
 public class TestAlgorithmReader {
@@ -282,5 +288,22 @@ public class TestAlgorithmReader {
         new AlgorithmConfigXmlReader(algoConfig).read(getClass().getResource("algorithmConfig_withoutIterations.xml"));
 
     }
+
+    @Test
+    public void testWithVehicleRoutingAlgorithm() {
+        SolutionCostCalculator solutionCostCalculator = Mockito.mock(SolutionCostCalculator.class);
+        StateManager stateMan = Mockito.mock(StateManager.class);
+        doNothing().when(stateMan).updateLoadStates();
+        doNothing().when(stateMan).updateTimeWindowStates();
+        doNothing().when(stateMan).updateSkillStates();
+
+        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, 10, getClass().getResource("algorithmConfig_withoutIterations.xml").getFile(), stateMan, solutionCostCalculator);
+        vra.getObjectiveFunction().equals(solutionCostCalculator);
+
+        verify(stateMan, times(2)).updateLoadStates();
+        verify(stateMan, times(2)).updateTimeWindowStates();
+        verify(stateMan, times(2)).updateSkillStates();
+    }
+
 
 }
