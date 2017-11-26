@@ -413,11 +413,11 @@ public class VehicleRoutingAlgorithms {
         return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), 0, stateManager, null);
     }
 
-    public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, int nThreads, final String configFileName, StateManager stateManager) {
+    public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, int nThreads, final String configFileName, StateManager stateManager,  SolutionCostCalculator solutionCostCalculator) {
         AlgorithmConfig algorithmConfig = new AlgorithmConfig();
         AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
         xmlReader.read(configFileName);
-        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, stateManager, null);
+        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, stateManager, solutionCostCalculator);
     }
 
     public static VehicleRoutingAlgorithm readAndCreateAlgorithm(VehicleRoutingProblem vrp, int nThreads, String configFileName) {
@@ -425,13 +425,6 @@ public class VehicleRoutingAlgorithms {
         AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
         xmlReader.read(configFileName);
         return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, null, null);
-    }
-
-    public static VehicleRoutingAlgorithm readAndCreateAlgorithm(VehicleRoutingProblem vrp, int nThreads, String configFileName, StateManager stateMan, SolutionCostCalculator solutionCostCalculator) {
-        AlgorithmConfig algorithmConfig = new AlgorithmConfig();
-        AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
-        xmlReader.read(configFileName);
-        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, stateMan, solutionCostCalculator);
     }
 
     private static class OpenRouteStateVerifier implements StateUpdater, ReverseActivityVisitor {
