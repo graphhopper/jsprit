@@ -214,17 +214,38 @@ public class VehicleRoutingAlgorithm {
      * @see {@link SearchStrategyManager}, {@link com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListener}, {@link com.graphhopper.jsprit.core.algorithm.listener.AlgorithmStartsListener}, {@link com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener}, {@link com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener}, {@link com.graphhopper.jsprit.core.algorithm.listener.IterationEndsListener}
      */
     public Collection<VehicleRoutingProblemSolution> searchSolutions() {
+        return searchSolutions(new ArrayList<>(initialSolutions));
+    }
+
+    public Collection<VehicleRoutingProblemSolution> searchSolutionsWithSolutions(Collection<VehicleRoutingProblemSolution> solutions) {
+        for (VehicleRoutingProblemSolution solution : solutions) {
+            memorizeIfBestEver(solution);
+        }
+
+        return searchSolutions(solutions);
+    }
+
+    private Collection<VehicleRoutingProblemSolution> searchSolutions(Collection<VehicleRoutingProblemSolution> solutions) {
         logger.info("algorithm starts: [maxIterations={}]", maxIterations);
         double now = System.currentTimeMillis();
-        int noIterationsThisAlgoIsRunning = maxIterations;
         counter.reset();
-        Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>(initialSolutions);
         algorithmStarts(problem, solutions);
         bestEver = Solutions.bestOf(solutions);
         if (logger.isTraceEnabled()) {
             log(solutions);
         }
         logger.info("iterations start");
+
+        int noIterationsThisAlgoIsRunning = runAlg(solutions);
+
+        logger.info("iterations end at {} iterations", noIterationsThisAlgoIsRunning);
+        addBestEver(solutions);
+        algorithmEnds(problem, solutions);
+        logger.info("took {} seconds", ((System.currentTimeMillis() - now) / 1000.0));
+        return solutions;
+    }
+
+    private int runAlg(Collection<VehicleRoutingProblemSolution> solutions) {
         for (int i = 0; i < maxIterations; i++) {
             iterationStarts(i + 1, problem, solutions);
             logger.debug("start iteration: {}", i);
@@ -238,16 +259,11 @@ public class VehicleRoutingAlgorithm {
             selectedStrategy(discoveredSolution, problem, solutions);
             if (terminationManager.isPrematureBreak(discoveredSolution)) {
                 logger.info("premature algorithm termination at iteration {}", (i + 1));
-                noIterationsThisAlgoIsRunning = (i + 1);
-                break;
+                return i + 1;
             }
             iterationEnds(i + 1, problem, solutions);
         }
-        logger.info("iterations end at {} iterations", noIterationsThisAlgoIsRunning);
-        addBestEver(solutions);
-        algorithmEnds(problem, solutions);
-        logger.info("took {} seconds", ((System.currentTimeMillis() - now) / 1000.0));
-        return solutions;
+        return maxIterations;
     }
 
     private void addBestEver(Collection<VehicleRoutingProblemSolution> solutions) {
@@ -292,10 +308,12 @@ public class VehicleRoutingAlgorithm {
 
     private void memorizeIfBestEver(DiscoveredSolution discoveredSolution) {
         if (discoveredSolution == null) return;
-        if (bestEver == null) {
-            bestEver = discoveredSolution.getSolution();
-        } else if (discoveredSolution.getSolution().getCost() < bestEver.getCost()) {
-            bestEver = discoveredSolution.getSolution();
+        memorizeIfBestEver(discoveredSolution.getSolution());
+    }
+
+    private void memorizeIfBestEver(VehicleRoutingProblemSolution solution) {
+        if (bestEver == null || solution.getCost() < bestEver.getCost()) {
+            bestEver = solution;
         }
     }
 
