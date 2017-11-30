@@ -232,9 +232,9 @@ public class VehicleRoutingProblem {
          */
         public Builder addJob(AbstractJob job) {
             if (tentativeJobs.containsKey(job.getId()))
-                throw new IllegalArgumentException("vehicle routing problem already contains a service or shipment with id " + job.getId() + ". make sure you use unique ids for all services and shipments");
+                throw new IllegalArgumentException("The vehicle routing problem already contains a service or shipment with id " + job.getId() + ". Please make sure you use unique ids for all services and shipments.");
             if (!(job instanceof Service || job instanceof Shipment))
-                throw new IllegalArgumentException("job must be either a service or a shipment");
+                throw new IllegalArgumentException("Job must be either a service or a shipment.");
             job.setIndex(jobIndexCounter);
             incJobIndexCounter();
             tentativeJobs.put(job.getId(), job);
@@ -285,10 +285,11 @@ public class VehicleRoutingProblem {
             for (Vehicle v : uniqueVehicles) {
                 if (v.getBreak() != null) {
                     if (!uniqueBreakIds.add(v.getBreak().getId()))
-                        throw new IllegalArgumentException("problem already contains a vehicle break with id " + v.getBreak().getId() + ". choose unique ids for each vehicle break.");
+                        throw new IllegalArgumentException("The vehicle routing roblem already contains a vehicle break with id " + v.getBreak().getId() + ". Please choose unique ids for each vehicle break.");
                     hasBreaks = true;
                     List<AbstractActivity> breakActivities = jobActivityFactory.createActivities(v.getBreak());
-                    if(breakActivities.isEmpty()) throw new IllegalArgumentException("at least one activity for break needs to be created by activityFactory");
+                    if (breakActivities.isEmpty())
+                        throw new IllegalArgumentException("At least one activity for break needs to be created by activityFactory.");
                     for(AbstractActivity act : breakActivities){
                         act.setIndex(activityIndexCounter);
                         incActivityIndexCounter();
@@ -351,7 +352,7 @@ public class VehicleRoutingProblem {
 
         private void addShipment(Shipment job) {
             if (jobs.containsKey(job.getId())) {
-                logger.warn("job " + job + " already in job list. overrides existing job.");
+                logger.warn("The job " + job + " has already been added to the job list. This overrides the existing job.");
             }
             addLocationToTentativeLocations(job);
 //            tentative_coordinates.put(job.getPickupLocation().getId(), job.getPickupLocation().getCoordinate());
@@ -367,7 +368,7 @@ public class VehicleRoutingProblem {
          * */
         public Builder addVehicle(Vehicle vehicle) {
             if (!(vehicle instanceof AbstractVehicle))
-                throw new IllegalArgumentException("vehicle must be an AbstractVehicle");
+                throw new IllegalArgumentException("A vehicle must be an AbstractVehicle.");
             return addVehicle((AbstractVehicle) vehicle);
         }
 
@@ -379,7 +380,7 @@ public class VehicleRoutingProblem {
          */
         public Builder addVehicle(AbstractVehicle vehicle) {
             if(addedVehicleIds.contains(vehicle.getId())){
-                throw new IllegalArgumentException("problem already contains a vehicle with id " + vehicle.getId() + ". choose unique ids for each vehicle.");
+                throw new IllegalArgumentException("The vehicle routing problem already contains a vehicle with id " + vehicle.getId() + ". Please choose unique ids for each vehicle.");
             }
             else addedVehicleIds.add(vehicle.getId());
             if (!uniqueVehicles.contains(vehicle)) {
@@ -443,7 +444,7 @@ public class VehicleRoutingProblem {
             }
             boolean hasBreaks = addBreaksToActivityMap();
             if (hasBreaks && fleetSize.equals(FleetSize.INFINITE))
-                throw new UnsupportedOperationException("breaks are not yet supported when dealing with infinite fleet. either set it to finite or omit breaks.");
+                throw new UnsupportedOperationException("Breaks are not yet supported when dealing with infinite fleet. Either set it to finite or omit breaks.");
             return new VehicleRoutingProblem(this);
         }
 
@@ -510,7 +511,7 @@ public class VehicleRoutingProblem {
 //            tentative_coordinates.put(service.getLocation().getId(), service.getLocation().getCoordinate());
             addLocationToTentativeLocations(service);
             if (jobs.containsKey(service.getId())) {
-                logger.warn("service " + service + " already in job list. overrides existing job.");
+                logger.warn("The service " + service + " has already been added to job list. This overrides existing job.");
             }
             jobs.put(service.getId(), service);
             return this;
