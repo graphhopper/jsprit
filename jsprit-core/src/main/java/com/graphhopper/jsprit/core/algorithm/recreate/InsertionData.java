@@ -56,7 +56,7 @@ public class InsertionData {
 
     static int NO_INDEX = -1;
 
-    private final double insertionCost;
+    private double insertionCost;
 
     private final int pickupInsertionIndex;
 
@@ -138,6 +138,13 @@ public class InsertionData {
      */
     public double getInsertionCost() {
         return insertionCost;
+    }
+
+    /**
+     * @param insertionCost the insertionCost to set
+     */
+    public void setInsertionCost(double insertionCost) {
+        this.insertionCost = insertionCost;
     }
 
     /**
