@@ -135,6 +135,7 @@ public class VehicleImpl extends AbstractVehicle {
         private Builder(String id) {
             super();
             this.id = id;
+            if (id == null) throw new IllegalArgumentException("Vehicle id must not be null.");
         }
 
         /**
@@ -196,6 +197,8 @@ public class VehicleImpl extends AbstractVehicle {
          * @return start location
          */
         public Builder setStartLocation(Location startLocation) {
+            if (startLocation == null)
+                throw new IllegalArgumentException("Start location of vehicle " + id + " must not be null.");
             this.startLocation = startLocation;
             return this;
         }
@@ -232,6 +235,7 @@ public class VehicleImpl extends AbstractVehicle {
         }
 
         public Builder addSkill(String skill) {
+            if (skill == null) throw new IllegalArgumentException("Skill of vehicle " + id + " must not be null");
             skillBuilder.addSkill(skill);
             return this;
         }
