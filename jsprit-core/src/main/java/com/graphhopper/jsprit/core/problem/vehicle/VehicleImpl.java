@@ -24,6 +24,8 @@ import com.graphhopper.jsprit.core.problem.job.Break;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+
 
 /**
  * Implementation of {@link Vehicle}.
@@ -231,6 +233,12 @@ public class VehicleImpl extends AbstractVehicle {
             if (latest_arrTime < 0)
                 throw new IllegalArgumentException("The latest arrival time of vehicle " + id + " must not be negative.");
             this.latestArrival = latest_arrTime;
+            return this;
+        }
+
+        public Builder addAllSkills(Collection<String> skills) {
+            if (skills == null) throw new IllegalArgumentException("Skills of vehicle " + id + " must not be null");
+            skillBuilder.addAllSkills(skills);
             return this;
         }
 
