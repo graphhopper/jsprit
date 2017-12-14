@@ -261,10 +261,13 @@ public class Shipment extends AbstractJob {
             return this;
         }
 
+        public Builder addAllRequiredSkills(Collection<String> skills) {
+            skillBuilder.addAllSkills(skills);
+            return this;
+        }
+
         public Builder addAllRequiredSkills(Skills skills) {
-            for (String s : skills.values()) {
-                addRequiredSkill(s);
-            }
+            addAllRequiredSkills(skills.values());
             return this;
         }
 

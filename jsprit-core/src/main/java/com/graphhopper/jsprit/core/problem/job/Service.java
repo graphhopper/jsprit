@@ -222,10 +222,13 @@ public class Service extends AbstractJob {
             return this;
         }
 
+        public Builder<T> addAllRequiredSkills(Collection<String> skills) {
+            skillBuilder.addAllSkills(skills);
+            return this;
+        }
+
         public Builder<T> addAllRequiredSkills(Skills skills){
-            for(String s : skills.values()){
-                skillBuilder.addSkill(s);
-            }
+            skillBuilder.addAllSkills(skills.values());
             return this;
         }
 
