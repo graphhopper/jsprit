@@ -228,13 +228,7 @@ public class VehicleRoutingProblem {
             if (tentativeJobs.containsKey(job.getId()))
                 throw new IllegalArgumentException("The vehicle routing problem already contains a service or shipment with id " + job.getId() + ". Please make sure you use unique ids for all services and shipments.");
             if (!(job instanceof Service || job instanceof Shipment))
-<<<<<<< Upstream, based on branch 'master' of https://github.com/michalmac/jsprit.git
-                throw new IllegalArgumentException("job must be either a service or a shipment");
-=======
                 throw new IllegalArgumentException("Job must be either a service or a shipment.");
-            job.setIndex(jobIndexCounter);
-            incJobIndexCounter();
->>>>>>> b610626 refine error messages
             tentativeJobs.put(job.getId(), job);
             addLocationToTentativeLocations(job);
             return this;
