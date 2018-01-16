@@ -30,6 +30,7 @@ import com.graphhopper.jsprit.core.problem.Skills;
  */
 public interface Job extends HasId, HasIndex {
 
+
     /**
      * Returns the unique identifier (id) of a job.
      *
