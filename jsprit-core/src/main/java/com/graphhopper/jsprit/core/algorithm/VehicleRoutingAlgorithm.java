@@ -214,11 +214,14 @@ public class VehicleRoutingAlgorithm {
      * @see {@link SearchStrategyManager}, {@link com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListener}, {@link com.graphhopper.jsprit.core.algorithm.listener.AlgorithmStartsListener}, {@link com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener}, {@link com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener}, {@link com.graphhopper.jsprit.core.algorithm.listener.IterationEndsListener}
      */
     public Collection<VehicleRoutingProblemSolution> searchSolutions() {
+        return searchSolutions(new ArrayList<VehicleRoutingProblemSolution>());
+    }
+
+    public Collection<VehicleRoutingProblemSolution> searchSolutions(Collection<VehicleRoutingProblemSolution> solutions) {
         logger.info("algorithm starts: [maxIterations={}]", maxIterations);
         double now = System.currentTimeMillis();
         int noIterationsThisAlgoIsRunning = maxIterations;
         counter.reset();
-        Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>(initialSolutions);
         algorithmStarts(problem, solutions);
         bestEver = Solutions.bestOf(solutions);
         if (logger.isTraceEnabled()) {
