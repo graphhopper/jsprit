@@ -29,15 +29,19 @@ import java.util.*;
  */
 public class UnassignedJobReasonTracker implements JobUnassignedListener {
 
+    private final static String NO_REASON = "cannot determine a particular reason";
+
     public static String getMostLikelyFailedConstraintName(Frequency failedConstraintNamesFrequency) {
-        if (failedConstraintNamesFrequency == null) return "no reason found";
+        if (failedConstraintNamesFrequency == null || failedConstraintNamesFrequency.getUniqueCount() == 0)
+            return NO_REASON;
         Iterator<Map.Entry<Comparable<?>, Long>> entryIterator = failedConstraintNamesFrequency.entrySetIterator();
-        int maxCount = 0;
+        long maxCount = 0;
         String mostLikely = null;
         while (entryIterator.hasNext()) {
             Map.Entry<Comparable<?>, Long> entry = entryIterator.next();
             if (entry.getValue() > maxCount) {
                 Comparable<?> key = entry.getKey();
+                maxCount = entry.getValue();
                 mostLikely = key.toString();
             }
         }
@@ -53,6 +57,7 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
     Set<String> failedConstraintNamesToBeIgnored = new HashSet<>();
 
     public UnassignedJobReasonTracker() {
+        codesToHumanReadableReason.put(-1, NO_REASON);
         codesToHumanReadableReason.put(1, "cannot serve required skill");
         codesToHumanReadableReason.put(2, "cannot be visited within time window");
         codesToHumanReadableReason.put(3, "does not fit into any vehicle due to capacity");
@@ -164,8 +169,9 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
      * @return
      */
     public String getMostLikelyReason(String jobId) {
-        if (!this.failedConstraintNamesFrequencyMapping.containsKey(jobId)) return "no reason found";
+        if (!this.failedConstraintNamesFrequencyMapping.containsKey(jobId)) return codesToHumanReadableReason.get(-1);
         Frequency reasons = this.failedConstraintNamesFrequencyMapping.get(jobId);
+
         String mostLikelyReason = getMostLikelyFailedConstraintName(reasons);
         int code = toCode(mostLikelyReason);
         if (code == -1) return mostLikelyReason;
