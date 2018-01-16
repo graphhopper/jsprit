@@ -24,6 +24,8 @@ import com.graphhopper.jsprit.core.problem.job.Break;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+
 
 /**
  * Implementation of {@link Vehicle}.
@@ -135,6 +137,7 @@ public class VehicleImpl extends AbstractVehicle {
         private Builder(String id) {
             super();
             this.id = id;
+            if (id == null) throw new IllegalArgumentException("Vehicle id must not be null.");
         }
 
         /**
@@ -145,7 +148,7 @@ public class VehicleImpl extends AbstractVehicle {
          * @throws IllegalArgumentException if type is null
          */
         public Builder setType(VehicleType type) {
-            if (type == null) throw new IllegalArgumentException("type cannot be null.");
+            if (type == null) throw new IllegalArgumentException("Vehicle type must not be null.");
             this.type = type;
             return this;
         }
@@ -196,6 +199,8 @@ public class VehicleImpl extends AbstractVehicle {
          * @return start location
          */
         public Builder setStartLocation(Location startLocation) {
+            if (startLocation == null)
+                throw new IllegalArgumentException("Start location of vehicle " + id + " must not be null.");
             this.startLocation = startLocation;
             return this;
         }
@@ -213,7 +218,7 @@ public class VehicleImpl extends AbstractVehicle {
          */
         public Builder setEarliestStart(double earliest_startTime) {
             if (earliest_startTime < 0)
-                throw new IllegalArgumentException("earliest start of vehicle " + id + " must not be negative");
+                throw new IllegalArgumentException("The earliest start time of vehicle " + id + " must not be negative.");
             this.earliestStart = earliest_startTime;
             return this;
         }
@@ -226,12 +231,19 @@ public class VehicleImpl extends AbstractVehicle {
          */
         public Builder setLatestArrival(double latest_arrTime) {
             if (latest_arrTime < 0)
-                throw new IllegalArgumentException("latest arrival time of vehicle " + id + " must not be negative");
+                throw new IllegalArgumentException("The latest arrival time of vehicle " + id + " must not be negative.");
             this.latestArrival = latest_arrTime;
             return this;
         }
 
+        public Builder addAllSkills(Collection<String> skills) {
+            if (skills == null) throw new IllegalArgumentException("Skills of vehicle " + id + " must not be null");
+            skillBuilder.addAllSkills(skills);
+            return this;
+        }
+
         public Builder addSkill(String skill) {
+            if (skill == null) throw new IllegalArgumentException("Skill of vehicle " + id + " must not be null");
             skillBuilder.addSkill(skill);
             return this;
         }
@@ -254,17 +266,17 @@ public class VehicleImpl extends AbstractVehicle {
          */
         public VehicleImpl build() {
             if (latestArrival < earliestStart)
-                throw new IllegalArgumentException("latest arrival of vehicle " + id + " must not be smaller than its start time");
+                throw new IllegalArgumentException("The latest arrival time of vehicle " + id + " must not be smaller than its start time.");
             if (startLocation != null && endLocation != null) {
                 if (!startLocation.getId().equals(endLocation.getId()) && !returnToDepot)
-                    throw new IllegalArgumentException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
-                        "if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
+                    throw new IllegalArgumentException("You specified both the end location and that the vehicle " + id + " does not need to return to its end location. This must not be. " +
+                        "Either specify end location and return to depot or leave end location unspecified.");
             }
             if (startLocation != null && endLocation == null) {
                 endLocation = startLocation;
             }
             if (startLocation == null && endLocation == null)
-                throw new IllegalArgumentException("vehicle requires startLocation. but neither locationId nor locationCoord nor startLocationId nor startLocationCoord has been set");
+                throw new IllegalArgumentException("Every vehicle requires a start location, but vehicle " + id + " does not have one.");
             skills = skillBuilder.build();
             return new VehicleImpl(this);
         }

@@ -151,7 +151,8 @@ public class VehicleTypeImpl implements VehicleType {
          *             if velocity is smaller than zero
          */
         public VehicleTypeImpl.Builder setMaxVelocity(double inMeterPerSeconds) {
-            if (inMeterPerSeconds < 0.0) throw new IllegalArgumentException("velocity cannot be smaller than zero");
+            if (inMeterPerSeconds < 0.0)
+                throw new IllegalArgumentException("The velocity of a vehicle (type) cannot be smaller than zero.");
             this.maxVelo = inMeterPerSeconds;
             return this;
         }
@@ -166,7 +167,7 @@ public class VehicleTypeImpl implements VehicleType {
          * @throws IllegalArgumentException if fixedCost is smaller than zero
          */
         public VehicleTypeImpl.Builder setFixedCost(double fixedCost) {
-            if (fixedCost < 0.0) throw new IllegalArgumentException("fixed costs cannot be smaller than zero");
+            if (fixedCost < 0.0) throw new IllegalArgumentException("Fixed costs must not be smaller than zero.");
             this.fixedCost = fixedCost;
             return this;
         }
@@ -181,7 +182,8 @@ public class VehicleTypeImpl implements VehicleType {
          * @throws IllegalArgumentException if perDistance is smaller than zero
          */
         public VehicleTypeImpl.Builder setCostPerDistance(double perDistance) {
-            if (perDistance < 0.0) throw new IllegalArgumentException("cost per distance must not be smaller than zero");
+            if (perDistance < 0.0)
+                throw new IllegalArgumentException("Cost per distance must not be smaller than zero.");
             this.perDistance = perDistance;
             return this;
         }
@@ -260,9 +262,9 @@ public class VehicleTypeImpl implements VehicleType {
          * @throws IllegalArgumentException    if capacity dimension is already set
          */
         public Builder addCapacityDimension(int dimIndex, int dimVal) {
-            if (dimVal < 0) throw new IllegalArgumentException("capacity value cannot be negative");
+            if (dimVal < 0) throw new IllegalArgumentException("The capacity value must not be negative.");
             if (capacityDimensions != null)
-                throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
+                throw new IllegalArgumentException("Either build your dimension with build your dimensions with " +
                     "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
                     "You used both methods.");
             dimensionAdded = true;
@@ -283,7 +285,7 @@ public class VehicleTypeImpl implements VehicleType {
          */
         public Builder setCapacityDimensions(Capacity capacity) {
             if (dimensionAdded)
-                throw new IllegalArgumentException("either build your dimension with build your dimensions with " +
+                throw new IllegalArgumentException("Either build your dimension with build your dimensions with " +
                     "addCapacityDimension(int dimIndex, int dimVal) or set the already built dimensions with .setCapacityDimensions(Capacity capacity)." +
                     "You used both methods.");
             this.capacityDimensions = capacity;
