@@ -133,7 +133,7 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
                     if (openJobsAtNextOfPickup.containsKey(openJob)) {
                         TourActivity pickupAct = iFacts.getAssociatedActivities().get(0);
                         double pickupActArrTime = iFacts.getRelatedActivityContext().getArrivalTime();
-                        double pickupActEndTime = startOf(pickupAct, pickupActArrTime) + activityCosts.getActivityDuration(pickupAct, pickupActArrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+                        double pickupActEndTime = startOf(pickupAct, pickupActArrTime) + activityCosts.getActivityDuration(prevAct, pickupAct, pickupActArrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
                         double nextAfterPickupArr = pickupActEndTime + transportTime.getTransportTime(pickupAct.getLocation(), nextAfterPickup.getLocation(), pickupActArrTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
                         additionalTimeOfNewJob += startOf(nextAfterPickup, nextAfterPickupArr) - startOf(nextAfterPickup, nextAfterPickup.getArrTime());
                     }
