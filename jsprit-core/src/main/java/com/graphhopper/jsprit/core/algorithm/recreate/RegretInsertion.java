@@ -137,7 +137,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
     private ScoredJob nextJob(Collection<VehicleRoute> routes, Collection<Job> unassignedJobList, List<ScoredJob> badJobs) {
         ScoredJob bestScoredJob = null;
         for (Job unassignedJob : unassignedJobList) {
-            ScoredJob scoredJob = getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction);
+            ScoredJob scoredJob = getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction, minVehicleCost);
             if (scoredJob instanceof ScoredJob.BadJob) {
                 badJobs.add(scoredJob);
                 continue;
@@ -156,7 +156,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         return bestScoredJob;
     }
 
-    static ScoredJob getScoredJob(Collection<VehicleRoute> routes, Job unassignedJob, JobInsertionCostsCalculator insertionCostsCalculator, ScoringFunction scoringFunction) {
+    static ScoredJob getScoredJob(Collection<VehicleRoute> routes, Job unassignedJob, JobInsertionCostsCalculator insertionCostsCalculator, ScoringFunction scoringFunction, double newVehicleCost) {
         InsertionData best = null;
         InsertionData secondBest = null;
         VehicleRoute bestRoute = null;
@@ -186,6 +186,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         VehicleRoute emptyRoute = VehicleRoute.emptyRoute();
         InsertionData iData = insertionCostsCalculator.getInsertionData(emptyRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
         if (!(iData instanceof InsertionData.NoInsertionFound)) {
+            iData.setInsertionCost(iData.getInsertionCost() + newVehicleCost);
             if (best == null) {
                 best = iData;
                 bestRoute = emptyRoute;
