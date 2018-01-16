@@ -30,15 +30,12 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by schroeder on 15/09/16.
@@ -61,7 +58,9 @@ public class UpdateMaxTimeInVehicleTest {
 
     private StateManager stateManager;
 
-    private StateId latestStartId;
+    private StateId minSlackId;
+
+    private StateId openJobsId;
 
     @Before
     public void doBefore() {
@@ -107,12 +106,13 @@ public class UpdateMaxTimeInVehicleTest {
         stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(),vrp.getActivityCosts()));
         stateManager.informInsertionStarts(Arrays.asList(route), null);
 
-        latestStartId = stateManager.createStateId("slack-time-id");
+        minSlackId = stateManager.createStateId("min-slack-id");
+        openJobsId = stateManager.createStateId("open-jobs-id");
 
 //        Map<String,Double> maxTimes = new HashMap<>();
 //        maxTimes.put("s",40d);
 //        maxTimes.put("shipment",20d);
-        maxTimeInVehicleConstraint = new UpdateMaxTimeInVehicle(stateManager, latestStartId,vrp.getTransportCosts(), vrp.getActivityCosts());
+        maxTimeInVehicleConstraint = new UpdateMaxTimeInVehicle(stateManager, minSlackId, vrp.getTransportCosts(), vrp.getActivityCosts(), openJobsId);
         maxTimeInVehicleConstraint.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
             @Override
             public Collection<Vehicle> get(VehicleRoute route) {
@@ -128,23 +128,23 @@ public class UpdateMaxTimeInVehicleTest {
 //        for(TourActivity act : route.getActivities()){
 //            String jobId = ((TourActivity.JobActivity)act).getJob().getId();
 //            if(jobId.equals("s4")){
-//                Double slackTime = stateManager.getActivityState(act,route.getVehicle(), latestStartId,Double.class);
+//                Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
 //                Assert.assertEquals(40, slackTime, 0.001);
 //            }
 //            if(jobId.equals("s3")){
-//                Double slackTime = stateManager.getActivityState(act,route.getVehicle(), latestStartId,Double.class);
+//                Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
 //                Assert.assertEquals(30, slackTime, 0.001);
 //            }
 //            if(jobId.equals("s2")){
-//                Double slackTime = stateManager.getActivityState(act,route.getVehicle(), latestStartId,Double.class);
+//                Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
 //                Assert.assertEquals(20, slackTime, 0.001);
 //            }
 //            if(jobId.equals("s")){
-//                Double slackTime = stateManager.getActivityState(act,route.getVehicle(), latestStartId,Double.class);
+//                Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
 //                Assert.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
 //            }
 //        }
-//        Double slackTime = stateManager.getRouteState(route,route.getVehicle(), latestStartId,Double.class);
+//        Double slackTime = stateManager.getRouteState(route,route.getVehicle(), minSlackId,Double.class);
 //        Assert.assertNotNull(slackTime);
 //        Assert.assertEquals(50,slackTime,0.001);
 //    }
@@ -155,23 +155,23 @@ public class UpdateMaxTimeInVehicleTest {
 //        for(TourActivity act : route.getActivities()){
 //            String jobId = ((TourActivity.JobActivity)act).getJob().getId();
 //            if(jobId.equals("s4")){
-//                Double slackTime = stateManager.getActivityState(act,vehicle2, latestStartId,Double.class);
+//                Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
 //                Assert.assertEquals(40, slackTime, 0.001);
 //            }
 //            if(jobId.equals("s3")){
-//                Double slackTime = stateManager.getActivityState(act,vehicle2, latestStartId,Double.class);
+//                Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
 //                Assert.assertEquals(30, slackTime, 0.001);
 //            }
 //            if(jobId.equals("s2")){
-//                Double slackTime = stateManager.getActivityState(act,vehicle2, latestStartId,Double.class);
+//                Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
 //                Assert.assertEquals(20, slackTime, 0.001);
 //            }
 //            if(jobId.equals("s")){
-//                Double slackTime = stateManager.getActivityState(act,vehicle2, latestStartId,Double.class);
+//                Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
 //                Assert.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
 //            }
 //        }
-//        Double slackTime = stateManager.getRouteState(route,vehicle2, latestStartId,Double.class);
+//        Double slackTime = stateManager.getRouteState(route,vehicle2, minSlackId,Double.class);
 //        Assert.assertNotNull(slackTime);
 //        Assert.assertEquals(40,slackTime,0.001);
 //    }
@@ -182,17 +182,17 @@ public class UpdateMaxTimeInVehicleTest {
         for(TourActivity act : route2.getActivities()){
             String jobId = ((TourActivity.JobActivity)act).getJob().getId();
             if(jobId.equals("d1")){
-                Double slackTime = stateManager.getActivityState(act,v, latestStartId,Double.class);
+                Double slackTime = stateManager.getActivityState(act, v, minSlackId, Double.class);
                 Assert.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
             }
             if(jobId.equals("shipment")){
                 if(act instanceof PickupActivity){
-                    Double slackTime = stateManager.getActivityState(act,v, latestStartId,Double.class);
+                    Double slackTime = stateManager.getActivityState(act, v, minSlackId, Double.class);
                     Assert.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
                 }
                 else{
-                    Double slackTime = stateManager.getActivityState(act,v, latestStartId,Double.class);
-                    Assert.assertEquals(40, slackTime, 0.001);
+                    Double slackTime = stateManager.getActivityState(act, v, minSlackId, Double.class);
+                    Assert.assertEquals(0, slackTime, 0.001);
                 }
 
             }

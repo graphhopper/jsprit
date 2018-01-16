@@ -54,10 +54,11 @@ public class MaxTimeInVehicle_IT {
 
         StateManager stateManager = new StateManager(vrp);
         StateId id = stateManager.createStateId("max-time");
-        stateManager.addStateUpdater(new UpdateMaxTimeInVehicle(stateManager,id,vrp.getTransportCosts(),vrp.getActivityCosts()));
+        StateId openJobsId = stateManager.createStateId("open-jobs-id");
+        stateManager.addStateUpdater(new UpdateMaxTimeInVehicle(stateManager, id, vrp.getTransportCosts(), vrp.getActivityCosts(), openJobsId));
 
         ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
-        constraintManager.addConstraint(new MaxTimeInVehicleConstraint(vrp.getTransportCosts(),vrp.getActivityCosts(),id,stateManager, vrp), ConstraintManager.Priority.CRITICAL);
+        constraintManager.addConstraint(new MaxTimeInVehicleConstraint(vrp.getTransportCosts(), vrp.getActivityCosts(), id, stateManager, vrp, openJobsId), ConstraintManager.Priority.CRITICAL);
 
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager,constraintManager).buildAlgorithm();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());

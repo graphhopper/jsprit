@@ -92,7 +92,7 @@ public class Service extends AbstractJob {
         protected Object userData;
 
 		protected double maxTimeInVehicle = Double.MAX_VALUE;
-		
+
 		Builder(String id){
 			this.id = id;
 			timeWindows = new TimeWindowsImpl();
@@ -135,7 +135,7 @@ public class Service extends AbstractJob {
          */
         public Builder<T> setServiceTime(double serviceTime) {
             if (serviceTime < 0)
-                throw new IllegalArgumentException("serviceTime must be greater than or equal to zero");
+                throw new IllegalArgumentException("The service time of a service must be greater than or equal to zero.");
             this.serviceTime = serviceTime;
             return this;
         }
@@ -167,20 +167,20 @@ public class Service extends AbstractJob {
          * @throws IllegalArgumentException if dimensionValue < 0
          */
         public Builder<T> addSizeDimension(int dimensionIndex, int dimensionValue) {
-            if (dimensionValue < 0) throw new IllegalArgumentException("capacity value cannot be negative");
+            if (dimensionValue < 0) throw new IllegalArgumentException("The capacity value must not be negative.");
             capacityBuilder.addDimension(dimensionIndex, dimensionValue);
             return this;
         }
 
         public Builder<T> setTimeWindow(TimeWindow tw){
-            if(tw == null) throw new IllegalArgumentException("time-window arg must not be null");
+            if (tw == null) throw new IllegalArgumentException("The time window must not be null.");
             this.timeWindows = new TimeWindowsImpl();
             timeWindows.add(tw);
             return this;
         }
 
         public Builder<T> addTimeWindow(TimeWindow timeWindow) {
-            if(timeWindow == null) throw new IllegalArgumentException("time-window arg must not be null");
+            if (timeWindow == null) throw new IllegalArgumentException("The time window must not be null.");
             if(!twAdded){
                 timeWindows = new TimeWindowsImpl();
                 twAdded = true;
@@ -205,7 +205,7 @@ public class Service extends AbstractJob {
          * @throws IllegalArgumentException if neither locationId nor coordinate is set.
          */
         public T build() {
-            if (location == null) throw new IllegalArgumentException("location is missing");
+            if (location == null) throw new IllegalArgumentException("The location of service " + id + " is missing.");
             this.setType("service");
             capacity = capacityBuilder.build();
             skills = skillBuilder.build();
@@ -222,10 +222,13 @@ public class Service extends AbstractJob {
             return this;
         }
 
+        public Builder<T> addAllRequiredSkills(Collection<String> skills) {
+            skillBuilder.addAllSkills(skills);
+            return this;
+        }
+
         public Builder<T> addAllRequiredSkills(Skills skills){
-            for(String s : skills.values()){
-                skillBuilder.addSkill(s);
-            }
+            skillBuilder.addAllSkills(skills.values());
             return this;
         }
 
@@ -246,13 +249,13 @@ public class Service extends AbstractJob {
          */
         public Builder<T> setPriority(int priority) {
             if (priority < 1 || priority > 10)
-                throw new IllegalArgumentException("incorrect priority. only priority values from 1 to 10 are allowed where 1 = high and 10 is low");
+                throw new IllegalArgumentException("The priority value is not valid. Only 1 (very high) to 10 (very low) are allowed.");
             this.priority = priority;
             return this;
         }
 
         public Builder<T> setMaxTimeInVehicle(double maxTimeInVehicle){
-            throw new UnsupportedOperationException("maxTimeInVehicle is not yet supported for Pickups and Services (only for Deliveries and Shipments)");
+            throw new UnsupportedOperationException("The maximum time in vehicle is not yet supported for Pickups and Services (only for Deliveries and Shipments).");
 //            if(maxTimeInVehicle < 0) throw new IllegalArgumentException("maxTimeInVehicle should be positive");
 //            this.maxTimeInVehicle = maxTimeInVehicle;
 //            return this;
