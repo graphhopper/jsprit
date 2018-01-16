@@ -135,6 +135,19 @@ public class UnassignedJobReasonTrackerTest {
     }
 
     @Test
+    public void getMostLikelyTest() {
+        Frequency frequency = new Frequency();
+        frequency.addValue("a");
+        frequency.addValue("b");
+        frequency.addValue("a");
+        frequency.addValue("a");
+        frequency.addValue("a");
+        frequency.addValue("a");
+        frequency.addValue("a");
+        Assert.assertEquals("a", UnassignedJobReasonTracker.getMostLikelyFailedConstraintName(frequency));
+    }
+
+    @Test
     public void testFreq() {
         Frequency frequency = new Frequency();
         frequency.addValue("VehicleDependentTimeWindowHardActivityConstraint");
