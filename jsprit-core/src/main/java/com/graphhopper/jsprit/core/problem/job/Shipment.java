@@ -148,7 +148,8 @@ public class Shipment extends AbstractJob {
          * @throws IllegalArgumentException if servicTime < 0.0
          */
         public Builder setPickupServiceTime(double serviceTime) {
-            if (serviceTime < 0.0) throw new IllegalArgumentException("serviceTime must not be < 0.0");
+            if (serviceTime < 0.0)
+                throw new IllegalArgumentException("The service time of a shipment must not be < 0.0.");
             this.pickupServiceTime = serviceTime;
             return this;
         }
@@ -164,7 +165,7 @@ public class Shipment extends AbstractJob {
          * @throws IllegalArgumentException if timeWindow is null
          */
         public Builder setPickupTimeWindow(TimeWindow timeWindow) {
-            if (timeWindow == null) throw new IllegalArgumentException("delivery time-window must not be null");
+            if (timeWindow == null) throw new IllegalArgumentException("The delivery time window must not be null.");
             this.pickupTimeWindows = new TimeWindowsImpl();
             this.pickupTimeWindows.add(timeWindow);
             return this;
@@ -193,7 +194,8 @@ public class Shipment extends AbstractJob {
          * @throws IllegalArgumentException if serviceTime < 0.0
          */
         public Builder setDeliveryServiceTime(double deliveryServiceTime) {
-            if (deliveryServiceTime < 0.0) throw new IllegalArgumentException("deliveryServiceTime must not be < 0.0");
+            if (deliveryServiceTime < 0.0)
+                throw new IllegalArgumentException("The service time of a delivery must not be < 0.0.");
             this.deliveryServiceTime = deliveryServiceTime;
             return this;
         }
@@ -209,7 +211,7 @@ public class Shipment extends AbstractJob {
          * @throws IllegalArgumentException if timeWindow is null
          */
         public Builder setDeliveryTimeWindow(TimeWindow timeWindow) {
-            if (timeWindow == null) throw new IllegalArgumentException("delivery time-window must not be null");
+            if (timeWindow == null) throw new IllegalArgumentException("The delivery time window must not be null.");
             this.deliveryTimeWindows = new TimeWindowsImpl();
             this.deliveryTimeWindows.add(timeWindow);
             return this;
@@ -224,7 +226,8 @@ public class Shipment extends AbstractJob {
          * @throws IllegalArgumentException if dimVal < 0
          */
         public Builder addSizeDimension(int dimensionIndex, int dimensionValue) {
-            if (dimensionValue < 0) throw new IllegalArgumentException("capacity value cannot be negative");
+            if (dimensionValue < 0)
+                throw new IllegalArgumentException("The capacity value must not be negative, but is " + dimensionValue + ".");
             capacityBuilder.addDimension(dimensionIndex, dimensionValue);
             return this;
         }
@@ -245,8 +248,8 @@ public class Shipment extends AbstractJob {
          *                               is set
          */
         public Shipment build() {
-            if (pickupLocation_ == null) throw new IllegalArgumentException("pickup location is missing");
-            if (deliveryLocation_ == null) throw new IllegalArgumentException("delivery location is missing");
+            if (pickupLocation_ == null) throw new IllegalArgumentException("The pickup location is missing.");
+            if (deliveryLocation_ == null) throw new IllegalArgumentException("The delivery location is missing.");
             capacity = capacityBuilder.build();
             skills = skillBuilder.build();
             return new Shipment(this);
@@ -258,10 +261,13 @@ public class Shipment extends AbstractJob {
             return this;
         }
 
+        public Builder addAllRequiredSkills(Collection<String> skills) {
+            skillBuilder.addAllSkills(skills);
+            return this;
+        }
+
         public Builder addAllRequiredSkills(Skills skills) {
-            for (String s : skills.values()) {
-                addRequiredSkill(s);
-            }
+            addAllRequiredSkills(skills.values());
             return this;
         }
 
@@ -271,7 +277,7 @@ public class Shipment extends AbstractJob {
         }
 
         public Builder addDeliveryTimeWindow(TimeWindow timeWindow) {
-            if(timeWindow == null) throw new IllegalArgumentException("time-window arg must not be null");
+            if (timeWindow == null) throw new IllegalArgumentException("The time window must not be null.");
             if(!deliveryTimeWindowAdded){
                 deliveryTimeWindows = new TimeWindowsImpl();
                 deliveryTimeWindowAdded = true;
@@ -291,7 +297,7 @@ public class Shipment extends AbstractJob {
         }
 
         public Builder addPickupTimeWindow(TimeWindow timeWindow) {
-            if(timeWindow == null) throw new IllegalArgumentException("time-window arg must not be null");
+            if (timeWindow == null) throw new IllegalArgumentException("The time window must not be null.");
             if(!pickupTimeWindowAdded){
                 pickupTimeWindows = new TimeWindowsImpl();
                 pickupTimeWindowAdded = true;
@@ -319,7 +325,7 @@ public class Shipment extends AbstractJob {
          */
         public Builder setPriority(int priority) {
             if (priority < 1 || priority > 10)
-                throw new IllegalArgumentException("incorrect priority. only 1 (very high) to 10 (very low) are allowed");
+                throw new IllegalArgumentException("The priority value is not valid. Only 1 (very high) to 10 (very low) are allowed.");
             this.priority = priority;
             return this;
         }
@@ -331,7 +337,8 @@ public class Shipment extends AbstractJob {
          * @return
          */
         public Builder setMaxTimeInVehicle(double maxTimeInVehicle){
-            if(maxTimeInVehicle < 0) throw new IllegalArgumentException("maxTimeInVehicle should be positive");
+            if (maxTimeInVehicle < 0)
+                throw new IllegalArgumentException("The maximum time in vehicle must be positive.");
             this.maxTimeInVehicle = maxTimeInVehicle;
             return this;
         }
@@ -436,7 +443,7 @@ public class Shipment extends AbstractJob {
         return pickupTimeWindows.getTimeWindows();
     }
 
-    
+
     /**
      * Returns a string with the shipment's attributes.
      * <p>
