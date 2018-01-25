@@ -118,6 +118,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
                 bestIData.getFailedConstraintNames().addAll(iData.getFailedConstraintNames());
                 continue;
             }
+            iData.setInsertionCost(iData.getInsertionCost() + v.getType().getVehicleCostParams().fix);
             if (iData.getInsertionCost() < bestKnownCost_) {
                 bestIData = iData;
                 bestKnownCost_ = iData.getInsertionCost();
