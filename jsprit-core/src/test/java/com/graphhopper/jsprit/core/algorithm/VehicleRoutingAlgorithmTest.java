@@ -21,10 +21,14 @@ import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.algorithm.termination.PrematureAlgorithmTermination;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.util.Solutions;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -89,6 +93,28 @@ public class VehicleRoutingAlgorithmTest {
         algorithm.addListener(counter);
         algorithm.searchSolutions();
         assertEquals(1000, counter.getCountIterations());
+    }
+
+    @Test
+    public void whenSettingIterations_iterAreExecutedCorrectlyWithSolutions() {
+        Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<>();
+        double bestSolutionCost = Double.MAX_VALUE;
+        Random random = new Random();
+        for (int i = 0; i < random.nextInt(10) + 10; ++i) {
+            double cost = Math.abs(random.nextInt() + random.nextDouble());
+            solutions.add(new VehicleRoutingProblemSolution(new ArrayList<VehicleRoute>(), cost));
+            bestSolutionCost = Math.min(bestSolutionCost, cost);
+        }
+        SearchStrategyManager stratManager = mock(SearchStrategyManager.class);
+        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class), stratManager);
+        when(stratManager.getRandomStrategy()).thenReturn(mock(SearchStrategy.class));
+        when(stratManager.getWeights()).thenReturn(Arrays.asList(1.0));
+        algorithm.setMaxIterations(1000);
+        CountIterations counter = new CountIterations();
+        algorithm.addListener(counter);
+        Collection<VehicleRoutingProblemSolution> vehicleRoutingProblemSolutions = algorithm.searchSolutions(solutions);
+        assertEquals(1000, counter.getCountIterations());
+        assertEquals(Solutions.bestOf(vehicleRoutingProblemSolutions).getCost(), bestSolutionCost, 0.001);
     }
 
     @Test
