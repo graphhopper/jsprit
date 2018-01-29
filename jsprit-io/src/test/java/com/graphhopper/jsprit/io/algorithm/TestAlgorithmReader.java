@@ -30,6 +30,7 @@ import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.selector.SolutionSelector;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -51,9 +52,7 @@ import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 
 public class TestAlgorithmReader {
@@ -297,12 +296,21 @@ public class TestAlgorithmReader {
         doNothing().when(stateMan).updateTimeWindowStates();
         doNothing().when(stateMan).updateSkillStates();
 
-        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, 10, getClass().getResource("algorithmConfig_withoutIterations.xml").getFile(), stateMan, solutionCostCalculator);
+        ConstraintManager constraintManager = mock(ConstraintManager.class);
+        doNothing().when(constraintManager).addTimeWindowConstraint();
+        doNothing().when(constraintManager).addLoadConstraint();
+        doNothing().when(constraintManager).addSkillsConstraint();
+
+        VehicleRoutingAlgorithm vra = VehicleRoutingAlgorithms.readAndCreateAlgorithm(vrp, 10, getClass().getResource("algorithmConfig_withoutIterations.xml").getFile(), stateMan, constraintManager, solutionCostCalculator);
         vra.getObjectiveFunction().equals(solutionCostCalculator);
 
         verify(stateMan, times(2)).updateLoadStates();
         verify(stateMan, times(2)).updateTimeWindowStates();
         verify(stateMan, times(2)).updateSkillStates();
+
+        verify(constraintManager, times(2)).addTimeWindowConstraint();
+        verify(constraintManager, times(2)).addSkillsConstraint();
+        verify(constraintManager, times(2)).addLoadConstraint();
     }
 
 
