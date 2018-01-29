@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -111,13 +112,16 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
         JobInsertionCostsCalculator calc = mock(JobInsertionCostsCalculator.class);
         InsertionData iDataVeh1 = new InsertionData(insertionCost1, InsertionData.NO_INDEX, 1, veh1, null);
         InsertionData iDataVeh2 = new InsertionData(insertionCost2, InsertionData.NO_INDEX, 1, veh2, null);
+        InsertionData iDataVeh1PlusFixed = new InsertionData(insertionCost1 + fixed1, InsertionData.NO_INDEX, 1, veh1, null);
         when(calc.getInsertionData(vehicleRoute, service, veh1, veh1.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh1);
         when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh2);
-        when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, insertionCost1 + fixed1)).thenReturn(iDataVeh1);
+        when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, iDataVeh1PlusFixed.getInsertionCost())).thenReturn(iDataVeh1PlusFixed);
         VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
         when(vrp.getInitialVehicleRoutes()).thenReturn(Collections.<VehicleRoute>emptyList());
         VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(vrp, fleetManager, calc);
         InsertionData iData = insertion.getInsertionData(vehicleRoute, service, null, 0.0, null, Double.MAX_VALUE);
+
+        assertEquals(iData.getInsertionCost(), insertionCost1, 0.001);
         assertThat(iData.getSelectedVehicle(), is(veh1));
 
     }
