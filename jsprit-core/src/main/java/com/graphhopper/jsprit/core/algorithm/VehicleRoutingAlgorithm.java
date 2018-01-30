@@ -234,7 +234,7 @@ public class VehicleRoutingAlgorithm {
             counter.incCounter();
             SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
             DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
-            if (logger.isTraceEnabled()) {
+            if (logger.isDebugEnabled()) {
                 log(discoveredSolution);
             }
             memorizeIfBestEver(discoveredSolution);
@@ -266,29 +266,27 @@ public class VehicleRoutingAlgorithm {
     }
 
     private void log(VehicleRoutingProblemSolution solution) {
-        logger.trace("solution costs: {}", solution.getCost());
+        StringBuilder b = new StringBuilder();
+        b.append("solution costs: " + solution.getCost() + "\n");
         for (VehicleRoute r : solution.getRoutes()) {
-            StringBuilder b = new StringBuilder();
             b.append(r.getVehicle().getId()).append(" : ").append("[ ");
             for (TourActivity act : r.getActivities()) {
                 if (act instanceof TourActivity.JobActivity) {
                     b.append(((TourActivity.JobActivity) act).getJob().getId()).append(" ");
                 }
             }
-            b.append("]");
-            logger.trace(b.toString());
+            b.append("]\n");
         }
-        StringBuilder b = new StringBuilder();
         b.append("unassigned : [ ");
         for (Job j : solution.getUnassignedJobs()) {
             b.append(j.getId()).append(" ");
         }
         b.append("]");
-        logger.trace(b.toString());
+        logger.debug(b.toString());
     }
 
     private void log(DiscoveredSolution discoveredSolution) {
-        logger.trace("discovered solution: {}", discoveredSolution);
+        logger.debug("discovered solution: {}", discoveredSolution);
         log(discoveredSolution.getSolution());
     }
 
