@@ -25,6 +25,8 @@ import com.graphhopper.jsprit.core.algorithm.ruin.RuinStrategy;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,6 +35,7 @@ import java.util.Set;
 
 public class RuinAndRecreateModule implements SearchStrategyModule {
 
+    private final static Logger logger = LoggerFactory.getLogger(RuinAndRecreateModule.class);
     private InsertionStrategy insertion;
 
     private RuinStrategy ruin;
@@ -49,7 +52,9 @@ public class RuinAndRecreateModule implements SearchStrategyModule {
     @Override
     public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
         Collection<Job> ruinedJobs = ruin.ruin(vrpSolution.getRoutes());
-        Set<Job> ruinedJobSet = new HashSet<Job>();
+        log(ruinedJobs);
+        
+        Set<Job> ruinedJobSet = new HashSet<>();
         ruinedJobSet.addAll(ruinedJobs);
         ruinedJobSet.addAll(vrpSolution.getUnassignedJobs());
         Collection<Job> unassignedJobs = insertion.insertJobs(vrpSolution.getRoutes(), ruinedJobSet);
@@ -57,6 +62,14 @@ public class RuinAndRecreateModule implements SearchStrategyModule {
         vrpSolution.getUnassignedJobs().addAll(unassignedJobs);
         return vrpSolution;
 
+    }
+
+    protected static void log(Collection<Job> unassigned) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Job j : unassigned) {
+            stringBuilder.append(j.getId() + " ");
+        }
+        logger.debug("ruin: {} jobs unassigned: {}", unassigned.size(), stringBuilder.toString());
     }
 
     @Override

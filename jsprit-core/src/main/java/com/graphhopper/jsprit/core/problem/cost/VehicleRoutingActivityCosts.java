@@ -57,8 +57,8 @@ public interface VehicleRoutingActivityCosts {
      * @param vehicle     if earliestStartTime > latestStartTime activity operations cannot be conducted within the given time-window.
      * @return
      */
-    public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle);
+    public double getActivityCost(TourActivity prevAct, TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle);
 
-    public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle);
+    public double getActivityDuration(TourActivity prevAct, TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle);
 
 }

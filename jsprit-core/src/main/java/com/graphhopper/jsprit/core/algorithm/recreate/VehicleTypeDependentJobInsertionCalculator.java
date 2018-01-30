@@ -27,10 +27,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCostsCalculator {
@@ -100,7 +97,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
         Driver selectedDriver = currentRoute.getDriver();
         InsertionData bestIData = new InsertionData.NoInsertionFound();
         double bestKnownCost_ = bestKnownCost;
-        Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
+        List<Vehicle> relevantVehicles = new ArrayList<>();
         if (!(selectedVehicle instanceof VehicleImpl.NoVehicle)) {
             relevantVehicles.add(selectedVehicle);
             if (vehicleSwitchAllowed && !isVehicleWithInitialRoute(selectedVehicle)) {
@@ -109,6 +106,8 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
         } else { //if no vehicle has been assigned, i.e. it is an empty route
             relevantVehicles.addAll(fleetManager.getAvailableVehicles());
         }
+
+        Collections.sort(relevantVehicles, new VehicleComparator());
         for (Vehicle v : relevantVehicles) {
             double depTime;
             if (v == selectedVehicle) depTime = currentRoute.getDepartureTime();
@@ -118,11 +117,17 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
                 bestIData.getFailedConstraintNames().addAll(iData.getFailedConstraintNames());
                 continue;
             }
+            iData.setInsertionCost(iData.getInsertionCost() + v.getType().getVehicleCostParams().fix);
             if (iData.getInsertionCost() < bestKnownCost_) {
                 bestIData = iData;
                 bestKnownCost_ = iData.getInsertionCost();
             }
         }
+
+        if (bestIData.getSelectedVehicle() != null) {
+            bestIData.setInsertionCost(bestIData.getInsertionCost() - bestIData.getSelectedVehicle().getType().getVehicleCostParams().fix);
+        }
+
         return bestIData;
     }
 
@@ -132,6 +137,13 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 
     private boolean isVehicleWithInitialRoute(Vehicle selectedVehicle) {
         return initialVehicleIds.contains(selectedVehicle.getId());
+    }
+
+    class VehicleComparator implements Comparator<Vehicle> {
+        @Override
+        public int compare(Vehicle vehicle1, Vehicle vehicle2) {
+            return (int) (vehicle1.getType().getVehicleCostParams().fix - vehicle2.getType().getVehicleCostParams().fix);
+        }
     }
 
 }
