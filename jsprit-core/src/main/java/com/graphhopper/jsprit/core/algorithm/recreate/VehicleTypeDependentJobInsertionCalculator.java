@@ -97,7 +97,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
         Driver selectedDriver = currentRoute.getDriver();
         InsertionData bestIData = new InsertionData.NoInsertionFound();
         double bestKnownCost_ = bestKnownCost;
-        List<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
+        List<Vehicle> relevantVehicles = new ArrayList<>();
         if (!(selectedVehicle instanceof VehicleImpl.NoVehicle)) {
             relevantVehicles.add(selectedVehicle);
             if (vehicleSwitchAllowed && !isVehicleWithInitialRoute(selectedVehicle)) {

@@ -75,15 +75,9 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
 
     protected VehicleRoutingProblem vrp;
 
-    protected double minVehicleCost = Double.POSITIVE_INFINITY;
-
     public AbstractInsertionStrategy(VehicleRoutingProblem vrp) {
         this.insertionsListeners = new InsertionListeners();
         this.vrp = vrp;
-        for (Vehicle vehicle : vrp.getVehicles()) {
-            minVehicleCost = Math.min(vehicle.getType().getVehicleCostParams().fix, minVehicleCost);
-        }
-
         eventListeners = new EventListeners();
     }
 

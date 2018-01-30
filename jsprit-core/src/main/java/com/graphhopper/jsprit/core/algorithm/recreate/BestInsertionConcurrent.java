@@ -138,7 +138,7 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
             }
             VehicleRoute newRoute = VehicleRoute.emptyRoute();
             InsertionData newIData = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
-            newIData.setInsertionCost(newIData.getInsertionCost() + minVehicleCost);
+            newIData.setInsertionCost(newIData.getInsertionCost() + newIData.getSelectedVehicle().getType().getVehicleCostParams().fix);
             if (newIData.getInsertionCost() < bestInsertionCost) {
                 bestInsertion = new Insertion(newRoute, newIData);
                 vehicleRoutes.add(newRoute);
