@@ -139,7 +139,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
                 @Override
                 public ScoredJob call() throws Exception {
-                    return RegretInsertion.getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction, minVehicleCost);
+                    return RegretInsertion.getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction);
                 }
 
             });
