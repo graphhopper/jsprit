@@ -75,15 +75,9 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
 
     protected VehicleRoutingProblem vrp;
 
-    protected double minVehicleCost = Double.POSITIVE_INFINITY;
-
     public AbstractInsertionStrategy(VehicleRoutingProblem vrp) {
         this.insertionsListeners = new InsertionListeners();
         this.vrp = vrp;
-        for (Vehicle vehicle : vrp.getVehicles()) {
-            minVehicleCost = Math.min(vehicle.getType().getVehicleCostParams().fix, minVehicleCost);
-        }
-
         eventListeners = new EventListeners();
     }
 
@@ -131,6 +125,11 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
             eventListeners.inform(e);
         }
         insertionsListeners.informJobInserted(unassignedJob, inRoute, iData.getInsertionCost(), iData.getAdditionalTime());
+    }
+
+    protected static void updateNewRouteInsertionData(InsertionData iData) {
+        if (iData.getSelectedVehicle() != null)
+            iData.setInsertionCost(iData.getInsertionCost() + iData.getSelectedVehicle().getType().getVehicleCostParams().fix);
     }
 
 }
