@@ -37,7 +37,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
 
         for (int i = route.getTourActivities().getActivities().size() - 1; i >= 0; --i) {
 
-            if (i > 1) {
+            if (i > 0) {
                 visit(route.getTourActivities().getActivities().get(i), route.getTourActivities().getActivities().get(i - 1));
             } else {
                 visit(route.getTourActivities().getActivities().get(i), route.getStart());
