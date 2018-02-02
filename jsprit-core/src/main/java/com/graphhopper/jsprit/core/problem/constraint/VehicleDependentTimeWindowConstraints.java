@@ -117,7 +117,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 
         double latestArrTimeAtNewAct =
             Math.min(newAct.getTheoreticalLatestOperationStartTime(),
-                latestArrTimeAtNextAct + savingsInNextActivityDuration -
+                Math.min(nextAct.getTheoreticalLatestOperationStartTime(), latestArrTimeAtNextAct + savingsInNextActivityDuration) -
                     routingFromNewToNext
                     - activityCosts.getActivityDuration(prevAct, newAct, arrTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
             );
