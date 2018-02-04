@@ -26,11 +26,16 @@ import com.graphhopper.jsprit.core.problem.*;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.cost.WaitingTimeCosts;
+import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import com.graphhopper.jsprit.core.problem.vehicle.*;
 import com.graphhopper.jsprit.core.util.CostFactory;
 import org.junit.Before;
@@ -39,6 +44,8 @@ import org.junit.Test;
 import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * unit tests to test vehicle dependent time-windows
@@ -338,5 +345,104 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
 
     }
 
+    /*
+     * driver TW: 5 - 10
+     * prev task 0 - 5
+     * new and next acts at same location, tw 5-10, activity duration 4
+     *     |--- newAct ---|
+     *  |--- nextAct ---|
+     */
 
+    @Test
+    public void testSquash () {
+        Random random = new Random();
+        final double fixedCostAtSameLocation = random.nextDouble(),
+            travelTime = random.nextDouble(),
+                firstActDuration = 5, nextActivitiesDuration = 4.0,
+                    vehicleLatestArrival = firstActDuration + nextActivitiesDuration + fixedCostAtSameLocation + travelTime * 3;
+
+        Location locationFirst = Location.newInstance(random.nextDouble(), random.nextDouble());
+        Location locationSecond = Location.newInstance(random.nextDouble(), random.nextDouble());
+
+        Vehicle vehicle = mock(Vehicle.class);
+        when(vehicle.getLatestArrival()).thenReturn(vehicleLatestArrival);
+
+        JobInsertionContext iFacts = mock(JobInsertionContext.class);
+        when(iFacts.getNewVehicle()).thenReturn(vehicle);
+
+        RouteAndActivityStateGetter routeAndActivityStateGetter = mock(RouteAndActivityStateGetter.class);
+
+        TourActivity prevAct = mock(DeliveryActivity.class),
+            newAct = mock(DeliveryActivity.class),
+            nextAct  = mock(DeliveryActivity.class);
+
+        when(prevAct.getTheoreticalEarliestOperationStartTime()).thenReturn(.0);
+        when(prevAct.getTheoreticalLatestOperationStartTime()).thenReturn(firstActDuration);
+        when(prevAct.getOperationTime()).thenReturn(firstActDuration);
+        when(prevAct.getLocation()).thenReturn(locationFirst);
+
+        when(newAct.getTheoreticalEarliestOperationStartTime()).thenReturn(firstActDuration);
+        when(newAct.getTheoreticalLatestOperationStartTime()).thenReturn(firstActDuration + nextActivitiesDuration + fixedCostAtSameLocation + travelTime * 2);
+        when(newAct.getOperationTime()).thenReturn(nextActivitiesDuration);
+        when(newAct.getLocation()).thenReturn(locationSecond);
+
+        when(nextAct.getTheoreticalEarliestOperationStartTime()).thenReturn(firstActDuration);
+        when(nextAct.getTheoreticalLatestOperationStartTime()).thenReturn(firstActDuration + nextActivitiesDuration + fixedCostAtSameLocation + travelTime * 2);
+        when(nextAct.getOperationTime()).thenReturn(nextActivitiesDuration);
+        when(nextAct.getLocation()).thenReturn(locationSecond);
+
+        when(routeAndActivityStateGetter.getActivityState(nextAct, vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class)).thenReturn(vehicleLatestArrival - travelTime - nextActivitiesDuration);
+
+        final VehicleDependentTimeWindowConstraints timeWindowConstraints = new VehicleDependentTimeWindowConstraints(routeAndActivityStateGetter, getTransportCosts(travelTime), getActivityCost(fixedCostAtSameLocation));
+
+        assertEquals(timeWindowConstraints.fulfilled(iFacts, prevAct, newAct, nextAct, 5.0), HardActivityConstraint.ConstraintsStatus.FULFILLED);
+    }
+
+    private VehicleRoutingActivityCosts getActivityCost(final double fixedCostAtSameLocation) {
+        return new VehicleRoutingActivityCosts() {
+            @Override
+            public double getActivityCost(TourActivity prevAct, TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+                return getActivityDuration(prevAct, tourAct, arrivalTime, driver, vehicle);
+            }
+
+            @Override
+            public double getActivityDuration(TourActivity from, TourActivity to, double startTime, Driver driver, Vehicle vehicle) {
+                if (from != null && !(to instanceof BreakActivity || from instanceof BreakActivity) && from.getLocation().getCoordinate().equals(to.getLocation().getCoordinate())) {
+                    return fixedCostAtSameLocation;
+                }
+
+                return to.getOperationTime();
+            }
+        };
+    }
+
+    public VehicleRoutingTransportCosts getTransportCosts(final double travelTime) {
+        return  new VehicleRoutingTransportCosts() {
+
+            @Override
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                return from.getCoordinate().equals(to.getCoordinate()) ? 0 : travelTime;
+            }
+
+            @Override
+            public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+                return from.getCoordinate().equals(to.getCoordinate()) ? 0 : travelTime;
+            }
+
+            @Override
+            public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+                return from.getCoordinate().equals(to.getCoordinate()) ? 0 : travelTime;
+            }
+
+            @Override
+            public double getBackwardTransportTime(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
+                return from.getCoordinate().equals(to.getCoordinate()) ? 0 : travelTime;
+            }
+
+            @Override
+            public double getBackwardTransportCost(Location from, Location to, double arrivalTime, Driver driver, Vehicle vehicle) {
+                return from.getCoordinate().equals(to.getCoordinate()) ? 0 : travelTime;
+            }
+        };
+    }
 }

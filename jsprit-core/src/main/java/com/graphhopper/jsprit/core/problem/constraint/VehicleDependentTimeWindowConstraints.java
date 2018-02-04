@@ -115,10 +115,10 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
             activityCosts.getActivityDuration(prevAct, nextAct, arrTimeAtNextOnDirectRouteWithNewVehicle, iFacts.getNewDriver(), iFacts.getNewVehicle()) -
                 activityCosts.getActivityDuration(newAct, nextAct, endTimeAtNewAct + routingFromNewToNext, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
+        latestArrTimeAtNextAct = Math.min(nextAct.getTheoreticalLatestOperationStartTime(), latestArrTimeAtNextAct + savingsInNextActivityDuration);
         double latestArrTimeAtNewAct =
             Math.min(newAct.getTheoreticalLatestOperationStartTime(),
-                Math.min(nextAct.getTheoreticalLatestOperationStartTime(), latestArrTimeAtNextAct + savingsInNextActivityDuration) -
-                    routingFromNewToNext
+                latestArrTimeAtNextAct - routingFromNewToNext
                     - activityCosts.getActivityDuration(prevAct, newAct, arrTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
             );
 
