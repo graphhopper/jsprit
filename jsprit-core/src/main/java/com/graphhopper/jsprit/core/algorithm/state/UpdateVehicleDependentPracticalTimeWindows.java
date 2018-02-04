@@ -26,23 +26,22 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor, StateUpdater {
 
     @Override
     public void visit(VehicleRoute route) {
         begin(route);
+        List<TourActivity> activities = new ArrayList<>();
+        activities.add(route.getStart());
+        activities.addAll(route.getTourActivities().getActivities());
 
-        for (int i = route.getTourActivities().getActivities().size() - 1; i >= 0; --i) {
-
-            if (i > 0) {
-                visit(route.getTourActivities().getActivities().get(i), route.getTourActivities().getActivities().get(i - 1));
-            } else {
-                visit(route.getTourActivities().getActivities().get(i), route.getStart());
-            }
-        }
+        for (int i = activities.size() - 1; i > 0; --i)
+            visit(activities.get(i), activities.get(i - 1));
 
         finish();
     }
