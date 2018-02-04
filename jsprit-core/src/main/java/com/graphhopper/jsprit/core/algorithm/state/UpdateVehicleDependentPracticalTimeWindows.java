@@ -26,19 +26,23 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 
 public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor, StateUpdater {
 
     @Override
     public void visit(VehicleRoute route) {
         begin(route);
-        Iterator<TourActivity> revIterator = route.getTourActivities().reverseActivityIterator();
-        while (revIterator.hasNext()) {
-            visit(revIterator.next());
-        }
+        List<TourActivity> activities = new ArrayList<>();
+        activities.add(route.getStart());
+        activities.addAll(route.getTourActivities().getActivities());
+
+        for (int i = activities.size() - 1; i > 0; --i)
+            visit(activities.get(i), activities.get(i - 1));
+
         finish();
     }
 
@@ -99,12 +103,12 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
     }
 
 
-    public void visit(TourActivity activity) {
+    public void visit(TourActivity activity, TourActivity prev) {
         for (Vehicle vehicle : vehicles) {
             double latestArrTimeAtPrevAct = latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
             Location prevLocation = location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
             double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevLocation,
-                latestArrTimeAtPrevAct, route.getDriver(), vehicle) - activityCosts.getActivityDuration(null, activity, latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle());
+                latestArrTimeAtPrevAct, route.getDriver(), vehicle) - activityCosts.getActivityDuration(prev, activity, latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle());
             double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
             if (latestArrivalTime < activity.getTheoreticalEarliestOperationStartTime()) {
                 stateManager.putTypedInternalRouteState(route, vehicle, InternalStates.SWITCH_NOT_FEASIBLE, true);
