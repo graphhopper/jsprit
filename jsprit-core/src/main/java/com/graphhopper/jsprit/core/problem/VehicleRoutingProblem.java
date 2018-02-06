@@ -81,7 +81,7 @@ public class VehicleRoutingProblem {
 
         private Map<String, Job> tentativeJobs = new LinkedHashMap<String, Job>();
 
-        private Set<Job> jobsInInitialRoutes = new HashSet<>();
+        private Map<String, Job> jobsInInitialRoutes = new HashMap<>();
 
         private Map<String, Coordinate> tentative_coordinates = new HashMap<String, Coordinate>();
 
@@ -309,7 +309,7 @@ public class VehicleRoutingProblem {
                 incActivityIndexCounter();
                 if (act instanceof TourActivity.JobActivity) {
                     Job job = ((TourActivity.JobActivity) act).getJob();
-                    jobsInInitialRoutes.add(job);
+                    jobsInInitialRoutes.put(job.getId(), job);
                     addLocationToTentativeLocations(job);
                     registerJobAndActivity(abstractAct, job);
                 }
@@ -430,7 +430,7 @@ public class VehicleRoutingProblem {
                 transportCosts = new CrowFlyCosts(getLocations());
             }
             for (Job job : tentativeJobs.values()) {
-                if (!jobsInInitialRoutes.contains(job)) {
+                if (!jobsInInitialRoutes.containsKey(job.getId())) {
                     addJobToFinalJobMapAndCreateActivities(job);
                 }
             }
@@ -439,7 +439,7 @@ public class VehicleRoutingProblem {
             for (Job job : jobs.values()) {
                 ((AbstractJob)job).setIndex(jobIndexCounter++);
             }
-            for (Job job : jobsInInitialRoutes) {
+            for (Job job : jobsInInitialRoutes.values()) {
                 ((AbstractJob)job).setIndex(jobIndexCounter++);
             }
             
@@ -595,7 +595,8 @@ public class VehicleRoutingProblem {
         this.activityMap = builder.activityMap;
         this.nuActivities = builder.activityIndexCounter;
         this.allLocations = builder.allLocations;
-        this.allJobs = builder.tentativeJobs;
+        this.allJobs = new HashMap<>(jobs);
+        this.allJobs.putAll(builder.jobsInInitialRoutes);
         logger.info("setup problem: {}", this);
     }
 
