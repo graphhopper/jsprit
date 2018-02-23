@@ -81,6 +81,37 @@ public class VehicleTypeImpl implements VehicleType {
         public String toString() {
             return "[fixed=" + fix + "][perTime=" + perTransportTimeUnit + "][perDistance=" + perDistanceUnit + "][perWaitingTimeUnit=" + perWaitingTimeUnit + "]";
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof VehicleCostParams)) return false;
+
+            VehicleCostParams that = (VehicleCostParams) o;
+
+            if (Double.compare(that.fix, fix) != 0) return false;
+            if (Double.compare(that.perTransportTimeUnit, perTransportTimeUnit) != 0) return false;
+            if (Double.compare(that.perDistanceUnit, perDistanceUnit) != 0) return false;
+            if (Double.compare(that.perWaitingTimeUnit, perWaitingTimeUnit) != 0) return false;
+            return Double.compare(that.perServiceTimeUnit, perServiceTimeUnit) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            int result;
+            long temp;
+            temp = Double.doubleToLongBits(fix);
+            result = (int) (temp ^ (temp >>> 32));
+            temp = Double.doubleToLongBits(perTransportTimeUnit);
+            result = 31 * result + (int) (temp ^ (temp >>> 32));
+            temp = Double.doubleToLongBits(perDistanceUnit);
+            result = 31 * result + (int) (temp ^ (temp >>> 32));
+            temp = Double.doubleToLongBits(perWaitingTimeUnit);
+            result = 31 * result + (int) (temp ^ (temp >>> 32));
+            temp = Double.doubleToLongBits(perServiceTimeUnit);
+            result = 31 * result + (int) (temp ^ (temp >>> 32));
+            return result;
+        }
     }
 
     /**
@@ -299,32 +330,30 @@ public class VehicleTypeImpl implements VehicleType {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-            + ((typeId == null) ? 0 : typeId.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VehicleTypeImpl)) return false;
+
+        VehicleTypeImpl that = (VehicleTypeImpl) o;
+
+        if (Double.compare(that.maxVelocity, maxVelocity) != 0) return false;
+        if (!typeId.equals(that.typeId)) return false;
+        if (profile != null ? !profile.equals(that.profile) : that.profile != null) return false;
+        if (!vehicleCostParams.equals(that.vehicleCostParams)) return false;
+        return capacityDimensions.equals(that.capacityDimensions);
     }
 
-    /**
-     * Two vehicle-types are equal if they have the same vehicleId.
-     */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        VehicleTypeImpl other = (VehicleTypeImpl) obj;
-        if (typeId == null) {
-            if (other.typeId != null)
-                return false;
-        } else if (!typeId.equals(other.typeId))
-            return false;
-        return true;
+    public int hashCode() {
+        int result;
+        long temp;
+        result = typeId.hashCode();
+        result = 31 * result + (profile != null ? profile.hashCode() : 0);
+        result = 31 * result + vehicleCostParams.hashCode();
+        result = 31 * result + capacityDimensions.hashCode();
+        temp = Double.doubleToLongBits(maxVelocity);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
     }
 
     private final String typeId;
