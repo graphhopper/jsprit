@@ -29,7 +29,7 @@ class AccordingToPriorities implements Comparator<Job> {
 
     @Override
     public int compare(Job o1, Job o2) {
-        return o1.getPriority() - o2.getPriority();
+        return Double.compare(o2.getPriority(), o1.getPriority());
     }
 
 }
