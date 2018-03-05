@@ -96,14 +96,14 @@ public class DeliveryTest {
     public void whenSettingPriorities_itShouldBeSetCorrectly(){
         Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
             .setPriority(3).build();
-        Assert.assertEquals(3, s.getPriority());
+        Assert.assertEquals(3, s.getPriority(), 0);
     }
 
     @Test
     public void whenNotSettingPriorities_defaultShouldBe(){
         Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
             .build();
-        Assert.assertEquals(2, s.getPriority());
+        Assert.assertEquals(2, s.getPriority(), 0);
     }
 
     @Test

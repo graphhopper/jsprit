@@ -393,7 +393,7 @@ public class ShipmentTest {
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
             .setDeliveryLocation(Location.newInstance("loc"))
             .setPriority(1).build();
-        Assert.assertEquals(1, s.getPriority());
+        Assert.assertEquals(1, s.getPriority(), 0);
     }
 
     @Test
@@ -401,7 +401,7 @@ public class ShipmentTest {
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
             .setDeliveryLocation(Location.newInstance("loc"))
             .setPriority(3).build();
-        Assert.assertEquals(3, s.getPriority());
+        Assert.assertEquals(3, s.getPriority(), 0);
     }
 
     @Test
@@ -409,7 +409,7 @@ public class ShipmentTest {
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
             .setDeliveryLocation(Location.newInstance("loc"))
             .setPriority(10).build();
-        Assert.assertEquals(10, s.getPriority());
+        Assert.assertEquals(10, s.getPriority(), 0);
     }
 
     @Test
@@ -417,7 +417,7 @@ public class ShipmentTest {
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc"))
             .setDeliveryLocation(Location.newInstance("loc"))
             .build();
-        Assert.assertEquals(2, s.getPriority());
+        Assert.assertEquals(2, s.getPriority(), 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
