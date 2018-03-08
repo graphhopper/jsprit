@@ -106,7 +106,7 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
             try {
                 minSlack = stateManager.getActivityState(nextAct, iFacts.getNewVehicle(), minSlackId, Double.class);
             } catch (NullPointerException npe) {
-
+                //solving maxTimeInVehicle constraint
             }
         }
         double directArrTimeNextAct = prevActDepTime + transportTime.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());

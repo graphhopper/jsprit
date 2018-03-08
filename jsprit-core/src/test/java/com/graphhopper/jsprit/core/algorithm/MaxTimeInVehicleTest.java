@@ -220,7 +220,7 @@ public class MaxTimeInVehicleTest {
             .build();
 
         Delivery d2 = Delivery.Builder.newInstance("d2")
-            .setMaxTimeInVehicle(15)
+            .setMaxTimeInVehicle(14)
             .setLocation(Location.newInstance(10, 5)).setServiceTime(2).build();
 
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1")
