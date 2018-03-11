@@ -23,8 +23,6 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.job.Break;
 
-import java.util.List;
-
 /**
  * Basic interface for vehicle-data.
  *
