@@ -349,7 +349,7 @@ public class VehicleImpl extends AbstractVehicle {
 
     private final Break aBreak;
 
-    private final List<String> prohibitedTasks;
+    private final Set<String> prohibitedTasks;
 
     private VehicleImpl(Builder builder) {
         setUserData(builder.userData);
