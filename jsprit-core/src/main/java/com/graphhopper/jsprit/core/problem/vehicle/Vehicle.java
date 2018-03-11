@@ -23,6 +23,8 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.job.Break;
 
+import java.util.List;
+
 /**
  * Basic interface for vehicle-data.
  *
@@ -83,4 +85,7 @@ public interface Vehicle extends HasId, HasIndex {
     // default Object getUserData() {
     // return null;
     // };
+    public abstract boolean isTaskPermited(String taskId);
+
+    public abstract void addProhibitedTask(String taskId);
 }
