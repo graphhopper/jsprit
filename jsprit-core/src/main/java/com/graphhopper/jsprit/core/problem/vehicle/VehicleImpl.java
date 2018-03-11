@@ -262,6 +262,12 @@ public class VehicleImpl extends AbstractVehicle {
             return this;
         }
 
+        public Builder addExcludedTask(String taskId){
+            if (taskId != null)
+                prohibitedTasks.add(taskId);
+            return this;
+        }
+
         /**
          * Builds and returns the vehicle.
          * <p>
