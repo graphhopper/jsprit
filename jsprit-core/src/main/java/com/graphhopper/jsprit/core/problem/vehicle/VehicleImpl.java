@@ -24,9 +24,7 @@ import com.graphhopper.jsprit.core.problem.job.Break;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -146,7 +144,7 @@ public class VehicleImpl extends AbstractVehicle {
 
         private Object userData;
 
-        private List<String> prohibitedTasks = new ArrayList<>();
+        private Set<String> prohibitedTasks = new HashSet<>();
 
         private Builder(String id) {
             super();
