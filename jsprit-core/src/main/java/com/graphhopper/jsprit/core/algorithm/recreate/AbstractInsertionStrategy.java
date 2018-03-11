@@ -127,4 +127,9 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
         insertionsListeners.informJobInserted(unassignedJob, inRoute, iData.getInsertionCost(), iData.getAdditionalTime());
     }
 
+    protected static void updateNewRouteInsertionData(InsertionData iData) {
+        if (iData.getSelectedVehicle() != null)
+            iData.setInsertionCost(iData.getInsertionCost() + iData.getSelectedVehicle().getType().getVehicleCostParams().fix);
+    }
+
 }

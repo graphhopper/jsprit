@@ -186,6 +186,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         VehicleRoute emptyRoute = VehicleRoute.emptyRoute();
         InsertionData iData = insertionCostsCalculator.getInsertionData(emptyRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
         if (!(iData instanceof InsertionData.NoInsertionFound)) {
+            updateNewRouteInsertionData(iData);
             if (best == null) {
                 best = iData;
                 bestRoute = emptyRoute;

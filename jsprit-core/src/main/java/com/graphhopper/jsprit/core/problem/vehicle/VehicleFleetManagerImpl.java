@@ -120,6 +120,14 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
             vehicleArr[v.getIndex()]=v;
             addVehicle(v);
         }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < vehicleTypes.length; ++i) {
+            if (!vehicleTypes[i].vehicleList.isEmpty()) {
+                stringBuilder.append(vehicleTypes[i].vehicleList.size() + " vehicles of type: " + vehicleTypes[i].vehicleList.get(0).getVehicleTypeIdentifier());
+            }
+        }
+        logger.info("next vehicle types was found: {}", stringBuilder.toString());
     }
 
     private void addVehicle(Vehicle v) {

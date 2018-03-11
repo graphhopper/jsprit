@@ -23,8 +23,10 @@ import com.graphhopper.jsprit.core.algorithm.recreate.InsertionStrategy;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListener;
 import com.graphhopper.jsprit.core.algorithm.ruin.RuinStrategy;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
+import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -49,14 +51,30 @@ public class RuinAndRecreateModule implements SearchStrategyModule {
     @Override
     public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
         Collection<Job> ruinedJobs = ruin.ruin(vrpSolution.getRoutes());
-        Set<Job> ruinedJobSet = new HashSet<Job>();
+        Set<Job> ruinedJobSet = new HashSet<>();
         ruinedJobSet.addAll(ruinedJobs);
         ruinedJobSet.addAll(vrpSolution.getUnassignedJobs());
         Collection<Job> unassignedJobs = insertion.insertJobs(vrpSolution.getRoutes(), ruinedJobSet);
         vrpSolution.getUnassignedJobs().clear();
-        vrpSolution.getUnassignedJobs().addAll(unassignedJobs);
-        return vrpSolution;
+        vrpSolution.getUnassignedJobs().addAll(getUnassignedJobs(vrpSolution, unassignedJobs));
 
+        return vrpSolution;
+    }
+
+    static Set<Job> getUnassignedJobs(VehicleRoutingProblemSolution vrpSolution, Collection<Job> unassignedJobs) {
+        final Set<Job> unassigned = new HashSet<>();
+        for (Job job : unassignedJobs) {
+            if (!(job instanceof Break))
+                unassigned.add(job);
+        }
+
+        for (VehicleRoute route : vrpSolution.getRoutes()) {
+            Break aBreak = route.getVehicle().getBreak();
+            if(aBreak != null && !route.getTourActivities().servesJob(aBreak)) {
+                unassigned.add(aBreak);
+            }
+        }
+        return unassigned;
     }
 
     @Override
