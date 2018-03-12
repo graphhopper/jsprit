@@ -24,6 +24,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 import java.io.PrintWriter;
@@ -93,7 +94,6 @@ public class SolutionPrinter {
     /**
      * Prints costs and #vehicles to the to stdout (out.println).
      *
-     * @param out      the destination writer
      * @param solution the solution to be printed
      */
     public static void print(VehicleRoutingProblem problem, VehicleRoutingProblemSolution solution, Print print) {
@@ -171,7 +171,7 @@ public class SolutionPrinter {
                 }
                 double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(),
                     route.getVehicle());
-                c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
+                c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle(), prevAct instanceof Start);
                 costs += c;
                 out.format(leftAlgin, routeNu, getVehicleString(route), act.getName(), jobId, Math.round(act.getArrTime()),
                     Math.round(act.getEndTime()), Math.round(costs));
@@ -179,7 +179,7 @@ public class SolutionPrinter {
             }
             double c = problem.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(),
                 route.getDriver(), route.getVehicle());
-            c += problem.getActivityCosts().getActivityCost(route.getEnd(), route.getEnd().getArrTime(), route.getDriver(), route.getVehicle());
+            c += problem.getActivityCosts().getActivityCost(route.getEnd(), route.getEnd().getArrTime(), route.getDriver(), route.getVehicle(), prevAct instanceof Start);
             costs += c;
             out.format(leftAlgin, routeNu, getVehicleString(route), route.getEnd().getName(), "-", Math.round(route.getEnd().getArrTime()), "undef",
                 Math.round(costs));

@@ -55,13 +55,13 @@ public interface Job extends HasId, HasIndex {
     public String getName();
 
     /**
-     * Get priority of job. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+     * Get priority of job. range (1 = high priority --> 10 = low priority) is allowed.
      * <p>
      * Default is 2 = medium.
      *
      * @return priority
      */
-    public int getPriority();
+    public double getPriority();
 
     public double getMaxTimeInVehicle();
 

@@ -98,14 +98,14 @@ public class PickupTest {
     public void whenSettingPriorities_itShouldBeSetCorrectly(){
         Pickup s = Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
             .setPriority(3).build();
-        Assert.assertEquals(3, s.getPriority());
+        Assert.assertEquals(3, s.getPriority(), 0);
     }
 
     @Test
     public void whenNotSettingPriorities_defaultShouldBe(){
         Pickup s = Pickup.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
             .build();
-        Assert.assertEquals(2, s.getPriority());
+        Assert.assertEquals(2, s.getPriority(), 0);
     }
 
     @Test

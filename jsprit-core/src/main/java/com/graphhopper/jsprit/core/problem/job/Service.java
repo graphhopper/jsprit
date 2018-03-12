@@ -88,7 +88,7 @@ public class Service extends AbstractJob {
 
         private boolean twAdded = false;
 
-        private int priority = 2;
+        private double priority = 2;
         protected Object userData;
 
 		protected double maxTimeInVehicle = Double.MAX_VALUE;
@@ -247,8 +247,8 @@ public class Service extends AbstractJob {
          * @param priority
          * @return builder
          */
-        public Builder<T> setPriority(int priority) {
-            if (priority < 1 || priority > 10)
+        public Builder<T> setPriority(double priority) {
+            if (priority <= 0 || priority > 10000)
                 throw new IllegalArgumentException("The priority value is not valid. Only 1 (very high) to 10 (very low) are allowed.");
             this.priority = priority;
             return this;
@@ -278,7 +278,7 @@ public class Service extends AbstractJob {
 
     private final TimeWindows timeWindows;
 
-    private final int priority;
+    private final double priority;
 
     private final double maxTimeInVehicle;
 
@@ -398,14 +398,14 @@ public class Service extends AbstractJob {
     }
 
     /**
-     * Get priority of service. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+     * Get priority of job. range (1 = high priority --> 10 = low priority) is allowed.
      * <p>
      * Default is 2 = medium.
      *
      * @return priority
      */
     @Override
-    public int getPriority() {
+    public double getPriority() {
         return priority;
     }
 

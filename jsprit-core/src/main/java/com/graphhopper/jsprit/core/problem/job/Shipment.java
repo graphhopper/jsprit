@@ -83,7 +83,7 @@ public class Shipment extends AbstractJob {
 
         private TimeWindowsImpl pickupTimeWindows;
 
-        private int priority = 2;
+        private double priority = 2;
 
         public Object userData;
 
@@ -323,8 +323,8 @@ public class Shipment extends AbstractJob {
          * @param priority
          * @return builder
          */
-        public Builder setPriority(int priority) {
-            if (priority < 1 || priority > 10)
+        public Builder setPriority(double priority) {
+            if (priority <= 0 || priority > 10000)
                 throw new IllegalArgumentException("The priority value is not valid. Only 1 (very high) to 10 (very low) are allowed.");
             this.priority = priority;
             return this;
@@ -364,7 +364,7 @@ public class Shipment extends AbstractJob {
 
     private final TimeWindowsImpl pickupTimeWindows;
 
-    private final int priority;
+    private final double priority;
 
     private final double maxTimeInVehicle;
 
@@ -505,14 +505,14 @@ public class Shipment extends AbstractJob {
     }
 
     /**
-     * Get priority of shipment. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+     * Get priority of job. range (1 = high priority --> 10 = low priority) is allowed.
      * <p>
      * Default is 2 = medium.
      *
      * @return priority
      */
     @Override
-    public int getPriority() {
+    public double getPriority() {
         return priority;
     }
 

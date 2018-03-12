@@ -59,7 +59,10 @@ public class VariableDepartureAndWaitingTime_IT {
         activityCosts = new VehicleRoutingActivityCosts() {
 
             @Override
-            public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+            public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle, boolean isFirst) {
+                if (isFirst){
+                    return 0;
+                }
                 return vehicle.getType().getVehicleCostParams().perWaitingTimeUnit * Math.max(0, tourAct.getTheoreticalEarliestOperationStartTime() - arrivalTime);
             }
 
