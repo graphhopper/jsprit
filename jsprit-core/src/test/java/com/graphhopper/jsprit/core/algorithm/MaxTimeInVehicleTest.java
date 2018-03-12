@@ -50,6 +50,8 @@ import static org.junit.Assert.assertTrue;
 
 public class MaxTimeInVehicleTest {
 
+    Random RANDOM = new Random();
+
     @Test
     public void testShipment(){
         Shipment s1 = Shipment.Builder.newInstance("s1").setPickupLocation(Location.newInstance(34.773586,32.079754)).setDeliveryLocation(Location.newInstance(34.781247,38.294571))
@@ -73,9 +75,6 @@ public class MaxTimeInVehicleTest {
         SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
         assertEquals(0,solution.getUnassignedJobs().size());
         assertEquals(1,solution.getRoutes().size());
-
-
-
     }
 
     @Test
@@ -307,8 +306,6 @@ public class MaxTimeInVehicleTest {
         assertEquals(0,solution.getUnassignedJobs().size());
     }
 
-    Random RANDOM = new Random();
-
     @Test
     public void testRouteTwoDriversTwoRouts_NotAllAssigned() {
         int numJobs = Math.abs(RANDOM.nextInt(100)) + 10,
@@ -334,7 +331,7 @@ public class MaxTimeInVehicleTest {
                 .setLocation(Location.newInstance(RANDOM.nextDouble(), RANDOM.nextDouble())).setServiceTime(serviceTime).build());
         }
 
-        VehicleRoutingProblemSolution solution = getVehicleRoutingProblemSolution(builder);
+        VehicleRoutingProblemSolution solution = getVehicleRoutingProblemSolution(builder, true, 4);
 
         assertFalse(solution.getRoutes().isEmpty());
         final Iterator<VehicleRoute> iterator = solution.getRoutes().iterator();
@@ -383,7 +380,7 @@ public class MaxTimeInVehicleTest {
                 .setLocation(Location.newInstance(RANDOM.nextDouble(), RANDOM.nextDouble())).setServiceTime(serviceTime).build());
         }
 
-        VehicleRoutingProblemSolution solution = getVehicleRoutingProblemSolution(builder);
+        VehicleRoutingProblemSolution solution = getVehicleRoutingProblemSolution(builder, true, 4);
 
         final Iterator<VehicleRoute> iterator = solution.getRoutes().iterator();
         while (iterator.hasNext()) {
@@ -396,9 +393,38 @@ public class MaxTimeInVehicleTest {
         assertTrue(solution.getUnassignedJobs().isEmpty());
     }
 
-    private VehicleRoutingProblemSolution getVehicleRoutingProblemSolution(VehicleRoutingProblem.Builder builder) {
-        VehicleRoutingProblem vrp = builder
-            .setRoutingCost(new VehicleRoutingTransportCosts() {
+    @Test
+    public void testLowMaxTimeCauseTwoRoutes(){
+        Shipment s1 = Shipment.Builder.newInstance("s1").setPickupLocation(Location.newInstance(8,0))
+            .setDeliveryLocation(Location.newInstance(10,0))
+            .setDeliveryServiceTime(2)
+            .setMaxTimeInVehicle(10)
+            .build();
+
+        Delivery d2 = Delivery.Builder.newInstance("d2")
+            .setMaxTimeInVehicle(13)
+            .setLocation(Location.newInstance(10, 5)).setServiceTime(2).build();
+
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1")
+            .setStartLocation(Location.newInstance(8,5)).setReturnToDepot(true).build();
+
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2")
+            .setStartLocation(Location.newInstance(5,0)).setReturnToDepot(true).build();
+
+
+        final VehicleRoutingProblemSolution solution = getVehicleRoutingProblemSolution(VehicleRoutingProblem.Builder.newInstance()
+            .addVehicle(v1)
+            .addVehicle(v2)
+            .addJob(s1)
+            .addJob(d2), false, 4);
+        assertEquals(2, solution.getRoutes().size());
+        assertEquals(0, solution.getUnassignedJobs().size());
+
+    }
+
+    private VehicleRoutingProblemSolution getVehicleRoutingProblemSolution(VehicleRoutingProblem.Builder builder, boolean routeCost, int numThreads) {
+        if (routeCost) {
+            builder.setRoutingCost(new VehicleRoutingTransportCosts() {
                 @Override
                 public double getBackwardTransportCost(Location location, Location location1, double v, Driver driver, Vehicle vehicle) {
                     return 1;
@@ -423,7 +449,9 @@ public class MaxTimeInVehicleTest {
                 public double getDistance(Location location, Location location1, double v, Vehicle vehicle) {
                     return 1;
                 }
-            })
+            });
+        }
+        VehicleRoutingProblem vrp = builder
             .setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
             .build();
 
@@ -435,7 +463,7 @@ public class MaxTimeInVehicleTest {
         ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
         constraintManager.addConstraint(new MaxTimeInVehicleConstraint(vrp.getTransportCosts(), vrp.getActivityCosts(), id, stateManager, vrp, openJobsId), ConstraintManager.Priority.CRITICAL);
 
-        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager,constraintManager).buildAlgorithm();
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager,constraintManager).setProperty(Jsprit.Parameter.THREADS, String.valueOf(numThreads)).buildAlgorithm();
         vra.setMaxIterations(100);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
