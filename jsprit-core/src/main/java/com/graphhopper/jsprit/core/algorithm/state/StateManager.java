@@ -449,10 +449,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param stateId the stateId which is the associated key to the activity state
      * @param state   the state that is associated to the activity and stateId
      * @param <T>     the type of the state
-     * @throws java.lang.IllegalStateException if <code>vehicle.getVehicleTypeIdentifier().getIndex() == 0</code> || <code>stateId.getIndex() < noInternalStates</code>
+     * @throws java.lang.IllegalStateException if <code>vehicle.getIndex() == 0</code> || <code>stateId.getIndex() < noInternalStates</code>
      */
     public <T> void putRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, T state) {
-        if (vehicle.getVehicleTypeIdentifier().getIndex() == 0) throw new IllegalStateException("vehicle index is 0. this should not be.");
+        if (vehicle.getIndex() == 0) throw new IllegalStateException("vehicle index is 0. this should not be.");
         if (stateId.getIndex() < initialNoStates) StateFactory.throwReservedIdException(stateId.toString());
         putTypedInternalRouteState(route, vehicle, stateId, state);
     }
