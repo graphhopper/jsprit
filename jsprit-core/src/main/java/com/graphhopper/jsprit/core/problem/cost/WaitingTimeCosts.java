@@ -28,9 +28,12 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 public class WaitingTimeCosts implements VehicleRoutingActivityCosts {
 
     @Override
-    public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+    public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle, boolean isFirst) {
         if (vehicle != null) {
-            double waiting = vehicle.getType().getVehicleCostParams().perWaitingTimeUnit * Math.max(0., tourAct.getTheoreticalEarliestOperationStartTime() - arrivalTime);
+            double waiting = 0;
+            if (!isFirst){
+                waiting = vehicle.getType().getVehicleCostParams().perWaitingTimeUnit * Math.max(0., tourAct.getTheoreticalEarliestOperationStartTime() - arrivalTime);
+            }
             double servicing = vehicle.getType().getVehicleCostParams().perServiceTimeUnit * getActivityDuration(tourAct,arrivalTime,driver,vehicle);
             return waiting + servicing;
         }

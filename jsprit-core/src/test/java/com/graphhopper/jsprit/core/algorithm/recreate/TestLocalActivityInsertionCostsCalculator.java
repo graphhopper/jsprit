@@ -336,7 +336,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(vrp));
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 0);
-        assertEquals(110., c, 0.01);
+        assertEquals(20, c, 0.01);
     }
 
     @Test

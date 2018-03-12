@@ -21,6 +21,7 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
@@ -69,11 +70,17 @@ final class AuxilliaryCostCalculator {
             cost += transportCost;
             double actStartTime = departureTimePrevAct + transportTime;
             departureTimePrevAct = Math.max(actStartTime, act.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(act,actStartTime,driver,vehicle);
-            cost += activityCosts.getActivityCost(act, actStartTime, driver, vehicle);
+            cost += activityCosts.getActivityCost(act, actStartTime, driver, vehicle, prevAct instanceof Start);
             prevAct = act;
         }
         return cost;
     }
 
+    public VehicleRoutingTransportCosts getRoutingCosts() {
+        return routingCosts;
+    }
 
+    public VehicleRoutingActivityCosts getActivityCosts() {
+        return activityCosts;
+    }
 }

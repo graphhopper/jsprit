@@ -68,7 +68,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         activityCosts = new VehicleRoutingActivityCosts() {
 
             @Override
-            public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+            public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle, boolean isFirst) {
                 return Math.max(0., arrivalTime - tourAct.getTheoreticalLatestOperationStartTime());
             }
 
