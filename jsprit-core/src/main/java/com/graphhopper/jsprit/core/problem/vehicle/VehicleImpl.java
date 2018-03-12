@@ -24,7 +24,7 @@ import com.graphhopper.jsprit.core.problem.job.Break;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
+import java.util.*;
 
 
 /**
@@ -97,6 +97,16 @@ public class VehicleImpl extends AbstractVehicle {
             return null;
         }
 
+        @Override
+        public boolean isTaskPermited(String taskId) {
+            return true;
+        }
+
+        @Override
+        public void addProhibitedTask(String taskId) {
+            throw new IllegalArgumentException("NoVehicle should not have prohibited tasks");
+        }
+
     }
 
     /**
@@ -133,6 +143,8 @@ public class VehicleImpl extends AbstractVehicle {
         private Break aBreak;
 
         private Object userData;
+
+        private Set<String> prohibitedTasks = new HashSet<>();
 
         private Builder(String id) {
             super();
@@ -248,6 +260,12 @@ public class VehicleImpl extends AbstractVehicle {
             return this;
         }
 
+        public Builder addExcludedTask(String taskId){
+            if (taskId != null)
+                prohibitedTasks.add(taskId);
+            return this;
+        }
+
         /**
          * Builds and returns the vehicle.
          * <p>
@@ -331,6 +349,8 @@ public class VehicleImpl extends AbstractVehicle {
 
     private final Break aBreak;
 
+    private final Set<String> prohibitedTasks;
+
     private VehicleImpl(Builder builder) {
         setUserData(builder.userData);
         id = builder.id;
@@ -342,6 +362,7 @@ public class VehicleImpl extends AbstractVehicle {
         endLocation = builder.endLocation;
         startLocation = builder.startLocation;
         aBreak = builder.aBreak;
+        prohibitedTasks = builder.prohibitedTasks;
         //        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
         setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills, returnToDepot));
     }
@@ -405,6 +426,16 @@ public class VehicleImpl extends AbstractVehicle {
     @Override
     public Break getBreak() {
         return aBreak;
+    }
+
+    @Override
+    public boolean isTaskPermited(String taskId) {
+        return !prohibitedTasks.contains(taskId);
+    }
+
+    @Override
+    public void addProhibitedTask(String taskId) {
+        prohibitedTasks.add(taskId);
     }
 
     /* (non-Javadoc)

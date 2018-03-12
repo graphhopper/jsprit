@@ -124,6 +124,7 @@ public class VehicleTypeImplTest {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerDistance(-10).build();
     }
 
+    @Test
     public void whenSettingPerDistanceCosts_itShouldBeSetCorrectly() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerDistance(10).build();
         assertEquals(10.0, type.getVehicleCostParams().perDistanceUnit, 0.0);
@@ -165,5 +166,33 @@ public class VehicleTypeImplTest {
         assertTrue(one.getUserData() instanceof Map);
         assertEquals(42, two.getUserData());
         assertNull(three.getUserData());
+    }
+
+    @Test
+    public void typesShouldBeEqual() {
+        VehicleType one = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100).build();
+        VehicleType two = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100).build();
+        assertTrue(one.equals(two));
+    }
+
+    @Test
+    public void typesShouldBeNotEqual() {
+        VehicleType one = VehicleTypeImpl.Builder.newInstance("type").build();
+        VehicleType two = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100).build();
+        assertFalse(one.equals(two));
+    }
+
+    @Test
+    public void typesShouldBeNotEqual2() {
+        VehicleType one = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 10).build();
+        VehicleType two = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 20).build();
+        assertFalse(one.equals(two));
+    }
+
+    @Test
+    public void typesShouldBeEqual2() {
+        VehicleType one = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 10).build();
+        VehicleType two = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 10).build();
+        assertTrue(one.equals(two));
     }
 }
