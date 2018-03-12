@@ -248,7 +248,7 @@ public class Service extends AbstractJob {
          * @return builder
          */
         public Builder<T> setPriority(double priority) {
-            if (priority < 1 || priority > 10)
+            if (priority <= 0 || priority > 10000)
                 throw new IllegalArgumentException("The priority value is not valid. Only 1 (very high) to 10 (very low) are allowed.");
             this.priority = priority;
             return this;

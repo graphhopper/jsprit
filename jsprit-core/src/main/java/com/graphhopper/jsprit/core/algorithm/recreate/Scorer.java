@@ -33,9 +33,9 @@ class Scorer {
         if (secondBest == null) { //either there is only one vehicle or there are more vehicles, but they cannot load unassignedJob
             //if only one vehicle, I want the job to be inserted with min iCosts
             //if there are more vehicles, I want this job to be prioritized since there are no alternatives
-            score = (11 - unassignedJob.getPriority()) * (Integer.MAX_VALUE - best.getInsertionCost()) + scoringFunction.score(best, unassignedJob);
+            score = (10001 - unassignedJob.getPriority()) * (Integer.MAX_VALUE - best.getInsertionCost()) + scoringFunction.score(best, unassignedJob);
         } else {
-            score = (11 - unassignedJob.getPriority()) * (secondBest.getInsertionCost() - best.getInsertionCost()) + scoringFunction.score(best, unassignedJob);
+            score = (10001 - unassignedJob.getPriority()) * (secondBest.getInsertionCost() - best.getInsertionCost()) + scoringFunction.score(best, unassignedJob);
         }
         return score;
     }
