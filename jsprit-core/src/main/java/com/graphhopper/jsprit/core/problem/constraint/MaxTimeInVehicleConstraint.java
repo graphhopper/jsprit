@@ -26,10 +26,7 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 
 import java.util.Collections;
 import java.util.Map;
@@ -74,7 +71,10 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
         double newActStart = Math.max(newActArrival, newAct.getTheoreticalEarliestOperationStartTime());
         double newActDeparture = newActStart + activityCosts.getActivityDuration(prevAct, newAct, newActArrival, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double nextActArrival = newActDeparture + transportTime.getTransportTime(newAct.getLocation(),nextAct.getLocation(),newActDeparture,iFacts.getNewDriver(),iFacts.getNewVehicle());
-        double nextActStart = Math.max(nextActArrival,nextAct.getTheoreticalEarliestOperationStartTime());
+        double nextActStart = Math.max(nextActArrival, nextAct.getTheoreticalEarliestOperationStartTime());
+        if (nextAct instanceof DeliverService && nextActStart - iFacts.getNewVehicle().getEarliestDeparture() > ((TourActivity.JobActivity)nextAct).getJob().getMaxTimeInVehicle()) {
+            return ConstraintsStatus.NOT_FULFILLED;
+        }
         if(newAct instanceof DeliveryActivity){
             double pickupEnd;
             if(iFacts.getAssociatedActivities().size() == 1){
@@ -107,10 +107,9 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
         }
         double directArrTimeNextAct = prevActDepTime + transportTime.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double directNextActStart = Math.max(directArrTimeNextAct, nextAct.getTheoreticalEarliestOperationStartTime());
-        double additionalTimeOfNewAct = (nextActStart - prevActDepTime) - (directNextActStart - prevActDepTime);
+        double additionalTimeOfNewAct = nextActStart - directNextActStart;
         if (additionalTimeOfNewAct > minSlack) {
-            if (newActIsPickup) return ConstraintsStatus.NOT_FULFILLED;
-            else return ConstraintsStatus.NOT_FULFILLED;
+            return ConstraintsStatus.NOT_FULFILLED;
         }
         if (newActIsDelivery) {
             Map<Job, Double> openJobsAtNext;
