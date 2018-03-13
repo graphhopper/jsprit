@@ -475,9 +475,9 @@ public class VehicleRoutingAlgorithms {
 //		stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts()));
 //		stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
 
-		/*
+        /*
          * define constraints
-		 */
+         */
         //constraint manager
         if (constraintManager == null)
             constraintManager = new ConstraintManager(vrp, stateManager);
@@ -536,13 +536,13 @@ public class VehicleRoutingAlgorithms {
 
                 @Override
                 public void uncaughtException(Thread arg0, Throwable arg1) {
-                    System.err.println(arg1.toString());
+                    log.error("error: {}", arg1.toString());
                 }
             });
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
                     if (!executorService.isShutdown()) {
-                        System.err.println("shutdowHook shuts down executorService");
+                        log.error("shutdowHook shuts down executorService");
                         executorService.shutdown();
                     }
                 }

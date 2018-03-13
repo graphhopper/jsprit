@@ -222,18 +222,27 @@ public class VehicleRoutingAlgorithm {
         double now = System.currentTimeMillis();
         int noIterationsThisAlgoIsRunning = maxIterations;
         counter.reset();
+        logger.info("algorithmStarts func call");
         algorithmStarts(problem, solutions);
         bestEver = Solutions.bestOf(solutions);
+        logger.info("algorithmStarts func call finished successfully best till now cost: {}, routes: {}, unassigned: {}", bestEver.getCost(), bestEver.getRoutes().size(), bestEver.getUnassignedJobs().size());
         if (logger.isTraceEnabled()) {
             log(solutions);
         }
-        logger.info("iterations start");
         for (int i = 0; i < maxIterations; i++) {
             iterationStarts(i + 1, problem, solutions);
             logger.debug("start iteration: {}", i);
             counter.incCounter();
             SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
+            if (i % 10 == 0) {
+                logger.info("selected strategy {}", strategy.getName());
+            }
+
             DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
+            if (i % 10 == 0) {
+                logger.info("discoveredSolution: cost: {}, routes: {}, unassigned: {}", discoveredSolution.getSolution().getCost(), discoveredSolution.getSolution().getRoutes().size(), discoveredSolution.getSolution().getUnassignedJobs().size());
+            }
+
             if (logger.isTraceEnabled()) {
                 log(discoveredSolution);
             }
