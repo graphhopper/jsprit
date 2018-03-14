@@ -225,7 +225,7 @@ public class VehicleRoutingAlgorithm {
         logger.info("algorithmStarts func call");
         algorithmStarts(problem, solutions);
         bestEver = Solutions.bestOf(solutions);
-        logger.info("algorithmStarts func call finished successfully best till now cost: {}, routes: {}, unassigned: {}", bestEver.getCost(), bestEver.getRoutes().size(), bestEver.getUnassignedJobs().size());
+        logger.info("algorithm iterations start");
         if (logger.isTraceEnabled()) {
             log(solutions);
         }
@@ -234,15 +234,7 @@ public class VehicleRoutingAlgorithm {
             logger.debug("start iteration: {}", i);
             counter.incCounter();
             SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
-            if (i % 10 == 0) {
-                logger.info("selected strategy {}", strategy.getName());
-            }
-
             DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
-            if (i % 10 == 0) {
-                logger.info("discoveredSolution: cost: {}, routes: {}, unassigned: {}", discoveredSolution.getSolution().getCost(), discoveredSolution.getSolution().getRoutes().size(), discoveredSolution.getSolution().getUnassignedJobs().size());
-            }
-
             if (logger.isTraceEnabled()) {
                 log(discoveredSolution);
             }
