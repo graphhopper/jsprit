@@ -218,14 +218,14 @@ public class VehicleRoutingAlgorithm {
     }
 
     public Collection<VehicleRoutingProblemSolution> searchSolutions(Collection<VehicleRoutingProblemSolution> solutions) {
-        logger.info("algorithm starts: [maxIterations={}]", maxIterations);
+        logger.debug("algorithm starts: [maxIterations={}]", maxIterations);
         double now = System.currentTimeMillis();
         int noIterationsThisAlgoIsRunning = maxIterations;
         counter.reset();
-        logger.info("algorithmStarts func call");
+        logger.debug("algorithmStarts func call");
         algorithmStarts(problem, solutions);
         bestEver = Solutions.bestOf(solutions);
-        logger.info("algorithm iterations start");
+        logger.debug("algorithm iterations start");
         if (logger.isTraceEnabled()) {
             log(solutions);
         }
@@ -247,10 +247,10 @@ public class VehicleRoutingAlgorithm {
             }
             iterationEnds(i + 1, problem, solutions);
         }
-        logger.info("iterations end at {} iterations", noIterationsThisAlgoIsRunning);
+        logger.debug("iterations end at {} iterations", noIterationsThisAlgoIsRunning);
         addBestEver(solutions);
         algorithmEnds(problem, solutions);
-        logger.info("took {} seconds", ((System.currentTimeMillis() - now) / 1000.0));
+        logger.debug("took {} seconds", ((System.currentTimeMillis() - now) / 1000.0));
         return solutions;
     }
 
