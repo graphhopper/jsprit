@@ -139,7 +139,9 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
             VehicleRoute newRoute = VehicleRoute.emptyRoute();
             InsertionData newIData = bestInsertionCostCalculator.getInsertionData(newRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
             updateNewRouteInsertionData(newIData);
+            boolean isNewRoute = false;
             if (newIData.getInsertionCost() < bestInsertionCost) {
+                isNewRoute = true;
                 bestInsertion = new Insertion(newRoute, newIData);
                 vehicleRoutes.add(newRoute);
                 batches.get(random.nextInt(batches.size())).routes.add(newRoute);
@@ -148,7 +150,13 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
                 badJobs.add(unassignedJob);
                 markUnassigned(unassignedJob, failedConstraintNames);
             }
-            else insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
+            else {
+                insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
+
+                if (isNewRoute || !bestInsertion.getRoute().getVehicle().getId().equals(bestInsertion.getInsertionData().getSelectedVehicle().getId())) {
+                    insertBreak(bestInsertionCostCalculator, badJobs, bestInsertion.getRoute(), bestInsertion.getInsertionData());
+                }
+            }
         }
         return badJobs;
     }

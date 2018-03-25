@@ -23,6 +23,7 @@ import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListener
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
+import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -130,6 +131,19 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
     protected static void updateNewRouteInsertionData(InsertionData iData) {
         if (iData.getSelectedVehicle() != null)
             iData.setInsertionCost(iData.getInsertionCost() + iData.getSelectedVehicle().getType().getVehicleCostParams().fix);
+    }
+
+
+    protected void insertBreak(JobInsertionCostsCalculator jobInsertionCostsCalculator, List<Job> badJobs, VehicleRoute route, InsertionData iDataJob) {
+        if (iDataJob.getSelectedVehicle() != null && iDataJob.getSelectedVehicle().getBreak() != null) {
+            final Break aBreak = iDataJob.getSelectedVehicle().getBreak();
+            InsertionData iData = jobInsertionCostsCalculator.getInsertionData(route, aBreak, iDataJob.getSelectedVehicle(), iDataJob.getSelectedVehicle().getEarliestDeparture(), iDataJob.getSelectedDriver(), Double.MAX_VALUE);
+            if (iData instanceof InsertionData.NoInsertionFound) {
+                badJobs.add(aBreak);
+            } else {
+                insertJob(aBreak, iData, route);
+            }
+        }
     }
 
 }

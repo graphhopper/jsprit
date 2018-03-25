@@ -28,9 +28,7 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 public class RuinAndRecreateModule implements SearchStrategyModule {
@@ -54,11 +52,25 @@ public class RuinAndRecreateModule implements SearchStrategyModule {
         Set<Job> ruinedJobSet = new HashSet<>();
         ruinedJobSet.addAll(ruinedJobs);
         ruinedJobSet.addAll(vrpSolution.getUnassignedJobs());
+
+        removeEmptyRoutes(vrpSolution.getRoutes());
+
         Collection<Job> unassignedJobs = insertion.insertJobs(vrpSolution.getRoutes(), ruinedJobSet);
         vrpSolution.getUnassignedJobs().clear();
         vrpSolution.getUnassignedJobs().addAll(getUnassignedJobs(vrpSolution, unassignedJobs));
 
         return vrpSolution;
+    }
+
+    static void removeEmptyRoutes(Collection<VehicleRoute> routes) {
+        final Iterator<VehicleRoute> iterator = routes.iterator();
+        List<VehicleRoute> emptyRoutes = new ArrayList<>();
+        while (iterator.hasNext()) {
+            final VehicleRoute route = iterator.next();
+            if (route.isEmpty())
+                emptyRoutes.add(route);
+        }
+        routes.removeAll(emptyRoutes);
     }
 
     static Set<Job> getUnassignedJobs(VehicleRoutingProblemSolution vrpSolution, Collection<Job> unassignedJobs) {

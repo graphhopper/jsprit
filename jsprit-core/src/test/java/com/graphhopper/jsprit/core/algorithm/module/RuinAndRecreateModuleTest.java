@@ -11,7 +11,9 @@ import org.junit.Test;
 import java.util.*;
 
 import static com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule.getUnassignedJobs;
+import static com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule.removeEmptyRoutes;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,5 +40,23 @@ public class RuinAndRecreateModuleTest {
 
         when(tourActivities.servesJob(aBreak)).thenReturn(false);
         assertEquals(1, getUnassignedJobs(new VehicleRoutingProblemSolution(routes, 212), unassigned).size());
+    }
+
+
+    @Test
+    public void testEmptyRoutesRemoved() {
+        List<VehicleRoute> routes = new ArrayList<>();
+        VehicleRoute vehicleRoute1 = mock(VehicleRoute.class);
+        when(vehicleRoute1.isEmpty()).thenReturn(false);
+        VehicleRoute vehicleRoute2 = mock(VehicleRoute.class);
+        when(vehicleRoute2.isEmpty()).thenReturn(true);
+
+        routes.add(vehicleRoute1);
+        routes.add(vehicleRoute2);
+
+        removeEmptyRoutes(routes);
+
+        assertEquals(routes.size(), 1);
+        assertTrue(routes.contains(vehicleRoute1));
     }
 }
