@@ -153,6 +153,10 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
                 }
                 insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
                 jobs.remove(bestScoredJob.getJob());
+
+                if (bestScoredJob.isNewRoute() || !bestScoredJob.getRoute().getVehicle().getId().equals(bestScoredJob.getInsertionData().getSelectedVehicle().getId())) {
+                    insertBreak(insertionCostsCalculator, badJobs, bestScoredJob.getRoute(), bestScoredJob.getInsertionData());
+                }
                 lastModified = bestScoredJob.getRoute();
             }
             else lastModified = null;

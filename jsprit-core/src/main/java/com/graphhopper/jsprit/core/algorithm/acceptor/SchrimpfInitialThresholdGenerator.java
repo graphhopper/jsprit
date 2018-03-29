@@ -79,7 +79,7 @@ public class SchrimpfInitialThresholdGenerator implements AlgorithmStartsListene
 
         logger.info("took {} seconds", ((System.currentTimeMillis() - now) / 1000.0));
         logger.debug("initial threshold: {}", initialThreshold);
-        logger.info("---------------------------------------------------------------------");
+        logger.debug("---------------------------------------------------------------------");
     }
 
 }

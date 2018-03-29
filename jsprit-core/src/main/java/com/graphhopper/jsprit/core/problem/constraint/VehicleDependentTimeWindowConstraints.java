@@ -108,13 +108,18 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
             return ConstraintsStatus.NOT_FULFILLED;
         }
         //			log.info("check insertion of " + newAct + " between " + prevAct + " and " + nextAct + ". prevActDepTime=" + prevActDepTime);
+        double routingFromNewToNext = routingCosts.getBackwardTransportTime(newAct.getLocation(), nextActLocation, latestArrTimeAtNextAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double arrTimeAtNewAct = prevActDepTime + routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double endTimeAtNewAct = Math.max(arrTimeAtNewAct, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(newAct, arrTimeAtNewAct,iFacts.getNewDriver(),iFacts.getNewVehicle());
+        double endTimeAtNewAct = Math.max(arrTimeAtNewAct, newAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(prevAct, newAct, arrTimeAtNewAct,iFacts.getNewDriver(),iFacts.getNewVehicle());
+        double savingsInNextActivityDuration =
+            activityCosts.getActivityDuration(prevAct, nextAct, arrTimeAtNextOnDirectRouteWithNewVehicle, iFacts.getNewDriver(), iFacts.getNewVehicle()) -
+                activityCosts.getActivityDuration(newAct, nextAct, endTimeAtNewAct + routingFromNewToNext, iFacts.getNewDriver(), iFacts.getNewVehicle());
+
+        latestArrTimeAtNextAct = Math.min(nextAct.getTheoreticalLatestOperationStartTime(), latestArrTimeAtNextAct + savingsInNextActivityDuration);
         double latestArrTimeAtNewAct =
             Math.min(newAct.getTheoreticalLatestOperationStartTime(),
-                latestArrTimeAtNextAct -
-                    routingCosts.getBackwardTransportTime(newAct.getLocation(), nextActLocation, latestArrTimeAtNextAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
-                    - activityCosts.getActivityDuration(newAct, arrTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
+                latestArrTimeAtNextAct - routingFromNewToNext
+                    - activityCosts.getActivityDuration(prevAct, newAct, arrTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle())
             );
 
 			/*

@@ -62,6 +62,7 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         codesToHumanReadableReason.put(2, "cannot be visited within time window");
         codesToHumanReadableReason.put(3, "does not fit into any vehicle due to capacity");
         codesToHumanReadableReason.put(4, "cannot be assigned due to max distance constraint of vehicle");
+        codesToHumanReadableReason.put(5, "cannot be assigned due to max time on vehicle constraint of vehicle");
 
         failedConstraintNamesToCode.put("HardSkillConstraint", 1);
         failedConstraintNamesToCode.put("VehicleDependentTimeWindowConstraints", 2);
@@ -69,6 +70,7 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         failedConstraintNamesToCode.put("PickupAndDeliverShipmentLoadActivityLevelConstraint", 3);
         failedConstraintNamesToCode.put("ServiceLoadActivityLevelConstraint", 3);
         failedConstraintNamesToCode.put("MaxDistanceConstraint", 4);
+        failedConstraintNamesToCode.put("MaxTimeInVehicleConstraint", 5);
     }
 
     public void ignore(String simpleNameOfConstraint) {

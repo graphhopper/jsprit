@@ -111,11 +111,20 @@ public class RegretInsertion extends AbstractInsertionStrategy {
             List<ScoredJob> badJobList = new ArrayList<>();
             ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
+                final VehicleRoute route = bestScoredJob.getRoute();
                 if (bestScoredJob.isNewRoute()) {
-                    routes.add(bestScoredJob.getRoute());
+                    routes.add(route);
                 }
-                insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
+                insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), route);
                 jobs.remove(bestScoredJob.getJob());
+
+                if (!route.getVehicle().getId().equals(bestScoredJob.getInsertionData().getSelectedVehicle().getId())) {
+                    insertBreak(insertionCostsCalculator, badJobs, route, bestScoredJob.getInsertionData());
+                }
+                if (bestScoredJob.isNewRoute()) {
+                    final InsertionData insertionData = insertBreak(insertionCostsCalculator, badJobs, route, bestScoredJob.getInsertionData());
+                    logger.info("trying to insert break after vehicle switch {}, {}", !(insertionData instanceof InsertionData.NoInsertionFound), insertionData);
+                }
             }
             for (ScoredJob bad : badJobList) {
                 Job unassigned = bad.getJob();
@@ -186,6 +195,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         VehicleRoute emptyRoute = VehicleRoute.emptyRoute();
         InsertionData iData = insertionCostsCalculator.getInsertionData(emptyRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
         if (!(iData instanceof InsertionData.NoInsertionFound)) {
+            updateNewRouteInsertionData(iData);
             if (best == null) {
                 best = iData;
                 bestRoute = emptyRoute;
