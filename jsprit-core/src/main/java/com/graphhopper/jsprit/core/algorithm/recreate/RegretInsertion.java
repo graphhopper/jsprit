@@ -122,7 +122,8 @@ public class RegretInsertion extends AbstractInsertionStrategy {
                     insertBreak(insertionCostsCalculator, badJobs, route, bestScoredJob.getInsertionData());
                 }
                 if (bestScoredJob.isNewRoute()) {
-                    logger.info("trying to insert break after vehicle switch {}", insertBreak(insertionCostsCalculator, badJobs, route, bestScoredJob.getInsertionData()));
+                    final InsertionData insertionData = insertBreak(insertionCostsCalculator, badJobs, route, bestScoredJob.getInsertionData());
+                    logger.info("trying to insert break after vehicle switch {}, {}", !(insertionData instanceof InsertionData.NoInsertionFound), insertionData);
                 }
             }
             for (ScoredJob bad : badJobList) {
