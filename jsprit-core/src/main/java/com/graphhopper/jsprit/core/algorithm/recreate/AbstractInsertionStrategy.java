@@ -134,7 +134,7 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
     }
 
 
-    protected void insertBreak(JobInsertionCostsCalculator jobInsertionCostsCalculator, List<Job> badJobs, VehicleRoute route, InsertionData iDataJob) {
+    protected InsertionData insertBreak(JobInsertionCostsCalculator jobInsertionCostsCalculator, List<Job> badJobs, VehicleRoute route, InsertionData iDataJob) {
         if (iDataJob.getSelectedVehicle() != null && iDataJob.getSelectedVehicle().getBreak() != null) {
             final Break aBreak = iDataJob.getSelectedVehicle().getBreak();
             InsertionData iData = jobInsertionCostsCalculator.getInsertionData(route, aBreak, iDataJob.getSelectedVehicle(), iDataJob.getSelectedVehicle().getEarliestDeparture(), iDataJob.getSelectedDriver(), Double.MAX_VALUE);
@@ -143,6 +143,7 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
             } else {
                 insertJob(aBreak, iData, route);
             }
+            return iData;
         }
     }
 
