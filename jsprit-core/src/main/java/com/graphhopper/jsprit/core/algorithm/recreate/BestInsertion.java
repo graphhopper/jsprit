@@ -100,9 +100,11 @@ public final class BestInsertion extends AbstractInsertionStrategy {
                 badJobs.add(unassignedJob);
                 markUnassigned(unassignedJob, empty.getFailedConstraintNames());
             } else {
+
+                final boolean newVehicle = !bestInsertion.getRoute().getVehicle().getId().equals(bestInsertion.getInsertionData().getSelectedVehicle().getId());
                 insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
 
-                if (isNewRoute || !bestInsertion.getRoute().getVehicle().getId().equals(bestInsertion.getInsertionData().getSelectedVehicle().getId())) {
+                if (isNewRoute || newVehicle) {
                     insertBreak(bestInsertionCostCalculator, badJobs, bestInsertion.getRoute(), bestInsertion.getInsertionData());
                 }
             }
