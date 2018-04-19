@@ -1,7 +1,10 @@
+## Other Related Open Source Implementations
+
 ### VRP
 
-#### [Chris Groer's VRPH library](https://sites.google.com/site/vrphlibrary/)
-An open source library for solving the capacitated vehicle routing problem written in C++.
+#### [VRPH library](https://sites.google.com/site/vrphlibrary/)
+An open source library by Chris Groer for solving the capacitated vehicle routing problem written in C++.
+Now hosted by [coin-or](https://projects.coin-or.org/VRPH)
 
 #### [OptaPlanner](https://www.optaplanner.org/)
 OptaPlanner is a lightweight, embeddable planning engine written in Java™. It can be used to solve the capacitated vehicle routing problem (with time windows). 
@@ -27,6 +30,5 @@ Google Optimization Tools (OR-Tools) is a fast and portable software suite for s
 Open Door Logistics Studio is an easy-to-use
 standalone open source application for performing geographic analysis of your customer base and sales territory design, mapping and management.
 
-
-
+### Other implementations
 If you know another promising open source implementation, report it.
