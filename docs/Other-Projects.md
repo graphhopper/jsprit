@@ -18,6 +18,9 @@ Hipster is an easy to use yet powerful and flexible type-safe library for heuris
 #### [OscaR](https://bitbucket.org/oscarlib/oscar/wiki/Home)
 OscaR, an Open Source Toolbox for Optimising Logistics and Supply Chain Systems.
 
+#### [OR-Tools](https://developers.google.com/optimization/)
+Google Optimization Tools (OR-Tools) is a fast and portable software suite for solving combinatorial optimization problems, including the VRP. Open-source, written in C++ and available through SWIG for Python, Java, and .NET (using Mono on non-Windows platforms). You can compile OR-Tools on Linux, Mac OS X, and Windows (with Visual Studio).
+
 ### Territory Design
 
 #### [OpenDoorLogistics](http://www.opendoorlogistics.com)
