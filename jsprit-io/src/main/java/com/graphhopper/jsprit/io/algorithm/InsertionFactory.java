@@ -42,7 +42,7 @@ class InsertionFactory {
 
         if (config.containsKey("[@name]")) {
             String insertionName = config.getString("[@name]");
-            if (!insertionName.equals("bestInsertion") && !insertionName.equals("regretInsertion")) {
+            if (!insertionName.equals("bestInsertion") && !insertionName.equals("regretInsertion") && !insertionName.equals("randomInsertion")) {
                 throw new IllegalStateException(insertionName + " is not supported. use either \"bestInsertion\" or \"regretInsertion\"");
             }
 
@@ -104,6 +104,8 @@ class InsertionFactory {
                 if (fastRegret != null) {
                     iBuilder.setFastRegret(Boolean.parseBoolean(fastRegret));
                 }
+            } else if (insertionName.equals("randomInsertion")) {
+                iBuilder.setInsertionStrategy(InsertionBuilder.Strategy.RANDOM);
             }
             return iBuilder.build();
         } else throw new IllegalStateException("cannot create insertionStrategy, since it has no name.");
