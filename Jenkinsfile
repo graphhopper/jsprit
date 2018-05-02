@@ -11,7 +11,7 @@ pipeline {
                 CODECOV_TOKEN = '5b1293bb-5536-4f60-bfa3-93b4d15eefeb'
             }
             steps {
-                sh 'mvn test'
+                sh 'mvn test jacoco:report-aggregate'
             }
             post {
                 always {
