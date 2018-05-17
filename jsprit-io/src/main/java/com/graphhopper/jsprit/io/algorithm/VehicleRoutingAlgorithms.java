@@ -364,11 +364,11 @@ public class VehicleRoutingAlgorithms {
      * @return {@link com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm}
      */
     public static VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp, final AlgorithmConfig algorithmConfig) {
-        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), 0, null, null, null);
+        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), 0, null, null, null, new HashMap<String, SolutionAcceptor>());
     }
 
     public static VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp, int nThreads, final AlgorithmConfig algorithmConfig) {
-        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, null, null, null);
+        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, null, null, null, new HashMap<String, SolutionAcceptor>());
     }
 
     /**
@@ -382,14 +382,14 @@ public class VehicleRoutingAlgorithms {
         AlgorithmConfig algorithmConfig = new AlgorithmConfig();
         AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
         xmlReader.read(configURL);
-        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), 0, null, null, null);
+        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), 0, null, null, null, new HashMap<String, SolutionAcceptor>());
     }
 
     public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, int nThreads, final URL configURL) {
         AlgorithmConfig algorithmConfig = new AlgorithmConfig();
         AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
         xmlReader.read(configURL);
-        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, null, null, null);
+        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, null, null, null, new HashMap<String, SolutionAcceptor>());
     }
 
     /**
@@ -403,28 +403,32 @@ public class VehicleRoutingAlgorithms {
         AlgorithmConfig algorithmConfig = new AlgorithmConfig();
         AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
         xmlReader.read(configFileName);
-        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), 0, null, null, null);
+        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), 0, null, null, null, new HashMap<String, SolutionAcceptor>());
     }
 
     public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, final String configFileName, StateManager stateManager) {
         AlgorithmConfig algorithmConfig = new AlgorithmConfig();
         AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
         xmlReader.read(configFileName);
-        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), 0, stateManager, null, null);
+        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), 0, stateManager, null, null, new HashMap<String, SolutionAcceptor>());
     }
 
     public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, int nThreads, final String configFileName, StateManager stateManager, ConstraintManager constraintManager,  SolutionCostCalculator solutionCostCalculator) {
-        AlgorithmConfig algorithmConfig = new AlgorithmConfig();
+        return readAndCreateAlgorithm(vrp, nThreads, configFileName, stateManager, constraintManager, solutionCostCalculator, new HashMap<String, SolutionAcceptor>());
+    }
+
+    public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, int nThreads, final String configFileName, StateManager stateManager, ConstraintManager constraintManager,  SolutionCostCalculator solutionCostCalculator, Map<String, SolutionAcceptor> solutionAcceptors) {
+            AlgorithmConfig algorithmConfig = new AlgorithmConfig();
         AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
         xmlReader.read(configFileName);
-        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, stateManager, constraintManager, solutionCostCalculator);
+        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, stateManager, constraintManager, solutionCostCalculator, solutionAcceptors);
     }
 
     public static VehicleRoutingAlgorithm readAndCreateAlgorithm(VehicleRoutingProblem vrp, int nThreads, String configFileName) {
         AlgorithmConfig algorithmConfig = new AlgorithmConfig();
         AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
         xmlReader.read(configFileName);
-        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, null, null, null);
+        return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, null, null, null, new HashMap<String, SolutionAcceptor>());
     }
 
     private static class OpenRouteStateVerifier implements StateUpdater, ReverseActivityVisitor {
@@ -459,7 +463,7 @@ public class VehicleRoutingAlgorithms {
 
     }
 
-    private static VehicleRoutingAlgorithm createAlgo(final VehicleRoutingProblem vrp, XMLConfiguration config, int nuOfThreads, StateManager stateMan, ConstraintManager constraintManager, SolutionCostCalculator solutionCostCalculator) {
+    private static VehicleRoutingAlgorithm createAlgo(final VehicleRoutingProblem vrp, XMLConfiguration config, int nuOfThreads, StateManager stateMan, ConstraintManager constraintManager, SolutionCostCalculator solutionCostCalculator, Map<String, SolutionAcceptor> solutionAcceptors) {
         //create state-manager
         final StateManager stateManager;
         if (stateMan != null) {
@@ -487,7 +491,7 @@ public class VehicleRoutingAlgorithms {
         constraintManager.addSkillsConstraint();
         constraintManager.addConstraint(new SwitchNotFeasible(stateManager));
 
-        return readAndCreateAlgorithm(vrp, config, nuOfThreads, solutionCostCalculator, stateManager, constraintManager, true, true);
+        return readAndCreateAlgorithm(vrp, config, nuOfThreads, solutionCostCalculator, stateManager, constraintManager, solutionAcceptors, true, true);
     }
 
     public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, AlgorithmConfig config,
@@ -497,18 +501,21 @@ public class VehicleRoutingAlgorithms {
 
 
     public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, AlgorithmConfig config,
-                                                                 int nuOfThreads, SolutionCostCalculator solutionCostCalculator, final StateManager stateManager, ConstraintManager constraintManager, boolean addDefaultCostCalculators, boolean addCoreConstraints) {
-        return readAndCreateAlgorithm(vrp, config.getXMLConfiguration(), nuOfThreads, solutionCostCalculator, stateManager, constraintManager, addDefaultCostCalculators, addCoreConstraints);
+                                                                 int nuOfThreads, SolutionCostCalculator solutionCostCalculator, final StateManager stateManager,
+                                                                 ConstraintManager constraintManager, boolean addDefaultCostCalculators, boolean addCoreConstraints) {
+        return readAndCreateAlgorithm(vrp, config.getXMLConfiguration(), nuOfThreads, solutionCostCalculator, stateManager, constraintManager, new HashMap<String, SolutionAcceptor>(), addDefaultCostCalculators, addCoreConstraints);
     }
 
     private static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, XMLConfiguration config,
-                                                                  int nuOfThreads, final SolutionCostCalculator solutionCostCalculator, final StateManager stateManager, ConstraintManager constraintManager, boolean addDefaultCostCalculators) {
+                                                                  int nuOfThreads, final SolutionCostCalculator solutionCostCalculator, final StateManager stateManager,
+                                                                  ConstraintManager constraintManager, boolean addDefaultCostCalculators) {
 
-        return readAndCreateAlgorithm(vrp, config, nuOfThreads, solutionCostCalculator, stateManager, constraintManager, addDefaultCostCalculators, true);
+        return readAndCreateAlgorithm(vrp, config, nuOfThreads, solutionCostCalculator, stateManager, constraintManager, new HashMap<String, SolutionAcceptor>(), addDefaultCostCalculators, true);
     }
 
     private static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, XMLConfiguration config,
-                                                                  int nuOfThreads, final SolutionCostCalculator solutionCostCalculator, final StateManager stateManager, ConstraintManager constraintManager, boolean addDefaultCostCalculators, boolean addCoreConstraints) {
+                                                                  int nuOfThreads, final SolutionCostCalculator solutionCostCalculator, final StateManager stateManager,
+                                                                  ConstraintManager constraintManager, Map<String, SolutionAcceptor> solutionAcceptors, boolean addDefaultCostCalculators, boolean addCoreConstraints) {
         // map to store constructed modules
         TypedMap definedClasses = new TypedMap();
 
@@ -609,7 +616,7 @@ public class VehicleRoutingAlgorithms {
         List<HierarchicalConfiguration> strategyConfigs = config.configurationsAt("strategy.searchStrategies.searchStrategy");
         for (HierarchicalConfiguration strategyConfig : strategyConfigs) {
             String name = getName(strategyConfig);
-            SolutionAcceptor acceptor = getAcceptor(strategyConfig, vrp, algorithmListeners, definedClasses, solutionMemory);
+            SolutionAcceptor acceptor = getAcceptor(strategyConfig, vrp, algorithmListeners, definedClasses, solutionMemory, solutionAcceptors);
             SolutionSelector selector = getSelector(strategyConfig, vrp, algorithmListeners, definedClasses);
 
             SearchStrategy strategy = new SearchStrategy(name, selector, acceptor, costCalculator);
@@ -798,7 +805,7 @@ public class VehicleRoutingAlgorithms {
         return new ModKey(name, id);
     }
 
-    private static SolutionAcceptor getAcceptor(HierarchicalConfiguration strategyConfig, VehicleRoutingProblem vrp, Set<PrioritizedVRAListener> algorithmListeners, TypedMap typedMap, int solutionMemory) {
+    private static SolutionAcceptor getAcceptor(HierarchicalConfiguration strategyConfig, VehicleRoutingProblem vrp, Set<PrioritizedVRAListener> algorithmListeners, TypedMap typedMap, int solutionMemory, Map<String, SolutionAcceptor> solutionAcceptors) {
         String acceptorName = strategyConfig.getString("acceptor[@name]");
         if (acceptorName == null) throw new IllegalStateException("no solution acceptor is defined");
         String acceptorId = strategyConfig.getString("acceptor[@id]");
@@ -806,6 +813,9 @@ public class VehicleRoutingAlgorithms {
         AcceptorKey acceptorKey = new AcceptorKey(makeKey(acceptorName, acceptorId));
         SolutionAcceptor definedAcceptor = typedMap.get(acceptorKey);
         if (definedAcceptor != null) return definedAcceptor;
+        if (solutionAcceptors.containsKey(acceptorName)) {
+            return solutionAcceptors.get(acceptorName);
+        }
         if (acceptorName.equals("acceptNewRemoveWorst")) {
             GreedyAcceptance acceptor = new GreedyAcceptance(solutionMemory);
             typedMap.put(acceptorKey, acceptor);
