@@ -896,7 +896,7 @@ public class VehicleRoutingAlgorithms {
 
             String insertionName = moduleConfig.getString("insertion[@name]");
             if (insertionName == null)
-                throw new IllegalStateException("module.insertion[@name] is missing. set it to \"regretInsertion\" or \"bestInsertion\"");
+                throw new IllegalStateException("module.insertion[@name] is missing. set it to \"regretInsertion\" or \"bestInsertion\" or \"randomInsertion\"");
             String insertionId = moduleConfig.getString("insertion[@id]");
             if (insertionId == null) insertionId = "noId";
             ModKey insertionKey = makeKey(insertionName, insertionId);

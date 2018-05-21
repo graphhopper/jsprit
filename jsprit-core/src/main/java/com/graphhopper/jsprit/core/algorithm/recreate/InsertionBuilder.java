@@ -35,7 +35,7 @@ public class InsertionBuilder {
 
 
     public enum Strategy {
-        REGRET, BEST
+        REGRET, BEST, RANDOM
     }
 
     private VehicleRoutingProblem vrp;
@@ -200,6 +200,8 @@ public class InsertionBuilder {
                 }
 
             }
+        } else if (strategy.equals(Strategy.RANDOM)) {
+            insertion = new RandomInsertion(costCalculator, vrp);
         } else throw new IllegalStateException("you should never get here");
         for (InsertionListener l : iListeners) insertion.addListener(l);
         return insertion;
