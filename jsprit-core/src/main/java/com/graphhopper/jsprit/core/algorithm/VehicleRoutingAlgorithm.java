@@ -81,7 +81,7 @@ public class VehicleRoutingAlgorithm {
             long n = nextCounter;
             if (i >= n) {
                 nextCounter = n * 2;
-                log.info(this.name + n);
+                log.debug(this.name + n);
             }
         }
 
@@ -236,7 +236,7 @@ public class VehicleRoutingAlgorithm {
             counter.incCounter();
             SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
             DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
-            logBuilder.append("Selected strategy [{").append(strategy.getName())
+            logBuilder.append("Selected strategy [").append(strategy.getName())
                 .append("], solution cost [").append(Math.ceil(discoveredSolution.getSolution().getCost()))
                 .append("], unassigned [").append(discoveredSolution.getSolution().getUnassignedJobs().size()).append("]\n");
             if (logger.isTraceEnabled()) {
