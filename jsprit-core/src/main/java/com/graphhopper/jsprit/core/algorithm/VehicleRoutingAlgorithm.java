@@ -250,7 +250,6 @@ public class VehicleRoutingAlgorithm {
         logger.debug("iterations end at {} iterations", noIterationsThisAlgoIsRunning);
         addBestEver(solutions);
         algorithmEnds(problem, solutions);
-
         logger.debug("took {} seconds", ((System.currentTimeMillis() - now) / 1000.0));
         return solutions;
     }
