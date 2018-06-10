@@ -301,6 +301,7 @@ public class JobInsertionCostsCalculatorBuilder {
         switcher.put(Pickup.class, serviceInsertion);
         switcher.put(Delivery.class, serviceInsertion);
         switcher.put(Break.class, breakInsertionCalculator);
+        switcher.put(ShipmentWithMutablePickupDeliverOptions.class, shipmentInsertion);
 
         CalculatorPlusListeners calculatorPlusListeners = new CalculatorPlusListeners(switcher);
         if (configLocal != null) {
