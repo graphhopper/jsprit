@@ -226,6 +226,7 @@ public class VehicleRoutingAlgorithm {
         algorithmStarts(problem, solutions);
         bestEver = Solutions.bestOf(solutions);
         logger.debug("algorithm iterations start");
+        StringBuilder logBuilder = new StringBuilder();
         if (logger.isTraceEnabled()) {
             log(solutions);
         }
@@ -235,6 +236,9 @@ public class VehicleRoutingAlgorithm {
             counter.incCounter();
             SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
             DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
+            logBuilder.append("Selected strategy [{").append(strategy.getName())
+                .append("], solution cost [").append(Math.ceil(discoveredSolution.getSolution().getCost()))
+                .append("], unassigned [").append(discoveredSolution.getSolution().getUnassignedJobs().size()).append("]\n");
             if (logger.isTraceEnabled()) {
                 log(discoveredSolution);
             }
@@ -246,10 +250,18 @@ public class VehicleRoutingAlgorithm {
                 break;
             }
             iterationEnds(i + 1, problem, solutions);
+
+            if (i % 10 == 0) {
+                logger.info(logBuilder.toString());
+                logBuilder = new StringBuilder();
+            }
         }
         logger.debug("iterations end at {} iterations", noIterationsThisAlgoIsRunning);
         addBestEver(solutions);
         algorithmEnds(problem, solutions);
+        if (logBuilder.toString().length() > 0)
+            logger.info(logBuilder.toString());
+
         logger.debug("took {} seconds", ((System.currentTimeMillis() - now) / 1000.0));
         return solutions;
     }
