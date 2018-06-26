@@ -214,17 +214,21 @@ public class VehicleRoutingAlgorithm {
      * @see {@link SearchStrategyManager}, {@link com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListener}, {@link com.graphhopper.jsprit.core.algorithm.listener.AlgorithmStartsListener}, {@link com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener}, {@link com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener}, {@link com.graphhopper.jsprit.core.algorithm.listener.IterationEndsListener}
      */
     public Collection<VehicleRoutingProblemSolution> searchSolutions() {
-        logger.info("algorithm starts: [maxIterations={}]", maxIterations);
+        return searchSolutions(new ArrayList<VehicleRoutingProblemSolution>());
+    }
+
+    public Collection<VehicleRoutingProblemSolution> searchSolutions(Collection<VehicleRoutingProblemSolution> solutions) {
+        logger.debug("algorithm starts: [maxIterations={}]", maxIterations);
         double now = System.currentTimeMillis();
         int noIterationsThisAlgoIsRunning = maxIterations;
         counter.reset();
-        Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>(initialSolutions);
+        logger.debug("algorithmStarts func call");
         algorithmStarts(problem, solutions);
         bestEver = Solutions.bestOf(solutions);
+        logger.debug("algorithm iterations start");
         if (logger.isTraceEnabled()) {
             log(solutions);
         }
-        logger.info("iterations start");
         for (int i = 0; i < maxIterations; i++) {
             iterationStarts(i + 1, problem, solutions);
             logger.debug("start iteration: {}", i);
@@ -243,10 +247,10 @@ public class VehicleRoutingAlgorithm {
             }
             iterationEnds(i + 1, problem, solutions);
         }
-        logger.info("iterations end at {} iterations", noIterationsThisAlgoIsRunning);
+        logger.debug("iterations end at {} iterations", noIterationsThisAlgoIsRunning);
         addBestEver(solutions);
         algorithmEnds(problem, solutions);
-        logger.info("took {} seconds", ((System.currentTimeMillis() - now) / 1000.0));
+        logger.debug("took {} seconds", ((System.currentTimeMillis() - now) / 1000.0));
         return solutions;
     }
 

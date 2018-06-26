@@ -83,4 +83,7 @@ public interface Vehicle extends HasId, HasIndex {
     // default Object getUserData() {
     // return null;
     // };
+    public abstract boolean isTaskPermited(String taskId);
+
+    public abstract void addProhibitedTask(String taskId);
 }

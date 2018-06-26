@@ -275,6 +275,7 @@
                 <xs:restriction base="xs:string">
                     <xs:enumeration value="bestInsertion"/>
                     <xs:enumeration value="regretInsertion"/>
+                    <xs:enumeration value="randomInsertion"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>

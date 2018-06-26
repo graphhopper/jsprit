@@ -118,8 +118,13 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
                 }
+                final boolean newVehicle = !bestScoredJob.getRoute().getVehicle().getId().equals(bestScoredJob.getInsertionData().getSelectedVehicle().getId());
                 insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
                 jobs.remove(bestScoredJob.getJob());
+
+                if (bestScoredJob.isNewRoute() || newVehicle) {
+                    insertBreak(insertionCostsCalculator, badJobs, bestScoredJob.getRoute(), bestScoredJob.getInsertionData());
+                }
             }
             for (ScoredJob bad : badJobList) {
                 Job unassigned = bad.getJob();

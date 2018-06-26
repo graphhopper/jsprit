@@ -111,11 +111,16 @@ public class RegretInsertion extends AbstractInsertionStrategy {
             List<ScoredJob> badJobList = new ArrayList<>();
             ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
+                final VehicleRoute route = bestScoredJob.getRoute();
                 if (bestScoredJob.isNewRoute()) {
-                    routes.add(bestScoredJob.getRoute());
+                    routes.add(route);
                 }
-                insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), bestScoredJob.getRoute());
+                final boolean newVehicle = !route.getVehicle().getId().equals(bestScoredJob.getInsertionData().getSelectedVehicle().getId());
+                insertJob(bestScoredJob.getJob(), bestScoredJob.getInsertionData(), route);
                 jobs.remove(bestScoredJob.getJob());
+
+                if (bestScoredJob.isNewRoute() || newVehicle)
+                    insertBreak(insertionCostsCalculator, badJobs, route, bestScoredJob.getInsertionData());
             }
             for (ScoredJob bad : badJobList) {
                 Job unassigned = bad.getJob();
@@ -186,6 +191,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         VehicleRoute emptyRoute = VehicleRoute.emptyRoute();
         InsertionData iData = insertionCostsCalculator.getInsertionData(emptyRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
         if (!(iData instanceof InsertionData.NoInsertionFound)) {
+            updateNewRouteInsertionData(iData);
             if (best == null) {
                 best = iData;
                 bestRoute = emptyRoute;
@@ -208,7 +214,6 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         } else scoredJob = new ScoredJob(unassignedJob, score, best, bestRoute, false);
         return scoredJob;
     }
-
 
     static double score(Job unassignedJob, InsertionData best, InsertionData secondBest, ScoringFunction scoringFunction) {
         return Scorer.score(unassignedJob,best,secondBest,scoringFunction);

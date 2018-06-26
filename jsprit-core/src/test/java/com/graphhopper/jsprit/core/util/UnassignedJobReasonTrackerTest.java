@@ -22,10 +22,13 @@ import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
+import com.graphhopper.jsprit.core.algorithm.state.UpdateMaxTimeInVehicle;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.MaxDistanceConstraint;
+import com.graphhopper.jsprit.core.problem.constraint.MaxTimeInVehicleConstraint;
+import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
@@ -132,6 +135,31 @@ public class UnassignedJobReasonTrackerTest {
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
         Assert.assertEquals(1, solution.getUnassignedJobs().size());
         Assert.assertEquals(4, reasonTracker.getMostLikelyReasonCode(solution.getUnassignedJobs().iterator().next().getId()));
+    }
+
+    @Test
+    public void shouldReturnCorrectMaxTimeInVehicle() {
+        Service service = Delivery.Builder.newInstance("1").setLocation(Location.newInstance(51, 50)).setMaxTimeInVehicle(1).build();
+
+        Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
+
+        final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addVehicle(vehicle).addJob(service).build();
+
+        StateManager stateManager = new StateManager(vrp);
+        ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
+        StateId id = stateManager.createStateId("max-time");
+        StateId openJobsId = stateManager.createStateId("open-jobs-id");
+        stateManager.addStateUpdater(new UpdateMaxTimeInVehicle(stateManager, id, vrp.getVehicles(), vrp.getTransportCosts(), vrp.getActivityCosts(), openJobsId));
+        constraintManager.addConstraint(new MaxTimeInVehicleConstraint(vrp.getTransportCosts(), vrp.getActivityCosts(), id, stateManager, vrp, openJobsId), ConstraintManager.Priority.CRITICAL);
+
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager, constraintManager)
+            .buildAlgorithm();
+        UnassignedJobReasonTracker reasonTracker = new UnassignedJobReasonTracker();
+        vra.addListener(reasonTracker);
+
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
+        Assert.assertEquals(1, solution.getUnassignedJobs().size());
+        Assert.assertEquals(5, reasonTracker.getMostLikelyReasonCode(solution.getUnassignedJobs().iterator().next().getId()));
     }
 
     @Test

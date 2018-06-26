@@ -30,6 +30,7 @@ import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.DependencyType;
 import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
+import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
@@ -37,6 +38,7 @@ import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.*;
 import com.graphhopper.jsprit.core.util.Coordinate;
@@ -46,6 +48,11 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.UUID;
+
+import static com.graphhopper.jsprit.core.algorithm.box.Jsprit.Parameter.BREAK_SCHEDULING;
+import static org.junit.Assert.assertTrue;
 
 public class RegretInsertionTest {
 
@@ -123,6 +130,44 @@ public class RegretInsertionTest {
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
 
         Assert.assertEquals(2, solution.getRoutes().size());
+    }
+
+    @Test
+    public void solutionHaveToBeWithBreak() {
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(0, 10)).addTimeWindow(0, 50).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(0, -10)).addTimeWindow(0, 50).build();
+
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance(0, 5))
+            .setBreak(Break.Builder.newInstance(UUID.randomUUID().toString()).addTimeWindow(0, 10).build()).build();
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance(0, -5))
+            .setBreak(Break.Builder.newInstance(UUID.randomUUID().toString()).addTimeWindow(0, 10).build()).build();
+        final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2)
+            .addVehicle(v1).addVehicle(v2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
+
+        optimizeAndValidate(vrp, Jsprit.Parameter.FAST_REGRET);
+    }
+
+    private void optimizeAndValidate(VehicleRoutingProblem vrp, Jsprit.Parameter insertionStrategy) {
+        StateManager stateManager = new StateManager(vrp);
+        ConstraintManager constraintManager = new ConstraintManager(vrp,stateManager);
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
+            .setProperty(BREAK_SCHEDULING, Boolean.FALSE.toString())
+            .addCoreStateAndConstraintStuff(true)
+            .setProperty(insertionStrategy, Boolean.TRUE.toString())
+            .setStateAndConstraintManager(stateManager, constraintManager).buildAlgorithm();
+
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
+
+        Assert.assertEquals(2, solution.getRoutes().size());
+        final Iterator<VehicleRoute> iterator = solution.getRoutes().iterator();
+        while (iterator.hasNext()) {
+            final VehicleRoute route = iterator.next();
+            boolean hasBreak = false;
+            for (TourActivity activity : route.getActivities())
+                if (activity instanceof BreakActivity)
+                    hasBreak = true;
+            assertTrue(hasBreak);
+        }
     }
 
     static class JobInRouteUpdater implements StateUpdater, ActivityVisitor {
