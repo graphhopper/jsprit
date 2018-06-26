@@ -418,7 +418,7 @@ public class VehicleRoutingAlgorithms {
     }
 
     public static VehicleRoutingAlgorithm readAndCreateAlgorithm(final VehicleRoutingProblem vrp, int nThreads, final String configFileName, StateManager stateManager, ConstraintManager constraintManager,  SolutionCostCalculator solutionCostCalculator, Map<String, SolutionAcceptor> solutionAcceptors) {
-            AlgorithmConfig algorithmConfig = new AlgorithmConfig();
+        AlgorithmConfig algorithmConfig = new AlgorithmConfig();
         AlgorithmConfigXmlReader xmlReader = new AlgorithmConfigXmlReader(algorithmConfig);
         xmlReader.read(configFileName);
         return createAlgo(vrp, algorithmConfig.getXMLConfiguration(), nThreads, stateManager, constraintManager, solutionCostCalculator, solutionAcceptors);
@@ -889,8 +889,13 @@ public class VehicleRoutingAlgorithms {
                 ruin = getRadialRuin(vrp, routeStates, definedClasses, ruinKey, shareToRuin, jobDistance);
             } else if (ruin_name.equals("clusterRuin")) {
                 String initialNumberJobsToRemoveString = moduleConfig.getString("ruin.initRemoveJobs");
-                if (initialNumberJobsToRemoveString == null) throw new IllegalStateException("module.ruin.initRemoveJobs is missing.");
-                int initialNumberJobsToRemove = Integer.valueOf(initialNumberJobsToRemoveString);
+                String shareFactor = moduleConfig.getString("ruin.share");
+                int initialNumberJobsToRemove;
+                if (initialNumberJobsToRemoveString != null)
+                    initialNumberJobsToRemove = Integer.valueOf(initialNumberJobsToRemoveString);
+                else if(shareFactor != null)
+                    initialNumberJobsToRemove = (int) (Double.valueOf(shareFactor) * vrp.getJobs().size());
+                else throw new IllegalStateException("module.ruin.initRemoveJobs is missing.");
                 ruin = getClusterRuin(vrp, routeStates, definedClasses, ruinKey, initialNumberJobsToRemove);
             } else throw new IllegalStateException("ruin[@name] " + ruin_name + " is not known. Use either randomRuin or radialRuin.");
 
