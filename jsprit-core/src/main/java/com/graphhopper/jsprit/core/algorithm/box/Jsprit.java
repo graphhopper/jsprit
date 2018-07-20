@@ -526,8 +526,8 @@ public class Jsprit {
         boolean fastRegret = Boolean.parseBoolean(getProperty(Parameter.FAST_REGRET.toString()));
         if (es != null) {
             if(fastRegret){
-                RegretInsertionConcurrentFast regretInsertion = (RegretInsertionConcurrentFast) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
-                    .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
+                RegretInsertionConcurrentFast regretInsertion = (RegretInsertionConcurrentFast) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
                     .setConcurrentMode(es, noThreads)
                     .setFastRegret(true)
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
@@ -540,8 +540,8 @@ public class Jsprit {
                 regret = regretInsertion;
             }
             else {
-                RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
-                    .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
+                RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
                     .setConcurrentMode(es, noThreads)
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
@@ -553,8 +553,8 @@ public class Jsprit {
             }
         } else {
             if(fastRegret) {
-                RegretInsertionFast regretInsertion = (RegretInsertionFast) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
-                    .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
+                RegretInsertionFast regretInsertion = (RegretInsertionFast) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
                     .setFastRegret(true)
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
@@ -566,8 +566,8 @@ public class Jsprit {
                 regret = regretInsertion;
             }
             else{
-                RegretInsertion regretInsertion = (RegretInsertion) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
-                    .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
+                RegretInsertion regretInsertion = (RegretInsertion) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
@@ -581,16 +581,16 @@ public class Jsprit {
 
         AbstractInsertionStrategy best;
         if (vrp.getJobs().size() < 250 || es == null) {
-            BestInsertion bestInsertion = (BestInsertion) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
-                .setInsertionStrategy(InsertionBuilder.Strategy.BEST)
+            BestInsertion bestInsertion = (BestInsertion) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                .setInsertionStrategy(InsertionStrategyBuilder.Strategy.BEST)
                 .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                 .setActivityInsertionCostCalculator(activityInsertion)
                 .build();
             best = bestInsertion;
         } else {
-            BestInsertionConcurrent bestInsertion = (BestInsertionConcurrent) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
-                .setInsertionStrategy(InsertionBuilder.Strategy.BEST)
+            BestInsertionConcurrent bestInsertion = (BestInsertionConcurrent) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                .setInsertionStrategy(InsertionStrategyBuilder.Strategy.BEST)
                 .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                 .setConcurrentMode(es, noThreads)
