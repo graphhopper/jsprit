@@ -49,8 +49,7 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
 
     public BreakScheduling(VehicleRoutingProblem vrp, StateManager stateManager, ConstraintManager constraintManager) {
         this.stateManager = stateManager;
-        this.breakInsertionCalculator = new BreakInsertionCalculator(vrp.getTransportCosts(),vrp.getActivityCosts(),new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(),vrp.getActivityCosts(),stateManager),constraintManager);
-        this.breakInsertionCalculator.setJobActivityFactory(vrp.getJobActivityFactory());
+        this.breakInsertionCalculator = new BreakInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), stateManager), constraintManager, vrp.getJobActivityFactory());
         eventListeners = new EventListeners();
     }
 
