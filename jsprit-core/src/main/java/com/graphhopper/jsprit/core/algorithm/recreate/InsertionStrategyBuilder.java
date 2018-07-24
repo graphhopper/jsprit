@@ -90,16 +90,19 @@ public class InsertionStrategyBuilder {
         this.fleetManager = vehicleFleetManager;
     }
 
-    public void setShipmentInsertionCalculatorFactory(JobInsertionCostsCalculatorFactory shipmentInsertionCalculatorFactory) {
+    public InsertionStrategyBuilder setShipmentInsertionCalculatorFactory(JobInsertionCostsCalculatorFactory shipmentInsertionCalculatorFactory) {
         this.shipmentInsertionCalculatorFactory = shipmentInsertionCalculatorFactory;
+        return this;
     }
 
-    public void setServiceInsertionCalculator(JobInsertionCostsCalculatorFactory serviceInsertionCalculator) {
+    public InsertionStrategyBuilder setServiceInsertionCalculator(JobInsertionCostsCalculatorFactory serviceInsertionCalculator) {
         this.serviceInsertionCalculatorFactory = serviceInsertionCalculator;
+        return this;
     }
 
-    public void setBreakInsertionCalculator(JobInsertionCostsCalculatorFactory breakInsertionCalculator) {
+    public InsertionStrategyBuilder setBreakInsertionCalculator(JobInsertionCostsCalculatorFactory breakInsertionCalculator) {
         this.breakInsertionCalculatorFactory = breakInsertionCalculator;
+        return this;
     }
 
     public InsertionStrategyBuilder setInsertionStrategy(Strategy strategy) {
