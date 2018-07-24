@@ -130,6 +130,24 @@ public class JobInsertionCostsCalculatorBuilder {
         this.algorithmListeners = algorithmListeners;
     }
 
+    public JobInsertionCostsCalculatorBuilder setShipmentCalculatorFactory(JobInsertionCostsCalculatorFactory shipmentCalculatorFactory) {
+        if (shipmentCalculatorFactory == null) return this;
+        this.shipmentCalculatorFactory = shipmentCalculatorFactory;
+        return this;
+    }
+
+    public JobInsertionCostsCalculatorBuilder setServiceCalculatorFactory(JobInsertionCostsCalculatorFactory serviceCalculatorFactory) {
+        if (serviceCalculatorFactory == null) return this;
+        this.serviceCalculatorFactory = serviceCalculatorFactory;
+        return this;
+    }
+
+    public JobInsertionCostsCalculatorBuilder setBreakCalculatorFactory(JobInsertionCostsCalculatorFactory breakCalculatorFactory) {
+        if (breakCalculatorFactory == null) return this;
+        this.breakCalculatorFactory = breakCalculatorFactory;
+        return this;
+    }
+
     /**
      * Sets activityStates. MUST be set.
      *

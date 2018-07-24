@@ -76,12 +76,30 @@ public class InsertionStrategyBuilder {
 
     private boolean isFastRegret = false;
 
+    private JobInsertionCostsCalculatorFactory shipmentInsertionCalculatorFactory;
+
+    private JobInsertionCostsCalculatorFactory serviceInsertionCalculatorFactory;
+
+    private JobInsertionCostsCalculatorFactory breakInsertionCalculatorFactory;
+
     public InsertionStrategyBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
         super();
         this.vrp = vrp;
         this.stateManager = stateManager;
         this.constraintManager = constraintManager;
         this.fleetManager = vehicleFleetManager;
+    }
+
+    public void setShipmentInsertionCalculatorFactory(JobInsertionCostsCalculatorFactory shipmentInsertionCalculatorFactory) {
+        this.shipmentInsertionCalculatorFactory = shipmentInsertionCalculatorFactory;
+    }
+
+    public void setServiceInsertionCalculator(JobInsertionCostsCalculatorFactory serviceInsertionCalculator) {
+        this.serviceInsertionCalculatorFactory = serviceInsertionCalculator;
+    }
+
+    public void setBreakInsertionCalculator(JobInsertionCostsCalculatorFactory breakInsertionCalculator) {
+        this.breakInsertionCalculatorFactory = breakInsertionCalculator;
     }
 
     public InsertionStrategyBuilder setInsertionStrategy(Strategy strategy) {
@@ -155,6 +173,12 @@ public class InsertionStrategyBuilder {
         } else {
             calcBuilder.setRouteLevel(forwaredLooking, memory, addDefaultCostCalc);
         }
+        if (shipmentInsertionCalculatorFactory != null)
+            calcBuilder.setShipmentCalculatorFactory(shipmentInsertionCalculatorFactory);
+        if (serviceInsertionCalculatorFactory != null)
+            calcBuilder.setServiceCalculatorFactory(serviceInsertionCalculatorFactory);
+        if (breakInsertionCalculatorFactory != null)
+            calcBuilder.setBreakCalculatorFactory(breakInsertionCalculatorFactory);
         calcBuilder.setConstraintManager(constraintManager);
         calcBuilder.setStateManager(stateManager);
         calcBuilder.setVehicleRoutingProblem(vrp);
