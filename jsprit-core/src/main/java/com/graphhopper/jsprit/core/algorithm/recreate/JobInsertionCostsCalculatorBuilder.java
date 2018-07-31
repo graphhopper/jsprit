@@ -94,26 +94,11 @@ public class JobInsertionCostsCalculatorBuilder {
 
     private boolean addDefaultCostCalc = true;
 
-    private JobInsertionCostsCalculatorFactory shipmentCalculatorFactory = new JobInsertionCostsCalculatorFactory() {
-        @Override
-        public JobInsertionCostsCalculator create(VehicleRoutingProblem vrp, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, JobActivityFactory jobActivityFactory, ConstraintManager constraintManager) {
-            return new ShipmentInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityInsertionCostsCalculator, constraintManager, jobActivityFactory);
-        }
-    };
+    private JobInsertionCostsCalculatorFactory shipmentCalculatorFactory = new ShipmentInsertionCalculatorFactory();
 
-    private JobInsertionCostsCalculatorFactory serviceCalculatorFactory = new JobInsertionCostsCalculatorFactory() {
-        @Override
-        public JobInsertionCostsCalculator create(VehicleRoutingProblem vrp, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, JobActivityFactory jobActivityFactory, ConstraintManager constraintManager) {
-            return new ServiceInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityInsertionCostsCalculator, constraintManager, jobActivityFactory);
-        }
-    };
+    private JobInsertionCostsCalculatorFactory serviceCalculatorFactory = new ServiceInsertionCalculatorFactory();
 
-    private JobInsertionCostsCalculatorFactory breakCalculatorFactory = new JobInsertionCostsCalculatorFactory() {
-        @Override
-        public JobInsertionCostsCalculator create(VehicleRoutingProblem vrp, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, JobActivityFactory jobActivityFactory, ConstraintManager constraintManager) {
-            return new BreakInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityInsertionCostsCalculator, constraintManager, jobActivityFactory);
-        }
-    };
+    private JobInsertionCostsCalculatorFactory breakCalculatorFactory = new BreakInsertionCalculatorFactory();
 
     /**
      * Constructs the builder.

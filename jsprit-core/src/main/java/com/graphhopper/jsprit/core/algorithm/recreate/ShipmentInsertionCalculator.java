@@ -77,7 +77,7 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
 
     @Override
     public String toString() {
-        return "[name=calculatesServiceInsertion]";
+        return "[name=calculatesShipmentInsertion]";
     }
 
     /**
