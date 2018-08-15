@@ -25,8 +25,8 @@ public class RandomInsertionTest {
         final HashSet<String> first = new HashSet<>(); first.add("C");
         final HashSet<String> second = new HashSet<>(); second.add("A");second.add("B");
         final VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
-            .addVehicle(getVehicle("v1", Location.newInstance(0, 0), 0, 100, 20, first, false, 1, 1, false))
-            .addVehicle(getVehicle("v2", Location.newInstance(0, 14), 0, 100, 20, second, false, 1, 1, false))
+            .addVehicle(getVehicle("v1", Location.newInstance(0, 0), 0, 100, 20, first, false, 1, 1, false, null))
+            .addVehicle(getVehicle("v2", Location.newInstance(0, 14), 0, 100, 20, second, false, 1, 1, false, null))
             .addJob(getService(Location.newInstance(0, 5), 0, 20, new HashSet<String>(), 1))
             .addJob(getService(Location.newInstance(0, 6), 0, 20, new HashSet<String>(), 1));
 
@@ -34,7 +34,7 @@ public class RandomInsertionTest {
         final Map<String, Integer> jobCanBeServedByDriversCount = randomInsertion.jobCanBeServedByDriversCount;
 
         for (int numCanServe : jobCanBeServedByDriversCount.values())
-            assertEquals(numCanServe, 2);
+            assertEquals(4, numCanServe);
     }
 
     @Test
@@ -42,8 +42,8 @@ public class RandomInsertionTest {
         final HashSet<String> first = new HashSet<>(); first.add("C");
         final HashSet<String> second = new HashSet<>(); second.add("A");second.add("B");
         final VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
-            .addVehicle(getVehicle("v1", Location.newInstance(0, 0), 0, 100, 20, first, false, 1, 1, true))
-            .addVehicle(getVehicle("v2", Location.newInstance(0, 14), 0, 100, 20, second, false, 1, 1, true))
+            .addVehicle(getVehicle("v1", Location.newInstance(0, 0), 0, 100, 20, first, false, 1, 1, true, null))
+            .addVehicle(getVehicle("v2", Location.newInstance(0, 14), 0, 100, 20, second, false, 1, 1, true, null))
             .addJob(getService(Location.newInstance(0, 5), 0, 20, new HashSet<String>(), 1))
             .addJob(getService(Location.newInstance(0, 6), 0, 20, new HashSet<String>(), 1));
 
@@ -58,7 +58,7 @@ public class RandomInsertionTest {
             }
         }
 
-        assertEquals(numBreaks, 2);
+        assertEquals(2, numBreaks);
     }
 
     @Test
@@ -66,8 +66,8 @@ public class RandomInsertionTest {
         final HashSet<String> first = new HashSet<>(); first.add("C");
         final HashSet<String> second = new HashSet<>(); second.add("A");second.add("B");
         final VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
-            .addVehicle(getVehicle("v1", Location.newInstance(0, 0), 0, 100, 20, first, false, 1, 1, false))
-            .addVehicle(getVehicle("v2", Location.newInstance(0, 14), 0, 100, 20, second, false, 1, 1, false))
+            .addVehicle(getVehicle("v1", Location.newInstance(0, 0), 0, 100, 20, first, false, 1, 1, false, null))
+            .addVehicle(getVehicle("v2", Location.newInstance(0, 14), 0, 100, 20, second, false, 1, 1, false, null))
             .addJob(getService(Location.newInstance(0, 5), 0, 20, first, 1))
             .addJob(getService(Location.newInstance(0, 6), 0, 20, second, 1));
 
@@ -75,7 +75,28 @@ public class RandomInsertionTest {
         final Map<String, Integer> jobCanBeServedByDriversCount = randomInsertion.jobCanBeServedByDriversCount;
 
         for (int numCanServe : jobCanBeServedByDriversCount.values())
-            assertEquals(numCanServe, 1);
+            assertEquals(3, numCanServe);
+    }
+
+    @Test
+    public void initJobsCanBeServedByNumDrivers3() {
+        final Service service1 = getService(Location.newInstance(0, 5), 0, 20, new HashSet<String>(), 1);
+        final Service service2 = getService(Location.newInstance(0, 6), 0, 20, new HashSet<String>(), 1);
+        final Vehicle v1 = getVehicle("v1", Location.newInstance(0, 0), 0, 100, 20, new HashSet<String>(), false, 1, 1, false, service1.getId());
+        final Vehicle v2 = getVehicle("v2", Location.newInstance(0, 14), 0, 100, 20, new HashSet<String>(), false, 1, 1, false, service2.getId());
+
+
+        final VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
+            .addVehicle(v1)
+            .addVehicle(v2)
+            .addJob(service1)
+            .addJob(service2);
+
+        final RandomInsertion randomInsertion = new RandomInsertion(null, builder.build());
+        final Map<String, Integer> jobCanBeServedByDriversCount = randomInsertion.jobCanBeServedByDriversCount;
+
+        for (int numCanServe : jobCanBeServedByDriversCount.values())
+            assertEquals(3, numCanServe);
     }
 
     private static Service getService(Location location, int start, int end, Set<String> requiredSkills, int priority) {
@@ -90,13 +111,15 @@ public class RandomInsertionTest {
 
     }
 
-    private static Vehicle getVehicle(String id, Location location, int start, int end, int capacity, Set<String> skills, boolean returnToDepot, int fixedCost, int costPerDistance, boolean aBreak) {
+    private static Vehicle getVehicle(String id, Location location, int start, int end, int capacity, Set<String> skills, boolean returnToDepot, int fixedCost, int costPerDistance, boolean aBreak, String excludeTask) {
         final VehicleImpl.Builder builder = VehicleImpl.Builder.newInstance(id)
             .setStartLocation(location).setLatestArrival(end).setEarliestStart(start).setType(
                 VehicleTypeImpl.Builder.newInstance(UUID.randomUUID().toString()).setFixedCost(fixedCost).setCostPerDistance(costPerDistance).addCapacityDimension(0, capacity).build()
             )
             .addAllSkills(skills).setReturnToDepot(returnToDepot);
 
+        if (excludeTask != null)
+            builder.addExcludedTask(excludeTask);
         if (aBreak)
             builder.setBreak(Break.Builder.newInstance("break_" + id).build());
         return builder.build();

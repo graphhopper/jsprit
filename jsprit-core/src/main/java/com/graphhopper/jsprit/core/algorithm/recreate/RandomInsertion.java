@@ -27,9 +27,12 @@ public class RandomInsertion extends AbstractInsertionStrategy {
     void initJobsCanBeServedByNumDrivers() {
         for (Job job : vrp.getJobs().values()) {
             int count = 0;
-            for (Vehicle vehicle : vrp.getVehicles())
+            for (Vehicle vehicle : vrp.getVehicles()) {
                 if (vehicle.getSkills().values().containsAll(job.getRequiredSkills().values()))
                     count++;
+                if (vehicle.isTaskPermited(job.getId()))
+                    count++;
+            }
 
             jobCanBeServedByDriversCount.put(job.getId(), count);
         }
@@ -55,7 +58,7 @@ public class RandomInsertion extends AbstractInsertionStrategy {
         final double p = random.nextDouble();
         if (p < .25)
             Collections.sort(unassignedJobList, new AccordingToPriorities());
-        else if (p < .5)
+        else if (p < .75)
             Collections.sort(unassignedJobList, new Comparator<Job>() {
                 @Override
                 public int compare(Job o1, Job o2) {return jobCanBeServedByDriversCount.get(o1.getId()) - jobCanBeServedByDriversCount.get(o2.getId());}
