@@ -132,6 +132,9 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
         }
 
         if (nextAct instanceof End) {
+            if (endTimeAtNewAct > latestArrTimeAtNextAct) {
+                return ConstraintsStatus.NOT_FULFILLED;
+            }
             if (!iFacts.getNewVehicle().isReturnToDepot()) {
                 return ConstraintsStatus.FULFILLED;
             }

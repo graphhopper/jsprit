@@ -31,6 +31,8 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.*;
 import com.graphhopper.jsprit.core.util.CostFactory;
 import org.junit.Before;
@@ -39,6 +41,8 @@ import org.junit.Test;
 import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * unit tests to test vehicle dependent time-windows
@@ -340,5 +344,50 @@ public class VehicleDependentTimeWindowTest {
 
     }
 
+    @Test
+    public void driverStartInHisTW() {
+        Vehicle v = mock(Vehicle.class);
+        when(v.getStartLocation()).thenReturn(Location.newInstance("0, 1"));
+        when(v.isReturnToDepot()).thenReturn(false);
+        when(v.getEarliestDeparture()).thenReturn(0.0);
+        when(v.getLatestArrival()).thenReturn(60.0);
+
+        Service s = Service.Builder.newInstance("service").setLocation(Location.newInstance("1, 0")).addTimeWindow(new TimeWindow(15, 115)).setServiceTime(50).build();
+
+        final TourActivity service = mock(TourActivity.class);
+        when(service.getTheoreticalEarliestOperationStartTime()).thenReturn(15.0);
+        when(service.getTheoreticalLatestOperationStartTime()).thenReturn(115.0);
+        when(service.getLocation()).thenReturn(Location.newInstance("1, 0"));
+        when(service.getOperationTime()).thenReturn(50.0);
+
+        route = VehicleRoute.Builder.newInstance(vehicle).addService(s).build();
+        JobInsertionContext insertionContext = new JobInsertionContext(route, s, v, route.getDriver(), 60.);
+        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
+        HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getStart(), service, route.getEnd(), 0);
+        assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+    }
+
+    @Test
+    public void driverStartInHisTW2() {
+        Vehicle v = mock(Vehicle.class);
+        when(v.getStartLocation()).thenReturn(Location.newInstance(0, 1));
+        when(v.isReturnToDepot()).thenReturn(false);
+        when(v.getEarliestDeparture()).thenReturn(0.0);
+        when(v.getLatestArrival()).thenReturn(60.0);
+
+        Service s = Service.Builder.newInstance("service").setLocation(Location.newInstance("1, 0")).addTimeWindow(new TimeWindow(15, 115)).setServiceTime(50).build();
+
+        final TourActivity service = mock(TourActivity.class);
+        when(service.getTheoreticalEarliestOperationStartTime()).thenReturn(15.0);
+        when(service.getTheoreticalLatestOperationStartTime()).thenReturn(115.0);
+        when(service.getLocation()).thenReturn(Location.newInstance("1, 0"));
+        when(service.getOperationTime()).thenReturn(15.0);
+
+        route = VehicleRoute.Builder.newInstance(vehicle).addService(s).build();
+        JobInsertionContext insertionContext = new JobInsertionContext(route, s, v, route.getDriver(), 15.);
+        HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
+        HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getStart(), service, route.getEnd(), 0);
+        assertTrue(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+    }
 
 }
