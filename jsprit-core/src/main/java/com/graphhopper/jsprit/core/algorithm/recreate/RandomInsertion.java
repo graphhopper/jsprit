@@ -3,7 +3,10 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +30,10 @@ public class RandomInsertion extends AbstractInsertionStrategy {
     void initJobsCanBeServedByNumDrivers() {
         for (Job job : vrp.getJobs().values()) {
             int count = 0;
-            for (Vehicle vehicle : vrp.getVehicles())
-                if (vehicle.getSkills().values().containsAll(job.getRequiredSkills().values()))
+            for (Vehicle vehicle : vrp.getVehicles()) {
+                if (cabBeServedByVehicle(job, vehicle))
                     count++;
+            }
 
             jobCanBeServedByDriversCount.put(job.getId(), count);
         }
@@ -52,14 +56,7 @@ public class RandomInsertion extends AbstractInsertionStrategy {
         List<Job> unassignedJobList = new ArrayList<>(unassignedJobs);
         Collections.shuffle(unassignedJobList, random);
 
-        final double p = random.nextDouble();
-        if (p < .25)
-            Collections.sort(unassignedJobList, new AccordingToPriorities());
-        else if (p < .5)
-            Collections.sort(unassignedJobList, new Comparator<Job>() {
-                @Override
-                public int compare(Job o1, Job o2) {return jobCanBeServedByDriversCount.get(o1.getId()) - jobCanBeServedByDriversCount.get(o2.getId());}
-            });
+        sortJobs(unassignedJobList);
 
         for (Job unassignedJob : unassignedJobList) {
             List<VehicleRoute> routes = new ArrayList<>(vehicleRoutes);
@@ -97,6 +94,39 @@ public class RandomInsertion extends AbstractInsertionStrategy {
             }
         }
         return badJobs;
+    }
+
+    void sortJobs(List<Job> unassignedJobList) {
+        final double p = random.nextDouble();
+        if (p < .25)
+            Collections.sort(unassignedJobList, new AccordingToPriorities());
+        else if (p < .75)
+            Collections.sort(unassignedJobList, new Comparator<Job>() {
+                @Override
+                public int compare(Job o1, Job o2) {return jobCanBeServedByDriversCount.get(o1.getId()) - jobCanBeServedByDriversCount.get(o2.getId());}
+            });
+    }
+
+    protected static boolean inTimeWindow(Job job, double earliestDeparture, double latestArrival) {
+        if (job instanceof Service) {
+            return inTimeWindow(((Service) job).getTimeWindows(), earliestDeparture, latestArrival);
+        } else if (job instanceof Shipment) {
+            Shipment shipment = (Shipment) job;
+            return inTimeWindow(shipment.getDeliveryTimeWindows(), earliestDeparture, latestArrival) && inTimeWindow(shipment.getPickupTimeWindows(), earliestDeparture, latestArrival);
+        }
+        return true;
+    }
+
+    private static boolean cabBeServedByVehicle(Job job, Vehicle vehicle) {
+        return inTimeWindow(job, vehicle.getEarliestDeparture(), vehicle.getLatestArrival()) && vehicle.getSkills().values().containsAll(job.getRequiredSkills().values()) && vehicle.isTaskPermited(job.getId());
+    }
+
+    private static boolean inTimeWindow(Collection<TimeWindow> timeWindows, double earliestDeparture, double latestArrival) {
+        for (TimeWindow timeWindow : timeWindows) {
+            if (timeWindow.getStart() < latestArrival && timeWindow.getEnd() > earliestDeparture)
+                return true;
+        }
+        return false;
     }
 
 }
