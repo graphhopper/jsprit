@@ -104,6 +104,10 @@ public final class RuinWorst extends AbstractRuinStrategy {
             TourActivity actBefore = route.getStart();
             TourActivity actToEval = null;
             for (TourActivity act : route.getActivities()) {
+                if (!(act instanceof TourActivity.JobActivity)) {
+                    continue;
+                }
+
                 if (actToEval == null) {
                     actToEval = act;
                     continue;
