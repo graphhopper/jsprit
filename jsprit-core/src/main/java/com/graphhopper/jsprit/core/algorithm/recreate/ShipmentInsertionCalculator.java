@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
+import com.graphhopper.jsprit.core.problem.constraint.HardConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
@@ -135,7 +136,7 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         //pickupShipmentLoop
         List<TourActivity> activities = currentRoute.getTourActivities().getActivities();
 
-        List<String> failedActivityConstraints = new ArrayList<>();
+        List<Class<? extends HardConstraint>> failedActivityConstraints = new ArrayList<>();
         while (!tourEnd) {
             TourActivity nextAct;
             if (i < activities.size()) {
@@ -235,7 +236,9 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         }
         if (pickupInsertionIndex == InsertionData.NO_INDEX) {
             InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
-            emptyInsertionData.getFailedConstraintNames().addAll(failedActivityConstraints);
+            for(Class<? extends HardConstraint> hardConstraintClass : failedActivityConstraints) {
+                emptyInsertionData.getFailedConstraintNames().add(hardConstraintClass.getSimpleName());
+            }
             return emptyInsertionData;
         }
         InsertionData insertionData = new InsertionData(bestCost, pickupInsertionIndex, deliveryInsertionIndex, newVehicle, newDriver);
