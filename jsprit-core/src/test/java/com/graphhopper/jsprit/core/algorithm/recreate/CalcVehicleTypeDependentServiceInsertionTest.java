@@ -112,10 +112,10 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
         JobInsertionCostsCalculator calc = mock(JobInsertionCostsCalculator.class);
         InsertionData iDataVeh1 = new InsertionData(insertionCost1, InsertionData.NO_INDEX, 1, veh1, null);
         InsertionData iDataVeh2 = new InsertionData(insertionCost2, InsertionData.NO_INDEX, 1, veh2, null);
-        InsertionData iDataVeh1WithoutFixed = new InsertionData(insertionCost1, InsertionData.NO_INDEX, 1, veh1, null);
+        InsertionData iDataVeh1PlusFixed = new InsertionData(insertionCost1 + fixed1, InsertionData.NO_INDEX, 1, veh1, null);
         when(calc.getInsertionData(vehicleRoute, service, veh1, veh1.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh1);
         when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh2);
-        when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, iDataVeh1WithoutFixed.getInsertionCost())).thenReturn(iDataVeh1WithoutFixed);
+        when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, iDataVeh1PlusFixed.getInsertionCost())).thenReturn(iDataVeh1PlusFixed);
         VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
         when(vrp.getInitialVehicleRoutes()).thenReturn(Collections.<VehicleRoute>emptyList());
         VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(vrp, fleetManager, calc);

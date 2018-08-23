@@ -101,9 +101,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
         InsertionData bestIData = new InsertionData.NoInsertionFound();
         double bestKnownCost_ = bestKnownCost;
         Collection<Vehicle> relevantVehicles = new ArrayList<Vehicle>();
-        double currentVehicleFixedCost = .0;
         if (!(selectedVehicle instanceof VehicleImpl.NoVehicle)) {
-            currentVehicleFixedCost = selectedVehicle.getType().getVehicleCostParams().fix;
             relevantVehicles.add(selectedVehicle);
             if (vehicleSwitchAllowed && !isVehicleWithInitialRoute(selectedVehicle)) {
                 relevantVehicles.addAll(fleetManager.getAvailableVehicles(selectedVehicle));
@@ -120,13 +118,17 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
                 bestIData.getFailedConstraintNames().addAll(iData.getFailedConstraintNames());
                 continue;
             }
-
-            double additionalFixedCost = v.getType().getVehicleCostParams().fix - currentVehicleFixedCost;
-            if (iData.getInsertionCost() + additionalFixedCost < bestKnownCost_) {
+            iData.setInsertionCost(iData.getInsertionCost() + v.getType().getVehicleCostParams().fix);
+            if (iData.getInsertionCost() < bestKnownCost_) {
                 bestIData = iData;
                 bestKnownCost_ = iData.getInsertionCost();
             }
         }
+
+        if (bestIData.getSelectedVehicle() != null) {
+            bestIData.setInsertionCost(bestIData.getInsertionCost() - bestIData.getSelectedVehicle().getType().getVehicleCostParams().fix);
+        }
+
         return bestIData;
     }
 
