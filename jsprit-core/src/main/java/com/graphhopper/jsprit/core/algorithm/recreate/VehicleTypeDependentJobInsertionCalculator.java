@@ -113,6 +113,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
         }
         for (Vehicle v : relevantVehicles) {
             double depTime;
+
             if (v == selectedVehicle) depTime = currentRoute.getDepartureTime();
             else depTime = v.getEarliestDeparture();
             InsertionData iData = insertionCalculator.getInsertionData(currentRoute, jobToInsert, v, depTime, selectedDriver, bestKnownCost_);
@@ -124,9 +125,10 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
             double additionalFixedCost = v.getType().getVehicleCostParams().fix - currentVehicleFixedCost;
             if (iData.getInsertionCost() + additionalFixedCost < bestKnownCost_) {
                 bestIData = iData;
-                bestKnownCost_ = iData.getInsertionCost();
+                bestKnownCost_ = iData.getInsertionCost() + additionalFixedCost;
             }
         }
+
         return bestIData;
     }
 

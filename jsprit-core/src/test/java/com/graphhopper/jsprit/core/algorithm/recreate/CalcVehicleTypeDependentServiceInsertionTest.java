@@ -104,18 +104,16 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
 
     @Test
     public void whenHaving2VehicleCalcInsertionOfCheapestByFixedCost2() {
-        double insertionCost2 = RANDOM.nextInt(100);
-        double insertionCost1 = insertionCost2 + RANDOM.nextInt(100);
-        double fixed1 = RANDOM.nextDouble() + 1;
-        double fixed2 = RANDOM.nextDouble() + fixed1 + insertionCost2;
+        double insertionCost1 = RANDOM.nextInt(100);
+        double insertionCost2 = insertionCost1 + RANDOM.nextInt(100);
+        double fixed1 = Math.abs(RANDOM.nextInt(100) + 1);
+        double fixed2 = Math.abs(RANDOM.nextInt(100) + fixed1 + insertionCost2);
         initVehicles(fixed1, fixed2);
         JobInsertionCostsCalculator calc = mock(JobInsertionCostsCalculator.class);
         InsertionData iDataVeh1 = new InsertionData(insertionCost1, InsertionData.NO_INDEX, 1, veh1, null);
         InsertionData iDataVeh2 = new InsertionData(insertionCost2, InsertionData.NO_INDEX, 1, veh2, null);
-        InsertionData iDataVeh1WithoutFixed = new InsertionData(insertionCost1, InsertionData.NO_INDEX, 1, veh1, null);
         when(calc.getInsertionData(vehicleRoute, service, veh1, veh1.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh1);
-        when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, Double.MAX_VALUE)).thenReturn(iDataVeh2);
-        when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, iDataVeh1WithoutFixed.getInsertionCost())).thenReturn(iDataVeh1WithoutFixed);
+        when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, insertionCost1 + fixed1)).thenReturn(iDataVeh2);
         VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
         when(vrp.getInitialVehicleRoutes()).thenReturn(Collections.<VehicleRoute>emptyList());
         VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(vrp, fleetManager, calc);
