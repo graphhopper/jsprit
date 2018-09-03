@@ -124,13 +124,10 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
 
             double additionalFixedCost = v.getType().getVehicleCostParams().fix - currentVehicleFixedCost;
             if (iData.getInsertionCost() + additionalFixedCost < bestKnownCost_) {
-                iData.setInsertionCost(iData.getInsertionCost() + additionalFixedCost);
                 bestIData = iData;
-                bestKnownCost_ = iData.getInsertionCost();
+                bestKnownCost_ = iData.getInsertionCost() + additionalFixedCost;
             }
         }
-        if (!(bestIData instanceof InsertionData.NoInsertionFound))
-            bestIData.setInsertionCost(bestIData.getInsertionCost() - bestIData.getSelectedVehicle().getType().getVehicleCostParams().fix);
 
         return bestIData;
     }
