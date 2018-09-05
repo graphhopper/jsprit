@@ -414,14 +414,15 @@ public class VehicleRoutingProblem {
             return this;
         }
 
-        public final List<AbstractActivity> nonJobActivities = new ArrayList<>();
+        private final List<AbstractActivity> nonJobActivities = new ArrayList<>();
 
-        public void addNonJobActivities(Collection<? extends AbstractActivity> nonJobActivities) {
+        public Builder addNonJobActivities(Collection<? extends AbstractActivity> nonJobActivities) {
             for (AbstractActivity act : nonJobActivities) {
                 act.setIndex(activityIndexCounter);
                 incActivityIndexCounter();
                 this.nonJobActivities.add(act);
             }
+            return this;
         }
 
         /**
