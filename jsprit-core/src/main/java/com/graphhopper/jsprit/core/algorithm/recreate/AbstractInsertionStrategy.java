@@ -94,6 +94,16 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
         return badJobs;
     }
 
+    @Override
+    public Collection<Job> insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs, boolean informInsertionStarts, boolean informInsertionEnds) {
+        if (informInsertionStarts)
+            insertionsListeners.informInsertionStarts(vehicleRoutes, unassignedJobs);
+        Collection<Job> badJobs = insertUnassignedJobs(vehicleRoutes, unassignedJobs);
+        if (informInsertionEnds)
+            insertionsListeners.informInsertionEndsListeners(vehicleRoutes);
+        return badJobs;
+    }
+
     public void markUnassigned(Job unassigned, List<String> reasons) {
         insertionsListeners.informJobUnassignedListeners(unassigned, reasons);
     }

@@ -89,6 +89,8 @@ public class Shipment extends AbstractJob {
 
         public double maxTimeInVehicle = Double.MAX_VALUE;
 
+        private String driverId = null;
+
         /**
          * Returns new instance of this builder.
          *
@@ -239,6 +241,10 @@ public class Shipment extends AbstractJob {
             return this;
         }
 
+        public Builder setDriverId(String driverId) {
+            this.driverId = driverId;
+            return this;
+        }
 
         /**
          * Builds the shipment.
@@ -368,6 +374,8 @@ public class Shipment extends AbstractJob {
 
     private final double maxTimeInVehicle;
 
+    private final String driverId;
+
     Shipment(Builder builder) {
         setUserData(builder.userData);
         this.id = builder.id;
@@ -382,6 +390,7 @@ public class Shipment extends AbstractJob {
         this.pickupTimeWindows = builder.pickupTimeWindows;
         this.priority = builder.priority;
         this.maxTimeInVehicle = builder.maxTimeInVehicle;
+        this.driverId = builder.driverId;
     }
 
     @Override
@@ -519,5 +528,9 @@ public class Shipment extends AbstractJob {
     @Override
     public double getMaxTimeInVehicle() {
         return maxTimeInVehicle;
+    }
+
+    public String getDriverId() {
+        return driverId;
     }
 }

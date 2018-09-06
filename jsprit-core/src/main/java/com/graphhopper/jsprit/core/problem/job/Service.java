@@ -93,6 +93,8 @@ public class Service extends AbstractJob {
 
 		protected double maxTimeInVehicle = Double.MAX_VALUE;
 
+		protected String driverId = null;
+
 		Builder(String id){
 			this.id = id;
 			timeWindows = new TimeWindowsImpl();
@@ -260,6 +262,11 @@ public class Service extends AbstractJob {
 //            this.maxTimeInVehicle = maxTimeInVehicle;
 //            return this;
         }
+
+        public  Builder<T> setDriverId(String driverId) {
+            this.driverId = driverId;
+            return this;
+        }
     }
 
     private final String id;
@@ -282,6 +289,8 @@ public class Service extends AbstractJob {
 
     private final double maxTimeInVehicle;
 
+    private final String driverId;
+
     Service(Builder<?> builder) {
         setUserData(builder.userData);
         id = builder.id;
@@ -294,6 +303,7 @@ public class Service extends AbstractJob {
         timeWindows = builder.timeWindows;
         priority = builder.priority;
 	    maxTimeInVehicle = builder.maxTimeInVehicle;
+	    driverId = builder.driverId;
 	}
 
     public Collection<TimeWindow> getTimeWindows(){
@@ -414,4 +424,7 @@ public class Service extends AbstractJob {
         return this.maxTimeInVehicle;
     }
 
+    public String getDriverId() {
+        return driverId;
+    }
 }

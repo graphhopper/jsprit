@@ -168,6 +168,9 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 //	public void add
 
     public void addConstraint(HardActivityConstraint actLevelConstraint, Priority priority) {
+        if (actLevelConstraint instanceof VehicleDependentTimeWindowConstraints) {
+            timeWindowConstraintsSet = true;
+        }
         actLevelConstraintManager.addConstraint(actLevelConstraint, priority);
     }
 

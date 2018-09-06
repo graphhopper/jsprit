@@ -46,4 +46,6 @@ public interface InsertionStrategy {
 
     public Collection<InsertionListener> getListeners();
 
+    public Collection<Job> insertJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs, boolean informInsertionStarts, boolean informInsertionEnds);
+
 }

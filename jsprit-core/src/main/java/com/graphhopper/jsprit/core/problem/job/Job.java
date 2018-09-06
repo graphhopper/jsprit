@@ -65,4 +65,5 @@ public interface Job extends HasId, HasIndex {
 
     public double getMaxTimeInVehicle();
 
+    public String getDriverId();
 }
