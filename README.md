@@ -1,6 +1,8 @@
 jsprit
 ======
 [![Build Status](https://travis-ci.org/graphhopper/jsprit.svg?branch=master)](https://travis-ci.org/graphhopper/jsprit)
+[![Code Quality: Java](https://img.shields.io/lgtm/grade/java/g/graphhopper/jsprit.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/graphhopper/jsprit/context:java)
+[![Total Alerts](https://img.shields.io/lgtm/alerts/g/graphhopper/jsprit.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/graphhopper/jsprit/alerts)
 
 jsprit is a java based, open source toolkit for solving rich [Traveling Salesman Problems(TSP)](http://en.wikipedia.org/wiki/Travelling_salesman_problem") and [Vehicle Routing Problems(VRP)](http://neo.lcc.uma.es/vrp/vehicle-routing-problem/).
 It is lightweight, flexible and easy-to-use, and based on a single all-purpose [meta-heuristic](../docs/Meta-Heuristic.md) currently solving
