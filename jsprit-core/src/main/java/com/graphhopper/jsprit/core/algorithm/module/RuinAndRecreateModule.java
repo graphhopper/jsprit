@@ -26,9 +26,7 @@ import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 public class RuinAndRecreateModule implements SearchStrategyModule {
@@ -39,6 +37,12 @@ public class RuinAndRecreateModule implements SearchStrategyModule {
 
     private String moduleName;
 
+    private Random random = new Random(4711);
+
+    private int minUnassignedJobsToBeReinserted = Integer.MAX_VALUE;
+
+    private double proportionOfUnassignedJobsToBeReinserted = 1d;
+
     public RuinAndRecreateModule(String moduleName, InsertionStrategy insertion, RuinStrategy ruin) {
         super();
         this.insertion = insertion;
@@ -46,16 +50,58 @@ public class RuinAndRecreateModule implements SearchStrategyModule {
         this.moduleName = moduleName;
     }
 
+    /**
+     * To make overall results reproducible, make sure this class is provided with the "global" random number generator.
+     *
+     * @param random
+     */
+    public void setRandom(Random random) {
+        this.random = random;
+    }
+
+    /**
+     * Minimum number of unassigned jobs that is reinserted in each iteration.
+     *
+     * @param minUnassignedJobsToBeReinserted
+     */
+    public void setMinUnassignedJobsToBeReinserted(int minUnassignedJobsToBeReinserted) {
+        this.minUnassignedJobsToBeReinserted = minUnassignedJobsToBeReinserted;
+    }
+
+    /**
+     * Proportion of unassigned jobs that is reinserted in each iteration.
+     *
+     * @param proportionOfUnassignedJobsToBeReinserted
+     */
+    public void setProportionOfUnassignedJobsToBeReinserted(double proportionOfUnassignedJobsToBeReinserted) {
+        this.proportionOfUnassignedJobsToBeReinserted = proportionOfUnassignedJobsToBeReinserted;
+    }
+
     @Override
-    public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution) {
-        Collection<Job> ruinedJobs = ruin.ruin(vrpSolution.getRoutes());
-        Set<Job> ruinedJobSet = new HashSet<Job>();
+    public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution previousVrpSolution) {
+        Collection<Job> ruinedJobs = ruin.ruin(previousVrpSolution.getRoutes());
+        Set<Job> ruinedJobSet = new HashSet<>();
         ruinedJobSet.addAll(ruinedJobs);
-        ruinedJobSet.addAll(vrpSolution.getUnassignedJobs());
-        Collection<Job> unassignedJobs = insertion.insertJobs(vrpSolution.getRoutes(), ruinedJobSet);
-        vrpSolution.getUnassignedJobs().clear();
-        vrpSolution.getUnassignedJobs().addAll(unassignedJobs);
-        return vrpSolution;
+        List<Job> stillUnassignedInThisIteration = new ArrayList<>();
+        if (previousVrpSolution.getUnassignedJobs().size() < minUnassignedJobsToBeReinserted) {
+            ruinedJobSet.addAll(previousVrpSolution.getUnassignedJobs());
+        } else {
+            int noUnassignedToBeInserted = Math.max(minUnassignedJobsToBeReinserted, (int) (previousVrpSolution.getUnassignedJobs().size() * proportionOfUnassignedJobsToBeReinserted));
+            List<Job> jobList = new ArrayList<>(previousVrpSolution.getUnassignedJobs());
+            Collections.shuffle(jobList, random);
+            for (int i = 0; i < noUnassignedToBeInserted; i++) {
+                ruinedJobSet.add(jobList.get(i));
+            }
+            for (int i = noUnassignedToBeInserted; i < jobList.size(); i++) {
+                stillUnassignedInThisIteration.add(jobList.get(i));
+            }
+        }
+        Collection<Job> unassignedJobs = insertion.insertJobs(previousVrpSolution.getRoutes(), ruinedJobSet);
+        previousVrpSolution.getUnassignedJobs().clear();
+        previousVrpSolution.getUnassignedJobs().addAll(unassignedJobs);
+        previousVrpSolution.getUnassignedJobs().addAll(stillUnassignedInThisIteration);
+        VehicleRoutingProblemSolution newSolution = previousVrpSolution;
+        return newSolution;
 
     }
 
