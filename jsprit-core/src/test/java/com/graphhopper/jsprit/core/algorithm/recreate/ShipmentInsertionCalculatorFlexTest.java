@@ -47,6 +47,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -277,6 +278,43 @@ public class ShipmentInsertionCalculatorFlexTest {
         assertTrue(iData instanceof InsertionData.NoInsertionFound);
 
     }
+
+    @Ignore
+    @Test
+    public void whenInsertingShipmentWithLoadConstraintWhereCapIsNotSufficient_capConstraintsAreFulfilledV2() {
+        Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
+        Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
+        Shipment shipment3 = Shipment.Builder.newInstance("s3").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("9,9")).build();
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        VehicleRoutingProblem vrp = vrpBuilder.addJob(shipment).addJob(shipment2).addJob(shipment3).build();
+
+        VehicleRoute route = VehicleRoute.emptyRoute();
+        route.setVehicleAndDepartureTime(vehicle, 0.0);
+
+        Inserter inserter = new Inserter(new InsertionListeners(), vrp);
+        inserter.insertJob(shipment, new InsertionData(0, 0, 0, vehicle, null), route);
+        inserter.insertJob(shipment2, new InsertionData(0, 1, 2, vehicle, null), route);
+
+        StateManager stateManager = new StateManager(vrp);
+        stateManager.updateLoadStates();
+        stateManager.informInsertionStarts(Arrays.asList(route), null);
+
+        ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
+        constraintManager.addConstraint(new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager), ConstraintManager.Priority.CRITICAL);
+//        constraintManager.addConstraint(new ShipmentPickupsFirstConstraint(), ConstraintManager.Priority.CRITICAL);
+
+        ShipmentInsertionCalculatorFlex insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts,
+            activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator.setEvalIndexPickup(0);
+        insertionCalculator.setEvalIndexDelivery(3);
+        insertionCalculator.setJobActivityFactory(vrp.getJobActivityFactory());
+
+        InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
+        assertTrue(iData instanceof InsertionData.NoInsertionFound);
+
+    }
+
 
     @Test
     public void whenInsertingServiceWhileNoCapIsAvailable_itMustReturnNoInsertionData() {
