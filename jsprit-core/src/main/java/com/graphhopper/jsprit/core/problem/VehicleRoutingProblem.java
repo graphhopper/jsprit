@@ -87,7 +87,7 @@ public class VehicleRoutingProblem {
 
         private FleetSize fleetSize = FleetSize.INFINITE;
 
-        private Collection<VehicleType> vehicleTypes = new ArrayList<VehicleType>();
+        private Map<String, VehicleType> vehicleTypes = new HashMap<>();
 
         private Collection<VehicleRoute> initialRoutes = new ArrayList<VehicleRoute>();
 
@@ -387,8 +387,13 @@ public class VehicleRoutingProblem {
                 incVehicleTypeIdIndexCounter();
             }
             uniqueVehicles.add(vehicle);
-            if (!vehicleTypes.contains(vehicle.getType())) {
-                vehicleTypes.add(vehicle.getType());
+            if (!vehicleTypes.containsKey(vehicle.getType().getTypeId())) {
+                vehicleTypes.put(vehicle.getType().getTypeId(), vehicle.getType());
+            } else {
+                VehicleType existingType = vehicleTypes.get(vehicle.getType().getTypeId());
+                if (!vehicle.getType().equals(existingType)) {
+                    throw new IllegalArgumentException("A type with type id " + vehicle.getType().getTypeId() + " already exists. However, types are different. Please use unique vehicle types only.");
+                }
             }
             String startLocationId = vehicle.getStartLocation().getId();
             addLocationToTentativeLocations(vehicle.getStartLocation());
@@ -496,7 +501,7 @@ public class VehicleRoutingProblem {
          * @return collection of vehicle-types
          */
         public Collection<VehicleType> getAddedVehicleTypes() {
-            return Collections.unmodifiableCollection(vehicleTypes);
+            return Collections.unmodifiableCollection(vehicleTypes.values());
         }
 
         /**
@@ -588,7 +593,7 @@ public class VehicleRoutingProblem {
         this.jobs = builder.jobs;
         this.fleetSize = builder.fleetSize;
         this.vehicles = builder.uniqueVehicles;
-        this.vehicleTypes = builder.vehicleTypes;
+        this.vehicleTypes = builder.vehicleTypes.values();
         this.initialVehicleRoutes = builder.initialRoutes;
         this.transportCosts = builder.transportCosts;
         this.activityCosts = builder.activityCosts;

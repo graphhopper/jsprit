@@ -317,6 +317,17 @@ public class VehicleRoutingProblemTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void whenAddingVehicleTypesWithSameIdButDifferentCosts_itShouldThrowException() {
+        VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
+        VehicleType type1 = VehicleTypeImpl.Builder.newInstance("type").build();
+        VehicleType type2 = VehicleTypeImpl.Builder.newInstance("type").setCostPerServiceTime(2d).build();
+        VehicleImpl vehicle1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("loc")).setType(type1).build();
+        VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("loc")).setType(type2).build();
+        builder.addVehicle(vehicle1);
+        builder.addVehicle(vehicle2);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void whenBuildingProblemWithSameBreakId_itShouldThrowException(){
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();

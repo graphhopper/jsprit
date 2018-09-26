@@ -51,8 +51,8 @@ script:
 
 notifications:
   email:
-    - github@graphhopper.com
-
+    - $EMAIL
+    
 cache:
   directories:
     - $HOME/.m2

@@ -37,7 +37,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
  *
  * @author stefan
  */
-class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCalculator {
+public class LocalActivityInsertionCostsCalculator implements ActivityInsertionCostsCalculator {
 
     private VehicleRoutingTransportCosts routingCosts;
 
