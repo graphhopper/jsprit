@@ -19,14 +19,21 @@
 package com.graphhopper.jsprit.core.algorithm.box;
 
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
+import com.graphhopper.jsprit.core.algorithm.SearchStrategyModule;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
+import com.graphhopper.jsprit.core.algorithm.acceptor.AcceptNewRemoveFirst;
 import com.graphhopper.jsprit.core.algorithm.listener.StrategySelectedListener;
+import com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule;
 import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.BeforeJobInsertionListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
+import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
+import com.graphhopper.jsprit.core.algorithm.selector.SelectRandomly;
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -37,6 +44,10 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import java.util.*;
+
+import static com.graphhopper.jsprit.core.algorithm.box.Jsprit.Parameter.BREAK_SCHEDULING;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by schroeder on 06/03/15.
@@ -485,5 +496,58 @@ public class JspritTest {
         Assert.assertEquals(1, c);
     }
 
+    @Test
+    public void algBuildTest() {
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(1, 1)).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(1, 3)).build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance(1, 4)).build();
+
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addJob(s4).addJob(s3).addVehicle(v).addJob(s2).addJob(s1).build();
+
+        final StateManager stateManager = new StateManager(vrp);
+        final ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
+        final VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager, constraintManager)
+            .addCoreStateAndConstraintStuff(true)
+            .setCustomAcceptor(new AcceptNewRemoveFirst(20))
+            .setProperty(Jsprit.Parameter.RANDOM_REGRET_MIN_SHARE, String.valueOf((int) Math.ceil(Math.max(1, .5 * vrp.getJobs().size()))))
+            .setProperty(Jsprit.Parameter.RANDOM_REGRET_MAX_SHARE, String.valueOf((int) Math.ceil(Math.max(1, .5 * vrp.getJobs().size()))))
+            .setProperty(Jsprit.Parameter.CLUSTER_MIN_SHARE, String.valueOf((int) Math.ceil(Math.max(1, .2 * vrp.getJobs().size()))))
+            .setProperty(Jsprit.Parameter.CLUSTER_MAX_SHARE, String.valueOf((int) Math.ceil(Math.max(1, .2 * vrp.getJobs().size()))))
+            .setProperty(Jsprit.Parameter.RANDOM_RANDOM_MIN_SHARE, String.valueOf((int) Math.ceil(Math.max(1, .8 * vrp.getJobs().size()))))
+            .setProperty(Jsprit.Parameter.RANDOM_RANDOM_MAX_SHARE, String.valueOf((int) Math.ceil(Math.max(1, .8 * vrp.getJobs().size()))))
+            .setProperty(Jsprit.Parameter.RADIAL_MIN_SHARE, String.valueOf((int) Math.ceil(Math.max(1, .3 * vrp.getJobs().size()))))
+            .setProperty(Jsprit.Parameter.RADIAL_MAX_SHARE, String.valueOf((int) Math.ceil(Math.max(1, .3 * vrp.getJobs().size()))))
+
+            .setProperty(BREAK_SCHEDULING, Boolean.FALSE.toString())
+
+            .setProperty(Jsprit.Strategy.RADIAL_REGRET, "0.4")
+            .setProperty(Jsprit.Strategy.CLUSTER_REGRET, "0.2")
+            .setProperty(Jsprit.Strategy.RANDOM_REGRET, "0.4")
+            .setProperty(Jsprit.Strategy.RANDOM, "0.01")
+            .setProperty(Jsprit.Strategy.RANDOM_BEST, "0")
+            .setProperty(Jsprit.Strategy.WORST_REGRET, "0")
+            .buildAlgorithm();
+
+        final List<SearchStrategy> strategies = vra.getSearchStrategyManager().getStrategies();
+        assertEquals(4, strategies.size());
+
+        for (SearchStrategy searchStrategy : strategies) {
+            if (!searchStrategy.getId().equals("random")) {
+                assertTrue(searchStrategy.getSolutionAcceptor() instanceof AcceptNewRemoveFirst);
+                assertTrue(searchStrategy.getSolutionSelector() instanceof SelectBest);
+                final SearchStrategyModule searchStrategyModule = searchStrategy.getSearchStrategyModules().iterator().next();
+                assertTrue(searchStrategyModule instanceof RuinAndRecreateModule);
+                assertTrue(searchStrategyModule.getName().equals(searchStrategy.getId()));
+            } else {
+                assertTrue(searchStrategy.getSolutionAcceptor() instanceof AcceptNewRemoveFirst);
+                assertTrue(searchStrategy.getSolutionSelector() instanceof SelectRandomly);
+                final SearchStrategyModule searchStrategyModule = searchStrategy.getSearchStrategyModules().iterator().next();
+                assertTrue(searchStrategyModule instanceof RuinAndRecreateModule);
+                assertTrue(searchStrategyModule.getName().equals("random"));
+            }
+        }
+    }
 
 }

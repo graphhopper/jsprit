@@ -30,6 +30,7 @@ import com.graphhopper.jsprit.core.algorithm.recreate.*;
 import com.graphhopper.jsprit.core.algorithm.ruin.*;
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceAndShipmentDistance;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
+import com.graphhopper.jsprit.core.algorithm.selector.SelectRandomly;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
@@ -82,7 +83,8 @@ public class Jsprit {
         CLUSTER_BEST("cluster_best"),
         CLUSTER_REGRET("cluster_regret"),
         STRING_BEST("string_best"),
-        STRING_REGRET("string_regret");
+        STRING_REGRET("string_regret"),
+        RANDOM("random");
 
         String strategyName;
 
@@ -104,6 +106,8 @@ public class Jsprit {
         RANDOM_REGRET_MAX_SHARE("random_regret.max_share"),
         RANDOM_BEST_MIN_SHARE("random_best.min_share"),
         RANDOM_BEST_MAX_SHARE("random_best.max_share"),
+        RANDOM_RANDOM_MIN_SHARE("random_random.min_share"),
+        RANDOM_RANDOM_MAX_SHARE("random_random.max_share"),
         RADIAL_MIN_SHARE("radial.min_share"),
         RADIAL_MAX_SHARE("radial.max_share"),
         CLUSTER_MIN_SHARE("cluster.min_share"),
@@ -192,6 +196,8 @@ public class Jsprit {
             defaults.put(Strategy.STRING_BEST.toString(), "0.0");
             defaults.put(Strategy.STRING_REGRET.toString(), "0.0");
 
+            defaults.put(Strategy.RANDOM.toString(), "0.0");
+
             defaults.put(Parameter.STRING_K_MIN.toString(), "1");
             defaults.put(Parameter.STRING_K_MAX.toString(), "6");
             defaults.put(Parameter.STRING_L_MIN.toString(), "10");
@@ -223,6 +229,8 @@ public class Jsprit {
             defaults.put(Parameter.RANDOM_REGRET_MAX_SHARE.toString(), String.valueOf(maxShare_));
             defaults.put(Parameter.RANDOM_BEST_MIN_SHARE.toString(), String.valueOf(minShare_));
             defaults.put(Parameter.RANDOM_BEST_MAX_SHARE.toString(), String.valueOf(maxShare_));
+            defaults.put(Parameter.RANDOM_RANDOM_MIN_SHARE.toString(), String.valueOf(minShare_));
+            defaults.put(Parameter.RANDOM_RANDOM_MAX_SHARE.toString(), String.valueOf(maxShare_));
             defaults.put(Parameter.THRESHOLD_ALPHA.toString(), String.valueOf(0.15));
             defaults.put(Parameter.THRESHOLD_INI.toString(), String.valueOf(0.03));
             defaults.put(Parameter.INSERTION_NOISE_LEVEL.toString(), String.valueOf(0.15));
@@ -475,9 +483,17 @@ public class Jsprit {
         final RuinRandom random_for_best = new RuinRandom(vrp, 0.5);
         random_for_best.setRandom(random);
         random_for_best.setRuinShareFactory(new RuinShareFactoryImpl(
-                toInteger(properties.getProperty(Parameter.RANDOM_BEST_MIN_SHARE.toString())),
-                toInteger(properties.getProperty(Parameter.RANDOM_BEST_MAX_SHARE.toString())),
-                random)
+            toInteger(properties.getProperty(Parameter.RANDOM_BEST_MIN_SHARE.toString())),
+            toInteger(properties.getProperty(Parameter.RANDOM_BEST_MAX_SHARE.toString())),
+            random)
+        );
+
+        final RuinRandom random_for_random = new RuinRandom(vrp, 0.5);
+        random_for_random.setRandom(random);
+        random_for_random.setRuinShareFactory(new RuinShareFactoryImpl(
+            toInteger(properties.getProperty(Parameter.RANDOM_RANDOM_MIN_SHARE.toString())),
+            toInteger(properties.getProperty(Parameter.RANDOM_RANDOM_MAX_SHARE.toString())),
+            random)
         );
 
         final RuinWorst worst = new RuinWorst(vrp, (int) (vrp.getJobs().values().size() * 0.5));
@@ -600,6 +616,14 @@ public class Jsprit {
         }
         best.setRandom(random);
 
+        final AbstractInsertionStrategy randomInsertion = (AbstractInsertionStrategy) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+            .setInsertionStrategy(InsertionBuilder.Strategy.RANDOM)
+            .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
+            .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
+            .setActivityInsertionCostCalculator(activityInsertion)
+            .build();
+        randomInsertion.setRandom(random);
+
         IterationStartsListener schrimpfThreshold = null;
         if(acceptor == null) {
             final SchrimpfAcceptance schrimpfAcceptance = new SchrimpfAcceptance(1, toDouble(getProperty(Parameter.THRESHOLD_ALPHA.toString())));
@@ -650,11 +674,15 @@ public class Jsprit {
         SearchStrategy stringBest = new SearchStrategy(Strategy.STRING_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
         stringBest.addModule(new RuinAndRecreateModule(Strategy.STRING_BEST.toString(), best, stringRuin));
 
+        final SearchStrategy randomStrategy = new SearchStrategy(Strategy.RANDOM.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        randomStrategy.addModule(new RuinAndRecreateModule(Strategy.RANDOM.toString(), randomInsertion, random_for_random));
+
         PrettyAlgorithmBuilder prettyBuilder = PrettyAlgorithmBuilder.newInstance(vrp, vehicleFleetManager, stateManager, constraintManager);
         prettyBuilder.setRandom(random);
         if (addCoreConstraints) {
             prettyBuilder.addCoreStateAndConstraintStuff();
         }
+
         prettyBuilder.withStrategy(radial_regret, toDouble(getProperty(Strategy.RADIAL_REGRET.toString())))
             .withStrategy(radial_best, toDouble(getProperty(Strategy.RADIAL_BEST.toString())))
             .withStrategy(random_best, toDouble(getProperty(Strategy.RANDOM_BEST.toString())))
@@ -664,7 +692,8 @@ public class Jsprit {
             .withStrategy(clusters_regret, toDouble(getProperty(Strategy.CLUSTER_REGRET.toString())))
             .withStrategy(clusters_best, toDouble(getProperty(Strategy.CLUSTER_BEST.toString())))
             .withStrategy(stringBest, toDouble(getProperty(Strategy.STRING_BEST.toString())))
-            .withStrategy(stringRegret, toDouble(getProperty(Strategy.STRING_REGRET.toString())));
+            .withStrategy(stringRegret, toDouble(getProperty(Strategy.STRING_REGRET.toString())))
+            .withStrategy(randomStrategy, toDouble((getProperty(Strategy.RANDOM.toString()))));
 
         for (SearchStrategy customStrategy : customStrategies.keySet()) {
             prettyBuilder.withStrategy(customStrategy, customStrategies.get(customStrategy));
