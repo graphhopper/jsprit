@@ -68,14 +68,17 @@ public class RandomInsertion extends AbstractInsertionStrategy {
             double bestInsertionCost = Double.MAX_VALUE;
             boolean inserted = false;
             for (VehicleRoute vehicleRoute : routes) {
-                InsertionData iData = bestInsertionCostCalculator.getInsertionData(vehicleRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
+                InsertionData iData;
+                final boolean isNewRoute = vehicleRoute.equals(newRoute);
+                if (isNewRoute)
+                    iData = bestInsertionCostCalculator.getInsertionData(vehicleRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, bestInsertionCost);
+                else iData = bestInsertionCostCalculator.getInsertionData(vehicleRoute, unassignedJob, vehicleRoute.getVehicle(), vehicleRoute.getDepartureTime(), vehicleRoute.getDriver(), bestInsertionCost);
                 if (iData instanceof InsertionData.NoInsertionFound) {
                     empty.getFailedConstraintNames().addAll(iData.getFailedConstraintNames());
                     continue;
                 }
 
                 inserted = true;
-                final boolean isNewRoute = vehicleRoute.getActivities().size() == 0;
                 if (isNewRoute) {
                     updateNewRouteInsertionData(iData);
                     vehicleRoutes.add(vehicleRoute);
