@@ -31,6 +31,7 @@ import com.graphhopper.jsprit.core.problem.misc.ActivityContext;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -97,11 +98,14 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
     public InsertionData getInsertionData(final VehicleRoute currentRoute, final Job jobToInsert, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownCosts) {
         JobInsertionContext insertionContext = new JobInsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
         Service service = (Service) jobToInsert;
-        int insertionIndex = InsertionData.NO_INDEX;
-
-        TourActivity deliveryAct2Insert = activityFactory.createActivities(service).get(0);
+         TourActivity deliveryAct2Insert = activityFactory.createActivities(service).get(0);
         insertionContext.getAssociatedActivities().add(deliveryAct2Insert);
 
+        return getInsertionData(insertionContext, service, deliveryAct2Insert, currentRoute, newVehicle, newVehicleDepartureTime, newDriver, bestKnownCosts);
+    }
+
+    InsertionData getInsertionData(final JobInsertionContext insertionContext, final Service service, final TourActivity deliveryAct2Insert,
+        final VehicleRoute currentRoute, final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver, final double bestKnownCosts) {
         /*
         check hard constraints at route level
          */
@@ -117,7 +121,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
 
         double bestCost = bestKnownCosts;
         additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
-		TimeWindow bestTimeWindow = null;
+        TimeWindow bestTimeWindow = null;
 
         /*
         generate new start and end for new vehicle
@@ -129,6 +133,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         TourActivity prevAct = start;
         double prevActStartTime = newVehicleDepartureTime;
         int actIndex = 0;
+        int insertionIndex = InsertionData.NO_INDEX;
         Iterator<TourActivity> activityIterator = currentRoute.getActivities().iterator();
         boolean tourEnd = false;
         while(!tourEnd){
@@ -139,7 +144,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
                 tourEnd = true;
             }
             boolean not_fulfilled_break = true;
-			for(TimeWindow timeWindow : service.getTimeWindows()) {
+            for(TimeWindow timeWindow : service.getTimeWindows()) {
                 deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
                 deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
                 ActivityContext activityContext = new ActivityContext();
@@ -158,7 +163,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
                 } else if (status.equals(ConstraintsStatus.NOT_FULFILLED)) {
                     not_fulfilled_break = false;
                 }
-			}
+            }
             if(not_fulfilled_break) break;
             double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
             prevActStartTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct,nextActArrTime,newDriver,newVehicle);
@@ -178,6 +183,4 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
         return insertionData;
     }
-
-
 }
