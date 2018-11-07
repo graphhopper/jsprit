@@ -31,27 +31,27 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
+import com.graphhopper.jsprit.core.problem.job.BreakForMultipleTimeWindows;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipment;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
+import com.graphhopper.jsprit.core.util.ManhattanCosts;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -316,5 +316,48 @@ public class ShipmentInsertionCalculatorTest {
         assertEquals(3, iData.getDeliveryInsertionIndex());
     }
 
+    @Test
+    public void whenPickupInsertedBeforeBreak() {
+        final BreakForMultipleTimeWindows breakForMultipleTimeWindows =
+            BreakForMultipleTimeWindows.Builder.newInstance("break")
+                .setLocation(Location.newInstance(5, 10))
+                .addTimeWindow(20, 20)
+                .setServiceTime(5)
+                .build();
+        final VehicleImpl vehicle = VehicleImpl.Builder.newInstance(UUID.randomUUID().toString())
+            .setStartLocation(Location.newInstance(0, 0))
+            .build();
+        final VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle)
+            .addService(breakForMultipleTimeWindows)
+            .build();
 
+        route.getActivities().get(0).setArrTime(5);
+        route.getActivities().get(0).setEndTime(10);
+
+        Shipment shipment = Shipment.Builder.newInstance("shipment")
+            .setPickupLocation(Location.newInstance(0,10))
+            .setPickupTimeWindow(new TimeWindow(0, 20))
+            .setPickupServiceTime(10)
+            .setDeliveryLocation(Location.newInstance(10,10))
+            .setDeliveryTimeWindow(new TimeWindow(60, 160))
+            .setDeliveryServiceTime(10)
+            .build();
+
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addJob(breakForMultipleTimeWindows).build();
+
+        StateManager stateManager = new StateManager(vrp);
+        final ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
+        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(new ManhattanCosts() {
+            @Override
+            public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+                return (to.getId() != null && to.getId().equals("break")) ? .0 : super.getTransportTime(from, to, departureTime, driver, vehicle);
+            }
+        }, activityCosts,
+            activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator.setJobActivityFactory(vrp.getJobActivityFactory());
+
+        InsertionData iData = insertionCalculator.getInsertionData(route, shipment, vehicle, 0.0, null, Double.MAX_VALUE);
+        assertEquals(0, iData.getPickupInsertionIndex());
+        assertEquals(0, iData.getDeliveryInsertionIndex());
+    }
 }

@@ -280,7 +280,6 @@ public class JobInsertionCostsCalculatorBuilder {
         }
 
         JobActivityFactory activityFactory = new JobActivityFactory() {
-
             @Override
             public List<AbstractActivity> createActivities(Job job) {
                 return vrp.copyAndGetActivities(job);
@@ -295,12 +294,16 @@ public class JobInsertionCostsCalculatorBuilder {
         BreakInsertionCalculator breakInsertionCalculator = new BreakInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), actInsertionCalc, constraintManager);
         breakInsertionCalculator.setJobActivityFactory(activityFactory);
 
+        BreakForMultipleTimeWindowsInsertionCalculator breakForMultipleTimeWindowsInsertionCalculator = new BreakForMultipleTimeWindowsInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), actInsertionCalc, constraintManager);
+        breakForMultipleTimeWindowsInsertionCalculator.setJobActivityFactory(activityFactory);
+
         JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
         switcher.put(Shipment.class, shipmentInsertion);
         switcher.put(Service.class, serviceInsertion);
         switcher.put(Pickup.class, serviceInsertion);
         switcher.put(Delivery.class, serviceInsertion);
         switcher.put(Break.class, breakInsertionCalculator);
+        switcher.put(BreakForMultipleTimeWindows.class, breakForMultipleTimeWindowsInsertionCalculator);
         switcher.put(ShipmentWithMutablePickupDeliverOptions.class, shipmentInsertion);
 
         CalculatorPlusListeners calculatorPlusListeners = new CalculatorPlusListeners(switcher);

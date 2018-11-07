@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
+import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
 import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
@@ -30,10 +31,7 @@ import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.ActivityContext;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,7 +173,6 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                 insertionContext.setRelatedActivityContext(pickupContext);
 
                 double prevActEndTime_deliveryLoop = shipmentPickupEndTime;
-
 			/*
             --------------------------------
 			 */
@@ -220,6 +217,14 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                     //update prevAct and endTime
                     double nextActArrTime = prevActEndTime_deliveryLoop + transportCosts.getTransportTime(prevAct_deliveryLoop.getLocation(), nextAct_deliveryLoop.getLocation(), prevActEndTime_deliveryLoop, newDriver, newVehicle);
                     prevActEndTime_deliveryLoop = Math.max(nextActArrTime, nextAct_deliveryLoop.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(prevAct_deliveryLoop, nextAct_deliveryLoop,nextActArrTime,newDriver,newVehicle);
+                    if (i == j && nextAct_deliveryLoop instanceof BreakForMultipleTimeWindowsActivity) {
+                        final BreakForMultipleTimeWindowsActivity breakForMultipleTimeWindowsActivity = (BreakForMultipleTimeWindowsActivity) nextAct_deliveryLoop.duplicate();
+                        final Location location = Location.Builder.newInstance()
+                            .setId(breakForMultipleTimeWindowsActivity.getJob().getLocation().getId())
+                            .setCoordinate(prevAct_deliveryLoop.getLocation().getCoordinate()).build();
+                        breakForMultipleTimeWindowsActivity.setLocation(location);
+                        nextAct_deliveryLoop = breakForMultipleTimeWindowsActivity;
+                    }
                     prevAct_deliveryLoop = nextAct_deliveryLoop;
                     j++;
                 }
