@@ -44,4 +44,22 @@ public class VehicleTypeKeyTest {
             .addSkill("skill3").build();
         assertFalse(v1.getVehicleTypeIdentifier().equals(v2.getVehicleTypeIdentifier()));
     }
+
+    @Test
+    public void typeIdentifierShouldBeEqual2() {
+        Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("start")).addSkill("skill1").addSkill("skill2")
+            .setUserData(new String("it's just a test")).build();
+        Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("start")).addSkill("skill1").addSkill("skill2")
+            .setUserData(new String("it's just a test")).build();
+        assertTrue(v1.getVehicleTypeIdentifier().equals(v2.getVehicleTypeIdentifier()));
+    }
+
+    @Test
+    public void typeIdentifierShouldNotBeEqual2() {
+        Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("start")).addSkill("skill1").addSkill("skill2")
+            .setUserData(new String("it's just a test")).build();
+        Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("start")).addSkill("skill1").addSkill("skill2")
+            .setUserData(new String("it's just stupid test")).build();
+        assertFalse(v1.getVehicleTypeIdentifier().equals(v2.getVehicleTypeIdentifier()));
+    }
 }
