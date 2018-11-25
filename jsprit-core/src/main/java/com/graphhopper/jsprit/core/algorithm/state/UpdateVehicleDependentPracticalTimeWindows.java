@@ -107,8 +107,7 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
         for (Vehicle vehicle : vehicles) {
             double latestArrTimeAtPrevAct = latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
             Location prevLocation = location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
-            double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevLocation,
-                latestArrTimeAtPrevAct, route.getDriver(), vehicle) - activityCosts.getActivityDuration(prev, activity, latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle());
+            double potentialLatestArrivalTimeAtCurrAct = getPotentialLatestArrivalTimeAtCurrAct(activity, prev, vehicle, latestArrTimeAtPrevAct, prevLocation);
             double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
             if (latestArrivalTime < activity.getTheoreticalEarliestOperationStartTime()) {
                 stateManager.putTypedInternalRouteState(route, vehicle, InternalStates.SWITCH_NOT_FEASIBLE, true);
@@ -117,6 +116,12 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
             latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = latestArrivalTime;
             location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = activity.getLocation();
         }
+    }
+
+    protected double getPotentialLatestArrivalTimeAtCurrAct(TourActivity activity, TourActivity prev, Vehicle vehicle, double latestArrTimeAtPrevAct, Location prevLocation) {
+        return latestArrTimeAtPrevAct
+            - transportCosts.getBackwardTransportTime(activity.getLocation(), prevLocation, latestArrTimeAtPrevAct, route.getDriver(), vehicle)
+            - activityCosts.getActivityDuration(prev, activity, latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle());
     }
 
 
