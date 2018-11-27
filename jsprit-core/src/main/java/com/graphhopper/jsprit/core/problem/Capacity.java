@@ -309,4 +309,12 @@ public class Capacity {
     public int hashCode() {
         return Arrays.hashCode(dimensions);
     }
+
+    public Capacity makeValid(Capacity capacityLimits) {
+        Capacity.Builder validCapacityBuilder = Capacity.Builder.newInstance();
+        for (int i = 0; i < Math.max(this.getNuOfDimensions(), capacityLimits.getNuOfDimensions()); i++) {
+            validCapacityBuilder.addDimension(i, Math.max(0, Math.min(this.get(i), capacityLimits.get(i))));
+        }
+        return validCapacityBuilder.build();
+    }
 }

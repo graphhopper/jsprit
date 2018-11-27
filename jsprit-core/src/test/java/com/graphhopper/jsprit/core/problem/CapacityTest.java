@@ -383,4 +383,27 @@ public class CapacityTest {
         Capacity cap2 = Capacity.Builder.newInstance().addDimension(0,10).addDimension(2, 1000).addDimension(1,100).build();
         Assert.assertTrue(cap1.equals(cap2));
     }
+
+    @Test
+    public void makeValid() {
+        final Capacity limits = Capacity.Builder.newInstance()
+            .addDimension(0, 10)
+            .addDimension(0, 20)
+            .addDimension(0, 7)
+            .addDimension(0, 5).build();
+
+        final Capacity notValidCapacity = Capacity.Builder.newInstance()
+            .addDimension(0, 9)
+            .addDimension(0, 18)
+            .addDimension(0, 15)
+            .addDimension(0, -5).build();
+
+        final Capacity validCapacity = Capacity.Builder.newInstance()
+            .addDimension(0, 9)
+            .addDimension(0, 18)
+            .addDimension(0, 7)
+            .addDimension(0, 0).build();
+
+        assertEquals(validCapacity, notValidCapacity.makeValid(limits));
+    }
 }
