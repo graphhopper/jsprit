@@ -331,6 +331,16 @@ public class VehicleImpl extends AbstractVehicle {
     }
 
     /**
+     * Returns a simple copy of vehicle.
+     *
+     * @param vehicle
+     * @return
+     */
+    public static Vehicle copyOf(Vehicle vehicle) {
+        return VehicleImpl.Builder.newInstance(vehicle).build();
+    }
+
+    /**
      * Returns empty/noVehicle which is a vehicle having no capacity, no type and no reasonable id.
      * <p>
      * <p>NoVehicle has id="noVehicle" and extends {@link VehicleImpl}
