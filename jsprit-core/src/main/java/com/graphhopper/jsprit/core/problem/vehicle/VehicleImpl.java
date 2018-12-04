@@ -141,6 +141,24 @@ public class VehicleImpl extends AbstractVehicle {
         }
 
         /**
+         * This can be used to initialize the new vehicle (to be built) with another vehicle.
+         *
+         * @param baseVehicle
+         */
+        private Builder(Vehicle baseVehicle) {
+            this.id = baseVehicle.getId();
+            this.earliestStart = baseVehicle.getEarliestDeparture();
+            this.latestArrival = baseVehicle.getLatestArrival();
+            this.returnToDepot = baseVehicle.isReturnToDepot();
+            this.type = baseVehicle.getType();
+            this.skills = baseVehicle.getSkills();
+            this.startLocation = baseVehicle.getStartLocation();
+            this.endLocation = baseVehicle.getEndLocation();
+            this.aBreak = baseVehicle.getBreak();
+            this.userData = baseVehicle.getUserData();
+        }
+
+        /**
          * Sets the {@link VehicleType}.<br>
          *
          * @param type the type to be set
@@ -289,6 +307,16 @@ public class VehicleImpl extends AbstractVehicle {
          */
         public static Builder newInstance(String vehicleId) {
             return new Builder(vehicleId);
+        }
+
+        /**
+         * Returns new instance of vehicle builder and initializes every attribute with a attributes of baseVehicle
+         *
+         * @param baseVehicle
+         * @return
+         */
+        public static Builder newInstance(Vehicle baseVehicle) {
+            return new Builder(baseVehicle);
         }
 
         public Builder addSkills(Skills skills) {
