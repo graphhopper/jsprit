@@ -355,11 +355,11 @@ public class SolutionAnalyser {
 
     private static class DistanceUpdater implements StateUpdater, ActivityVisitor {
 
-        private StateId distance_id;
+        private StateId distanceId;
 
         private StateManager stateManager;
 
-        private double sum_distance = 0.;
+        private double sumDistance = 0.;
 
         private TransportDistance distanceCalculator;
 
@@ -367,15 +367,15 @@ public class SolutionAnalyser {
 
         private VehicleRoute route;
 
-        private DistanceUpdater(StateId distance_id, StateManager stateManager, TransportDistance distanceCalculator) {
-            this.distance_id = distance_id;
+        private DistanceUpdater(StateId distanceId, StateManager stateManager, TransportDistance distanceCalculator) {
+            this.distanceId = distanceId;
             this.stateManager = stateManager;
             this.distanceCalculator = distanceCalculator;
         }
 
         @Override
         public void begin(VehicleRoute route) {
-            sum_distance = 0.;
+            sumDistance = 0.;
             this.route = route;
             this.prevAct = route.getStart();
         }
@@ -383,16 +383,16 @@ public class SolutionAnalyser {
         @Override
         public void visit(TourActivity activity) {
             double distance = distanceCalculator.getDistance(prevAct.getLocation(), activity.getLocation(), prevAct.getEndTime(), route.getVehicle());
-            sum_distance += distance;
-            stateManager.putActivityState(activity, distance_id, sum_distance);
+            sumDistance += distance;
+            stateManager.putActivityState(activity, distanceId, sumDistance);
             prevAct = activity;
         }
 
         @Override
         public void finish() {
             double distance = distanceCalculator.getDistance(prevAct.getLocation(), route.getEnd().getLocation(),prevAct.getEndTime(), route.getVehicle());
-            sum_distance += distance;
-            stateManager.putRouteState(route, distance_id, sum_distance);
+            sumDistance += distance;
+            stateManager.putRouteState(route, distanceId, sumDistance);
         }
     }
 
@@ -446,27 +446,27 @@ public class SolutionAnalyser {
 
     private TransportDistance distanceCalculator;
 
-    private StateId waiting_time_id;
+    private StateId waitingTimeId;
 
-    private StateId transport_time_id;
+    private StateId transportTimeId;
 
-    private StateId service_time_id;
+    private StateId serviceTimeId;
 
-    private StateId distance_id;
+    private StateId distanceId;
 
-    private StateId too_late_id;
+    private StateId tooLateId;
 
-    private StateId shipment_id;
+    private StateId shipmentId;
 
-    private StateId backhaul_id;
+    private StateId backhaulId;
 
-    private StateId skill_id;
+    private StateId skillId;
 
-    private StateId last_transport_distance_id;
+    private StateId lastTransportDistanceId;
 
-    private StateId last_transport_time_id;
+    private StateId lastTransportTimeId;
 
-    private StateId last_transport_cost_id;
+    private StateId lastTransportCostId;
 
 
     private ActivityTimeTracker.ActivityPolicy activityPolicy;
@@ -533,24 +533,24 @@ public class SolutionAnalyser {
         activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
         this.stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), activityPolicy, vrp.getActivityCosts()));
         this.stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
-        waiting_time_id = stateManager.createStateId("waiting-time");
-        transport_time_id = stateManager.createStateId("transport-time");
-        service_time_id = stateManager.createStateId("service-time");
-        distance_id = stateManager.createStateId("distance");
-        too_late_id = stateManager.createStateId("too-late");
-        shipment_id = stateManager.createStateId("shipment");
-        backhaul_id = stateManager.createStateId("backhaul");
-        skill_id = stateManager.createStateId("skills-violated");
-        last_transport_cost_id = stateManager.createStateId("last-transport-cost");
-        last_transport_distance_id = stateManager.createStateId("last-transport-distance");
-        last_transport_time_id = stateManager.createStateId("last-transport-time");
+        waitingTimeId = stateManager.createStateId("waiting-time");
+        transportTimeId = stateManager.createStateId("transport-time");
+        serviceTimeId = stateManager.createStateId("service-time");
+        distanceId = stateManager.createStateId("distance");
+        tooLateId = stateManager.createStateId("too-late");
+        shipmentId = stateManager.createStateId("shipment");
+        backhaulId = stateManager.createStateId("backhaul");
+        skillId = stateManager.createStateId("skills-violated");
+        lastTransportCostId = stateManager.createStateId("last-transport-cost");
+        lastTransportDistanceId = stateManager.createStateId("last-transport-distance");
+        lastTransportTimeId = stateManager.createStateId("last-transport-time");
 
-        stateManager.addStateUpdater(new SumUpActivityTimes(waiting_time_id, transport_time_id, service_time_id, too_late_id, stateManager, activityPolicy, vrp.getActivityCosts()));
-        stateManager.addStateUpdater(new DistanceUpdater(distance_id, stateManager, distanceCalculator));
-        stateManager.addStateUpdater(new BackhaulAndShipmentUpdater(backhaul_id, shipment_id, stateManager));
-        stateManager.addStateUpdater(new SkillUpdater(stateManager, skill_id));
+        stateManager.addStateUpdater(new SumUpActivityTimes(waitingTimeId, transportTimeId, serviceTimeId, tooLateId, stateManager, activityPolicy, vrp.getActivityCosts()));
+        stateManager.addStateUpdater(new DistanceUpdater(distanceId, stateManager, distanceCalculator));
+        stateManager.addStateUpdater(new BackhaulAndShipmentUpdater(backhaulId, shipmentId, stateManager));
+        stateManager.addStateUpdater(new SkillUpdater(stateManager, skillId));
         stateManager.addStateUpdater(new LoadAndActivityCounter(stateManager));
-        stateManager.addStateUpdater(new LastTransportUpdater(stateManager, vrp.getTransportCosts(), distanceCalculator, last_transport_distance_id, last_transport_time_id, last_transport_cost_id));
+        stateManager.addStateUpdater(new LastTransportUpdater(stateManager, vrp.getTransportCosts(), distanceCalculator, lastTransportDistanceId, lastTransportTimeId, lastTransportCostId));
     }
 
 
@@ -779,7 +779,7 @@ public class SolutionAnalyser {
      */
     public Double getTimeWindowViolation(VehicleRoute route) {
         if (route == null) throw new IllegalArgumentException("route is missing.");
-        return stateManager.getRouteState(route, too_late_id, Double.class);
+        return stateManager.getRouteState(route, tooLateId, Double.class);
     }
 
     /**
@@ -800,7 +800,7 @@ public class SolutionAnalyser {
      */
     public Boolean hasSkillConstraintViolation(VehicleRoute route) {
         if (route == null) throw new IllegalArgumentException("route is missing.");
-        return stateManager.getRouteState(route, skill_id, Boolean.class);
+        return stateManager.getRouteState(route, skillId, Boolean.class);
     }
 
     /**
@@ -816,7 +816,7 @@ public class SolutionAnalyser {
         if (activity instanceof Start) return false;
         if (activity instanceof End) return false;
         verifyThatRouteContainsAct(activity, route);
-        return stateManager.getActivityState(activity, skill_id, Boolean.class);
+        return stateManager.getActivityState(activity, skillId, Boolean.class);
     }
 
     /**
@@ -831,7 +831,7 @@ public class SolutionAnalyser {
      */
     public Boolean hasBackhaulConstraintViolation(VehicleRoute route) {
         if (route == null) throw new IllegalArgumentException("route is missing.");
-        return stateManager.getRouteState(route, backhaul_id, Boolean.class);
+        return stateManager.getRouteState(route, backhaulId, Boolean.class);
     }
 
     /**
@@ -846,7 +846,7 @@ public class SolutionAnalyser {
         if (activity instanceof Start) return false;
         if (activity instanceof End) return false;
         verifyThatRouteContainsAct(activity, route);
-        return stateManager.getActivityState(activity, backhaul_id, Boolean.class);
+        return stateManager.getActivityState(activity, backhaulId, Boolean.class);
     }
 
     /**
@@ -859,7 +859,7 @@ public class SolutionAnalyser {
      */
     public Boolean hasShipmentConstraintViolation(VehicleRoute route) {
         if (route == null) throw new IllegalArgumentException("route is missing.");
-        return stateManager.getRouteState(route, shipment_id, Boolean.class);
+        return stateManager.getRouteState(route, shipmentId, Boolean.class);
     }
 
     /**
@@ -877,7 +877,7 @@ public class SolutionAnalyser {
         if (activity instanceof Start) return false;
         if (activity instanceof End) return false;
         verifyThatRouteContainsAct(activity, route);
-        return stateManager.getActivityState(activity, shipment_id, Boolean.class);
+        return stateManager.getActivityState(activity, shipmentId, Boolean.class);
     }
 
 
@@ -897,7 +897,7 @@ public class SolutionAnalyser {
      */
     public Double getWaitingTime(VehicleRoute route) {
         if (route == null) throw new IllegalArgumentException("route is missing.");
-        return stateManager.getRouteState(route, waiting_time_id, Double.class);
+        return stateManager.getRouteState(route, waitingTimeId, Double.class);
     }
 
     /**
@@ -906,7 +906,7 @@ public class SolutionAnalyser {
      */
     public Double getTransportTime(VehicleRoute route) {
         if (route == null) throw new IllegalArgumentException("route is missing.");
-        return stateManager.getRouteState(route, transport_time_id, Double.class);
+        return stateManager.getRouteState(route, transportTimeId, Double.class);
     }
 
     /**
@@ -915,7 +915,7 @@ public class SolutionAnalyser {
      */
     public Double getServiceTime(VehicleRoute route) {
         if (route == null) throw new IllegalArgumentException("route is missing.");
-        return stateManager.getRouteState(route, service_time_id, Double.class);
+        return stateManager.getRouteState(route, serviceTimeId, Double.class);
     }
 
     /**
@@ -965,7 +965,7 @@ public class SolutionAnalyser {
         if (activity instanceof Start) return 0.;
         if (activity instanceof End) return getTransportTime(route);
         verifyThatRouteContainsAct(activity, route);
-        return stateManager.getActivityState(activity, transport_time_id, Double.class);
+        return stateManager.getActivityState(activity, transportTimeId, Double.class);
     }
 
     /**
@@ -974,7 +974,7 @@ public class SolutionAnalyser {
      * @return The transport time from the previous activity to this one.
      */
     public Double getLastTransportTimeAtActivity(TourActivity activity, VehicleRoute route) {
-        return getLastTransport(activity, route, last_transport_time_id);
+        return getLastTransport(activity, route, lastTransportTimeId);
     }
 
     /**
@@ -983,7 +983,7 @@ public class SolutionAnalyser {
      * @return The transport distance from the previous activity to this one.
      */
     public Double getLastTransportDistanceAtActivity(TourActivity activity, VehicleRoute route) {
-        return getLastTransport(activity, route, last_transport_distance_id);
+        return getLastTransport(activity, route, lastTransportDistanceId);
     }
 
     /**
@@ -992,7 +992,7 @@ public class SolutionAnalyser {
      * @return The transport cost from the previous activity to this one.
      */
     public Double getLastTransportCostAtActivity(TourActivity activity, VehicleRoute route) {
-        return getLastTransport(activity, route, last_transport_cost_id);
+        return getLastTransport(activity, route, lastTransportCostId);
     }
 
 
@@ -1026,7 +1026,7 @@ public class SolutionAnalyser {
      */
     public Double getDistance(VehicleRoute route) {
         if (route == null) throw new IllegalArgumentException("route is missing.");
-        return stateManager.getRouteState(route, distance_id, Double.class);
+        return stateManager.getRouteState(route, distanceId, Double.class);
     }
 
     /**
@@ -1039,7 +1039,7 @@ public class SolutionAnalyser {
         if (activity instanceof Start) return 0.;
         if (activity instanceof End) return getDistance(route);
         verifyThatRouteContainsAct(activity, route);
-        return stateManager.getActivityState(activity, distance_id, Double.class);
+        return stateManager.getActivityState(activity, distanceId, Double.class);
     }
 
     /**

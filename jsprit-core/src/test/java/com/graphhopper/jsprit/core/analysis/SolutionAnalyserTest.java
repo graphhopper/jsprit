@@ -22,6 +22,7 @@ package com.graphhopper.jsprit.core.analysis;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
@@ -1613,6 +1614,23 @@ public class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         Boolean violated = analyser.hasSkillConstraintViolation();
         assertFalse(violated);
+    }
+
+    @Test
+    public void shouldWorkWithRouteWithoutActivities() {
+        Vehicle vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance(0, 0))
+            .setEndLocation(Location.newInstance(10, 0)).build();
+        VehicleRoute vehicleRoute = VehicleRoute.Builder.newInstance(vehicle).build();
+
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
+        VehicleRoutingProblemSolution solution = new VehicleRoutingProblemSolution(Arrays.asList(vehicleRoute), 0);
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, new TransportDistance() {
+            @Override
+            public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+                return 100;
+            }
+        });
+
     }
 
 }
