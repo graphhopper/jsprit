@@ -458,10 +458,22 @@ public class ShipmentTest {
     }
 
     @Test
-    public void whenNotAddingMaxTimeInVehicle_itShouldBeDefault(){
+    public void whenNotAddingMaxTimeInVehicle_itShouldBeDefault() {
         Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc")).setDeliveryLocation(Location.newInstance("loc"))
             .build();
         Assert.assertEquals(Double.MAX_VALUE, s.getMaxTimeInVehicle(),0.001);
     }
 
+    @Test
+    public void testLoadingTime() {
+        Shipment s = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc")).setDeliveryLocation(Location.newInstance("loc"))
+            .setPickupLoadingTime(10.546).build();
+        Assert.assertEquals(10.546, s.getPickupLoadingTime(),0.001);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNegativeLoadingTime() {
+        Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc")).setDeliveryLocation(Location.newInstance("loc"))
+            .setPickupLoadingTime(-5).build();
+    }
 }

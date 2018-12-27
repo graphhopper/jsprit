@@ -23,7 +23,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 
-public final class PickupShipment extends AbstractActivity implements PickupActivity{
+public class PickupShipment extends AbstractActivity implements PickupActivity{
 
     private Shipment shipment;
 
@@ -40,7 +40,7 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
         this.shipment = shipment;
     }
 
-    private PickupShipment(PickupShipment pickupShipmentActivity) {
+    protected PickupShipment(PickupShipment pickupShipmentActivity) {
         this.shipment = (Shipment) pickupShipmentActivity.getJob();
         this.arrTime = pickupShipmentActivity.getArrTime();
         this.endTime = pickupShipmentActivity.getEndTime();
