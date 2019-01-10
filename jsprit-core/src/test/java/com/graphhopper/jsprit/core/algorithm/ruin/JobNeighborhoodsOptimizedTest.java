@@ -21,8 +21,10 @@ import com.graphhopper.jsprit.core.algorithm.ruin.distance.EuclideanServiceDista
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
+
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +50,7 @@ public class JobNeighborhoodsOptimizedTest {
     Service s5;
     Service s6;
     Service s7;
+    Break b1;
 
     @Before
     public void doBefore() {
@@ -60,6 +63,8 @@ public class JobNeighborhoodsOptimizedTest {
         s5 = Service.Builder.newInstance("s5").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 6)).build();
         s6 = Service.Builder.newInstance("s6").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 7)).build();
         s7 = Service.Builder.newInstance("s7").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 8)).build();
+        
+        b1 = Break.Builder.newInstance("b1").build();
 
         vrp = builder.addJob(target).addJob(s2).addJob(s3).addJob(s4).addJob(s5).addJob(s6).addJob(s7).build();
 
@@ -141,6 +146,16 @@ public class JobNeighborhoodsOptimizedTest {
         assertEquals(2, services.size());
     }
 
-
+    @Test
+    public void whenRequestingNeighborsForZeroIndexBreak_itShouldReturnEmptyIterator() {
+        JobNeighborhoodsOptimized jn = new JobNeighborhoodsOptimized(vrp,jobDistance,2);
+        jn.initialise();
+        Iterator<Job> iter = jn.getNearestNeighborsIterator(100, b1);
+        List<Service> services = new ArrayList<Service>();
+        while (iter.hasNext()) {
+            services.add((Service) iter.next());
+        }
+        assertEquals(0, services.size());
+    }
 
 }

@@ -95,6 +95,10 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
 
     @Override
     public Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo) {
+        if (neighborTo.getIndex() == 0) {
+            return Collections.emptyIterator();
+        }
+        
         int[] neighbors = this.neighbors[neighborTo.getIndex()-1];
         return new ArrayIterator(nNeighbors,neighbors,jobs);
     }
