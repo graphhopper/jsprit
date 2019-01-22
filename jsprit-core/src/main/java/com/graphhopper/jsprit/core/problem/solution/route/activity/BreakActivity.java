@@ -25,8 +25,6 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 
 public class BreakActivity extends AbstractActivity implements TourActivity.JobActivity {
 
-    public static int counter = 0;
-
     public double arrTime;
 
     public double endTime;
@@ -78,13 +76,11 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     private double latest = Double.MAX_VALUE;
 
     protected BreakActivity(Break aBreak) {
-        counter++;
         this.aBreak = aBreak;
         this.duration = aBreak.getServiceDuration();
     }
 
     protected BreakActivity(BreakActivity breakActivity) {
-        counter++;
         this.aBreak = (Break) breakActivity.getJob();
         this.arrTime = breakActivity.getArrTime();
         this.endTime = breakActivity.getEndTime();
@@ -94,7 +90,7 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
         this.latest = breakActivity.getTheoreticalLatestOperationStartTime();
         this.duration = breakActivity.getOperationTime();
     }
-    
+
 
     public double getTheoreticalEarliestOperationStartTime() {
         return earliest;
