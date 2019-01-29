@@ -398,9 +398,9 @@ public class Service extends AbstractJob {
     }
 
     /**
-     * Get priority of service. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+     * Get priority of service. Only 1 (high) to 10 (low) are allowed.
      * <p>
-     * Default is 2 = medium.
+     * Default is 2.
      *
      * @return priority
      */
