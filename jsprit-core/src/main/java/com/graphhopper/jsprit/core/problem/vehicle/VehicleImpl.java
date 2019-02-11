@@ -364,7 +364,12 @@ public class VehicleImpl extends AbstractVehicle {
         aBreak = builder.aBreak;
         prohibitedTasks = builder.prohibitedTasks;
         //        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
-        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills, returnToDepot, getUserData()));
+
+        if (builder.aBreak != null) {
+            setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills, returnToDepot, getUserData(), aBreak.getTimeWindow().getStart(), aBreak.getTimeWindow().getEnd(), aBreak.getServiceDuration()));
+        } else {
+            setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills, returnToDepot, getUserData()));
+        }
     }
 
     /**

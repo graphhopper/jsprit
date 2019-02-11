@@ -235,10 +235,13 @@ public class MaxTimeInVehicleTest {
             .setMaxTimeInVehicle(14)
             .setLocation(Location.newInstance(10, 5)).setServiceTime(2).build();
 
+        final VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("1").setFixedCost(1).build();
         VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1")
+            .setType(type)
             .setStartLocation(Location.newInstance(8,5)).setReturnToDepot(true).build();
 
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2")
+            .setType(type)
             .setStartLocation(Location.newInstance(5,0)).setReturnToDepot(true).build();
 
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
@@ -258,9 +261,9 @@ public class MaxTimeInVehicleTest {
 
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager,constraintManager).buildAlgorithm();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
-        SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
-        assertEquals(1,solution.getRoutes().size());
-        assertEquals(0,solution.getUnassignedJobs().size());
+        SolutionPrinter.print(vrp, solution, SolutionPrinter.Print.VERBOSE);
+        assertEquals(1, solution.getRoutes().size());
+        assertEquals(0, solution.getUnassignedJobs().size());
 
     }
 

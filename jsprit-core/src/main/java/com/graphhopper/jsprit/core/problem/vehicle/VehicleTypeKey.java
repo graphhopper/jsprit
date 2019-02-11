@@ -39,9 +39,11 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
     public final Skills skills;
     public final boolean returnToDepot;
     public final Object userData;
+    public final double earliestBreakStart;
+    public final double latestBreakStart;
+    public final double breakDuration;
 
-    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot, Object userData) {
-        super();
+    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot, Object userData, double earliestBreakStart, double latestBreakStart, double breakDuration) {
         this.type = typeId;
         this.startLocationId = startLocationId;
         this.endLocationId = endLocationId;
@@ -50,6 +52,13 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         this.skills = skills;
         this.returnToDepot = returnToDepot;
         this.userData = userData;
+        this.earliestBreakStart = earliestBreakStart;
+        this.latestBreakStart = latestBreakStart;
+        this.breakDuration = breakDuration;
+    }
+
+    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot, Object userData) {
+        this(typeId, startLocationId, endLocationId, earliestStart, latestEnd, skills, returnToDepot, userData, 0, Double.MAX_VALUE, 0);
     }
 
     public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot) {
@@ -71,6 +80,9 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         if (!startLocationId.equals(that.startLocationId)) return false;
         if (!type.equals(that.type)) return false;
         if (!Objects.equals(that.userData, this.userData)) return false;
+        if (Double.compare(that.breakDuration, breakDuration) != 0) return false;
+        if (Double.compare(that.earliestBreakStart, earliestBreakStart) != 0) return false;
+        if (Double.compare(that.latestBreakStart, latestBreakStart) != 0) return false;
 
         return true;
     }
@@ -90,6 +102,13 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         result = 31 * result + (returnToDepot ? 1 : 0);
         if (userData != null)
             result = 31 * result + userData.hashCode();
+
+        temp = Double.doubleToLongBits(breakDuration);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(earliestBreakStart);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(latestBreakStart);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
 
         return result;
     }

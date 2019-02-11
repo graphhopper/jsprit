@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -255,4 +256,34 @@ public class VehicleImplTest {
         assertNull(three.getUserData());
     }
 
+    @Test
+    public void testBreakTimesIncludedInKey() {
+        VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").build();
+        Vehicle one = VehicleImpl.Builder.newInstance("v1").setType(type)
+            .setStartLocation(Location.newInstance("start"))
+            .setEndLocation(Location.newInstance("end"))
+            .setEarliestStart(100)
+            .setLatestArrival(300)
+            .setBreak(Break.Builder.newInstance(UUID.randomUUID().toString()).addTimeWindow(0, 150).setServiceTime(60).build())
+            .build();
+
+        Vehicle two = VehicleImpl.Builder.newInstance("v2").setType(type)
+            .setStartLocation(Location.newInstance("start"))
+            .setEndLocation(Location.newInstance("end"))
+            .setEarliestStart(100)
+            .setLatestArrival(300)
+            .setBreak(Break.Builder.newInstance(UUID.randomUUID().toString()).addTimeWindow(0, 150).setServiceTime(60).build())
+            .build();
+
+        Vehicle three = VehicleImpl.Builder.newInstance("v3").setType(type)
+            .setStartLocation(Location.newInstance("start"))
+            .setEndLocation(Location.newInstance("end"))
+            .setEarliestStart(100)
+            .setLatestArrival(300)
+            .setBreak(Break.Builder.newInstance(UUID.randomUUID().toString()).addTimeWindow(100, 250).setServiceTime(60).build())
+            .build();
+
+        assertEquals(one.getVehicleTypeIdentifier(), two.getVehicleTypeIdentifier());
+        assertNotEquals(one.getVehicleTypeIdentifier(), three.getVehicleTypeIdentifier());
+    }
 }
