@@ -22,6 +22,8 @@ package com.graphhopper.jsprit.core.problem.vehicle;
 import com.graphhopper.jsprit.core.problem.Location;
 import org.junit.Test;
 
+import java.util.UUID;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -62,4 +64,32 @@ public class VehicleTypeKeyTest {
             .setUserData(new String("it's just stupid test")).build();
         assertFalse(v1.getVehicleTypeIdentifier().equals(v2.getVehicleTypeIdentifier()));
     }
+
+
+
+    @Test
+    public void typeIdentifierShouldNotBeEqualWithExcludedTasks() {
+        String taskId1 = UUID.randomUUID().toString(), taskId2 = UUID.randomUUID().toString(), taskId3 = UUID.randomUUID().toString();
+        Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("start"))
+            .addExcludedTask(taskId1).addExcludedTask(taskId2).addExcludedTask(taskId3)
+            .setUserData(new String("it's just a test")).build();
+        Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("start"))
+            .addExcludedTask(taskId1).addExcludedTask(taskId2)
+            .setUserData(new String("it's just stupid test")).build();
+        assertFalse(v1.getVehicleTypeIdentifier().equals(v2.getVehicleTypeIdentifier()));
+    }
+
+    @Test
+    public void typeIdentifierShouldBeEqualWithExcludedTasks() {
+        String taskId1 = UUID.randomUUID().toString(), taskId2 = UUID.randomUUID().toString(), taskId3 = UUID.randomUUID().toString();
+        Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("start"))
+            .addExcludedTask(taskId1).addExcludedTask(taskId2).addExcludedTask(taskId3)
+            .build();
+        Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("start"))
+            .addExcludedTask(taskId2).addExcludedTask(taskId3).addExcludedTask(taskId1).addExcludedTask(taskId3)
+            .build();
+        assertTrue(v1.getVehicleTypeIdentifier().equals(v2.getVehicleTypeIdentifier()));
+    }
+
+
 }

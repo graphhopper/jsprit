@@ -20,7 +20,11 @@ package com.graphhopper.jsprit.core.problem.vehicle;
 import com.graphhopper.jsprit.core.problem.AbstractVehicle;
 import com.graphhopper.jsprit.core.problem.Skills;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+
 
 /**
  * Key to identify similar vehicles
@@ -42,8 +46,9 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
     public final double earliestBreakStart;
     public final double latestBreakStart;
     public final double breakDuration;
+    private Set<String> prohibitedTasks = new HashSet<>();
 
-    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot, Object userData, double earliestBreakStart, double latestBreakStart, double breakDuration) {
+    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, Collection<String> prohibitedTasks, boolean returnToDepot, Object userData, double earliestBreakStart, double latestBreakStart, double breakDuration) {
         this.type = typeId;
         this.startLocationId = startLocationId;
         this.endLocationId = endLocationId;
@@ -55,14 +60,15 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         this.earliestBreakStart = earliestBreakStart;
         this.latestBreakStart = latestBreakStart;
         this.breakDuration = breakDuration;
+        this.prohibitedTasks.addAll(prohibitedTasks);
     }
 
-    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot, Object userData) {
-        this(typeId, startLocationId, endLocationId, earliestStart, latestEnd, skills, returnToDepot, userData, 0, Double.MAX_VALUE, 0);
+    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, Collection<String> prohibitedTasks, boolean returnToDepot, Object userData) {
+        this(typeId, startLocationId, endLocationId, earliestStart, latestEnd, skills, prohibitedTasks, returnToDepot, userData, 0, Double.MAX_VALUE, 0);
     }
 
-    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot) {
-        this(typeId, startLocationId, endLocationId, earliestStart, latestEnd, skills, returnToDepot, null);
+    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, Collection<String> prohibitedTasks, boolean returnToDepot) {
+        this(typeId, startLocationId, endLocationId, earliestStart, latestEnd, skills, prohibitedTasks, returnToDepot, null);
     }
 
     @Override
@@ -83,6 +89,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         if (Double.compare(that.breakDuration, breakDuration) != 0) return false;
         if (Double.compare(that.earliestBreakStart, earliestBreakStart) != 0) return false;
         if (Double.compare(that.latestBreakStart, latestBreakStart) != 0) return false;
+        if (prohibitedTasks.size() != that.prohibitedTasks.size() || !prohibitedTasks.containsAll(that.prohibitedTasks)) return false;
 
         return true;
     }
@@ -109,6 +116,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(latestBreakStart);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + prohibitedTasks.hashCode();
 
         return result;
     }
@@ -119,7 +127,11 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         stringBuilder.append(type).append("_").append(startLocationId).append("_").append(endLocationId)
             .append("_").append(Double.toString(earliestStart)).append("_").append(Double.toString(latestEnd));
         if (userData != null)
-            stringBuilder.append("_").append(userData.toString());
+            stringBuilder.append("_").append(userData.toString()).append("_");
+
+        for (String t : prohibitedTasks)
+            stringBuilder.append(t).append("_");
+
         return stringBuilder.toString();
     }
 
