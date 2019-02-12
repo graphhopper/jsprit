@@ -23,9 +23,7 @@ import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -254,6 +252,24 @@ public class VehicleImplTest {
         assertTrue(one.getUserData() instanceof Map);
         assertEquals(42, two.getUserData());
         assertNull(three.getUserData());
+    }
+
+    @Test
+    public void getProhibitedTasks() {
+        Set<String> prohibitedTasks = new HashSet<>();
+        for (int i = 0; i < 10; ++i) {
+            prohibitedTasks.add(UUID.randomUUID().toString());
+        }
+        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
+        VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("v").setType(type1)
+            .setStartLocation(Location.newInstance("start"));
+
+        for (String task : prohibitedTasks) {
+            vehicleBuilder.addExcludedTask(task);
+        }
+
+        final Collection<String> prohibitedTasksReturned = vehicleBuilder.build().getProhibitedTasks();
+        assertEquals(prohibitedTasks, prohibitedTasksReturned);
     }
 
     @Test

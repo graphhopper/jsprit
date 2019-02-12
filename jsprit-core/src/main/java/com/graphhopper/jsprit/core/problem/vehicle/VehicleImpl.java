@@ -107,6 +107,10 @@ public class VehicleImpl extends AbstractVehicle {
             throw new IllegalArgumentException("NoVehicle should not have prohibited tasks");
         }
 
+        @Override
+        public Collection<String> getProhibitedTasks() {
+            return Collections.EMPTY_LIST;
+        }
     }
 
     /**
@@ -441,6 +445,11 @@ public class VehicleImpl extends AbstractVehicle {
     @Override
     public void addProhibitedTask(String taskId) {
         prohibitedTasks.add(taskId);
+    }
+
+    @Override
+    public Collection<String> getProhibitedTasks() {
+        return Collections.unmodifiableSet(prohibitedTasks);
     }
 
     /* (non-Javadoc)

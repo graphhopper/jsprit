@@ -534,7 +534,7 @@ public class VehicleRoutingProblem {
      * @author sschroeder
      */
     public static enum FleetSize {
-        FINITE, INFINITE
+        FINITE, INFINITE, INFINITE_WITH_BREAKS
     }
 
     /**
@@ -582,6 +582,10 @@ public class VehicleRoutingProblem {
 
     private int nuActivities;
 
+    private int vehicleIndexCounter;
+
+    private final JobActivityFactory originalJobActivityFactory;
+
     private final JobActivityFactory jobActivityFactory = new JobActivityFactory() {
 
         @Override
@@ -603,6 +607,8 @@ public class VehicleRoutingProblem {
         this.nuActivities = builder.activityIndexCounter;
         this.allLocations = builder.allLocations;
         this.allJobs = builder.tentativeJobs;
+        this.originalJobActivityFactory = builder.jobActivityFactory;
+        this.vehicleIndexCounter = builder.vehicleIndexCounter;
         logger.info("setup problem: {}", this);
     }
 
@@ -724,6 +730,27 @@ public class VehicleRoutingProblem {
             for (AbstractActivity act : activityMap.get(job)) acts.add((AbstractActivity) act.duplicate());
         }
         return acts;
+    }
+
+    private void addBreak(Break aBreak) {
+        if (activityMap.containsKey(aBreak))
+            return;
+
+        List<AbstractActivity> breakActivities = originalJobActivityFactory.createActivities(aBreak);
+        if (breakActivities.isEmpty())
+            throw new IllegalArgumentException("At least one activity for break needs to be created by activityFactory!");
+        for(AbstractActivity act : breakActivities) {
+            act.setIndex(nuActivities);
+            ++nuActivities;
+        }
+        activityMap.put(aBreak, breakActivities);
+    }
+
+    public void addVehicle(AbstractVehicle vehicle) {
+        vehicle.setIndex(vehicleIndexCounter++);
+        if (vehicle.getBreak() != null)
+            addBreak(vehicle.getBreak());
+        vehicles.add(vehicle);
     }
 
 }

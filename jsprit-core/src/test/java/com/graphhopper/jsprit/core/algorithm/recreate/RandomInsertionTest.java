@@ -44,16 +44,8 @@ public class RandomInsertionTest {
 
         final RandomInsertion randomInsertion = new RandomInsertion(null, builder.build());
         final Map<String, Integer> jobCanBeServedByDriversCount = randomInsertion.jobCanBeServedByDriversCount;
-
-        int numBreaks = 0;
-        for (Map.Entry<String, Integer> entry : jobCanBeServedByDriversCount.entrySet()) {
-            if (entry.getKey().contains("break_")) {
-                ++numBreaks;
-                assertEquals((int) entry.getValue(), 1);
-            }
-        }
-
-        assertEquals(2, numBreaks);
+        assertEquals(1, jobCanBeServedByDriversCount.get("break_v1"), .001);
+        assertEquals(1, jobCanBeServedByDriversCount.get("break_v2"), .001);
     }
 
     @Test
@@ -176,12 +168,58 @@ public class RandomInsertionTest {
         };
 
         final List<Job> unassigned = new ArrayList<>();
-        unassigned.add(service1); unassigned.add(service2);
+        unassigned.add(service1);
+        unassigned.add(service2);
+
         Collections.shuffle(unassigned);
         randomInsertion.sortJobs(unassigned);
         assertEquals(1, (int) randomInsertion.jobCanBeServedByDriversCount.get(service2.getId()));
         assertEquals(2, (int) randomInsertion.jobCanBeServedByDriversCount.get(service1.getId()));
         assertEquals(service2, unassigned.get(0));
+        assertEquals(service1, unassigned.get(1));
+    }
+
+
+    @Test
+    public void sortTestWithTaskThatNotExist() {
+        final HashSet<String> skillsService1 = new HashSet<>();
+        skillsService1.add("a"); skillsService1.add("b");
+        final HashSet<String> skillsDriver1 = new HashSet<>();
+        skillsDriver1.add("a"); skillsDriver1.add("b");
+        final HashSet<String> skillsDriver2 = new HashSet<>();
+        skillsDriver2.add("c"); skillsDriver2.add("b");
+        final HashSet<String> skillsDriver3 = new HashSet<>();
+        skillsDriver3.add("c"); skillsDriver3.add("b"); skillsDriver3.add("a");
+        final Service service1 = getService(Location.newInstance(0, 5), 0, 20, skillsService1, 1);
+        final Vehicle v1 = getVehicle("v1", Location.newInstance(0, 0), 0, 100, 20, skillsDriver1, false, 1, 1, false, null);
+        final Vehicle v2 = getVehicle("v2", Location.newInstance(0, 14), 0, 100, 20, skillsDriver2, false, 1, 1, false, service1.getId());
+        final Vehicle v3 = getVehicle("v3", Location.newInstance(0, 14), 0, 100, 20, skillsDriver3, false, 1, 1, false, null);
+
+
+        final VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE)
+            .addVehicle(v1)
+            .addVehicle(v2)
+            .addVehicle(v3)
+            .addJob(service1);
+        final RandomInsertion randomInsertion = new RandomInsertion(null, builder.build());
+
+        randomInsertion.random = new Random() {
+            @Override
+            public double nextDouble() {
+                return 0.5;
+            }
+        };
+
+        final Break aBreak = Break.Builder.newInstance(UUID.randomUUID().toString()).setServiceTime(60).addTimeWindow(0, 160).build();
+        final List<Job> unassigned = new ArrayList<>();
+        unassigned.add(service1);
+        unassigned.add(aBreak);
+
+        Collections.shuffle(unassigned);
+        randomInsertion.sortJobs(unassigned);
+        assertEquals(2, (int) randomInsertion.jobCanBeServedByDriversCount.get(service1.getId()));
+        assertEquals(1, (int) randomInsertion.jobCanBeServedByDriversCount.get(aBreak.getId()));
+        assertEquals(aBreak, unassigned.get(0));
         assertEquals(service1, unassigned.get(1));
     }
 

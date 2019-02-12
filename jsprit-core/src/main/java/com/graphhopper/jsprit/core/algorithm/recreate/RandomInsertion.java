@@ -1,7 +1,6 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
@@ -17,7 +16,15 @@ public class RandomInsertion extends AbstractInsertionStrategy {
     private static Logger logger = LoggerFactory.getLogger(BestInsertion.class);
 
     private JobInsertionCostsCalculator bestInsertionCostCalculator;
-    final Map<String, Integer> jobCanBeServedByDriversCount = new HashMap<>();
+    final Map<String, Integer> jobCanBeServedByDriversCount = new HashMap<String, Integer>() {
+        @Override
+        public Integer get(Object key) {
+            if (!super.containsKey(key)) {
+                return 1;
+            }
+            return super.get(key);
+        }
+    };
 
     public RandomInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem) {
         super(vehicleRoutingProblem);
@@ -36,12 +43,6 @@ public class RandomInsertion extends AbstractInsertionStrategy {
             }
 
             jobCanBeServedByDriversCount.put(job.getId(), count);
-        }
-
-        for (Vehicle vehicle : vrp.getVehicles()) {
-            final Break aBreak = vehicle.getBreak();
-            if (aBreak != null)
-                jobCanBeServedByDriversCount.put(aBreak.getId(), 1);
         }
     }
 

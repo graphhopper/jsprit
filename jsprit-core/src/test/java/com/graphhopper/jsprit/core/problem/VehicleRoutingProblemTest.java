@@ -36,6 +36,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 import static org.junit.matchers.JUnitMatchers.hasItem;
@@ -558,5 +559,31 @@ public class VehicleRoutingProblemTest {
         assertEquals(1, veh1.getVehicleTypeIdentifier().getIndex());
         assertEquals(2, veh2.getVehicleTypeIdentifier().getIndex());
 
+    }
+
+    @Test
+    public void shouldAddBreakIfNotExist() {
+        VehicleImpl veh1 = VehicleImpl.Builder.newInstance("v1")
+            .setStartLocation(TestUtils.loc("start", Coordinate.newInstance(0, 1)))
+            .setBreak(Break.Builder.newInstance(UUID.randomUUID().toString()).setServiceTime(60).build())
+            .setEndLocation(Location.newInstance("end")).build();
+        final Service service = Service.Builder.newInstance("myService").setLocation(Location.newInstance("loc")).build();
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance().setFleetSize(FleetSize.INFINITE_WITH_BREAKS);
+        vrpBuilder.addVehicle(veh1);
+        vrpBuilder.addJob(service);
+        final VehicleRoutingProblem vrp = vrpBuilder.build();
+
+        VehicleImpl veh2 = VehicleImpl.Builder.newInstance("v2")
+            .setStartLocation(TestUtils.loc("start", Coordinate.newInstance(0, 1)))
+            .setBreak(Break.Builder.newInstance(UUID.randomUUID().toString()).setServiceTime(20).build())
+            .setEndLocation(Location.newInstance("end")).build();
+
+        assertEquals(0, veh2.getIndex());
+        vrp.addVehicle(veh2);
+        assertEquals(1, veh1.getIndex());
+        assertEquals(2, veh2.getIndex());
+        assertEquals(2, vrp.getActivities(veh1.getBreak()).get(0).getIndex());
+        assertEquals(3, vrp.getActivities(veh2.getBreak()).get(0).getIndex());
     }
 }

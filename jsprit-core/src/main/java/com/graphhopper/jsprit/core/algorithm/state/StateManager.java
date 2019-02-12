@@ -68,7 +68,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private Map<String, StateId> createdStateIds = new HashMap<String, StateId>();
 
-    private int nuActivities;
+    protected int nuActivities;
 
     private int nuVehicleTypeKeys;
 
@@ -130,25 +130,30 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param vehicleRoutingProblem the corresponding VehicleRoutingProblem
      */
     public StateManager(VehicleRoutingProblem vehicleRoutingProblem) {
+        this(vehicleRoutingProblem, Math.max(10, vehicleRoutingProblem.getNuActivities() + 1));
+    }
+
+    public StateManager(VehicleRoutingProblem vehicleRoutingProblem, int nuActivities) {
         stateIndexCounter = initialNoStates;
         int initialStateArrayLength = 30;
         this.vrp = vehicleRoutingProblem;
-        nuActivities = Math.max(10, vrp.getNuActivities() + 1);
+        this.nuActivities = Math.max(10, nuActivities);
         nuVehicleTypeKeys = Math.max(3, getNuVehicleTypes(vrp) + 2);
-        activityStates = new Object[nuActivities][initialStateArrayLength];
-        vehicleDependentActivityStates = new Object[nuActivities][nuVehicleTypeKeys][initialStateArrayLength];
+        activityStates = new Object[this.nuActivities][initialStateArrayLength];
+        vehicleDependentActivityStates = new Object[this.nuActivities][nuVehicleTypeKeys][initialStateArrayLength];
 //        if(vehicleRoutingProblem.getFleetSize().equals(VehicleRoutingProblem.FleetSize.FINITE)){
 //            isIndexedBased = true;
 //            routeStatesArr = new Object[vrp.getVehicles().size() + 2][initialStateArrayLength];
 //            vehicleDependentRouteStatesArr = new Object[vrp.getVehicles().size() + 2][nuVehicleTypeKeys][initialStateArrayLength];
 //        }
 //        else {
-            isIndexedBased = false;
-            routeStateMap = new HashMap<VehicleRoute, Object[]>();
-            vehicleDependentRouteStateMap = new HashMap<VehicleRoute, Object[][]>();
+        isIndexedBased = false;
+        routeStateMap = new HashMap<VehicleRoute, Object[]>();
+        vehicleDependentRouteStateMap = new HashMap<VehicleRoute, Object[][]>();
 //        }
         problemStates = new Object[initialStateArrayLength];
     }
+
 
     private int getNuVehicleTypes(VehicleRoutingProblem vrp) {
         int maxIndex = 0;
