@@ -38,7 +38,7 @@ import java.util.*;
  * @author stefan schroeder
  */
 
-public final class RuinClusters extends AbstractRuinStrategy implements IterationStartsListener {
+public class RuinClusters extends AbstractRuinStrategy implements IterationStartsListener {
 
     @Override
     public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {

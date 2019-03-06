@@ -36,7 +36,7 @@ import java.util.List;
  * @author stefan schroeder
  */
 
-public final class RuinRandom extends AbstractRuinStrategy {
+public class RuinRandom extends AbstractRuinStrategy {
 
     private Logger logger = LoggerFactory.getLogger(RuinRandom.class);
 

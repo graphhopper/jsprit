@@ -35,7 +35,7 @@ import java.util.*;
  *
  * @author stefan
  */
-public final class RuinRadial extends AbstractRuinStrategy {
+public class RuinRadial extends AbstractRuinStrategy {
 
     private Logger logger = LoggerFactory.getLogger(RuinRadial.class);
 

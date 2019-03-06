@@ -177,6 +177,14 @@ public class Jsprit {
 
         private VehicleFleetManager fleetManager = null;
 
+        private RuinRadial radial = null;
+        private RuinRandom randomForRegret = null;
+        private RuinRandom randomForBest = null;
+        private RuinRandom randomForRandom = null;
+        private RuinWorst worst = null;
+        private RuinClusters clusters = null;
+        private RuinString stringRuin = null;
+
         public static Builder newInstance(VehicleRoutingProblem vrp) {
             return new Builder(vrp);
         }
@@ -312,10 +320,44 @@ public class Jsprit {
             return this;
         }
 
+        public Builder setRadial(RuinRadial radial) {
+            this.radial = radial;
+            return this;
+        }
+
+        public Builder setRandomForRegret(RuinRandom randomForRegret) {
+            this.randomForRegret = randomForRegret;
+            return this;
+        }
+
+        public Builder setRandomForBest(RuinRandom randomForBest) {
+            this.randomForBest = randomForBest;
+            return this;
+        }
+
+        public Builder setRandomForRandom(RuinRandom randomForRandom) {
+            this.randomForRandom = randomForRandom;
+            return this;
+        }
+
+        public Builder setWorst(RuinWorst worst) {
+            this.worst = worst;
+            return this;
+        }
+
+        public Builder setClusters(RuinClusters clusters) {
+            this.clusters = clusters;
+            return this;
+        }
+
+        public Builder setStringRuin(RuinString stringRuin) {
+            this.stringRuin = stringRuin;
+            return this;
+        }
+
         public VehicleRoutingAlgorithm buildAlgorithm() {
             return new Jsprit(this).create(vrp);
         }
-
     }
 
     static class RuinShareFactoryImpl implements RuinShareFactory
@@ -380,6 +422,14 @@ public class Jsprit {
 
     private VehicleFleetManager vehicleFleetManager;
 
+    private RuinRadial radial;
+    private RuinRandom random_for_regret;
+    private RuinRandom random_for_best;
+    private RuinRandom random_for_random;
+    private RuinWorst worst;
+    private RuinClusters clusters;
+    private RuinString stringRuin;
+
     private Jsprit(Builder builder) {
         this.stateManager = builder.stateManager;
         this.constraintManager = builder.constraintManager;
@@ -394,6 +444,13 @@ public class Jsprit {
         regretScorer = builder.regretScorer;
         customStrategies.putAll(builder.customStrategies);
         vehicleFleetManager = builder.fleetManager;
+        radial = builder.radial;
+        random_for_regret = builder.randomForRegret;
+        random_for_best = builder.randomForBest;
+        random_for_random = builder.randomForRandom;
+        worst = builder.worst;
+        clusters = builder.clusters;
+        stringRuin = builder.stringRuin;
     }
 
     private void ini(VehicleRoutingProblem vrp) {
@@ -464,7 +521,7 @@ public class Jsprit {
             noiseConfigurator = noiseMaker;
         }
 
-        RuinRadial radial = new RuinRadial(vrp, vrp.getJobs().size(), jobNeighborhoods);
+        radial = radial == null ? new RuinRadial(vrp, vrp.getJobs().size(), jobNeighborhoods) : radial;
         radial.setRandom(random);
         radial.setRuinShareFactory(new RuinShareFactoryImpl(
                 toInteger(properties.getProperty(Parameter.RADIAL_MIN_SHARE.toString())),
@@ -472,7 +529,7 @@ public class Jsprit {
                 random)
         );
 
-        final RuinRandom random_for_regret = new RuinRandom(vrp, 0.5);
+        random_for_regret = random_for_regret == null ? new RuinRandom(vrp, 0.5) : random_for_regret;
         random_for_regret.setRandom(random);
         random_for_regret.setRuinShareFactory(new RuinShareFactoryImpl(
                 toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MIN_SHARE.toString())),
@@ -480,7 +537,7 @@ public class Jsprit {
                 random)
         );
 
-        final RuinRandom random_for_best = new RuinRandom(vrp, 0.5);
+        random_for_best = random_for_best == null ? new RuinRandom(vrp, 0.5) : random_for_best;
         random_for_best.setRandom(random);
         random_for_best.setRuinShareFactory(new RuinShareFactoryImpl(
             toInteger(properties.getProperty(Parameter.RANDOM_BEST_MIN_SHARE.toString())),
@@ -488,7 +545,7 @@ public class Jsprit {
             random)
         );
 
-        final RuinRandom random_for_random = new RuinRandom(vrp, 0.5);
+        random_for_random = random_for_random == null ? new RuinRandom(vrp, 0.5) : random_for_random;
         random_for_random.setRandom(random);
         random_for_random.setRuinShareFactory(new RuinShareFactoryImpl(
             toInteger(properties.getProperty(Parameter.RANDOM_RANDOM_MIN_SHARE.toString())),
@@ -496,7 +553,7 @@ public class Jsprit {
             random)
         );
 
-        final RuinWorst worst = new RuinWorst(vrp, (int) (vrp.getJobs().values().size() * 0.5));
+        worst = worst == null ? new RuinWorst(vrp, (int) (vrp.getJobs().values().size() * 0.5)) : worst;
         worst.setRandom(random);
         worst.setRuinShareFactory(new RuinShareFactoryImpl(
                 toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
@@ -518,7 +575,7 @@ public class Jsprit {
             }
         };
 
-        final RuinClusters clusters = new RuinClusters(vrp, (int) (vrp.getJobs().values().size() * 0.5), jobNeighborhoods);
+        clusters = clusters == null ? new RuinClusters(vrp, (int) (vrp.getJobs().values().size() * 0.5), jobNeighborhoods) : clusters;
         clusters.setRandom(random);
         clusters.setRuinShareFactory(new RuinShareFactoryImpl(
                 toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
@@ -531,7 +588,7 @@ public class Jsprit {
         int lMin = toInteger(properties.getProperty(Parameter.STRING_L_MIN.toString()));
         int lMax = toInteger(properties.getProperty(Parameter.STRING_L_MAX.toString()));
 
-        final RuinString stringRuin = new RuinString(vrp, jobNeighborhoods);
+        stringRuin = stringRuin == null ? new RuinString(vrp, jobNeighborhoods) : stringRuin;
         stringRuin.setNoRoutes(kMin, kMax);
         stringRuin.setStringLength(lMin, lMax);
         stringRuin.setRandom(random);
