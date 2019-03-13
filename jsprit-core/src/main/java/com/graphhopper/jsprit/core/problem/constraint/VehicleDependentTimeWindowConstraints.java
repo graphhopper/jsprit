@@ -32,12 +32,9 @@ import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivity
  * @author stefan
  */
 public class VehicleDependentTimeWindowConstraints implements HardActivityConstraint {
-
-    private RouteAndActivityStateGetter states;
-
-    private VehicleRoutingTransportCosts routingCosts;
-
-    private VehicleRoutingActivityCosts activityCosts;
+    protected RouteAndActivityStateGetter states;
+    protected VehicleRoutingTransportCosts routingCosts;
+    protected VehicleRoutingActivityCosts activityCosts;
 
     public VehicleDependentTimeWindowConstraints(RouteAndActivityStateGetter states, VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts) {
         super();
