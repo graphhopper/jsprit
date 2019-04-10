@@ -1,5 +1,6 @@
 Change-log
 ==========
+**v1.7.3** @ 2019-04-10
 
 **v1.7.2** @ 2017-06-08
 - see [Whats new](https://github.com/graphhopper/jsprit/blob/master/WHATS_NEW.md)
