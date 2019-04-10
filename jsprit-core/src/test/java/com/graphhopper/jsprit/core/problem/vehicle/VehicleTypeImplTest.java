@@ -136,11 +136,6 @@ public class VehicleTypeImplTest {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerTime(-10).build();
     }
 
-    @Test
-    public void whenSettingPerTimeCosts_itShouldBeSetCorrectly() {
-        VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerTime(10).build();
-        assertEquals(10.0, type.getVehicleCostParams().perTimeUnit, 0.0);
-    }
 
     @Test
     public void whenHavingTwoTypesWithTheSameId_theyShouldBeEqual() {
