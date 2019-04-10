@@ -39,7 +39,7 @@ public class Skills {
             return new Builder();
         }
 
-        private Set<String> skills = new HashSet<String>();
+        private Set<String> skills = new HashSet<>();
 
         /**
          * Adds skill. Skill is transformed into lowerCase.
@@ -74,7 +74,7 @@ public class Skills {
 
     }
 
-    private Set<String> skills = new HashSet<String>();
+    private Set<String> skills = new HashSet<>();
 
     private Skills(Builder builder) {
         skills.addAll(builder.skills);
@@ -90,16 +90,16 @@ public class Skills {
     }
 
     public String toString() {
-        String s = "[";
+        StringBuilder s = new StringBuilder("[");
         boolean first = true;
         for (String skill : values()) {
             if (first) {
-                s += skill;
+                s.append(skill);
                 first = false;
-            } else s += ", " + skill;
+            } else s.append(", ").append(skill);
         }
-        s += "]";
-        return s;
+        s.append("]");
+        return s.toString();
     }
 
     /**
@@ -119,9 +119,7 @@ public class Skills {
 
         Skills skills1 = (Skills) o;
 
-        if (skills != null ? !skills.equals(skills1.skills) : skills1.skills != null) return false;
-
-        return true;
+        return skills != null ? skills.equals(skills1.skills) : skills1.skills == null;
     }
 
     @Override

@@ -23,6 +23,6 @@ package com.graphhopper.jsprit.core.problem;
  */
 public interface HasId {
 
-    public String getId();
+    String getId();
 
 }

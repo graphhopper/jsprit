@@ -27,6 +27,6 @@ import java.util.List;
  */
 public interface JobActivityFactory {
 
-    public List<AbstractActivity> createActivities(Job job);
+    List<AbstractActivity> createActivities(Job job);
 
 }

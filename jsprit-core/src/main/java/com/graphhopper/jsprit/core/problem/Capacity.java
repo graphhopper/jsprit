@@ -171,9 +171,7 @@ public class Capacity {
         }
 
         private void copy(int[] from, int[] to) {
-            for (int i = 0; i < dimensions.length; i++) {
-                to[i] = from[i];
-            }
+            System.arraycopy(from, 0, to, 0, dimensions.length);
         }
 
         /**
@@ -195,7 +193,7 @@ public class Capacity {
      *
      * @param capacity capacity to be copied
      */
-    Capacity(Capacity capacity) {
+    private Capacity(Capacity capacity) {
         this.dimensions = new int[capacity.getNuOfDimensions()];
         for (int i = 0; i < capacity.getNuOfDimensions(); i++) {
             this.dimensions[i] = capacity.get(i);
@@ -261,11 +259,11 @@ public class Capacity {
 
     @Override
     public String toString() {
-        String string = "[noDimensions=" + getNuOfDimensions() + "]";
+        StringBuilder string = new StringBuilder("[noDimensions=" + getNuOfDimensions() + "]");
         for (int i = 0; i < getNuOfDimensions(); i++) {
-            string += "[[dimIndex=" + i + "][dimValue=" + dimensions[i] + "]]";
+            string.append("[[dimIndex=").append(i).append("][dimValue=").append(dimensions[i]).append("]]");
         }
-        return string;
+        return string.toString();
     }
 
     /**
@@ -300,9 +298,7 @@ public class Capacity {
 
         Capacity capacity = (Capacity) o;
 
-        if (!Arrays.equals(dimensions, capacity.dimensions)) return false;
-
-        return true;
+        return Arrays.equals(dimensions, capacity.dimensions);
     }
 
     @Override

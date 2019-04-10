@@ -23,6 +23,6 @@ package com.graphhopper.jsprit.core.problem;
  */
 public interface HasIndex {
 
-    public int getIndex();
+    int getIndex();
 
 }

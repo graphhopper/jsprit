@@ -49,8 +49,8 @@ public final class Location implements HasIndex, HasId {
     /**
      * Factory method (and shortcut) for creating location object just with location index
      *
-     * @param index
-     * @return
+     * @param index of location
+     * @return this builder
      */
     public static Location newInstance(int index) {
         return Location.Builder.newInstance().setIndex(index).build();
@@ -92,7 +92,7 @@ public final class Location implements HasIndex, HasId {
         /**
          * Sets location index
          *
-         * @param index
+         * @param index location index
          * @return the builder
          */
         public Builder setIndex(int index) {
@@ -104,8 +104,8 @@ public final class Location implements HasIndex, HasId {
         /**
          * Sets coordinate of location
          *
-         * @param coordinate
-         * @return
+         * @param coordinate of location
+         * @return this Builder
          */
         public Builder setCoordinate(Coordinate coordinate) {
             this.coordinate = coordinate;
@@ -115,8 +115,8 @@ public final class Location implements HasIndex, HasId {
         /**
          * Sets location id
          *
-         * @param id
-         * @return
+         * @param id id of location
+         * @return this Builder
          */
         public Builder setId(String id) {
             this.id = id;
@@ -126,8 +126,8 @@ public final class Location implements HasIndex, HasId {
         /**
          * Adds name, e.g. street name, to location
          *
-         * @param name
-         * @return
+         * @param name name of location
+         * @return this Builder
          */
         public Builder setName(String name) {
             this.name = name;
@@ -198,14 +198,10 @@ public final class Location implements HasIndex, HasId {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Location)) return false;
-
         Location location = (Location) o;
-
         if (index != location.index) return false;
         if (coordinate != null ? !coordinate.equals(location.coordinate) : location.coordinate != null) return false;
-        if (id != null ? !id.equals(location.id) : location.id != null) return false;
-
-        return true;
+        return id != null ? id.equals(location.id) : location.id == null;
     }
 
     @Override
