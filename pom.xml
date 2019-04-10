@@ -71,7 +71,7 @@
     </modules>
 
     <properties>
-        <jdkVersion>1.7</jdkVersion>
+        <jdkVersion>1.8</jdkVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.12</junit.version>
         <mockito.version>1.9.5</mockito.version>
