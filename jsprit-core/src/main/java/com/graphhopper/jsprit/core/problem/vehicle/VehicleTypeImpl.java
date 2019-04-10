@@ -42,8 +42,7 @@ public class VehicleTypeImpl implements VehicleType {
         }
 
         public final double fix;
-        @Deprecated
-        public final double perTimeUnit;
+
         public final double perTransportTimeUnit;
         public final double perDistanceUnit;
         public final double perWaitingTimeUnit;
@@ -52,7 +51,6 @@ public class VehicleTypeImpl implements VehicleType {
         private VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit) {
             super();
             this.fix = fix;
-            this.perTimeUnit = perTimeUnit;
             this.perTransportTimeUnit = perTimeUnit;
             this.perDistanceUnit = perDistanceUnit;
             this.perWaitingTimeUnit = 0.;
@@ -61,7 +59,6 @@ public class VehicleTypeImpl implements VehicleType {
 
         public VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit, double perWaitingTimeUnit) {
             this.fix = fix;
-            this.perTimeUnit = perTimeUnit;
             this.perTransportTimeUnit = perTimeUnit;
             this.perDistanceUnit = perDistanceUnit;
             this.perWaitingTimeUnit = perWaitingTimeUnit;
@@ -70,7 +67,6 @@ public class VehicleTypeImpl implements VehicleType {
 
         public VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit, double perWaitingTimeUnit, double perServiceTimeUnit) {
             this.fix = fix;
-            this.perTimeUnit = perTimeUnit;
             this.perTransportTimeUnit = perTimeUnit;
             this.perDistanceUnit = perDistanceUnit;
             this.perWaitingTimeUnit = perWaitingTimeUnit;
@@ -128,7 +124,6 @@ public class VehicleTypeImpl implements VehicleType {
         }
 
         private String id;
-        private int capacity = 0;
         private double maxVelo = Double.MAX_VALUE;
         /**
          * default cost values for default vehicle type
@@ -176,7 +171,7 @@ public class VehicleTypeImpl implements VehicleType {
          * Sets the maximum velocity this vehicle-type can go [in meter per
          * seconds].
          *
-         * @param inMeterPerSeconds
+         * @param inMeterPerSeconds in m/s
          * @return this builder
          * @throws IllegalArgumentException
          *             if velocity is smaller than zero
@@ -193,7 +188,7 @@ public class VehicleTypeImpl implements VehicleType {
          * <p>
          * <p>by default it is 0.
          *
-         * @param fixedCost
+         * @param fixedCost fixed cost of vehicle type
          * @return this builder
          * @throws IllegalArgumentException if fixedCost is smaller than zero
          */
@@ -208,7 +203,7 @@ public class VehicleTypeImpl implements VehicleType {
          * <p>
          * <p>by default it is 1.0
          *
-         * @param perDistance
+         * @param perDistance cost per distance
          * @return this builder
          * @throws IllegalArgumentException if perDistance is smaller than zero
          */
@@ -224,7 +219,7 @@ public class VehicleTypeImpl implements VehicleType {
          * <p>
          * <p>by default it is 0.0
          *
-         * @param perTime
+         * @param perTime cost per time
          * @return this builder
          * @throws IllegalArgumentException if costPerTime is smaller than zero
          * @deprecated use .setCostPerTransportTime(..) instead
@@ -241,7 +236,7 @@ public class VehicleTypeImpl implements VehicleType {
          * <p>
          * <p>by default it is 0.0
          *
-         * @param perTime
+         * @param perTime cost per time
          * @return this builder
          * @throws IllegalArgumentException if costPerTime is smaller than zero
          */
@@ -256,7 +251,7 @@ public class VehicleTypeImpl implements VehicleType {
          * <p>
          * <p>by default it is 0.0
          *
-         * @param perWaitingTime
+         * @param perWaitingTime cost per waiting time
          * @return this builder
          * @throws IllegalArgumentException if costPerTime is smaller than zero
          */
@@ -286,8 +281,8 @@ public class VehicleTypeImpl implements VehicleType {
         /**
          * Adds a capacity dimension.
          *
-         * @param dimIndex
-         * @param dimVal
+         * @param dimIndex dimension index
+         * @param dimVal dimension value
          * @return the builder
          * @throws IllegalArgumentException if dimVal < 0
          * @throws IllegalArgumentException    if capacity dimension is already set
@@ -310,7 +305,7 @@ public class VehicleTypeImpl implements VehicleType {
          * your dimensions with <code>addCapacityDimension(int dimIndex, int dimVal)</code> or set the already built dimensions with
          * this method.
          *
-         * @param capacity
+         * @param capacity capacity of vehicle type
          * @return this builder
          * @throws IllegalArgumentException if capacityDimension has already been added
          */
@@ -358,8 +353,6 @@ public class VehicleTypeImpl implements VehicleType {
 
     private final String typeId;
 
-    private final int capacity;
-
     private final String profile;
 
     private final VehicleTypeImpl.VehicleCostParams vehicleCostParams;
@@ -373,12 +366,11 @@ public class VehicleTypeImpl implements VehicleType {
     /**
      * priv constructor constructing vehicle-type
      *
-     * @param builder
+     * @param builder vehicle type builder
      */
     private VehicleTypeImpl(VehicleTypeImpl.Builder builder) {
         this.userData = builder.userData;
         typeId = builder.id;
-        capacity = builder.capacity;
         maxVelocity = builder.maxVelo;
         vehicleCostParams = new VehicleCostParams(builder.fixedCost, builder.perTime, builder.perDistance, builder.perWaitingTime, builder.perServiceTime);
         capacityDimensions = builder.capacityDimensions;

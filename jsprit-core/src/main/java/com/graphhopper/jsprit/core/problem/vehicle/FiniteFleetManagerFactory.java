@@ -17,10 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
-import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
-
 import java.util.Collection;
-import java.util.Random;
 
 /**
  * Factory that creates a finite fleetmanager.
@@ -31,8 +28,6 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory {
 
     private Collection<Vehicle> vehicles;
 
-    private Random random = RandomNumberGeneration.getRandom();
-
     /**
      * Constucts the factory.
      *
@@ -41,10 +36,6 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory {
     public FiniteFleetManagerFactory(Collection<Vehicle> vehicles) {
         super();
         this.vehicles = vehicles;
-    }
-
-    public void setRandom(Random random) {
-        this.random = random;
     }
 
     /**
@@ -58,7 +49,6 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory {
         if (vehicles == null) throw new IllegalStateException("vehicles is null. this must not be.");
         if (vehicles.isEmpty()) throw new IllegalStateException("vehicle-collection is empty. this must not be");
         VehicleFleetManagerImpl vehicleFleetManager = new VehicleFleetManagerImpl(vehicles);
-        vehicleFleetManager.setRandom(random);
         vehicleFleetManager.init();
         return vehicleFleetManager;
     }

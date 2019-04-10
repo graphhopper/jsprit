@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 
 
 class VehicleFleetManagerImpl implements VehicleFleetManager {
@@ -40,7 +39,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
         TypeContainer() {
             super();
-            vehicleList = new ArrayList<Vehicle>();
+            vehicleList = new ArrayList<>();
         }
 
         void add(Vehicle vehicle) {
@@ -56,8 +55,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
         Vehicle getVehicle() {
             if(index >= vehicleList.size()) index = 0;
-            Vehicle vehicle = vehicleList.get(index);
-            return vehicle;
+            return vehicleList.get(index);
         }
 
         void incIndex(){
@@ -80,18 +78,12 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
     private Vehicle[] vehicleArr;
 
-    private Random random;
-
     VehicleFleetManagerImpl(Collection<Vehicle> vehicles) {
         super();
         this.vehicles = vehicles;
         int arrSize = vehicles.size() + 2;
         locked = new boolean[arrSize];
         vehicleArr = new Vehicle[arrSize];
-    }
-
-    void setRandom(Random random) {
-        this.random = random;
     }
 
     void init(){
@@ -142,10 +134,10 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
      */
     @Override
     public Collection<Vehicle> getAvailableVehicles() {
-        List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        for(int i=0;i< vehicleTypes.length;i++){
-            if(!vehicleTypes[i].isEmpty()){
-                vehicles.add(vehicleTypes[i].getVehicle());
+        List<Vehicle> vehicles = new ArrayList<>();
+        for (TypeContainer vehicleType : vehicleTypes) {
+            if (!vehicleType.isEmpty()) {
+                vehicles.add(vehicleType.getVehicle());
             }
         }
         return vehicles;
@@ -153,7 +145,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
     @Override
     public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
-        List<Vehicle> vehicles = new ArrayList<Vehicle>();
+        List<Vehicle> vehicles = new ArrayList<>();
         for(int i=0;i< vehicleTypes.length;i++){
             if(!vehicleTypes[i].isEmpty() && i != withoutThisType.getVehicleTypeIdentifier().getIndex()){
                 vehicles.add(vehicleTypes[i].getVehicle());
@@ -218,8 +210,8 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
                 unlock(vehicleArr[i]);
             }
         }
-        for(int i=0;i<vehicleTypes.length;i++){
-            vehicleTypes[i].incIndex();
+        for (TypeContainer vehicleType : vehicleTypes) {
+            vehicleType.incIndex();
         }
     }
 

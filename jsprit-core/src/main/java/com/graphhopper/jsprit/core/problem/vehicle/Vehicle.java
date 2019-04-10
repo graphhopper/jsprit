@@ -35,50 +35,50 @@ public interface Vehicle extends HasId, HasIndex {
      *
      * @return earliest departure time
      */
-    public abstract double getEarliestDeparture();
+    double getEarliestDeparture();
 
     /**
      * Returns the latest arrival time at this vehicle's end-location which should be the upper bound of this vehicle's arrival times at end-location.
      *
      * @return latest arrival time of this vehicle
      */
-    public abstract double getLatestArrival();
+    double getLatestArrival();
 
     /**
      * Returns the {@link VehicleType} of this vehicle.
      *
      * @return {@link VehicleType} of this vehicle
      */
-    public abstract VehicleType getType();
+    VehicleType getType();
 
     /**
      * Returns the id of this vehicle.
      *
      * @return id
      */
-    public abstract String getId();
+    String getId();
 
     /**
      * Returns true if vehicle returns to depot, false otherwise.
      *
      * @return true if isReturnToDepot
      */
-    public abstract boolean isReturnToDepot();
+    boolean isReturnToDepot();
 
-    public abstract Location getStartLocation();
+    Location getStartLocation();
 
-    public abstract Location getEndLocation();
+    Location getEndLocation();
 
-    public abstract VehicleTypeKey getVehicleTypeIdentifier();
+    VehicleTypeKey getVehicleTypeIdentifier();
 
-    public abstract Skills getSkills();
+    Skills getSkills();
 
     /**
      * @return User-specific domain data associated with the vehicle
      */
-    public Object getUserData();
+    Object getUserData();
 
-    public abstract Break getBreak();
+    Break getBreak();
     // Switch to this as soon as we switct to Java 8:
     // default Object getUserData() {
     // return null;

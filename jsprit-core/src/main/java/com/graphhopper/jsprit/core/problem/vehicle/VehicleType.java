@@ -31,38 +31,34 @@ public interface VehicleType {
      *
      * @return typeId
      */
-    public String getTypeId();
+    String getTypeId();
 
     /**
      * Returns capacity dimensions.
      *
      * @return {@link com.graphhopper.jsprit.core.problem.Capacity}
      */
-    public Capacity getCapacityDimensions();
+    Capacity getCapacityDimensions();
 
     /**
      * Returns maximum velocity of this vehicle-type.
      *
      * @return max velocity
      */
-    public double getMaxVelocity();
+    double getMaxVelocity();
 
     /**
      * Return the cost-parameter of this vehicle-type.
      *
      * @return parameter
      */
-    public VehicleTypeImpl.VehicleCostParams getVehicleCostParams();
+    VehicleTypeImpl.VehicleCostParams getVehicleCostParams();
 
-    public String getProfile();
+    String getProfile();
 
     /**
      * @return User-specific domain data associated with the vehicle type
      */
-    public Object getUserData();
+    Object getUserData();
 
-    // Switch to this as soon as we switct to Java 8:
-    // default Object getUserData() {
-    // return null;
-    // };
 }

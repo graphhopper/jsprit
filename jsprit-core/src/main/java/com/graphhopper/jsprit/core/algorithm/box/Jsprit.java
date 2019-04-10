@@ -406,7 +406,6 @@ public class Jsprit {
                 vehicleFleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
             } else {
                 FiniteFleetManagerFactory finiteFleetManagerFactory = new FiniteFleetManagerFactory(vrp.getVehicles());
-                finiteFleetManagerFactory.setRandom(random);
                 vehicleFleetManager = finiteFleetManagerFactory.createFleetManager();
             }
         }

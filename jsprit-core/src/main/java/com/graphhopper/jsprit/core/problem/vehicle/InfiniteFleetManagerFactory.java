@@ -32,7 +32,7 @@ public class InfiniteFleetManagerFactory implements VehicleFleetManagerFactory {
     /**
      * Constructs the factory.
      *
-     * @param vehicles
+     * @param vehicles that are used to initialize the fleet manager
      */
     public InfiniteFleetManagerFactory(Collection<Vehicle> vehicles) {
         super();
