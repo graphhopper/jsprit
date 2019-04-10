@@ -3,7 +3,6 @@ sudo: false
 matrix:
   fast_finish: true
   include:
-    - jdk: openjdk7
     - jdk: oraclejdk8
       # Java 9 needs to be manually installed/upgraded
       # see: https://github.com/travis-ci/travis-ci/issues/2968#issuecomment-149164058
@@ -52,7 +51,7 @@ script:
 notifications:
   email:
     - $EMAIL
-    
+
 cache:
   directories:
     - $HOME/.m2
