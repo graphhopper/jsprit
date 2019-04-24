@@ -26,6 +26,7 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.misc.ActivityContext;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
@@ -144,6 +145,9 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
                 tourEnd = true;
             }
             boolean breakThis = true;
+            ActivityContext activityContext = new ActivityContext();
+            activityContext.setInsertionIndex(actIndex);
+            insertionContext.setActivityContext(activityContext);
             List<Location> locations = Arrays.asList(prevAct.getLocation(), nextAct.getLocation());
             for (Location location : locations) {
                 breakAct2Insert.setLocation(location);
