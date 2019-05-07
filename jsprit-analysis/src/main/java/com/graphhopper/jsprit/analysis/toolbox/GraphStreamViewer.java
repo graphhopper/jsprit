@@ -572,28 +572,30 @@ public class GraphStreamViewer {
             n.addAttribute("ui.label", "start");
         }
         for (TourActivity act : route.getActivities()) {
-            Job job = ((JobActivity) act).getJob();
-            String currIdentifier = makeId(job.getId(), act.getLocation().getId());
-            if (label.equals(Label.ACTIVITY)) {
-                Node actNode = g.getNode(currIdentifier);
-                actNode.addAttribute("ui.label", act.getName());
-            } else if (label.equals(Label.JOB_NAME)) {
-                Node actNode = g.getNode(currIdentifier);
-                actNode.addAttribute("ui.label", job.getName());
-            } else if (label.equals(Label.ARRIVAL_TIME)) {
-                Node actNode = g.getNode(currIdentifier);
-                actNode.addAttribute("ui.label", Time.parseSecondsToTime(act.getArrTime()));
-            } else if (label.equals(Label.DEPARTURE_TIME)) {
-                Node actNode = g.getNode(currIdentifier);
-                actNode.addAttribute("ui.label", Time.parseSecondsToTime(act.getEndTime()));
+            if (act instanceof  JobActivity) {
+                Job job = ((JobActivity) act).getJob();
+                String currIdentifier = makeId(job.getId(), act.getLocation().getId());
+                if (label.equals(Label.ACTIVITY)) {
+                    Node actNode = g.getNode(currIdentifier);
+                    actNode.addAttribute("ui.label", act.getName());
+                } else if (label.equals(Label.JOB_NAME)) {
+                    Node actNode = g.getNode(currIdentifier);
+                    actNode.addAttribute("ui.label", job.getName());
+                } else if (label.equals(Label.ARRIVAL_TIME)) {
+                    Node actNode = g.getNode(currIdentifier);
+                    actNode.addAttribute("ui.label", Time.parseSecondsToTime(act.getArrTime()));
+                } else if (label.equals(Label.DEPARTURE_TIME)) {
+                    Node actNode = g.getNode(currIdentifier);
+                    actNode.addAttribute("ui.label", Time.parseSecondsToTime(act.getEndTime()));
+                }
+                g.addEdge(makeEdgeId(routeId, vehicle_edgeId), prevIdentifier, currIdentifier, true);
+                if (act instanceof PickupActivity) g.getNode(currIdentifier).addAttribute("ui.class", "pickupInRoute");
+                else if (act instanceof DeliveryActivity)
+                    g.getNode(currIdentifier).addAttribute("ui.class", "deliveryInRoute");
+                prevIdentifier = currIdentifier;
+                vehicle_edgeId++;
+                sleep(renderDelay_in_ms);
             }
-            g.addEdge(makeEdgeId(routeId, vehicle_edgeId), prevIdentifier, currIdentifier, true);
-            if (act instanceof PickupActivity) g.getNode(currIdentifier).addAttribute("ui.class", "pickupInRoute");
-            else if (act instanceof DeliveryActivity)
-                g.getNode(currIdentifier).addAttribute("ui.class", "deliveryInRoute");
-            prevIdentifier = currIdentifier;
-            vehicle_edgeId++;
-            sleep(renderDelay_in_ms);
         }
         if (route.getVehicle().isReturnToDepot()) {
             String lastIdentifier = makeId(route.getVehicle().getId(), route.getVehicle().getEndLocation().getId());

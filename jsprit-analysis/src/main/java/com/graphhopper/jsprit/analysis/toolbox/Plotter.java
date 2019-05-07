@@ -302,6 +302,10 @@ public class Plotter {
         final XYPlot plot = createPlot(problem, shipments, solution);
         JFreeChart chart = new JFreeChart(title, plot);
 
+        plot.setBackgroundPaint(Color.WHITE);
+        plot.setDomainGridlinesVisible(false);
+        plot.setRangeGridlinesVisible(false);
+
         LegendTitle legend = createLegend(routes, shipments, plot);
         chart.removeLegend();
         chart.addLegend(legend);

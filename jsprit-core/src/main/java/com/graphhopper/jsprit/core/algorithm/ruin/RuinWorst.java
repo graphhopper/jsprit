@@ -104,6 +104,10 @@ public final class RuinWorst extends AbstractRuinStrategy {
             TourActivity actBefore = route.getStart();
             TourActivity actToEval = null;
             for (TourActivity act : route.getActivities()) {
+                if (!(act instanceof TourActivity.JobActivity)) {
+                    continue;
+                }
+
                 if (actToEval == null) {
                     actToEval = act;
                     continue;
@@ -118,6 +122,9 @@ public final class RuinWorst extends AbstractRuinStrategy {
                 }
                 actBefore = actToEval;
                 actToEval = act;
+            }
+            if (actToEval == null) {
+                continue;
             }
             double savings = savings(route, actBefore, actToEval, route.getEnd());
             Job job = ((TourActivity.JobActivity) actToEval).getJob();

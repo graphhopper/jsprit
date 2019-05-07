@@ -78,8 +78,8 @@ public class MaxDistanceConstraint implements HardActivityConstraint {
         double maxDistance = getMaxDistance(iFacts.getNewVehicle());
         if (currentDistance > maxDistance) return ConstraintsStatus.NOT_FULFILLED_BREAK;
 
-        double distancePrevAct2NewAct = distanceCalculator.getDistance(prevAct.getLocation(), newAct.getLocation(), iFacts.getNewDepTime(), iFacts.getNewVehicle());
-        double distanceNewAct2nextAct = distanceCalculator.getDistance(newAct.getLocation(), nextAct.getLocation(), iFacts.getNewDepTime(), iFacts.getNewVehicle());
+        double distancePrevAct2NewAct = distanceCalculator.getDistance(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewVehicle());
+        double distanceNewAct2nextAct = distanceCalculator.getDistance(newAct.getLocation(), nextAct.getLocation(), prevActDepTime, iFacts.getNewVehicle());
         double distancePrevAct2NextAct = distanceCalculator.getDistance(prevAct.getLocation(), nextAct.getLocation(), prevActDepTime, iFacts.getNewVehicle());
         if (prevAct instanceof Start && nextAct instanceof End) distancePrevAct2NextAct = 0;
         if (nextAct instanceof End && !iFacts.getNewVehicle().isReturnToDepot()) {

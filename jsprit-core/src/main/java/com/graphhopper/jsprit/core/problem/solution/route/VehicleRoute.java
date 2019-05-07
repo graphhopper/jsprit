@@ -367,7 +367,7 @@ public class VehicleRoute {
      * @return list of tourActivities
      */
     public List<TourActivity> getActivities() {
-        return Collections.unmodifiableList(tourActivities.getActivities());
+        return tourActivities.getActivities();
     }
 
     /**
