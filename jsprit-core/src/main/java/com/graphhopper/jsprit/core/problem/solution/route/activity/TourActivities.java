@@ -154,36 +154,35 @@ public class TourActivities {
      * @return true if activity has been removed, false otherwise
      */
     public boolean removeActivity(TourActivity activity) {
-        Job job = null;
-        if (activity instanceof JobActivity) {
-            job = ((JobActivity) activity).getJob();
+        if (!(activity instanceof JobActivity)) {
+            //assumes that an activity can be added only once to tourActivities
+            return tourActivities.remove(activity);
         }
+
+        Job job = ((JobActivity) activity).getJob();
         boolean jobIsAlsoAssociateToOtherActs = false;
         boolean actRemoved = false;
-        List<TourActivity> acts = new ArrayList<>(tourActivities);
-        for (TourActivity act : acts) {
+        for (TourActivity act : new ArrayList<>(tourActivities)) {
             if (act == activity) {
                 tourActivities.remove(act);
-                if (job == null || jobIsAlsoAssociateToOtherActs) {
-                    // this is not a job activity OR other activities also refer to job --> do not remove job
+                if (jobIsAlsoAssociateToOtherActs) {
+                    // other activities also refer to job --> do not remove job
                     // thus no need to iterate any further
                     return true;
                 }
                 actRemoved = true;
             } else {
-                if (job != null && act instanceof JobActivity) {
-                    if (((JobActivity) act).getJob().equals(job)) {
-                        if (actRemoved) {
-                            // other activities also refer to job --> do not remove job
-                            // thus no need to iterate any further
-                            return true;
-                        }
-                        jobIsAlsoAssociateToOtherActs = true;
+                if (act instanceof JobActivity && ((JobActivity) act).getJob().equals(job)) {
+                    if (actRemoved) {
+                        // other activities also refer to job --> do not remove job
+                        // thus no need to iterate any further
+                        return true;
                     }
+                    jobIsAlsoAssociateToOtherActs = true;
                 }
             }
         }
-        if (!jobIsAlsoAssociateToOtherActs && actRemoved) {
+        if (actRemoved) {
             jobs.remove(job);
         }
         return actRemoved;
