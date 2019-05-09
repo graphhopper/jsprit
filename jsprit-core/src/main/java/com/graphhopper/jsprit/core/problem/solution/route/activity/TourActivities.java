@@ -164,10 +164,20 @@ public class TourActivities {
         for (TourActivity act : acts) {
             if (act == activity) {
                 tourActivities.remove(act);
+                if (job == null || jobIsAlsoAssociateToOtherActs) {
+                    // this is not a job activity OR other activities also refer to job --> do not remove job
+                    // thus no need to iterate any further
+                    return true;
+                }
                 actRemoved = true;
             } else {
-                if (act instanceof JobActivity && job != null) {
+                if (job != null && act instanceof JobActivity) {
                     if (((JobActivity) act).getJob().equals(job)) {
+                        if (actRemoved) {
+                            // other activities also refer to job --> do not remove job
+                            // thus no need to iterate any further
+                            return true;
+                        }
                         jobIsAlsoAssociateToOtherActs = true;
                     }
                 }
