@@ -81,7 +81,6 @@ public class TourActivities {
     }
 
     public TourActivities() {
-
     }
 
     public List<TourActivity> getActivities() {
@@ -89,7 +88,30 @@ public class TourActivities {
     }
 
     public Iterator<TourActivity> iterator() {
-        return tourActivities.iterator();
+        final Iterator<TourActivity> iterator = tourActivities.iterator();
+        return new Iterator<TourActivity>() {
+            private TourActivity lastReturned = null;
+
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public TourActivity next() {
+                return lastReturned = iterator.next();
+            }
+
+            @Override
+            public void remove() {
+                if (lastReturned instanceof JobActivity) {
+                    throw new IllegalStateException("Cannot remove JobActivities via iterator. "
+                        + "Use TourActivities.removeActivity(), or alternatively, consider TourActivities.removeJob()");
+                } else {
+                    iterator.remove();
+                }
+            }
+        };
     }
 
     public boolean isEmpty() {
