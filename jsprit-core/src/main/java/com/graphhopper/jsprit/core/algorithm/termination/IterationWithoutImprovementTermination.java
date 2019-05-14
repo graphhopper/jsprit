@@ -18,8 +18,12 @@
 package com.graphhopper.jsprit.core.algorithm.termination;
 
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
+import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -39,6 +43,11 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
 
     private int iterationsWithoutImprovement = 0;
 
+    private List<Double> costs;
+
+    private List<Integer> unassignedCount;
+
+    private int bestCost = Integer.MAX_VALUE;
     /**
      * Constructs termination.
      *
@@ -46,6 +55,8 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
      */
     public IterationWithoutImprovementTermination(int noIterationsWithoutImprovement) {
         this.noIterationWithoutImprovement = noIterationsWithoutImprovement;
+        costs = new ArrayList<>();
+        unassignedCount = new ArrayList<>();
         log.debug("initialise " + this);
     }
 
@@ -56,10 +67,21 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
 
     @Override
     public boolean isPrematureBreak(SearchStrategy.DiscoveredSolution discoveredSolution) {
-        if (discoveredSolution.isAccepted()) iterationsWithoutImprovement = 0;
-        else iterationsWithoutImprovement++;
-        return (iterationsWithoutImprovement > noIterationWithoutImprovement);
-    }
+        VehicleRoutingProblemSolution sol = discoveredSolution.getSolution();
+        double currentCost = sol.getCost();
+        costs.add(Math.min(currentCost, bestCost));
+        int currentUnassigned = sol.getUnassignedJobs().size();
+        unassignedCount.add(currentUnassigned);
 
+        int i = costs.size() - 1;
+        if (i < noIterationWithoutImprovement)
+            return false;
+
+        int progressPercentTerminationCondition = 1; // TODO: Move to configuration
+        boolean unassignedEqual = (currentUnassigned == unassignedCount.get(i-noIterationWithoutImprovement));
+        boolean progressTooSlow = (100 * Math.abs(currentCost - costs.get(i - noIterationWithoutImprovement))) / currentCost < progressPercentTerminationCondition;
+
+        return (unassignedEqual && progressTooSlow);
+    }
 
 }
