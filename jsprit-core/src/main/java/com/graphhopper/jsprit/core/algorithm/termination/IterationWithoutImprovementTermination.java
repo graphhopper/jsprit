@@ -47,7 +47,7 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
 
     private List<Integer> unassignedCount;
 
-    private int bestCost = Integer.MAX_VALUE;
+    private double bestCost = Double.MAX_VALUE;
     /**
      * Constructs termination.
      *
@@ -68,8 +68,11 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
     @Override
     public boolean isPrematureBreak(SearchStrategy.DiscoveredSolution discoveredSolution) {
         VehicleRoutingProblemSolution sol = discoveredSolution.getSolution();
+
         double currentCost = sol.getCost();
-        costs.add(Math.min(currentCost, bestCost));
+        bestCost = Math.min(currentCost, bestCost);
+        costs.add(bestCost);
+
         int currentUnassigned = sol.getUnassignedJobs().size();
         unassignedCount.add(currentUnassigned);
 
@@ -77,11 +80,9 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
         if (i < noIterationWithoutImprovement)
             return false;
 
-        int progressPercentTerminationCondition = 1; // TODO: Move to configuration
+        double progressPercentTerminationCondition = 0.1; // TODO: Move to configuration
         boolean unassignedEqual = (currentUnassigned == unassignedCount.get(i-noIterationWithoutImprovement));
         boolean progressTooSlow = (100 * Math.abs(currentCost - costs.get(i - noIterationWithoutImprovement))) / currentCost < progressPercentTerminationCondition;
-
         return (unassignedEqual && progressTooSlow);
     }
-
 }
