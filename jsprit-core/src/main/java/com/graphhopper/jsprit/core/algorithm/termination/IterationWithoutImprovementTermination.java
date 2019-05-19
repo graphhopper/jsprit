@@ -48,6 +48,9 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
     private List<Integer> unassignedCount;
 
     private double bestCost = Double.MAX_VALUE;
+
+    private double terminationByCostPercentage = 0.0;
+
     /**
      * Constructs termination.
      *
@@ -55,6 +58,7 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
      */
     public IterationWithoutImprovementTermination(int noIterationsWithoutImprovement) {
         this.noIterationWithoutImprovement = noIterationsWithoutImprovement;
+        this.terminationByCostPercentage = 0.1; // TODO: Fetch it from configuration
         costs = new ArrayList<>();
         unassignedCount = new ArrayList<>();
         log.debug("initialise " + this);
@@ -67,22 +71,32 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
 
     @Override
     public boolean isPrematureBreak(SearchStrategy.DiscoveredSolution discoveredSolution) {
-        VehicleRoutingProblemSolution sol = discoveredSolution.getSolution();
+        if(this.terminationByCostPercentage == 0.0){
+            // The original logic that is counting the number of iterations without any change
+            if (discoveredSolution.isAccepted())
+                iterationsWithoutImprovement = 0;
+            else
+                iterationsWithoutImprovement++;
+            return (iterationsWithoutImprovement > noIterationWithoutImprovement);
+        }else {
+            // The alternative logic that detects also very slow improvment
+            // On large tasks small improvments to the route may significantly increase the runtime
+            VehicleRoutingProblemSolution sol = discoveredSolution.getSolution();
 
-        double currentCost = sol.getCost();
-        bestCost = Math.min(currentCost, bestCost);
-        costs.add(bestCost);
+            double currentCost = sol.getCost();
+            bestCost = Math.min(currentCost, bestCost);
+            costs.add(bestCost);
 
-        int currentUnassigned = sol.getUnassignedJobs().size();
-        unassignedCount.add(currentUnassigned);
+            int currentUnassigned = sol.getUnassignedJobs().size();
+            unassignedCount.add(currentUnassigned);
 
-        int i = costs.size() - 1;
-        if (i < noIterationWithoutImprovement)
-            return false;
+            int i = costs.size() - 1;
+            if (i < noIterationWithoutImprovement)
+                return false;
 
-        double progressPercentTerminationCondition = 0.1; // TODO: Move to configuration
-        boolean unassignedEqual = (currentUnassigned == unassignedCount.get(i-noIterationWithoutImprovement));
-        boolean progressTooSlow = (100 * Math.abs(currentCost - costs.get(i - noIterationWithoutImprovement))) / currentCost < progressPercentTerminationCondition;
-        return (unassignedEqual && progressTooSlow);
+            boolean unassignedEqual = (currentUnassigned == unassignedCount.get(i - noIterationWithoutImprovement));
+            boolean progressTooSlow = (100 * Math.abs(currentCost - costs.get(i - noIterationWithoutImprovement))) / currentCost < terminationByCostPercentage;
+            return (unassignedEqual && progressTooSlow);
+        }
     }
 }
