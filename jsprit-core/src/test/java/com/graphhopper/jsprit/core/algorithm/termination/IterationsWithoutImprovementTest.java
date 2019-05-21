@@ -20,8 +20,11 @@ package com.graphhopper.jsprit.core.algorithm.termination;
 
 
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
+import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import junit.framework.Assert;
 import org.junit.Test;
+import java.util.ArrayList;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -75,5 +78,25 @@ public class IterationsWithoutImprovementTest {
             }
         }
         Assert.assertEquals(150, terminatedAfter);
+    }
+
+    @Test
+    public void itShouldTerminateAfter100ByPercentage() {
+        IterationWithoutImprovementTermination termination = new IterationWithoutImprovementTermination(100, 0.1);
+        SearchStrategy.DiscoveredSolution discoveredSolution = mock(SearchStrategy.DiscoveredSolution.class);
+        VehicleRoutingProblemSolution solution = mock(VehicleRoutingProblemSolution.class);
+        when(discoveredSolution.getSolution()).thenReturn(solution);
+        when(solution.getCost()).thenReturn(100.0);
+        when(solution.getUnassignedJobs()).thenReturn(new ArrayList<Job>());
+
+        int terminatedAfter = 0;
+        for (int i = 0; i < 200; i++) {
+            boolean terminate = termination.isPrematureBreak(discoveredSolution);
+            if (terminate) {
+                terminatedAfter = i;
+                break;
+            }
+        }
+        Assert.assertEquals(100, terminatedAfter);
     }
 }

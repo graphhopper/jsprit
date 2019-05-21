@@ -57,8 +57,12 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
      * @param noIterationsWithoutImprovement previous iterations without any improvement
      */
     public IterationWithoutImprovementTermination(int noIterationsWithoutImprovement) {
+        this(noIterationsWithoutImprovement, 0.0);
+    }
+
+    public IterationWithoutImprovementTermination(int noIterationsWithoutImprovement, double terminationByCostPercentage) {
         this.noIterationWithoutImprovement = noIterationsWithoutImprovement;
-        this.terminationByCostPercentage = 0.1; // TODO: Fetch it from configuration
+        this.terminationByCostPercentage = terminationByCostPercentage;
         costs = new ArrayList<>();
         unassignedCount = new ArrayList<>();
         log.debug("initialise " + this);
