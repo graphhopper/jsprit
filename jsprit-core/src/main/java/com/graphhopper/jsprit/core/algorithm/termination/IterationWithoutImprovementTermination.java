@@ -45,7 +45,7 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
 
     private List<Double> costs;
 
-    private List<Integer> unassignedCount;
+    private List<Integer> unassignedJobsCount;
 
     private double bestCost = Double.MAX_VALUE;
 
@@ -64,7 +64,7 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
         this.noIterationWithoutImprovement = noIterationsWithoutImprovement;
         this.terminationByCostPercentage = terminationByCostPercentage;
         costs = new ArrayList<>();
-        unassignedCount = new ArrayList<>();
+        unassignedJobsCount = new ArrayList<>();
         log.debug("initialise " + this);
     }
 
@@ -99,15 +99,15 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
         bestCost = Math.min(currentCost, bestCost);
         costs.add(bestCost);
 
-        int currentUnassigned = sol.getUnassignedJobs().size();
-        unassignedCount.add(currentUnassigned);
+        int currentJobsUnassigned = sol.getUnassignedJobs().size();
+        unassignedJobsCount.add(currentJobsUnassigned);
 
         int i = costs.size() - 1;
         if (i < noIterationWithoutImprovement)
             return false;
 
-        boolean unassignedEqual = (currentUnassigned == unassignedCount.get(i - noIterationWithoutImprovement));
-        boolean progressTooSlow = (100 * Math.abs(currentCost - costs.get(i - noIterationWithoutImprovement))) / currentCost < terminationByCostPercentage;
-        return (unassignedEqual && progressTooSlow);
+        boolean unassignedJobsEqual = (currentJobsUnassigned == unassignedJobsCount.get(i - noIterationWithoutImprovement));
+        boolean progressTooSlow = 100 * ((costs.get(i - noIterationWithoutImprovement) - currentCost) / currentCost)  <= terminationByCostPercentage;
+        return (unassignedJobsEqual && progressTooSlow);
     }
 }
