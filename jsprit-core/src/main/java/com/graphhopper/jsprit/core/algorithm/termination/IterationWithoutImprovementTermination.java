@@ -75,32 +75,39 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
 
     @Override
     public boolean isPrematureBreak(SearchStrategy.DiscoveredSolution discoveredSolution) {
-        if(this.terminationByCostPercentage == 0.0){
-            // The original logic that is counting the number of iterations without any change
-            if (discoveredSolution.isAccepted())
-                iterationsWithoutImprovement = 0;
-            else
-                iterationsWithoutImprovement++;
-            return (iterationsWithoutImprovement > noIterationWithoutImprovement);
-        }else {
-            // The alternative logic that detects also very slow improvment
-            // On large tasks small improvments to the route may significantly increase the runtime
-            VehicleRoutingProblemSolution sol = discoveredSolution.getSolution();
+        if(this.terminationByCostPercentage == 0.0)
+           return checkStrictTerminationCondition(discoveredSolution);
+        else
+            return checkPercentageTerminationCondition(discoveredSolution);
+    }
 
-            double currentCost = sol.getCost();
-            bestCost = Math.min(currentCost, bestCost);
-            costs.add(bestCost);
+    private boolean checkStrictTerminationCondition(SearchStrategy.DiscoveredSolution discoveredSolution){
+        // The original logic that is counting the number of iterations without any change
+        if (discoveredSolution.isAccepted())
+            iterationsWithoutImprovement = 0;
+        else
+            iterationsWithoutImprovement++;
+        return (iterationsWithoutImprovement > noIterationWithoutImprovement);
+    }
 
-            int currentUnassigned = sol.getUnassignedJobs().size();
-            unassignedCount.add(currentUnassigned);
+    private boolean checkPercentageTerminationCondition(SearchStrategy.DiscoveredSolution discoveredSolution){
+        // The alternative logic that detects also very slow improvment
+        // On large tasks small improvments to the route may significantly increase the runtime
+        VehicleRoutingProblemSolution sol = discoveredSolution.getSolution();
 
-            int i = costs.size() - 1;
-            if (i < noIterationWithoutImprovement)
-                return false;
+        double currentCost = sol.getCost();
+        bestCost = Math.min(currentCost, bestCost);
+        costs.add(bestCost);
 
-            boolean unassignedEqual = (currentUnassigned == unassignedCount.get(i - noIterationWithoutImprovement));
-            boolean progressTooSlow = (100 * Math.abs(currentCost - costs.get(i - noIterationWithoutImprovement))) / currentCost < terminationByCostPercentage;
-            return (unassignedEqual && progressTooSlow);
-        }
+        int currentUnassigned = sol.getUnassignedJobs().size();
+        unassignedCount.add(currentUnassigned);
+
+        int i = costs.size() - 1;
+        if (i < noIterationWithoutImprovement)
+            return false;
+
+        boolean unassignedEqual = (currentUnassigned == unassignedCount.get(i - noIterationWithoutImprovement));
+        boolean progressTooSlow = (100 * Math.abs(currentCost - costs.get(i - noIterationWithoutImprovement))) / currentCost < terminationByCostPercentage;
+        return (unassignedEqual && progressTooSlow);
     }
 }
