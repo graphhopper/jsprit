@@ -18,8 +18,12 @@
 package com.graphhopper.jsprit.core.algorithm.termination;
 
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
+import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -39,13 +43,28 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
 
     private int iterationsWithoutImprovement = 0;
 
+    private List<Double> costs;
+
+    private List<Integer> unassignedJobsCount;
+
+    private double bestCost = Double.MAX_VALUE;
+
+    private double terminationByCostPercentage = 0.0;
+
     /**
      * Constructs termination.
      *
      * @param noIterationsWithoutImprovement previous iterations without any improvement
      */
     public IterationWithoutImprovementTermination(int noIterationsWithoutImprovement) {
+        this(noIterationsWithoutImprovement, 0.0);
+    }
+
+    public IterationWithoutImprovementTermination(int noIterationsWithoutImprovement, double terminationByCostPercentage) {
         this.noIterationWithoutImprovement = noIterationsWithoutImprovement;
+        this.terminationByCostPercentage = terminationByCostPercentage;
+        costs = new ArrayList<>();
+        unassignedJobsCount = new ArrayList<>();
         log.debug("initialise " + this);
     }
 
@@ -56,10 +75,39 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
 
     @Override
     public boolean isPrematureBreak(SearchStrategy.DiscoveredSolution discoveredSolution) {
-        if (discoveredSolution.isAccepted()) iterationsWithoutImprovement = 0;
-        else iterationsWithoutImprovement++;
+        if(this.terminationByCostPercentage == 0.0)
+           return checkStrictTerminationCondition(discoveredSolution);
+        else
+            return checkPercentageTerminationCondition(discoveredSolution);
+    }
+
+    private boolean checkStrictTerminationCondition(SearchStrategy.DiscoveredSolution discoveredSolution){
+        // The original logic that is counting the number of iterations without any change
+        if (discoveredSolution.isAccepted())
+            iterationsWithoutImprovement = 0;
+        else
+            iterationsWithoutImprovement++;
         return (iterationsWithoutImprovement > noIterationWithoutImprovement);
     }
 
+    private boolean checkPercentageTerminationCondition(SearchStrategy.DiscoveredSolution discoveredSolution){
+        // The alternative logic that detects also very slow improvment
+        // On large tasks small improvments to the route may significantly increase the runtime
+        VehicleRoutingProblemSolution sol = discoveredSolution.getSolution();
 
+        double currentCost = sol.getCost();
+        bestCost = Math.min(currentCost, bestCost);
+        costs.add(bestCost);
+
+        int currentJobsUnassigned = sol.getUnassignedJobs().size();
+        unassignedJobsCount.add(currentJobsUnassigned);
+
+        int i = costs.size() - 1;
+        if (i < noIterationWithoutImprovement)
+            return false;
+
+        boolean unassignedJobsEqual = (currentJobsUnassigned == unassignedJobsCount.get(i - noIterationWithoutImprovement));
+        boolean progressTooSlow = 100 * ((costs.get(i - noIterationWithoutImprovement) - currentCost) / currentCost)  <= terminationByCostPercentage;
+        return (unassignedJobsEqual && progressTooSlow);
+    }
 }

@@ -164,7 +164,5 @@ public class SearchStrategy {
         for (SearchStrategyModule module : searchStrategyModules) {
             module.addModuleListener(moduleListener);
         }
-
     }
-
 }

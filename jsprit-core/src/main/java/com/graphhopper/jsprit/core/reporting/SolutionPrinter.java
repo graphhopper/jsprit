@@ -131,7 +131,7 @@ public class SolutionPrinter {
         out.format("+---------------+------------------------------------------+%n");
         out.printf("| indicator     | value                                    |%n");
         out.format("+---------------+------------------------------------------+%n");
-        out.format(leftAlignSolution, "costs", solution.getCost());
+        out.format(leftAlignSolution, "costs", Math.round(solution.getCost()));
         out.format(leftAlignSolution, "noVehicles", solution.getRoutes().size());
         out.format(leftAlignSolution, "unassgndJobs", solution.getUnassignedJobs().size());
         out.format("+----------------------------------------------------------+%n");
