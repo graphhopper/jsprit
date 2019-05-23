@@ -150,4 +150,25 @@ public class IterationsWithoutImprovementTest {
         Assert.assertEquals(60, terminatedAfter);
     }
 
+    @Test
+    public void isPrematureBreakLastCostIsWorstShouldNotBreak() {
+        int maxIterations = 7;
+        IterationWithoutImprovementTermination termination = new IterationWithoutImprovementTermination(5, 1.0);
+        SearchStrategy.DiscoveredSolution discoveredSolution = mock(SearchStrategy.DiscoveredSolution.class);
+        VehicleRoutingProblemSolution solution = mock(VehicleRoutingProblemSolution.class);
+        when(discoveredSolution.getSolution()).thenReturn(solution);
+        when(solution.getUnassignedJobs()).thenReturn(new ArrayList<Job>());
+
+        boolean isTerminate = false;
+        for (int i = 0; i < maxIterations; i++) {
+
+            when(solution.getCost()).thenReturn(i < 6.0 ? 10.0-i : 12);
+            boolean terminate = termination.isPrematureBreak(discoveredSolution);
+            if (terminate) {
+                isTerminate= true;
+                break;
+            }
+        }
+        Assert.assertFalse(isTerminate);
+    }
 }
