@@ -109,7 +109,7 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
         boolean unassignedJobsEqual = (currentJobsUnassigned == unassignedJobsCount.get(i - noIterationWithoutImprovement));
         boolean progressTooSlow = 100 * ((costs.get(i - noIterationWithoutImprovement) - bestCost) / bestCost)  <= terminationByCostPercentage;
         if (unassignedJobsEqual && progressTooSlow){
-            log.debug("Termination condition by percentage reached: " + this);
+            log.debug("Termination condition by percentage reached after " + Integer.toString(i) + " Iterations: \n" + this);
             return true;
         }else
             return false;
