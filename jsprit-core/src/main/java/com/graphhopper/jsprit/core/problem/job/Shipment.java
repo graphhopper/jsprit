@@ -318,7 +318,7 @@ public class Shipment extends AbstractJob {
         /**
          * Set priority to shipment. Only 1 (high) to 10 (low) are allowed.
          * <p>
-         * Default is 2 = medium.
+         * Default is 2.
          *
          * @param priority
          * @return builder
@@ -505,9 +505,9 @@ public class Shipment extends AbstractJob {
     }
 
     /**
-     * Get priority of shipment. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+     * Get priority of shipment. Only 1 (high) to 10 (low) are allowed.
      * <p>
-     * Default is 2 = medium.
+     * Default is 2.
      *
      * @return priority
      */

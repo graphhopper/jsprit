@@ -414,6 +414,17 @@ public class VehicleRoutingProblem {
             return this;
         }
 
+        private final List<AbstractActivity> nonJobActivities = new ArrayList<>();
+
+        public Builder addNonJobActivities(Collection<? extends AbstractActivity> nonJobActivities) {
+            for (AbstractActivity act : nonJobActivities) {
+                act.setIndex(activityIndexCounter);
+                incActivityIndexCounter();
+                this.nonJobActivities.add(act);
+            }
+            return this;
+        }
+
         /**
          * Builds the {@link VehicleRoutingProblem}.
          * <p>
