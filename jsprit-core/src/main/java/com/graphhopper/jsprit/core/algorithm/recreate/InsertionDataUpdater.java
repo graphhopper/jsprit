@@ -62,12 +62,9 @@ class InsertionDataUpdater {
     }
 
     static Comparator<VersionedInsertionData> getComparator(){
-        return new Comparator<VersionedInsertionData>() {
-            @Override
-            public int compare(VersionedInsertionData o1, VersionedInsertionData o2) {
-                if(o1.getiData().getInsertionCost() < o2.getiData().getInsertionCost()) return -1;
-                return 1;
-            }
+        return (o1, o2) -> {
+            if (o1.getiData().getInsertionCost() < o2.getiData().getInsertionCost()) return -1;
+            return 1;
         };
     }
 
@@ -161,7 +158,7 @@ class InsertionDataUpdater {
         return bestScoredJob;
     }
 
-    static double score(Job unassignedJob, InsertionData best, InsertionData secondBest, ScoringFunction scoringFunction) {
+    private static double score(Job unassignedJob, InsertionData best, InsertionData secondBest, ScoringFunction scoringFunction) {
         return Scorer.score(unassignedJob,best,secondBest,scoringFunction);
     }
 

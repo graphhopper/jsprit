@@ -29,7 +29,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * Insertion based on regret approach.
@@ -68,7 +71,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
         this.insertionCostsCalculator = jobInsertionCalculator;
         this.vrp = vehicleRoutingProblem;
-        completionService = new ExecutorCompletionService<ScoredJob>(executorService);
+        completionService = new ExecutorCompletionService<>(executorService);
         logger.debug("initialise " + this);
     }
 
@@ -87,7 +90,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
      */
     @Override
     public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
-        List<Job> badJobs = new ArrayList<Job>(unassignedJobs.size());
+        List<Job> badJobs = new ArrayList<>(unassignedJobs.size());
 
         Iterator<Job> jobIterator = unassignedJobs.iterator();
         while (jobIterator.hasNext()){
@@ -135,14 +138,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         ScoredJob bestScoredJob = null;
 
         for (final Job unassignedJob : unassignedJobList) {
-            completionService.submit(new Callable<ScoredJob>() {
-
-                @Override
-                public ScoredJob call() throws Exception {
-                    return RegretInsertion.getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction);
-                }
-
-            });
+            completionService.submit(() -> RegretInsertion.getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction));
         }
 
         try {
