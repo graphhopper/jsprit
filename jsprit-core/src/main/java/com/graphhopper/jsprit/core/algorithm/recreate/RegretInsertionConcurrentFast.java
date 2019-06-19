@@ -93,7 +93,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
     }
 
     private Set<String> getInitialVehicleIds(VehicleRoutingProblem vehicleRoutingProblem) {
-        Set<String> ids = new HashSet<String>();
+        Set<String> ids = new HashSet<>();
         for(VehicleRoute r : vehicleRoutingProblem.getInitialVehicleRoutes()){
             ids.add(r.getVehicle().getId());
         }
@@ -114,7 +114,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
      */
     @Override
     public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
-        List<Job> badJobs = new ArrayList<Job>(unassignedJobs.size());
+        List<Job> badJobs = new ArrayList<>(unassignedJobs.size());
 
         Iterator<Job> jobIterator = unassignedJobs.iterator();
         while (jobIterator.hasNext()){
@@ -136,12 +136,12 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
             }
         }
 
-        List<Job> jobs = new ArrayList<Job>(unassignedJobs);
+        List<Job> jobs = new ArrayList<>(unassignedJobs);
         TreeSet<VersionedInsertionData>[] priorityQueues = new TreeSet[vrp.getJobs().values().size() + 2];
         VehicleRoute lastModified = null;
         boolean firstRun = true;
         int updateRound = 0;
-        Map<VehicleRoute,Integer> updates = new HashMap<VehicleRoute, Integer>();
+        Map<VehicleRoute, Integer> updates = new HashMap<>();
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<>(jobs);
             List<ScoredJob> badJobList = new ArrayList<>();
@@ -170,7 +170,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
     }
 
     private void updateInsertionData(final TreeSet<VersionedInsertionData>[] priorityQueues, final Collection<VehicleRoute> routes, List<Job> unassignedJobList, final int updateRound, final boolean firstRun, final VehicleRoute lastModified, Map<VehicleRoute, Integer> updates) {
-        List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
+        List<Callable<Boolean>> tasks = new ArrayList<>();
         boolean updatedAllRoutes = false;
         for (final Job unassignedJob : unassignedJobList) {
             if(priorityQueues[unassignedJob.getIndex()] == null){
@@ -178,7 +178,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
             }
             if(firstRun) {
                 updatedAllRoutes = true;
-                makeCallables(tasks, updatedAllRoutes, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
+                makeCallables(tasks, true, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
             }
             else{
                 if(dependencyTypes == null || dependencyTypes[unassignedJob.getIndex()] == null){
@@ -188,7 +188,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
                     DependencyType dependencyType = dependencyTypes[unassignedJob.getIndex()];
                     if (dependencyType.equals(DependencyType.INTER_ROUTE) || dependencyType.equals(DependencyType.INTRA_ROUTE)) {
                         updatedAllRoutes = true;
-                        makeCallables(tasks, updatedAllRoutes, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
+                        makeCallables(tasks, true, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
                     } else {
                         makeCallables(tasks, updatedAllRoutes, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
                     }
@@ -211,20 +211,10 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
 
     private void makeCallables(List<Callable<Boolean>> tasks, boolean updateAll, final TreeSet<VersionedInsertionData> priorityQueue, final int updateRound, final Job unassignedJob, final Collection<VehicleRoute> routes, final VehicleRoute lastModified) {
         if(updateAll) {
-            tasks.add(new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    return InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueue, updateRound, unassignedJob, routes);
-                }
-            });
+            tasks.add(() -> InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueue, updateRound, unassignedJob, routes));
         }
         else {
-            tasks.add(new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    return InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueue, updateRound, unassignedJob, Arrays.asList(lastModified));
-                }
-            });
+            tasks.add(() -> InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueue, updateRound, unassignedJob, Arrays.asList(lastModified)));
         }
     }
 
