@@ -171,7 +171,6 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
             for (HardConstraint c : failedActivityConstraints) {
                 emptyInsertionData.addFailedConstrainName(c.getClass().getSimpleName());
             }
-//            emptyInsertionData.getFailedConstraintNames().addAll(failedActivityConstraints);
             return emptyInsertionData;
         }
         InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);

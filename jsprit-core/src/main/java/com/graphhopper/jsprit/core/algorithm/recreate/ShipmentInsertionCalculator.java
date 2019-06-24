@@ -232,7 +232,6 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
             for (HardConstraint failed : failedActivityConstraints) {
                 emptyInsertionData.addFailedConstrainName(failed.getClass().getSimpleName());
             }
-//            emptyInsertionData.getFailedConstraintNames().addAll(failedActivityConstraints);
             return emptyInsertionData;
         }
         InsertionData insertionData = new InsertionData(bestCost, pickupInsertionIndex, deliveryInsertionIndex, newVehicle, newDriver);
