@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
+import com.graphhopper.jsprit.core.problem.constraint.HardConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
@@ -108,7 +109,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         InsertionData noInsertion = checkRouteContraints(insertionContext, constraintManager);
         if (noInsertion != null) return noInsertion;
 
-        Collection<String> failedActivityConstraints = new ArrayList<>();
+        Collection<HardConstraint> failedActivityConstraints = new ArrayList<>();
 
         /*
         check soft constraints at route level
@@ -167,7 +168,10 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         }
         if(insertionIndex == InsertionData.NO_INDEX) {
             InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
-            emptyInsertionData.getFailedConstraintNames().addAll(failedActivityConstraints);
+            for (HardConstraint c : failedActivityConstraints) {
+                emptyInsertionData.addFailedConstrainName(c.getClass().getSimpleName());
+            }
+//            emptyInsertionData.getFailedConstraintNames().addAll(failedActivityConstraints);
             return emptyInsertionData;
         }
         InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
