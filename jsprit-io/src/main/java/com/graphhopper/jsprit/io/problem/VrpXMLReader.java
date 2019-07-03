@@ -683,6 +683,12 @@ public class VrpXMLReader {
             if (start != null) builder.setEarliestStart(Double.parseDouble(start));
             if (end != null) builder.setLatestArrival(Double.parseDouble(end));
 
+            // read latestArrival
+            String latestArrival = vehicleConfig.getString("latestArrival");
+            if (latestArrival != null) {
+                builder.setLatestArrival(Double.parseDouble(latestArrival));
+            }
+
             //read return2depot
             String returnToDepot = vehicleConfig.getString("returnToDepot");
             if (returnToDepot != null) {
