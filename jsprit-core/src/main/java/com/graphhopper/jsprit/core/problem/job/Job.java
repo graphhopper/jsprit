@@ -55,9 +55,9 @@ public interface Job extends HasId, HasIndex {
     public String getName();
 
     /**
-     * Get priority of job. Only 1 = high priority, 2 = medium and 3 = low are allowed.
+     * Get priority of job. Only 1 (very high) to 10 (very low) are allowed.
      * <p>
-     * Default is 2 = medium.
+     * Default is 2.
      *
      * @return priority
      */
