@@ -353,11 +353,11 @@ public class Jsprit {
 
     }
 
-    private StateManager stateManager = null;
+    private StateManager stateManager;
 
-    private ConstraintManager constraintManager = null;
+    private ConstraintManager constraintManager;
 
-    private ExecutorService es = null;
+    private ExecutorService es;
 
     private Integer noThreads;
 
@@ -365,7 +365,7 @@ public class Jsprit {
 
     private boolean addCoreConstraints;
 
-    private SolutionCostCalculator objectiveFunction = null;
+    private SolutionCostCalculator objectiveFunction;
 
     private Properties properties;
 
@@ -612,13 +612,10 @@ public class Jsprit {
             if (properties.containsKey(Parameter.THRESHOLD_INI_ABS.toString())) {
                 schrimpfAcceptance.setInitialThreshold(Double.valueOf(properties.getProperty(Parameter.THRESHOLD_INI_ABS.toString())));
             } else {
-                schrimpfThreshold = new IterationStartsListener() {
-                    @Override
-                    public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-                        if (i == 1) {
-                            double initialThreshold = Solutions.bestOf(solutions).getCost() * toDouble(getProperty(Parameter.THRESHOLD_INI.toString()));
-                            schrimpfAcceptance.setInitialThreshold(initialThreshold);
-                        }
+                schrimpfThreshold = (i, problem, solutions) -> {
+                    if (i == 1) {
+                        double initialThreshold = Solutions.bestOf(solutions).getCost() * toDouble(getProperty(Parameter.THRESHOLD_INI.toString()));
+                        schrimpfAcceptance.setInitialThreshold(initialThreshold);
                     }
                 };
             }

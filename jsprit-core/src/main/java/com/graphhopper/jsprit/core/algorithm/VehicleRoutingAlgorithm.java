@@ -115,7 +115,7 @@ public class VehicleRoutingAlgorithm {
         super();
         this.problem = problem;
         this.searchStrategyManager = searchStrategyManager;
-        initialSolutions = new ArrayList<VehicleRoutingProblemSolution>();
+        initialSolutions = new ArrayList<>();
         objectiveFunction = null;
     }
 
@@ -131,7 +131,7 @@ public class VehicleRoutingAlgorithm {
         super();
         this.problem = problem;
         this.searchStrategyManager = searchStrategyManager;
-        initialSolutions = new ArrayList<VehicleRoutingProblemSolution>();
+        initialSolutions = new ArrayList<>();
         this.objectiveFunction = objectiveFunction;
     }
 
@@ -153,7 +153,7 @@ public class VehicleRoutingAlgorithm {
     //this method may lead to errors if tour activities in the solution are different to the ones in the VRP
     //(including differences in indexing)
     private void verifyAndAdaptSolution(VehicleRoutingProblemSolution solution) {
-        Set<Job> jobsNotInSolution = new HashSet<Job>(problem.getJobs().values());
+        Set<Job> jobsNotInSolution = new HashSet<>(problem.getJobs().values());
         jobsNotInSolution.removeAll(solution.getUnassignedJobs());
         for (VehicleRoute route : solution.getRoutes()) {
             jobsNotInSolution.removeAll(route.getTourActivities().getJobs());
@@ -225,7 +225,7 @@ public class VehicleRoutingAlgorithm {
         double now = System.currentTimeMillis();
         int noIterationsThisAlgoIsRunning = maxIterations;
         counter.reset();
-        Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<VehicleRoutingProblemSolution>(initialSolutions);
+        Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<>(initialSolutions);
         algorithmStarts(problem, solutions);
         bestEver = Solutions.bestOf(solutions);
         if (logger.isTraceEnabled()) {
