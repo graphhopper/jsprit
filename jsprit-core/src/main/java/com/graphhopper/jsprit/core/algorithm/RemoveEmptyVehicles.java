@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionEndsListener;
+import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 
@@ -41,8 +42,8 @@ public class RemoveEmptyVehicles implements InsertionEndsListener {
     }
 
     @Override
-    public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes) {
-        List<VehicleRoute> routes = new ArrayList<VehicleRoute>(vehicleRoutes);
+    public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes, Collection<Job> badJobs) {
+        List<VehicleRoute> routes = new ArrayList<>(vehicleRoutes);
         for (VehicleRoute route : routes) {
             if (route.isEmpty()) {
                 fleetManager.unlock(route.getVehicle());

@@ -602,8 +602,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     @Override
-    public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes) {
-        insertionListeners.informInsertionEndsListeners(vehicleRoutes);
+    public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes, Collection<Job> badJobs) {
+        insertionListeners.informInsertionEndsListeners(vehicleRoutes, badJobs);
     }
 
     /**

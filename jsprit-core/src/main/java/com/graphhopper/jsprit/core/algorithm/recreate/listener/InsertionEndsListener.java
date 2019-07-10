@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate.listener;
 
+import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 import java.util.Collection;
@@ -24,5 +25,5 @@ import java.util.Collection;
 
 public interface InsertionEndsListener extends InsertionListener {
 
-    public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes);
+    void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes, Collection<Job> badJobs);
 }

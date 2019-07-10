@@ -29,7 +29,7 @@ import java.util.List;
 
 public class InsertionListeners {
 
-    private Collection<InsertionListener> listeners = new ArrayList<InsertionListener>();
+    private Collection<InsertionListener> listeners = new ArrayList<>();
 
     public Collection<InsertionListener> getListeners() {
         return listeners;
@@ -67,10 +67,10 @@ public class InsertionListeners {
         }
     }
 
-    public void informInsertionEndsListeners(Collection<VehicleRoute> vehicleRoutes) {
+    public void informInsertionEndsListeners(Collection<VehicleRoute> vehicleRoutes, Collection<Job> badJobs) {
         for (InsertionListener l : listeners) {
             if (l instanceof InsertionEndsListener) {
-                ((InsertionEndsListener) l).informInsertionEnds(vehicleRoutes);
+                ((InsertionEndsListener) l).informInsertionEnds(vehicleRoutes, badJobs);
             }
         }
     }
