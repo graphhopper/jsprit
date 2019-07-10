@@ -23,19 +23,13 @@ import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmStartsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.InsertionStrategy;
 import com.graphhopper.jsprit.core.algorithm.recreate.VehicleSwitched;
-import com.graphhopper.jsprit.core.algorithm.state.*;
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
-import com.graphhopper.jsprit.core.problem.constraint.SwitchNotFeasible;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
-import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
-import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeKey;
-import com.graphhopper.jsprit.core.util.ActivityTimeTracker;
 
-import java.util.*;
+import java.util.Random;
 
 /**
  * Created by schroeder on 10.12.14.
@@ -109,12 +103,9 @@ public class PrettyAlgorithmBuilder {
                 iniInsertionStrategy.addListener(vehicleSwitched);
             if (!iniInsertionStrategy.getListeners().contains(stateManager))
                 iniInsertionStrategy.addListener(stateManager);
-            vra.addListener(new AlgorithmStartsListener() {
-                @Override
-                public void informAlgorithmStarts(VehicleRoutingProblem problem, VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
-                    if (solutions.isEmpty()) {
-                        solutions.add(new InsertionInitialSolutionFactory(iniInsertionStrategy, iniObjFunction).createSolution(vrp));
-                    }
+            vra.addListener((AlgorithmStartsListener) (problem, algorithm, solutions) -> {
+                if (solutions.isEmpty()) {
+                    solutions.add(new InsertionInitialSolutionFactory(iniInsertionStrategy, iniObjFunction).createSolution(vrp));
                 }
             });
         }
