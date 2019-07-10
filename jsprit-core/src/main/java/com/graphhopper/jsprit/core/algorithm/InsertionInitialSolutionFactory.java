@@ -51,7 +51,7 @@ public final class InsertionInitialSolutionFactory implements InitialSolutionFac
     @Override
     public VehicleRoutingProblemSolution createSolution(final VehicleRoutingProblem vrp) {
         logger.info("create initial solution");
-        List<VehicleRoute> vehicleRoutes = new ArrayList<VehicleRoute>();
+        List<VehicleRoute> vehicleRoutes = new ArrayList<>();
         vehicleRoutes.addAll(vrp.getInitialVehicleRoutes());
         Collection<Job> badJobs = insertion.insertJobs(vehicleRoutes, getUnassignedJobs(vrp));
         VehicleRoutingProblemSolution solution = new VehicleRoutingProblemSolution(vehicleRoutes, badJobs, Double.MAX_VALUE);
@@ -61,11 +61,7 @@ public final class InsertionInitialSolutionFactory implements InitialSolutionFac
     }
 
     private List<Job> getUnassignedJobs(VehicleRoutingProblem vrp) {
-        ArrayList<Job> jobs = new ArrayList<Job>(vrp.getJobs().values());
-//        for (Vehicle v : vrp.getVehicles()) {
-//            if (v.getBreak() != null) jobs.add(v.getBreak());
-//        }
-        return jobs;
+        return new ArrayList<>(vrp.getJobs().values());
     }
 
 }
