@@ -43,7 +43,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
-import com.graphhopper.jsprit.core.util.NoiseMaker;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 import com.graphhopper.jsprit.core.util.Solutions;
 
@@ -493,20 +492,12 @@ public class Jsprit {
                 toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())),
                 random)
         );
-        IterationStartsListener noise = new IterationStartsListener() {
-            @Override
-            public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-                worst.setNoiseMaker(new NoiseMaker() {
-
-                    public double makeNoise() {
-                        if (random.nextDouble() < toDouble(getProperty(Parameter.RUIN_WORST_NOISE_PROB.toString()))) {
-                            return toDouble(getProperty(Parameter.RUIN_WORST_NOISE_LEVEL.toString()))
-                                * maxCosts * random.nextDouble();
-                        } else return 0.;
-                    }
-                });
-            }
-        };
+        IterationStartsListener noise = (i, problem, solutions) -> worst.setNoiseMaker(() -> {
+            if (random.nextDouble() < toDouble(getProperty(Parameter.RUIN_WORST_NOISE_PROB.toString()))) {
+                return toDouble(getProperty(Parameter.RUIN_WORST_NOISE_LEVEL.toString()))
+                    * maxCosts * random.nextDouble();
+            } else return 0.;
+        });
 
         final RuinClusters clusters = new RuinClusters(vrp, (int) (vrp.getJobs().values().size() * 0.5), jobNeighborhoods);
         clusters.setRandom(random);
@@ -623,29 +614,29 @@ public class Jsprit {
         }
 
         SolutionCostCalculator objectiveFunction = getObjectiveFunction(vrp, maxCosts);
-        SearchStrategy radial_regret = new SearchStrategy(Strategy.RADIAL_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
-        radial_regret.addModule(configureModule(new RuinAndRecreateModule(Strategy.RADIAL_REGRET.toString(), regret, radial)));
+        SearchStrategy radialRegret = new SearchStrategy(Strategy.RADIAL_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
+        radialRegret.addModule(configureModule(new RuinAndRecreateModule(Strategy.RADIAL_REGRET.toString(), regret, radial)));
 
-        SearchStrategy radial_best = new SearchStrategy(Strategy.RADIAL_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
-        radial_best.addModule(configureModule(new RuinAndRecreateModule(Strategy.RADIAL_BEST.toString(), best, radial)));
+        SearchStrategy radialBest = new SearchStrategy(Strategy.RADIAL_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
+        radialBest.addModule(configureModule(new RuinAndRecreateModule(Strategy.RADIAL_BEST.toString(), best, radial)));
 
-        SearchStrategy random_best = new SearchStrategy(Strategy.RANDOM_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
-        random_best.addModule(configureModule(new RuinAndRecreateModule(Strategy.RANDOM_BEST.toString(), best, random_for_best)));
+        SearchStrategy randomBest = new SearchStrategy(Strategy.RANDOM_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
+        randomBest.addModule(configureModule(new RuinAndRecreateModule(Strategy.RANDOM_BEST.toString(), best, random_for_best)));
 
-        SearchStrategy random_regret = new SearchStrategy(Strategy.RANDOM_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
-        random_regret.addModule(configureModule(new RuinAndRecreateModule(Strategy.RANDOM_REGRET.toString(), regret, random_for_regret)));
+        SearchStrategy randomRegret = new SearchStrategy(Strategy.RANDOM_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
+        randomRegret.addModule(configureModule(new RuinAndRecreateModule(Strategy.RANDOM_REGRET.toString(), regret, random_for_regret)));
 
-        SearchStrategy worst_regret = new SearchStrategy(Strategy.WORST_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
-        worst_regret.addModule(configureModule(new RuinAndRecreateModule(Strategy.WORST_REGRET.toString(), regret, worst)));
+        SearchStrategy worstRegret = new SearchStrategy(Strategy.WORST_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
+        worstRegret.addModule(configureModule(new RuinAndRecreateModule(Strategy.WORST_REGRET.toString(), regret, worst)));
 
-        SearchStrategy worst_best = new SearchStrategy(Strategy.WORST_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
-        worst_best.addModule(configureModule(new RuinAndRecreateModule(Strategy.WORST_BEST.toString(), best, worst)));
+        SearchStrategy worstBest = new SearchStrategy(Strategy.WORST_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
+        worstBest.addModule(configureModule(new RuinAndRecreateModule(Strategy.WORST_BEST.toString(), best, worst)));
 
-        final SearchStrategy clusters_regret = new SearchStrategy(Strategy.CLUSTER_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
-        clusters_regret.addModule(configureModule(new RuinAndRecreateModule(Strategy.CLUSTER_REGRET.toString(), regret, clusters)));
+        final SearchStrategy clustersRegret = new SearchStrategy(Strategy.CLUSTER_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
+        clustersRegret.addModule(configureModule(new RuinAndRecreateModule(Strategy.CLUSTER_REGRET.toString(), regret, clusters)));
 
-        final SearchStrategy clusters_best = new SearchStrategy(Strategy.CLUSTER_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
-        clusters_best.addModule(configureModule(new RuinAndRecreateModule(Strategy.CLUSTER_BEST.toString(), best, clusters)));
+        final SearchStrategy clustersBest = new SearchStrategy(Strategy.CLUSTER_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
+        clustersBest.addModule(configureModule(new RuinAndRecreateModule(Strategy.CLUSTER_BEST.toString(), best, clusters)));
 
         SearchStrategy stringRegret = new SearchStrategy(Strategy.STRING_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
         stringRegret.addModule(configureModule(new RuinAndRecreateModule(Strategy.STRING_REGRET.toString(), regret, stringRuin)));
@@ -658,14 +649,14 @@ public class Jsprit {
         if (addCoreConstraints) {
             prettyBuilder.addCoreStateAndConstraintStuff();
         }
-        prettyBuilder.withStrategy(radial_regret, toDouble(getProperty(Strategy.RADIAL_REGRET.toString())))
-            .withStrategy(radial_best, toDouble(getProperty(Strategy.RADIAL_BEST.toString())))
-            .withStrategy(random_best, toDouble(getProperty(Strategy.RANDOM_BEST.toString())))
-            .withStrategy(random_regret, toDouble(getProperty(Strategy.RANDOM_REGRET.toString())))
-            .withStrategy(worst_best, toDouble(getProperty(Strategy.WORST_BEST.toString())))
-            .withStrategy(worst_regret, toDouble(getProperty(Strategy.WORST_REGRET.toString())))
-            .withStrategy(clusters_regret, toDouble(getProperty(Strategy.CLUSTER_REGRET.toString())))
-            .withStrategy(clusters_best, toDouble(getProperty(Strategy.CLUSTER_BEST.toString())))
+        prettyBuilder.withStrategy(radialRegret, toDouble(getProperty(Strategy.RADIAL_REGRET.toString())))
+            .withStrategy(radialBest, toDouble(getProperty(Strategy.RADIAL_BEST.toString())))
+            .withStrategy(randomBest, toDouble(getProperty(Strategy.RANDOM_BEST.toString())))
+            .withStrategy(randomRegret, toDouble(getProperty(Strategy.RANDOM_REGRET.toString())))
+            .withStrategy(worstBest, toDouble(getProperty(Strategy.WORST_BEST.toString())))
+            .withStrategy(worstRegret, toDouble(getProperty(Strategy.WORST_REGRET.toString())))
+            .withStrategy(clustersRegret, toDouble(getProperty(Strategy.CLUSTER_REGRET.toString())))
+            .withStrategy(clustersBest, toDouble(getProperty(Strategy.CLUSTER_BEST.toString())))
             .withStrategy(stringBest, toDouble(getProperty(Strategy.STRING_BEST.toString())))
             .withStrategy(stringRegret, toDouble(getProperty(Strategy.STRING_REGRET.toString())));
 
