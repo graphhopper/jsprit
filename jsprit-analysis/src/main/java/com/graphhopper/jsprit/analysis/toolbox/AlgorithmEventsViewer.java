@@ -153,8 +153,6 @@ public class AlgorithmEventsViewer {
 
     private long delayRuin = 5;
 
-    private long delay = 2;
-
     public void setRecreationDelay(long delay_in_ms) {
         this.delayRecreation = delay_in_ms;
     }
@@ -174,6 +172,7 @@ public class AlgorithmEventsViewer {
 
         DelayContainer delayContainer = new DelayContainer();
         DelaySink delaySink = new DelaySink(delayContainer);
+        long delay = 2;
         delaySink.setDelay(delay);
         delaySink.setRecreateDelay(delayRecreation);
         delaySink.setRuinDelay(delayRuin);
@@ -197,7 +196,7 @@ public class AlgorithmEventsViewer {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         AlgorithmEventsViewer viewer = new AlgorithmEventsViewer();
         viewer.setRuinDelay(10);
         viewer.setRecreationDelay(5);
