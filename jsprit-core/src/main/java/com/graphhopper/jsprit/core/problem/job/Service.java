@@ -28,6 +28,7 @@ import com.graphhopper.jsprit.core.util.Coordinate;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -302,6 +303,7 @@ public class Service extends AbstractJob {
         priority = builder.priority;
 	    maxTimeInVehicle = builder.maxTimeInVehicle;
         activities.add(builder.activity);
+        activities = Collections.unmodifiableList(activities);
 	}
 
     public Collection<TimeWindow> getTimeWindows(){

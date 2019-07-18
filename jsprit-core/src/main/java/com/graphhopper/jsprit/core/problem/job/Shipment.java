@@ -26,6 +26,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsIm
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -392,6 +393,7 @@ public class Shipment extends AbstractJob {
         this.maxTimeInVehicle = builder.maxTimeInVehicle;
         activities.add(builder.pickup);
         activities.add(builder.delivery);
+        activities = Collections.unmodifiableList(activities);
     }
 
     @Override
