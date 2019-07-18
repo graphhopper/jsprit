@@ -31,9 +31,9 @@ import com.graphhopper.jsprit.core.problem.job.Job;
  */
 public interface TourActivity extends HasIndex {
 
-	public void setTheoreticalEarliestOperationStartTime(double earliest);
+    void setTheoreticalEarliestOperationStartTime(double earliest);
 
-	public void setTheoreticalLatestOperationStartTime(double latest);
+    void setTheoreticalLatestOperationStartTime(double latest);
 
     /**
      * Basic interface of job-activies.
@@ -42,14 +42,14 @@ public interface TourActivity extends HasIndex {
      *
      * @author schroeder
      */
-    public interface JobActivity extends TourActivity {
+    interface JobActivity extends TourActivity {
 
         /**
          * Returns the job that is involved with this activity.
          *
          * @return job
          */
-        public Job getJob();
+        Job getJob();
 
     }
 
@@ -58,14 +58,14 @@ public interface TourActivity extends HasIndex {
      *
      * @return name
      */
-    public abstract String getName();
+    String getName();
 
     /**
      * Returns location.
      *
      * @return location
      */
-    public abstract Location getLocation();
+    Location getLocation();
 
     /**
      * Returns the theoretical earliest operation start time, which is the time that is just allowed
@@ -73,7 +73,7 @@ public interface TourActivity extends HasIndex {
      *
      * @return earliest start time
      */
-    public abstract double getTheoreticalEarliestOperationStartTime();
+    double getTheoreticalEarliestOperationStartTime();
 
     /**
      * Returns the theoretical latest operation start time, which is the time that is just allowed
@@ -81,7 +81,7 @@ public interface TourActivity extends HasIndex {
      *
      * @return latest start time
      */
-    public abstract double getTheoreticalLatestOperationStartTime();
+    double getTheoreticalLatestOperationStartTime();
 
     /**
      * Returns the operation-time this activity takes.
@@ -91,35 +91,35 @@ public interface TourActivity extends HasIndex {
      *
      * @return operation time
      */
-    public abstract double getOperationTime();
+    double getOperationTime();
 
     /**
      * Returns the arrival-time of this activity.
      *
      * @return arrival time
      */
-    public abstract double getArrTime();
+    double getArrTime();
 
     /**
      * Returns end-time of this activity.
      *
      * @return end time
      */
-    public abstract double getEndTime();
+    double getEndTime();
 
     /**
      * Sets the arrival time of that activity.
      *
      * @param arrTime
      */
-    public abstract void setArrTime(double arrTime);
+    void setArrTime(double arrTime);
 
     /**
      * Sets the end-time of this activity.
      *
      * @param endTime
      */
-    public abstract void setEndTime(double endTime);
+    void setEndTime(double endTime);
 
     /**
      * Returns the capacity-demand of that activity, in terms of what needs to be loaded or unloaded at
@@ -127,13 +127,13 @@ public interface TourActivity extends HasIndex {
      *
      * @return capacity
      */
-    public abstract Capacity getSize();
+    Capacity getSize();
 
     /**
      * Makes a deep copy of this activity.
      *
      * @return copied activity
      */
-    public abstract TourActivity duplicate();
+    TourActivity duplicate();
 
 }

@@ -26,7 +26,9 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindows;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Service implementation of a job.
@@ -92,6 +94,8 @@ public class Service extends AbstractJob {
         protected Object userData;
 
 		protected double maxTimeInVehicle = Double.MAX_VALUE;
+
+        private Activity activity;
 
 		Builder(String id){
 			this.id = id;
@@ -209,6 +213,7 @@ public class Service extends AbstractJob {
             this.setType("service");
             capacity = capacityBuilder.build();
             skills = skillBuilder.build();
+            activity = new Activity.Builder(location, Activity.Type.SERVICE).setServiceTime(serviceTime).setTimeWindows(timeWindows.getTimeWindows()).build();
             return (T) new Service(this);
         }
 
@@ -282,6 +287,8 @@ public class Service extends AbstractJob {
 
     private final double maxTimeInVehicle;
 
+    private List<Activity> activities = new ArrayList<>();
+
     Service(Builder<?> builder) {
         setUserData(builder.userData);
         id = builder.id;
@@ -294,6 +301,7 @@ public class Service extends AbstractJob {
         timeWindows = builder.timeWindows;
         priority = builder.priority;
 	    maxTimeInVehicle = builder.maxTimeInVehicle;
+        activities.add(builder.activity);
 	}
 
     public Collection<TimeWindow> getTimeWindows(){
@@ -412,6 +420,11 @@ public class Service extends AbstractJob {
     @Override
     public double getMaxTimeInVehicle() {
         return this.maxTimeInVehicle;
+    }
+
+    @Override
+    public List<Activity> getActivities() {
+        return activities;
     }
 
 }

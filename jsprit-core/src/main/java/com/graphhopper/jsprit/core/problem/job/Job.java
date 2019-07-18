@@ -23,6 +23,8 @@ import com.graphhopper.jsprit.core.problem.HasId;
 import com.graphhopper.jsprit.core.problem.HasIndex;
 import com.graphhopper.jsprit.core.problem.Skills;
 
+import java.util.List;
+
 /**
  * Basic interface for all jobs.
  *
@@ -36,23 +38,23 @@ public interface Job extends HasId, HasIndex {
      *
      * @return id
      */
-    public String getId();
+    String getId();
 
     /**
      * Returns size, i.e. capacity-demand, of this job which can consist of an arbitrary number of capacity dimensions.
      *
      * @return Capacity
      */
-    public Capacity getSize();
+    Capacity getSize();
 
-    public Skills getRequiredSkills();
+    Skills getRequiredSkills();
 
     /**
      * Returns name.
      *
      * @return name
      */
-    public String getName();
+    String getName();
 
     /**
      * Get priority of job. Only 1 (very high) to 10 (very low) are allowed.
@@ -61,8 +63,10 @@ public interface Job extends HasId, HasIndex {
      *
      * @return priority
      */
-    public int getPriority();
+    int getPriority();
 
-    public double getMaxTimeInVehicle();
+    double getMaxTimeInVehicle();
+
+    List<Activity> getActivities();
 
 }
