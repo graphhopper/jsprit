@@ -41,12 +41,12 @@ public class DefaultScorer implements ScoringFunction  {
         this.vrp = vrp;
     }
 
-    public void setTimeWindowParam(double tw_param) {
-        this.timeWindowParam = tw_param;
+    public void setTimeWindowParam(double twParam) {
+        this.timeWindowParam = twParam;
     }
 
-    public void setDepotDistanceParam(double depotDistance_param) {
-        this.depotDistanceParam = depotDistance_param;
+    public void setDepotDistanceParam(double depotDistanceParam) {
+        this.depotDistanceParam = depotDistanceParam;
     }
 
     @Override

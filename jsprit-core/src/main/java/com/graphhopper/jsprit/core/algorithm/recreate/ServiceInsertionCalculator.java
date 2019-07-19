@@ -52,10 +52,6 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceInsertionCalculator.class);
 
-//    private HardRouteConstraint hardRouteLevelConstraint;
-
-//    private HardActivityConstraint hardActivityLevelConstraint;
-
     private final SoftRouteConstraint softRouteConstraint;
 
     private final SoftActivityConstraint softActivityConstraint;
