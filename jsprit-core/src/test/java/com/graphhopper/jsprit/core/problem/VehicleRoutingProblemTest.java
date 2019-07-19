@@ -130,12 +130,8 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenServicesAreAdded_vrpShouldContainThem() {
-        Service s1 = mock(Service.class);
-        when(s1.getId()).thenReturn("s1");
-        when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
-        Service s2 = mock(Service.class);
-        when(s2.getId()).thenReturn("s2");
-        when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.Builder.newInstance().setIndex(1).build()).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.Builder.newInstance().setIndex(1).build()).build();
 
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(s1).addJob(s2);

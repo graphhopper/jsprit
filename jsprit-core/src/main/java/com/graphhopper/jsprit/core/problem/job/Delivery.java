@@ -59,6 +59,7 @@ public class Delivery extends Service {
             this.setType("delivery");
             super.capacity = super.capacityBuilder.build();
             super.skills = super.skillBuilder.build();
+            super.activity = new Activity.Builder(location, Activity.Type.DELIVERY).setTimeWindows(timeWindows.getTimeWindows()).setServiceTime(serviceTime).build();
             return new Delivery(this);
         }
 

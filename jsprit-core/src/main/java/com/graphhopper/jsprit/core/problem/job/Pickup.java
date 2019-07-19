@@ -61,6 +61,7 @@ public class Pickup extends Service {
             this.setType("pickup");
             super.capacity = super.capacityBuilder.build();
             super.skills = super.skillBuilder.build();
+            super.activity = new Activity.Builder(location, Activity.Type.PICKUP).setTimeWindows(timeWindows.getTimeWindows()).setServiceTime(serviceTime).build();
             return new Pickup(this);
         }
 

@@ -96,7 +96,7 @@ public class Service extends AbstractJob {
 
 		protected double maxTimeInVehicle = Double.MAX_VALUE;
 
-        private Activity activity;
+        protected Activity activity;
 
 		Builder(String id){
 			this.id = id;

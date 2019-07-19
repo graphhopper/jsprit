@@ -20,9 +20,9 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.Activity;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
 /**
  * Created by schroeder on 15/10/15.
@@ -51,42 +51,30 @@ public class DefaultScorer implements ScoringFunction  {
 
     @Override
     public double score(InsertionData best, Job job) {
-        double score;
-        if (job instanceof Service) {
-            score = scoreService(best, job);
-        } else if (job instanceof Shipment) {
-            score = scoreShipment(best, job);
-        } else throw new IllegalStateException("not supported");
-        return score;
+        return scoreJob(best, job);
     }
 
-    private double scoreShipment(InsertionData best, Job job) {
-        Shipment shipment = (Shipment) job;
-        double maxDepotDistance_1 = Math.max(
-            getDistance(best.getSelectedVehicle().getStartLocation(), shipment.getPickupLocation()),
-            getDistance(best.getSelectedVehicle().getStartLocation(), shipment.getDeliveryLocation())
-        );
-        double maxDepotDistance_2 = Math.max(
-            getDistance(best.getSelectedVehicle().getEndLocation(), shipment.getPickupLocation()),
-            getDistance(best.getSelectedVehicle().getEndLocation(), shipment.getDeliveryLocation())
-        );
-        double maxDepotDistance = Math.max(maxDepotDistance_1, maxDepotDistance_2);
-        double minTimeToOperate = Math.min(shipment.getPickupTimeWindow().getEnd() - shipment.getPickupTimeWindow().getStart(),
-            shipment.getDeliveryTimeWindow().getEnd() - shipment.getDeliveryTimeWindow().getStart());
+    private double scoreJob(InsertionData best, Job job) {
+        Location startLocation = best.getSelectedVehicle().getStartLocation();
+        Location endLocation = best.getSelectedVehicle().getEndLocation();
+        double maxDepotDistance = 0;
+        double minTimeToOperate = Double.MAX_VALUE;
+        for (Activity act : job.getActivities()) {
+            maxDepotDistance = Math.max(maxDepotDistance, getDistance(startLocation, act.getLocation()));
+            maxDepotDistance = Math.max(maxDepotDistance, getDistance(endLocation, act.getLocation()));
+            TimeWindow tw = getLargestTimeWindow(act);
+            minTimeToOperate = Math.min(minTimeToOperate, tw.getEnd() - tw.getStart());
+        }
         return Math.max(timeWindowParam * minTimeToOperate, minTimeWindowScore) + depotDistanceParam * maxDepotDistance;
     }
 
-    private double scoreService(InsertionData best, Job job) {
-        Location location = ((Service) job).getLocation();
-        double maxDepotDistance = 0;
-        if (location != null) {
-            maxDepotDistance = Math.max(
-                getDistance(best.getSelectedVehicle().getStartLocation(), location),
-                getDistance(best.getSelectedVehicle().getEndLocation(), location)
-            );
+    private TimeWindow getLargestTimeWindow(Activity act) {
+        TimeWindow timeWindow = null;
+        for (TimeWindow tw : act.getTimeWindows()) {
+            if (timeWindow == null) timeWindow = tw;
+            else if (tw.larger(timeWindow)) timeWindow = tw;
         }
-        return Math.max(timeWindowParam * (((Service) job).getTimeWindow().getEnd() - ((Service) job).getTimeWindow().getStart()), minTimeWindowScore) +
-            depotDistanceParam * maxDepotDistance;
+        return TimeWindow.newInstance(0, Double.MAX_VALUE);
     }
 
 
