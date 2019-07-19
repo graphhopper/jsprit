@@ -46,8 +46,7 @@ public class TourActivities {
 
         @Override
         public boolean hasNext() {
-            if (currentIndex >= 0) return true;
-            return false;
+            return currentIndex >= 0;
         }
 
         @Override
@@ -67,9 +66,9 @@ public class TourActivities {
         }
     }
 
-    private final ArrayList<TourActivity> tourActivities = new ArrayList<TourActivity>();
+    private final ArrayList<TourActivity> tourActivities = new ArrayList<>();
 
-    private final Set<Job> jobs = new HashSet<Job>();
+    private final Set<Job> jobs = new HashSet<>();
 
     private ReverseActivityIterator backward;
 
@@ -123,7 +122,7 @@ public class TourActivities {
      * @return true if job has been removed, otherwise false.
      */
     public boolean removeJob(Job job) {
-        boolean jobRemoved = false;
+        boolean jobRemoved;
         if (!jobs.contains(job)) {
             return false;
         } else {
@@ -161,7 +160,7 @@ public class TourActivities {
         }
         boolean jobIsAlsoAssociateToOtherActs = false;
         boolean actRemoved = false;
-        List<TourActivity> acts = new ArrayList<TourActivity>(tourActivities);
+        List<TourActivity> acts = new ArrayList<>(tourActivities);
         for (TourActivity act : acts) {
             if (act == activity) {
                 tourActivities.remove(act);
