@@ -75,6 +75,10 @@ public class TimeWindow {
         return end;
     }
 
+    public boolean larger(TimeWindow timeWindow) {
+        return (this.getEnd() - this.getStart()) > (timeWindow.getEnd() - timeWindow.getStart());
+    }
+
     @Override
     public String toString() {
         return "[start=" + start + "][end=" + end + "]";
