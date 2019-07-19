@@ -307,4 +307,11 @@ public class ServiceTest {
         assertEquals(42, two.getUserData());
         assertNull(three.getUserData());
     }
+
+    @Test
+    public void testServiceActivity() {
+        Service one = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
+        assertEquals(1, one.getActivities().size());
+        assertEquals(Activity.Type.SERVICE, one.getActivities().get(0).getActivityType());
+    }
 }

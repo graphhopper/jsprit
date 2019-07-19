@@ -464,4 +464,13 @@ public class ShipmentTest {
         Assert.assertEquals(Double.MAX_VALUE, s.getMaxTimeInVehicle(),0.001);
     }
 
+    @Test
+    public void testShipmentActivities() {
+        Job job = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance("loc")).setDeliveryLocation(Location.newInstance("loc"))
+            .build();
+        assertEquals(2, job.getActivities().size());
+        assertEquals(Activity.Type.PICKUP, job.getActivities().get(0).getActivityType());
+        assertEquals(Activity.Type.DELIVERY, job.getActivities().get(1).getActivityType());
+    }
+
 }
