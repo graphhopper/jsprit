@@ -26,7 +26,7 @@ import java.util.Collection;
 public class Activity {
 
     public enum Type {
-        PICKUP, DELIVERY, SERVICE
+        PICKUP, DELIVERY, SERVICE, BREAK;
     }
 
     public static class Builder {
