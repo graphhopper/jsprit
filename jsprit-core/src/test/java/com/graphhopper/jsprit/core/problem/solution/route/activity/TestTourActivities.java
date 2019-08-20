@@ -22,6 +22,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
 
@@ -116,6 +117,19 @@ public class TestTourActivities {
         assertEquals(2, tour.getActivities().size());
         tour.removeJob(s);
         assertEquals(0, tour.getActivities().size());
+    }
+
+    @Test
+    public void removingNonJobActivityShouldWork() {
+        TourActivity nonJobAct = Mockito.mock(TourActivity.class);
+
+        tour.addActivity(nonJobAct);
+        assertTrue(tour.getActivities().contains(nonJobAct));
+
+        tour.removeActivity(nonJobAct);
+
+        assertTrue(tour.isEmpty());
+        assertFalse(tour.getActivities().contains(nonJobAct));
     }
 
     @Test
