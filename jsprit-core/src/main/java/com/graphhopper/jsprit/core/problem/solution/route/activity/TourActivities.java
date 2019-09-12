@@ -81,7 +81,6 @@ public class TourActivities {
     }
 
     public TourActivities() {
-
     }
 
     public List<TourActivity> getActivities() {
@@ -89,7 +88,30 @@ public class TourActivities {
     }
 
     public Iterator<TourActivity> iterator() {
-        return tourActivities.iterator();
+        final Iterator<TourActivity> iterator = tourActivities.iterator();
+        return new Iterator<TourActivity>() {
+            private TourActivity lastReturned = null;
+
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public TourActivity next() {
+                return lastReturned = iterator.next();
+            }
+
+            @Override
+            public void remove() {
+                if (lastReturned instanceof JobActivity) {
+                    throw new IllegalStateException("Cannot remove JobActivities via iterator. "
+                        + "Use TourActivities.removeActivity(), or alternatively, consider TourActivities.removeJob()");
+                } else {
+                    iterator.remove();
+                }
+            }
+        };
     }
 
     public boolean isEmpty() {
@@ -154,26 +176,35 @@ public class TourActivities {
      * @return true if activity has been removed, false otherwise
      */
     public boolean removeActivity(TourActivity activity) {
-        Job job = null;
-        if (activity instanceof JobActivity) {
-            job = ((JobActivity) activity).getJob();
+        if (!(activity instanceof JobActivity)) {
+            //assumes that an activity can be added only once to tourActivities
+            return tourActivities.remove(activity);
         }
+
+        Job job = ((JobActivity) activity).getJob();
         boolean jobIsAlsoAssociateToOtherActs = false;
         boolean actRemoved = false;
-        List<TourActivity> acts = new ArrayList<>(tourActivities);
-        for (TourActivity act : acts) {
+        for (TourActivity act : new ArrayList<>(tourActivities)) {
             if (act == activity) {
                 tourActivities.remove(act);
+                if (jobIsAlsoAssociateToOtherActs) {
+                    // other activities also refer to job --> do not remove job
+                    // thus no need to iterate any further
+                    return true;
+                }
                 actRemoved = true;
             } else {
-                if (act instanceof JobActivity && job != null) {
-                    if (((JobActivity) act).getJob().equals(job)) {
-                        jobIsAlsoAssociateToOtherActs = true;
+                if (act instanceof JobActivity && ((JobActivity) act).getJob().equals(job)) {
+                    if (actRemoved) {
+                        // other activities also refer to job --> do not remove job
+                        // thus no need to iterate any further
+                        return true;
                     }
+                    jobIsAlsoAssociateToOtherActs = true;
                 }
             }
         }
-        if (!jobIsAlsoAssociateToOtherActs && actRemoved) {
+        if (actRemoved) {
             jobs.remove(job);
         }
         return actRemoved;

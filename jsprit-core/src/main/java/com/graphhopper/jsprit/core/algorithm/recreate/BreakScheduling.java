@@ -45,8 +45,6 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
 
     private final EventListeners eventListeners;
 
-    private Set<VehicleRoute> modifiedRoutes = new HashSet<VehicleRoute>();
-
     public BreakScheduling(VehicleRoutingProblem vrp, StateManager stateManager, ConstraintManager constraintManager) {
         this.stateManager = stateManager;
         this.breakInsertionCalculator = new BreakInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), stateManager), constraintManager, vrp.getJobActivityFactory());
@@ -78,7 +76,6 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
 
     @Override
     public void ruinStarts(Collection<VehicleRoute> routes) {
-
     }
 
     @Override
@@ -88,7 +85,7 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
             boolean removed = route.getTourActivities().removeJob(aBreak);
             if(removed) logger.trace("ruin: {}", aBreak.getId());
         }
-        List<Break> breaks = new ArrayList<Break>();
+        List<Break> breaks = new ArrayList<>();
         for (Job j : unassignedJobs) {
             if (j instanceof Break) {
                 breaks.add((Break) j);
@@ -99,7 +96,6 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
 
     @Override
     public void removed(Job job, VehicleRoute fromRoute) {
-        if(fromRoute.getVehicle().getBreak() != null) modifiedRoutes.add(fromRoute);
     }
 
     @Override
@@ -119,6 +115,5 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
                 }
             }
         }
-
     }
 }
