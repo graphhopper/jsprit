@@ -667,7 +667,9 @@ public class VehicleRoutingAlgorithms {
             return new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
 
         } else if (vrp.getFleetSize().equals(FleetSize.FINITE)) {
-            return new FiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
+            Set<Vehicle> vehicles = new HashSet<>();
+            vehicles.addAll(vrp.getVehicles());
+            return new FiniteFleetManagerFactory(vehicles).createFleetManager();
         }
         throw new IllegalStateException("fleet size can only be infinite or finite. " +
             "makes sure your config file contains one of these options");

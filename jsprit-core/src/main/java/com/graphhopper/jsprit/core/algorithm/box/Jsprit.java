@@ -42,6 +42,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.util.NoiseMaker;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
@@ -460,10 +461,13 @@ public class Jsprit {
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp) {
         ini(vrp);
         if (vehicleFleetManager == null) {
+            Set<Vehicle> vehicles = new HashSet<>();
+            vehicles.addAll(vrp.getVehicles());
             if (vrp.getFleetSize().equals(VehicleRoutingProblem.FleetSize.INFINITE)) {
-                vehicleFleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
+                vehicleFleetManager = new InfiniteFleetManagerFactory(vehicles).createFleetManager();
             } else {
-                FiniteFleetManagerFactory finiteFleetManagerFactory = new FiniteFleetManagerFactory(vrp.getVehicles());
+
+                FiniteFleetManagerFactory finiteFleetManagerFactory = new FiniteFleetManagerFactory(vehicles);
                 finiteFleetManagerFactory.setRandom(random);
                 vehicleFleetManager = finiteFleetManagerFactory.createFleetManager();
             }
