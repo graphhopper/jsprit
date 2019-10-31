@@ -496,7 +496,7 @@ public class Shipment extends AbstractJob {
                 + "][deliveryLocation=" + deliveryLocation_ + "][capacity=" + capacity
                 + "][pickupServiceTime=" + pickupServiceTime + "][deliveryServiceTime="
                 + deliveryServiceTime + "][pickupTimeWindows=" + pickupTimeWindows
-                + "][deliveryTimeWindows=" + deliveryTimeWindows + "]";
+                + "][deliveryTimeWindows=" + deliveryTimeWindows + "][userData=" + getUserData() + "]";
     }
 
 

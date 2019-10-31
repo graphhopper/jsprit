@@ -20,13 +20,8 @@ package com.graphhopper.jsprit.core.algorithm.termination;
 
 
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import org.junit.Assert;
 import org.junit.Test;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -80,95 +75,5 @@ public class IterationsWithoutImprovementTest {
             }
         }
         Assert.assertEquals(150, terminatedAfter);
-    }
-
-    @Test
-    public void isPrematureBreakZeroPercentage() {
-        int maxIterations = 200;
-        IterationWithoutImprovementTermination termination = new IterationWithoutImprovementTermination(100, 0);
-        SearchStrategy.DiscoveredSolution discoveredSolution = mock(SearchStrategy.DiscoveredSolution.class);
-
-        int terminatedAfter = maxIterations;
-        for (int i = 0; i < maxIterations; i++) {
-            when(discoveredSolution.isAccepted()).thenReturn(i< 50 ? true : false);
-            if (termination.isPrematureBreak(discoveredSolution)) {
-                terminatedAfter = i;
-                break;
-            }
-        }
-        Assert.assertEquals(150, terminatedAfter);
-    }
-
-    @Test
-    public void isPrematureBreakWithPercentageShouldBreak() {
-        int maxIterations = 200;
-        IterationWithoutImprovementTermination termination = new IterationWithoutImprovementTermination(10, 1.0);
-        SearchStrategy.DiscoveredSolution discoveredSolution = mock(SearchStrategy.DiscoveredSolution.class);
-        VehicleRoutingProblemSolution solution = mock(VehicleRoutingProblemSolution.class);
-        when(discoveredSolution.getSolution()).thenReturn(solution);
-        when(solution.getUnassignedJobs()).thenReturn(new ArrayList<Job>());
-
-        int terminatedAfter = maxIterations;
-        for (int i = 0; i < maxIterations; i++) {
-
-            when(solution.getCost()).thenReturn(i < 100 ? 100.0 - (0.1*i) : 40-((i-100)*0.01));
-            boolean terminate = termination.isPrematureBreak(discoveredSolution);
-            if (terminate) {
-                terminatedAfter = i;
-                break;
-            }
-        }
-        Assert.assertEquals(110, terminatedAfter);
-    }
-
-    @Test
-    public void isPrematureBreakWithPercentageCostNotImprovedButUnassignedImproved() {
-        int maxIterations = 200;
-        IterationWithoutImprovementTermination termination = new IterationWithoutImprovementTermination(10, 1.0);
-        SearchStrategy.DiscoveredSolution discoveredSolution = mock(SearchStrategy.DiscoveredSolution.class);
-        VehicleRoutingProblemSolution solution = mock(VehicleRoutingProblemSolution.class);
-        Job job = mock(Job.class);
-        when(discoveredSolution.getSolution()).thenReturn(solution);
-        List<Job> unassignedJobs = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            unassignedJobs.add(job);
-        }
-
-        int terminatedAfter = maxIterations;
-        for (int i = 0; i < maxIterations; i++) {
-            when(solution.getCost()).thenReturn(100.0);
-            if (i <= 50){
-                unassignedJobs.remove(0);
-            }
-            when(solution.getUnassignedJobs()).thenReturn(unassignedJobs);
-            boolean terminate = termination.isPrematureBreak(discoveredSolution);
-            if (terminate) {
-                terminatedAfter = i;
-                break;
-            }
-        }
-        Assert.assertEquals(60, terminatedAfter);
-    }
-
-    @Test
-    public void isPrematureBreakLastCostIsWorstShouldNotBreak() {
-        int maxIterations = 7;
-        IterationWithoutImprovementTermination termination = new IterationWithoutImprovementTermination(5, 1.0);
-        SearchStrategy.DiscoveredSolution discoveredSolution = mock(SearchStrategy.DiscoveredSolution.class);
-        VehicleRoutingProblemSolution solution = mock(VehicleRoutingProblemSolution.class);
-        when(discoveredSolution.getSolution()).thenReturn(solution);
-        when(solution.getUnassignedJobs()).thenReturn(new ArrayList<Job>());
-
-        boolean isTerminate = false;
-        for (int i = 0; i < maxIterations; i++) {
-
-            when(solution.getCost()).thenReturn(i < 6.0 ? 10.0-i : 12);
-            boolean terminate = termination.isPrematureBreak(discoveredSolution);
-            if (terminate) {
-                isTerminate= true;
-                break;
-            }
-        }
-        Assert.assertFalse(isTerminate);
     }
 }
