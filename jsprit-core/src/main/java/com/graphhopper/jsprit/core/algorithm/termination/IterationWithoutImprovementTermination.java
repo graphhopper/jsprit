@@ -37,7 +37,7 @@ public class IterationWithoutImprovementTermination implements PrematureAlgorith
 
     private int noIterationWithoutImprovement;
 
-    private int iterationsWithoutImprovement = 0;
+    protected int iterationsWithoutImprovement = 0;
 
     /**
      * Constructs termination.
