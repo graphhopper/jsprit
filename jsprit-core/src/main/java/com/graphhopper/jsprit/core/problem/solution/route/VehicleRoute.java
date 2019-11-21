@@ -123,6 +123,8 @@ public class VehicleRoute {
 
         private Set<Shipment> openShipments = new HashSet<Shipment>();
 
+        private Object routeData;
+
         private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
 
             @Override
@@ -168,6 +170,11 @@ public class VehicleRoute {
             if (departureTime < start.getEndTime())
                 throw new IllegalArgumentException("departureTime < vehicle.getEarliestDepartureTime(). this must not be.");
             start.setEndTime(departureTime);
+            return this;
+        }
+
+        public Builder setRouteData(Object routeData) {
+            this.routeData = routeData;
             return this;
         }
 
@@ -335,6 +342,8 @@ public class VehicleRoute {
 
     private End end;
 
+    private Object routeData;
+
     /**
      * Copy constructor copying a route.
      *
@@ -346,6 +355,7 @@ public class VehicleRoute {
         this.tourActivities = TourActivities.copyOf(route.getTourActivities());
         this.vehicle = route.getVehicle();
         this.driver = route.getDriver();
+        this.routeData = route.getRouteData();
     }
 
     /**
@@ -359,6 +369,7 @@ public class VehicleRoute {
         this.driver = builder.driver;
         this.start = builder.start;
         this.end = builder.end;
+        this.routeData = builder.routeData;
     }
 
     /**
@@ -397,6 +408,9 @@ public class VehicleRoute {
         return driver;
     }
 
+    public Object getRouteData() {
+        return routeData;
+    }
     /**
      * Sets the vehicle and its departureTime from <code>vehicle.getStartLocationId()</code>.
      * <p>
@@ -471,6 +485,10 @@ public class VehicleRoute {
      */
     public End getEnd() {
         return end;
+    }
+
+    public void setRouteData(Object routeData) {
+        this.routeData = routeData;
     }
 
     @Override
