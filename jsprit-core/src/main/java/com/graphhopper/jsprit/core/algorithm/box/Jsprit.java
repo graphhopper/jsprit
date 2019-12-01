@@ -461,12 +461,12 @@ public class Jsprit {
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp) {
         ini(vrp);
         if (vehicleFleetManager == null) {
+            // this allow us to serialize the vra as vrp.getVehicles() return unmodifiable collection
             Set<Vehicle> vehicles = new HashSet<>();
             vehicles.addAll(vrp.getVehicles());
             if (vrp.getFleetSize().equals(VehicleRoutingProblem.FleetSize.INFINITE)) {
                 vehicleFleetManager = new InfiniteFleetManagerFactory(vehicles).createFleetManager();
             } else {
-
                 FiniteFleetManagerFactory finiteFleetManagerFactory = new FiniteFleetManagerFactory(vehicles);
                 finiteFleetManagerFactory.setRandom(random);
                 vehicleFleetManager = finiteFleetManagerFactory.createFleetManager();

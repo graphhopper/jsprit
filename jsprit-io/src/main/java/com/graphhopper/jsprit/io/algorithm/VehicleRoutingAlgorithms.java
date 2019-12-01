@@ -667,6 +667,7 @@ public class VehicleRoutingAlgorithms {
             return new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
 
         } else if (vrp.getFleetSize().equals(FleetSize.FINITE)) {
+            // this allow us to serialize the vra as vrp.getVehicles() return unmodifiable collection
             Set<Vehicle> vehicles = new HashSet<>();
             vehicles.addAll(vrp.getVehicles());
             return new FiniteFleetManagerFactory(vehicles).createFleetManager();

@@ -41,14 +41,16 @@ import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.FiniteFleetManagerFactory;
-import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.instance.reader.CordeauReader;
 import com.graphhopper.jsprit.util.Examples;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class BuildAlgorithmFromScratch {
 
@@ -127,9 +129,8 @@ public class BuildAlgorithmFromScratch {
 
 
     public static VehicleRoutingAlgorithm createAlgorithm(final VehicleRoutingProblem vrp) {
-        Set<Vehicle> vehicles = new HashSet<>();
-        vehicles.addAll(vrp.getVehicles());
-        VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
+
+        VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
         StateManager stateManager = new StateManager(vrp);
         ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
 
