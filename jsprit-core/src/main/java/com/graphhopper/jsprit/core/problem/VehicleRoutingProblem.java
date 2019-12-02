@@ -601,8 +601,7 @@ public class VehicleRoutingProblem {
         this.vehicles = builder.uniqueVehicles;
 
         //this allow us to serialize the vrp object, as builder.vehicleTypes.values() return transient collection
-        this.vehicleTypes = new HashSet<>();
-        vehicleTypes.addAll(builder.vehicleTypes.values());
+        this.vehicleTypes = new HashSet<>(builder.vehicleTypes.values());
 
         this.initialVehicleRoutes = builder.initialRoutes;
         this.transportCosts = builder.transportCosts;
