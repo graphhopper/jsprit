@@ -51,6 +51,23 @@ public class VehicleImplTest {
         assertEquals(30., v.getBreak().getServiceDuration(), 0.1);
     }
 
+    @Test
+    public void buildingANewVehicleBasedOnAnotherOneShouldWork() {
+        VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
+        Break aBreak = Break.Builder.newInstance("break").setTimeWindow(TimeWindow.newInstance(100, 200)).setServiceTime(30).build();
+        Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start"))
+            .setType(type1).setEndLocation(Location.newInstance("start"))
+            .setBreak(aBreak).build();
+
+        Vehicle newVehicle = VehicleImpl.Builder.newInstance(v).setStartLocation(Location.newInstance("newStartLocation")).build();
+        assertNotNull(newVehicle.getBreak());
+        assertEquals(100., newVehicle.getBreak().getTimeWindow().getStart(), 0.1);
+        assertEquals(200., newVehicle.getBreak().getTimeWindow().getEnd(), 0.1);
+        assertEquals(30., newVehicle.getBreak().getServiceDuration(), 0.1);
+        assertEquals("newStartLocation", newVehicle.getStartLocation().getId());
+        assertEquals(type1, newVehicle.getType());
+    }
+
 
     @Test
     public void whenAddingSkills_theyShouldBeAddedCorrectly() {

@@ -46,25 +46,21 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
 
     private final ConstraintManager constraintManager;
 
-//    private HardRouteConstraint hardRouteLevelConstraint;
-//
-//    private HardActivityConstraint hardActivityLevelConstraint;
+    private final SoftRouteConstraint softRouteConstraint;
 
-    private SoftRouteConstraint softRouteConstraint;
+    private final SoftActivityConstraint softActivityConstraint;
 
-    private SoftActivityConstraint softActivityConstraint;
+    private final ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 
-    private ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
+    private final VehicleRoutingTransportCosts transportCosts;
 
-    private VehicleRoutingTransportCosts transportCosts;
+    private final VehicleRoutingActivityCosts activityCosts;
 
-    private VehicleRoutingActivityCosts activityCosts;
+    private final JobActivityFactory activityFactory;
 
-    private JobActivityFactory activityFactory;
+    private final AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
-    private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
-
-    public ShipmentInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, ConstraintManager constraintManager) {
+    public ShipmentInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, ConstraintManager constraintManager, JobActivityFactory jobActivityFactory) {
         super();
         this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
         this.constraintManager = constraintManager;
@@ -73,16 +69,13 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         this.transportCosts = routingCosts;
         this.activityCosts = activityCosts;
         additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
+        this.activityFactory = jobActivityFactory;
         logger.debug("initialise {}", this);
-    }
-
-    public void setJobActivityFactory(JobActivityFactory activityFactory) {
-        this.activityFactory = activityFactory;
     }
 
     @Override
     public String toString() {
-        return "[name=calculatesServiceInsertion]";
+        return "[name=calculatesShipmentInsertion]";
     }
 
     /**

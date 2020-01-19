@@ -25,8 +25,6 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 
 public class BreakActivity extends AbstractActivity implements TourActivity.JobActivity {
 
-    public static int counter = 0;
-
     public double arrTime;
 
     public double endTime;
@@ -78,13 +76,11 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     private double latest = Double.MAX_VALUE;
 
     protected BreakActivity(Break aBreak) {
-        counter++;
         this.aBreak = aBreak;
         this.duration = aBreak.getServiceDuration();
     }
 
     protected BreakActivity(BreakActivity breakActivity) {
-        counter++;
         this.aBreak = (Break) breakActivity.getJob();
         this.arrTime = breakActivity.getArrTime();
         this.endTime = breakActivity.getEndTime();
@@ -95,37 +91,6 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
         this.duration = breakActivity.getOperationTime();
     }
 
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((aBreak == null) ? 0 : aBreak.hashCode());
-        return result;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        BreakActivity other = (BreakActivity) obj;
-        if (aBreak == null) {
-            if (other.aBreak != null)
-                return false;
-        } else if (!aBreak.equals(other.aBreak))
-            return false;
-        return true;
-    }
 
     public double getTheoreticalEarliestOperationStartTime() {
         return earliest;

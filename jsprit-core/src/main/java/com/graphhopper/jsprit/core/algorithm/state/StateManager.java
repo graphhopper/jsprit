@@ -306,7 +306,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      */
     @Override
     public <T> T getRouteState(VehicleRoute route, StateId stateId, Class<T> type) {
-        if (route.isEmpty()) return null;
+        if (route == null) return null;
         T state = null;
         if(isIndexedBased){
             try {
@@ -356,7 +356,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @throws java.lang.IllegalStateException if <code>!route.isEmpty()</code> and <code>act(0).getIndex()==0</code> since this suggests that act has no index at all
      */
     public <T> T getRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, Class<T> type) {
-        if (route.isEmpty()) return null;
+//        if (route.isEmpty()) return null;
         T state = null;
         if(isIndexedBased){
             try {
@@ -463,7 +463,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     <T> void putTypedInternalRouteState(VehicleRoute route, StateId stateId, T state) {
-        if (route.isEmpty()) return;
+//        if (route.isEmpty()) return;
         if(isIndexedBased){
             routeStatesArr[route.getVehicle().getIndex()][stateId.getIndex()] = state;
         }
@@ -476,7 +476,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     <T> void putTypedInternalRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, T state) {
-        if (route.isEmpty()) return;
+//        if (route.isEmpty()) return;
         if(isIndexedBased){
             vehicleDependentRouteStatesArr[route.getVehicle().getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] = state;
         }

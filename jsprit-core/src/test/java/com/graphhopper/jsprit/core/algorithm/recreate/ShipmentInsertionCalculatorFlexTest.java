@@ -31,27 +31,28 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
-import com.graphhopper.jsprit.core.problem.job.BreakForMultipleTimeWindows;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipment;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
-import com.graphhopper.jsprit.core.util.ManhattanCosts;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -59,7 +60,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-public class ShipmentInsertionCalculatorTest {
+public class ShipmentInsertionCalculatorFlexTest {
 
     VehicleRoutingTransportCosts routingCosts;
 
@@ -90,7 +91,7 @@ public class ShipmentInsertionCalculatorTest {
 
     ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 
-    ShipmentInsertionCalculator insertionCalculator;
+    ShipmentInsertionCalculatorFlex insertionCalculator;
 
     Vehicle vehicle;
 
@@ -122,7 +123,8 @@ public class ShipmentInsertionCalculatorTest {
         activities.add(new PickupShipment(shipment));
         activities.add(new DeliverShipment(shipment));
         when(activityFactory.createActivities(shipment)).thenReturn(activities);
-        insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
+        insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator.setJobActivityFactory(activityFactory);
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment, vehicle, 0.0, null, Double.MAX_VALUE);
         assertEquals(40.0, iData.getInsertionCost(), 0.05);
     }
@@ -140,7 +142,8 @@ public class ShipmentInsertionCalculatorTest {
         activities.add(new PickupShipment(shipment2));
         activities.add(new DeliverShipment(shipment2));
         when(activityFactory.createActivities(shipment2)).thenReturn(activities);
-        insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
+        insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator.setJobActivityFactory(activityFactory);
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
         assertEquals(0.0, iData.getInsertionCost(), 0.05);
@@ -180,7 +183,8 @@ public class ShipmentInsertionCalculatorTest {
         activities.add(new PickupShipment(shipment2));
         activities.add(new DeliverShipment(shipment2));
         when(activityFactory.createActivities(shipment2)).thenReturn(activities);
-        insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
+        insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator.setJobActivityFactory(activityFactory);
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
         assertTrue(iData instanceof InsertionData.NoInsertionFound);
@@ -206,7 +210,8 @@ public class ShipmentInsertionCalculatorTest {
         activities.add(new PickupShipment(shipment3));
         activities.add(new DeliverShipment(shipment3));
         when(activityFactory.createActivities(shipment3)).thenReturn(activities);
-        insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
+        insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator.setJobActivityFactory(activityFactory);
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
         assertEquals(0.0, iData.getInsertionCost(), 0.05);
@@ -231,7 +236,8 @@ public class ShipmentInsertionCalculatorTest {
         activities.add(new PickupShipment(shipment3));
         activities.add(new DeliverShipment(shipment3));
         when(activityFactory.createActivities(shipment3)).thenReturn(activities);
-        insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
+        insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator.setJobActivityFactory(activityFactory);
 
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
@@ -264,13 +270,51 @@ public class ShipmentInsertionCalculatorTest {
         constraintManager.addConstraint(new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager), ConstraintManager.Priority.CRITICAL);
         constraintManager.addConstraint(new ShipmentPickupsFirstConstraint(), ConstraintManager.Priority.CRITICAL);
 
-        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts,
-            activityInsertionCostsCalculator, constraintManager, vrp.getJobActivityFactory());
+        ShipmentInsertionCalculatorFlex insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts,
+            activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator.setJobActivityFactory(vrp.getJobActivityFactory());
 
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
         assertTrue(iData instanceof InsertionData.NoInsertionFound);
 
     }
+
+    @Ignore
+    @Test
+    public void whenInsertingShipmentWithLoadConstraintWhereCapIsNotSufficient_capConstraintsAreFulfilledV2() {
+        Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
+        Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
+        Shipment shipment3 = Shipment.Builder.newInstance("s3").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("9,9")).build();
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        VehicleRoutingProblem vrp = vrpBuilder.addJob(shipment).addJob(shipment2).addJob(shipment3).build();
+
+        VehicleRoute route = VehicleRoute.emptyRoute();
+        route.setVehicleAndDepartureTime(vehicle, 0.0);
+
+        Inserter inserter = new Inserter(new InsertionListeners(), vrp);
+        inserter.insertJob(shipment, new InsertionData(0, 0, 0, vehicle, null), route);
+        inserter.insertJob(shipment2, new InsertionData(0, 1, 2, vehicle, null), route);
+
+        StateManager stateManager = new StateManager(vrp);
+        stateManager.updateLoadStates();
+        stateManager.informInsertionStarts(Arrays.asList(route), null);
+
+        ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
+        constraintManager.addConstraint(new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager), ConstraintManager.Priority.CRITICAL);
+//        constraintManager.addConstraint(new ShipmentPickupsFirstConstraint(), ConstraintManager.Priority.CRITICAL);
+
+        ShipmentInsertionCalculatorFlex insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts,
+            activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator.setEvalIndexPickup(0);
+        insertionCalculator.setEvalIndexDelivery(3);
+        insertionCalculator.setJobActivityFactory(vrp.getJobActivityFactory());
+
+        InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
+        assertTrue(iData instanceof InsertionData.NoInsertionFound);
+
+    }
+
 
     @Test
     public void whenInsertingServiceWhileNoCapIsAvailable_itMustReturnNoInsertionData() {
@@ -306,7 +350,8 @@ public class ShipmentInsertionCalculatorTest {
 
         JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
         ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
-        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
+        ShipmentInsertionCalculatorFlex insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator.setJobActivityFactory(activityFactory);
         switcher.put(Pickup.class, serviceInsertionCalc);
         switcher.put(Service.class, serviceInsertionCalc);
         switcher.put(Shipment.class, insertionCalculator);
@@ -318,47 +363,5 @@ public class ShipmentInsertionCalculatorTest {
         assertEquals(3, iData.getDeliveryInsertionIndex());
     }
 
-    @Test
-    public void whenPickupInsertedBeforeBreak() {
-        final BreakForMultipleTimeWindows breakForMultipleTimeWindows =
-            BreakForMultipleTimeWindows.Builder.newInstance("break")
-                .setLocation(Location.newInstance(5, 10))
-                .addTimeWindow(20, 20)
-                .setServiceTime(5)
-                .build();
-        final VehicleImpl vehicle = VehicleImpl.Builder.newInstance(UUID.randomUUID().toString())
-            .setStartLocation(Location.newInstance(0, 0))
-            .build();
-        final VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle)
-            .addService(breakForMultipleTimeWindows)
-            .build();
 
-        route.getActivities().get(0).setArrTime(5);
-        route.getActivities().get(0).setEndTime(10);
-
-        Shipment shipment = Shipment.Builder.newInstance("shipment")
-            .setPickupLocation(Location.newInstance(0,10))
-            .setPickupTimeWindow(new TimeWindow(0, 20))
-            .setPickupServiceTime(10)
-            .setDeliveryLocation(Location.newInstance(10,10))
-            .setDeliveryTimeWindow(new TimeWindow(60, 160))
-            .setDeliveryServiceTime(10)
-            .build();
-
-        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addJob(breakForMultipleTimeWindows).build();
-
-        StateManager stateManager = new StateManager(vrp);
-        final ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
-        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(new ManhattanCosts() {
-            @Override
-            public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
-                return (to.getId() != null && to.getId().equals("break")) ? .0 : super.getTransportTime(from, to, departureTime, driver, vehicle);
-            }
-        }, activityCosts,
-            activityInsertionCostsCalculator, constraintManager, vrp.getJobActivityFactory());
-
-        InsertionData iData = insertionCalculator.getInsertionData(route, shipment, vehicle, 0.0, null, Double.MAX_VALUE);
-        assertEquals(0, iData.getPickupInsertionIndex());
-        assertEquals(0, iData.getDeliveryInsertionIndex());
-    }
 }

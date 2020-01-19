@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.algorithm.box;
 
 import com.graphhopper.jsprit.core.algorithm.PrettyAlgorithmBuilder;
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
+import com.graphhopper.jsprit.core.algorithm.SearchStrategyModule;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.acceptor.SchrimpfAcceptance;
 import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
@@ -128,7 +129,10 @@ public class Jsprit {
         STRING_K_MIN("string_kmin"),
         STRING_K_MAX("string_kmax"),
         STRING_L_MIN("string_lmin"),
-        STRING_L_MAX("string_lmax");
+        STRING_L_MAX("string_lmax"),
+        MIN_UNASSIGNED("min_unassigned"),
+        PROPORTION_UNASSIGNED("proportion_unassigned");
+
 
 
         String paraName;
@@ -249,6 +253,9 @@ public class Jsprit {
             defaults.put(Parameter.FAST_REGRET.toString(), String.valueOf(false));
             defaults.put(Parameter.BREAK_SCHEDULING.toString(), String.valueOf(true));
             defaults.put(Parameter.CONSTRUCTION.toString(), Construction.REGRET_INSERTION.toString());
+
+            defaults.put(Parameter.MIN_UNASSIGNED.toString(), String.valueOf(Integer.MAX_VALUE));
+            defaults.put(Parameter.PROPORTION_UNASSIGNED.toString(), String.valueOf(1.0));
             return defaults;
         }
 
@@ -599,8 +606,8 @@ public class Jsprit {
         boolean fastRegret = Boolean.parseBoolean(getProperty(Parameter.FAST_REGRET.toString()));
         if (es != null) {
             if(fastRegret){
-                RegretInsertionConcurrentFast regretInsertion = (RegretInsertionConcurrentFast) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
-                    .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
+                RegretInsertionConcurrentFast regretInsertion = (RegretInsertionConcurrentFast) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
                     .setConcurrentMode(es, noThreads)
                     .setFastRegret(true)
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
@@ -613,8 +620,8 @@ public class Jsprit {
                 regret = regretInsertion;
             }
             else {
-                RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
-                    .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
+                RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
                     .setConcurrentMode(es, noThreads)
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
@@ -626,8 +633,8 @@ public class Jsprit {
             }
         } else {
             if(fastRegret) {
-                RegretInsertionFast regretInsertion = (RegretInsertionFast) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
-                    .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
+                RegretInsertionFast regretInsertion = (RegretInsertionFast) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
                     .setFastRegret(true)
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
@@ -639,8 +646,8 @@ public class Jsprit {
                 regret = regretInsertion;
             }
             else{
-                RegretInsertion regretInsertion = (RegretInsertion) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
-                    .setInsertionStrategy(InsertionBuilder.Strategy.REGRET)
+                RegretInsertion regretInsertion = (RegretInsertion) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
@@ -654,16 +661,16 @@ public class Jsprit {
 
         AbstractInsertionStrategy best;
         if (vrp.getJobs().size() < 250 || es == null) {
-            BestInsertion bestInsertion = (BestInsertion) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
-                .setInsertionStrategy(InsertionBuilder.Strategy.BEST)
+            BestInsertion bestInsertion = (BestInsertion) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                .setInsertionStrategy(InsertionStrategyBuilder.Strategy.BEST)
                 .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                 .setActivityInsertionCostCalculator(activityInsertion)
                 .build();
             best = bestInsertion;
         } else {
-            BestInsertionConcurrent bestInsertion = (BestInsertionConcurrent) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
-                .setInsertionStrategy(InsertionBuilder.Strategy.BEST)
+            BestInsertionConcurrent bestInsertion = (BestInsertionConcurrent) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                .setInsertionStrategy(InsertionStrategyBuilder.Strategy.BEST)
                 .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                 .setConcurrentMode(es, noThreads)
@@ -702,34 +709,34 @@ public class Jsprit {
 
         SolutionCostCalculator objectiveFunction = getObjectiveFunction(vrp, maxCosts);
         SearchStrategy radial_regret = new SearchStrategy(Strategy.RADIAL_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
-        radial_regret.addModule(new RuinAndRecreateModule(Strategy.RADIAL_REGRET.toString(), regret, radial));
+        radial_regret.addModule(configureModule(new RuinAndRecreateModule(Strategy.RADIAL_REGRET.toString(), regret, radial)));
 
         SearchStrategy radial_best = new SearchStrategy(Strategy.RADIAL_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
-        radial_best.addModule(new RuinAndRecreateModule(Strategy.RADIAL_BEST.toString(), best, radial));
+        radial_best.addModule(configureModule(new RuinAndRecreateModule(Strategy.RADIAL_BEST.toString(), best, radial)));
 
         SearchStrategy random_best = new SearchStrategy(Strategy.RANDOM_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
-        random_best.addModule(new RuinAndRecreateModule(Strategy.RANDOM_BEST.toString(), best, random_for_best));
+        random_best.addModule(configureModule(new RuinAndRecreateModule(Strategy.RANDOM_BEST.toString(), best, random_for_best)));
 
         SearchStrategy random_regret = new SearchStrategy(Strategy.RANDOM_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
-        random_regret.addModule(new RuinAndRecreateModule(Strategy.RANDOM_REGRET.toString(), regret, random_for_regret));
+        random_regret.addModule(configureModule(new RuinAndRecreateModule(Strategy.RANDOM_REGRET.toString(), regret, random_for_regret)));
 
         SearchStrategy worst_regret = new SearchStrategy(Strategy.WORST_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
-        worst_regret.addModule(new RuinAndRecreateModule(Strategy.WORST_REGRET.toString(), regret, worst));
+        worst_regret.addModule(configureModule(new RuinAndRecreateModule(Strategy.WORST_REGRET.toString(), regret, worst)));
 
         SearchStrategy worst_best = new SearchStrategy(Strategy.WORST_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
-        worst_best.addModule(new RuinAndRecreateModule(Strategy.WORST_BEST.toString(), best, worst));
+        worst_best.addModule(configureModule(new RuinAndRecreateModule(Strategy.WORST_BEST.toString(), best, worst)));
 
         final SearchStrategy clusters_regret = new SearchStrategy(Strategy.CLUSTER_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
-        clusters_regret.addModule(new RuinAndRecreateModule(Strategy.CLUSTER_REGRET.toString(), regret, clusters));
+        clusters_regret.addModule(configureModule(new RuinAndRecreateModule(Strategy.CLUSTER_REGRET.toString(), regret, clusters)));
 
         final SearchStrategy clusters_best = new SearchStrategy(Strategy.CLUSTER_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
-        clusters_best.addModule(new RuinAndRecreateModule(Strategy.CLUSTER_BEST.toString(), best, clusters));
+        clusters_best.addModule(configureModule(new RuinAndRecreateModule(Strategy.CLUSTER_BEST.toString(), best, clusters)));
 
         SearchStrategy stringRegret = new SearchStrategy(Strategy.STRING_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
-        stringRegret.addModule(new RuinAndRecreateModule(Strategy.STRING_REGRET.toString(), regret, stringRuin));
+        stringRegret.addModule(configureModule(new RuinAndRecreateModule(Strategy.STRING_REGRET.toString(), regret, stringRuin)));
 
         SearchStrategy stringBest = new SearchStrategy(Strategy.STRING_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
-        stringBest.addModule(new RuinAndRecreateModule(Strategy.STRING_BEST.toString(), best, stringRuin));
+        stringBest.addModule(configureModule(new RuinAndRecreateModule(Strategy.STRING_BEST.toString(), best, stringRuin)));
 
         final SearchStrategy randomStrategy = new SearchStrategy(Strategy.RANDOM.toString(), new SelectRandomly(), acceptor, objectiveFunction);
         randomStrategy.addModule(new RuinAndRecreateModule(Strategy.RANDOM.toString(), randomInsertion, random_for_random));
@@ -781,6 +788,13 @@ public class Jsprit {
 
         return vra;
 
+    }
+
+    private SearchStrategyModule configureModule(RuinAndRecreateModule ruinAndRecreateModule) {
+        ruinAndRecreateModule.setRandom(random);
+        ruinAndRecreateModule.setMinUnassignedJobsToBeReinserted(Integer.valueOf(properties.getProperty(Parameter.MIN_UNASSIGNED.toString())));
+        ruinAndRecreateModule.setProportionOfUnassignedJobsToBeReinserted(Double.valueOf(properties.getProperty(Parameter.PROPORTION_UNASSIGNED.toString())));
+        return ruinAndRecreateModule;
     }
 
     private DefaultScorer getRegretScorer(VehicleRoutingProblem vrp) {
