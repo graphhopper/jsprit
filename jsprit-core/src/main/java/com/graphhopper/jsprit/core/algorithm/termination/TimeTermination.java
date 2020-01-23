@@ -41,9 +41,9 @@ import java.util.Collection;
  */
 public class TimeTermination implements PrematureAlgorithmTermination, AlgorithmStartsListener {
 
-    public static interface TimeGetter {
+    public interface TimeGetter {
 
-        public long getCurrentTime();
+        long getCurrentTime();
 
     }
 
@@ -51,14 +51,7 @@ public class TimeTermination implements PrematureAlgorithmTermination, Algorithm
 
     private final long timeThreshold;
 
-    private TimeGetter timeGetter = new TimeGetter() {
-
-        @Override
-        public long getCurrentTime() {
-            return System.currentTimeMillis();
-        }
-
-    };
+    private TimeGetter timeGetter = System::currentTimeMillis;
 
     private long startTime;
 
@@ -91,13 +84,21 @@ public class TimeTermination implements PrematureAlgorithmTermination, Algorithm
         this.startTime = startTime;
     }
 
-    private long now() {
+    public long now() {
         return timeGetter.getCurrentTime();
     }
 
     @Override
     public void informAlgorithmStarts(VehicleRoutingProblem problem, VehicleRoutingAlgorithm algorithm, Collection<VehicleRoutingProblemSolution> solutions) {
         start(timeGetter.getCurrentTime());
+    }
+
+    public long getRemainingTime() {
+        return timeThreshold - (now() - startTime);
+    }
+
+    public long getStartTime() {
+        return startTime;
     }
 
 }
