@@ -42,7 +42,7 @@ See who has contributed [here](https://github.com/jsprit/jsprit/blob/master/CONT
 ## Contact
 
 #### Mailing List:
-In the [Graphhopper Forum ](https://discuss.graphhopper.com/) ([Also you can see the old mailing list](https://groups.google.com/group/jsprit-mailing-list)) you can discuss jsprit related issues and you will probably get answers to your questions.
+In the [Graphhopper Forum ](https://discuss.graphhopper.com/) you can discuss jsprit related issues and you will probably get answers to your questions.
 
 #### Stackoverflow:
 You can also use [stackoverflow](http://stackoverflow.com/questions/tagged/jsprit) to discuss your issues. Tag it with <em>jsprit</em> then it is easier to keep track of your topic.
