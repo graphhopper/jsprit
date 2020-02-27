@@ -563,6 +563,8 @@ public class VehicleRoutingProblem {
      */
     private final Collection<Vehicle> vehicles;
 
+    private final Collection<Vehicle> initialVehicles;
+
     /**
      * Collection that contains all available types.
      */
@@ -599,6 +601,7 @@ public class VehicleRoutingProblem {
         this.jobs = builder.jobs;
         this.fleetSize = builder.fleetSize;
         this.vehicles = builder.uniqueVehicles;
+        this.initialVehicles = new HashSet<>(builder.uniqueVehicles);
         this.vehicleTypes = new HashSet<>(builder.vehicleTypes.values());
         this.initialVehicleRoutes = builder.initialRoutes;
         this.transportCosts = builder.transportCosts;
@@ -675,6 +678,10 @@ public class VehicleRoutingProblem {
         return Collections.unmodifiableCollection(vehicles);
     }
 
+
+    public Collection<Vehicle> getInitialVehicles() {
+        return Collections.unmodifiableCollection(initialVehicles);
+    }
     /**
      * Returns routing costs.
      *

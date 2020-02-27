@@ -37,7 +37,7 @@ public class RandomInsertion extends AbstractInsertionStrategy {
     void initJobsCanBeServedByNumDrivers() {
         for (Job job : vrp.getJobs().values()) {
             int count = 0;
-            for (Vehicle vehicle : vrp.getVehicles()) {
+            for (Vehicle vehicle : vrp.getInitialVehicles()) {
                 if (cabBeServedByVehicle(job, vehicle))
                     count++;
             }
