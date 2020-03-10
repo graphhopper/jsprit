@@ -200,7 +200,7 @@ public class Capacity {
         }
     }
 
-    Capacity(Builder builder) {
+    private Capacity(Builder builder) {
         dimensions = builder.dimensions;
     }
 
