@@ -552,7 +552,7 @@ public class VehicleRoutingProblem {
 
     private int nuActivities;
 
-    private final JobActivityFactory jobActivityFactory = job -> copyAndGetActivities(job);
+    private final JobActivityFactory jobActivityFactory = this::copyAndGetActivities;
 
     private VehicleRoutingProblem(Builder builder) {
         this.jobs = builder.jobs;
