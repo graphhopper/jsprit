@@ -19,6 +19,8 @@ It is lightweight, flexible and easy-to-use, and based on a single all-purpose [
 Setting up the problem, defining additional constraints, modifying the algorithms and visualising the discovered solutions is as easy and handy as
 reading classical VRP instances to benchmark your algorithm. It is fit for change and extension due to a modular design and a comprehensive set of unit and integration-tests. [More features ...](https://github.com/graphhopper/jsprit/blob/master/docs/Features.textile)
 
+The jsprit-project is maintained by [GraphHopper](https://graphhopper.com/). 
+
 ## Getting Started with Documentation
 Please visit [docs](https://github.com/graphhopper/jsprit/blob/master/docs/Home.md) to learn more.The best way to get to know jsprit is by looking at [code examples](https://github.com/graphhopper/jsprit/tree/master/jsprit-examples/src/main/java/com/graphhopper/jsprit/examples).
 
@@ -37,13 +39,10 @@ Any contribution is welcome. Feel free to improve jsprit and make pull requests.
 
 See who has contributed [here](https://github.com/jsprit/jsprit/blob/master/CONTRIBUTORS.md).
 
-## Acknowledgement
-Developing this would be much more difficult without the help of [these companies](https://github.com/graphhopper/jsprit/blob/master/docs/Acknowledgement.md).
-
 ## Contact
 
 #### Mailing List:
-In the [Graphhopper Forum ](https://discuss.graphhopper.com/) ([Also you can see the old mailing list](https://groups.google.com/group/jsprit-mailing-list)) you can discuss jsprit related issues and you will probably get answers to your questions.
+In the [Graphhopper Forum ](https://discuss.graphhopper.com/) you can discuss jsprit related issues and you will probably get answers to your questions.
 
 #### Stackoverflow:
 You can also use [stackoverflow](http://stackoverflow.com/questions/tagged/jsprit) to discuss your issues. Tag it with <em>jsprit</em> then it is easier to keep track of your topic.
@@ -54,13 +53,4 @@ For bugs, feature requests or similar use the [issue tracker](https://github.com
 #### Email:
 If you cannot get help in the mailing list or you just do not want to discuss your topic publicly, [contact us via mail](https://graphhopper.com/#contact)
 
-
-## About
-The jsprit-project has been created by [Stefan Schröder](https://github.com/oblonski) and is maintained by [GraphHopper](https://graphhopper.com/). It is motivated by two issues.
-
-First, you can find vehicle routing problems **everywhere** in the world of distributing and moving things and people. This probably explains why there is an almost endless list of papers and algorithms to tackle these problems. However, there are only [very few open source implementations](https://github.com/graphhopper/jsprit/blob/master/docs/Other-Projects.md) and even fewer projects that can deal with real world problems that usually have many side-constraints.
-
-Second, it is motivated by my PhD-project at [KIT](http://www.kit.edu/english/index.php) where I apply vehicle routing algorithms to solve behavioural models of freight agents to assess (freight) transport policy measures.
-
-It is mainly inspired by my research group at [KIT-ECON](http://netze.econ.kit.edu/21.php), and by a great open-source project called [MATSim](http://www.matsim.org) and its developers.
 
