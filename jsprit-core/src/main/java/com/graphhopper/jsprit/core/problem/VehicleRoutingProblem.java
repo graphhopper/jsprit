@@ -229,6 +229,7 @@ public class VehicleRoutingProblem {
         }
 
         private void addLocationToTentativeLocations(Location location) {
+            if (location == null) return;
             tentative_coordinates.put(location.getId(), location.getCoordinate());
             allLocations.add(location);
         }
