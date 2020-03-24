@@ -56,4 +56,9 @@ public class ActWithoutStaticLocation extends ServiceActivity {
     public void setNextLocation(Location nextLocation) {
         this.nextLocation = nextLocation;
     }
+
+    @Override
+    public TourActivity duplicate() {
+        return new ActWithoutStaticLocation(this);
+    }
 }
