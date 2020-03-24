@@ -132,8 +132,9 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
                 jobList.add(referencedJob);
             }
             Collections.sort(jobList,getComparator());
-            int[] jobIndices = new int[capacity];
-            for(int index=0;index<capacity;index++){
+            int neiborhoodSize = Math.min(capacity, jobList.size());
+            int[] jobIndices = new int[neiborhoodSize];
+            for (int index = 0; index < neiborhoodSize; index++) {
                 jobIndices[index] = jobList.get(index).getJob().getIndex();
             }
             neighbors[job_i.getIndex()-1] = jobIndices;
