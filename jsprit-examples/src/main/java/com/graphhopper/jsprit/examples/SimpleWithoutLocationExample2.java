@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.examples;
 
+import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
@@ -57,9 +58,9 @@ public class SimpleWithoutLocationExample2 {
         /*
          * build services at the required locations, each with a capacity-demand of 1.
          */
-        Service telco1 = Service.Builder.newInstance("telco-1").addTimeWindow(1000, 3000).setServiceTime(1800).build();
-        Service telco2 = Service.Builder.newInstance("telco-2").addTimeWindow(2000, 4000).setServiceTime(1800).build();
-        Service breakAct = Service.Builder.newInstance("break").addTimeWindow(1000, 5000).setServiceTime(3600).build();
+        Service telco1 = Service.Builder.newInstance("telco-1").addTimeWindow(1000, 2500).setServiceTime(1800).build();
+        Service telco2 = Service.Builder.newInstance("telco-2").addTimeWindow(6000, 8000).setServiceTime(1800).build();
+//        Service breakAct = Service.Builder.newInstance("break").addTimeWindow(1000, 5000).setServiceTime(3600).build();
         Service service2 = Service.Builder.newInstance("2").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 1000)).build();
         Service service3 = Service.Builder.newInstance("3").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 2000)).build();
         Service service4 = Service.Builder.newInstance("4").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 3000)).build();
@@ -68,7 +69,9 @@ public class SimpleWithoutLocationExample2 {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         vrpBuilder.addVehicle(vehicle);
-        vrpBuilder.addJob(telco1).addJob(telco2).addJob(breakAct).addJob(service2).addJob(service3).addJob(service4);
+        vrpBuilder.addJob(telco1).addJob(telco2)
+//            .addJob(breakAct)
+            .addJob(service2).addJob(service3).addJob(service4);
 
         VehicleRoutingProblem problem = vrpBuilder.build();
 
@@ -92,7 +95,7 @@ public class SimpleWithoutLocationExample2 {
 //            .setProperty(Jsprit.Strategy.RADIAL_REGRET, "0.0")
 //            .setProperty(Jsprit.Strategy.CLUSTER_BEST, "0.0")
 //            .setProperty(Jsprit.Strategy.CLUSTER_REGRET, "0.0")
-            .setProperty(Jsprit.Strategy.STRING_BEST, "0.5")
+//            .setProperty(Jsprit.Strategy.STRING_BEST, "0.5")
 //            .setProperty(Jsprit.Strategy.STRING_REGRET, "0.0")
 //            .setProperty(Jsprit.Strategy.RANDOM_REGRET, "0.0")
 //            .setProperty(Jsprit.Strategy.WORST_REGRET, "0.0")
@@ -118,7 +121,7 @@ public class SimpleWithoutLocationExample2 {
 //		/*
 //         * plot
 //		 */
-//        new Plotter(problem,bestSolution).plot("output/plot.png","simple example");
+        new Plotter(problem, bestSolution).plot("output/plot.png", "simple example");
 //
 //        /*
 //        render problem and solution with GraphStream
