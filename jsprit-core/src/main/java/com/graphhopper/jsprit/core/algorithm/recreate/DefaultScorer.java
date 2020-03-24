@@ -79,6 +79,7 @@ public class DefaultScorer implements ScoringFunction  {
 
 
     private double getDistance(Location loc1, Location loc2) {
+        if (loc1 == null || loc2 == null) return 0d;
         return vrp.getTransportCosts().getTransportCost(loc1, loc2, 0., null, null);
     }
 

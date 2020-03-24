@@ -123,8 +123,19 @@ public final class RuinRadial extends AbstractRuinStrategy {
         if (nOfJobs2BeRemoved == 0) {
             return Collections.emptyList();
         }
-        Job randomJob = RandomUtils.nextJob(vrp.getJobs().values(), random);
+        List<Job> jobs = getJobsWithLocation(vrp.getJobs().values());
+        Job randomJob = RandomUtils.nextJob(jobs, random);
         return ruinRoutes(vehicleRoutes, randomJob, nOfJobs2BeRemoved);
+    }
+
+    private List<Job> getJobsWithLocation(Collection<Job> jobs) {
+        List<Job> jobsWithLocation = new ArrayList<>();
+        for (Job j : jobs) {
+            if (j.getActivities().get(0).getLocation() != null) {
+                jobsWithLocation.add(j);
+            }
+        }
+        return jobsWithLocation;
     }
 
     /**
@@ -132,7 +143,7 @@ public final class RuinRadial extends AbstractRuinStrategy {
      *
      */
     private Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved) {
-        List<Job> unassignedJobs = new ArrayList<Job>();
+        List<Job> unassignedJobs = new ArrayList<>();
         int nNeighbors = nOfJobs2BeRemoved - 1;
         removeJob(targetJob, vehicleRoutes);
         unassignedJobs.add(targetJob);
