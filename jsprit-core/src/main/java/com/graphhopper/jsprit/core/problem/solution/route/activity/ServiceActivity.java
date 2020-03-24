@@ -153,7 +153,7 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
 
     @Override
     public String toString() {
-        return "[type=" + getName() + "][locationId=" + getLocation().getId()
+        return "[type=" + getName() + "][location=" + getLocation()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
             + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";

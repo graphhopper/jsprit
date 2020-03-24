@@ -19,9 +19,7 @@ package com.graphhopper.jsprit.examples;
 
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
-import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.algorithm.state.UpdateActivityTimes;
-import com.graphhopper.jsprit.core.algorithm.state.UpdateEndLocationIfRouteIsOpen;
+import com.graphhopper.jsprit.core.algorithm.state.*;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
@@ -74,8 +72,8 @@ public class SimpleExampleWithoutLocation {
          */
         StateManager stateManager = new StateManager(problem);
         stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
-//        stateManager.addStateUpdater(new UpdateActivityNextLocations(stateManager));
-//        stateManager.addStateUpdater(new UpdateActivityPrevLocations(stateManager));
+        stateManager.addStateUpdater(new UpdateActivityNextLocations());
+        stateManager.addStateUpdater(new UpdateActivityPrevLocations());
 //        stateManager.addStateUpdater(new UpdateActivityLocations());
         stateManager.addStateUpdater(new UpdateActivityTimes(problem.getTransportCosts(), problem.getActivityCosts()));
 
