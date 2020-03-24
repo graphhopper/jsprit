@@ -210,7 +210,7 @@ public class Service extends AbstractJob {
          * @throws IllegalArgumentException if neither locationId nor coordinate is set.
          */
         public T build() {
-            if (location == null) throw new IllegalArgumentException("The location of service " + id + " is missing.");
+//            if (location == null) throw new IllegalArgumentException("The location of service " + id + " is missing.");
             this.setType("service");
             capacity = capacityBuilder.build();
             skills = skillBuilder.build();
