@@ -32,7 +32,9 @@ public class DefaultTourActivityFactory implements TourActivityFactory {
         } else if (service instanceof Delivery) {
             act = new DeliverService((Delivery) service);
         } else {
-            act = new PickupService(service);
+            if (service.getLocation() == null) {
+                act = new ActWithoutStaticLocation(service);
+            } else act = new PickupService(service);
         }
         return act;
     }
