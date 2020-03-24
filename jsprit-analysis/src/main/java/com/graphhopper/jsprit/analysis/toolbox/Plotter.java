@@ -514,6 +514,7 @@ public class Plotter {
 
     private void addJob(XYSeries activities, Job job) {
         for (com.graphhopper.jsprit.core.problem.job.Activity act : job.getActivities()) {
+            if (act.getLocation() == null) continue;
             XYDataItem dataItem = new XYDataItem(getCoordinate(act.getLocation().getCoordinate()).getX() * scalingFactor, getCoordinate(act.getLocation().getCoordinate()).getY() * scalingFactor);
             activities.add(dataItem);
             addLabel(job, dataItem);

@@ -22,12 +22,7 @@ import com.graphhopper.jsprit.core.algorithm.state.*;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.SwitchNotFeasible;
-import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
-import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeKey;
 import com.graphhopper.jsprit.core.util.ActivityTimeTracker;
@@ -72,6 +67,9 @@ public class AlgorithmUtil {
         stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
         stateManager.addStateUpdater(twUpdater);
         stateManager.updateSkillStates();
+
+        stateManager.addStateUpdater(new UpdateActivityNextLocations());
+        stateManager.addStateUpdater(new UpdateActivityPrevLocations());
 
         stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS, vrp.getActivityCosts()));
         stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager));
