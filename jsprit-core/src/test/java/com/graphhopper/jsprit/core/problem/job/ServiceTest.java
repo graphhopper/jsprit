@@ -127,11 +127,11 @@ public class ServiceTest {
         assertEquals(2.0,s.getLocation().getCoordinate().getY(),0.01);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void whenSettingNeitherLocationIdNorCoord_throwsException() {
-        @SuppressWarnings("unused")
-        Service s = Service.Builder.newInstance("s").build();
-    }
+//    @Test(expected = IllegalArgumentException.class)
+//    public void whenSettingNeitherLocationIdNorCoord_throwsException() {
+//        @SuppressWarnings("unused")
+//        Service s = Service.Builder.newInstance("s").build();
+//    }
 
     @Test(expected = IllegalArgumentException.class)
     public void whenServiceTimeSmallerZero_throwIllegalStateException() {
