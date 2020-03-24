@@ -98,7 +98,7 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
         if (neighborTo.getIndex() == 0) {
             return Collections.emptyIterator();
         }
-        
+
         int[] neighbors = this.neighbors[neighborTo.getIndex()-1];
         return new ArrayIterator(nNeighbors,neighbors,jobs);
     }
@@ -120,9 +120,11 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         for (Job job_i : vrp.getJobsInclusiveInitialJobsInRoutes().values()) {
+            if (job_i.getActivities().get(0).getLocation() == null) continue;
             jobs[job_i.getIndex()] = job_i;
             List<ReferencedJob> jobList = new ArrayList<ReferencedJob>(vrp.getJobsInclusiveInitialJobsInRoutes().values().size());
             for (Job job_j : vrp.getJobsInclusiveInitialJobsInRoutes().values()) {
+                if (job_j.getActivities().get(0).getLocation() == null) continue;
                 if (job_i == job_j) continue;
                 double distance = jobDistance.getDistance(job_i, job_j);
                 if (distance > maxDistance) maxDistance = distance;
