@@ -80,12 +80,7 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
     public RuinClusters(VehicleRoutingProblem vrp, final int initialNumberJobsToRemove, JobNeighborhoods jobNeighborhoods) {
         super(vrp);
         this.vrp = vrp;
-        setRuinShareFactory(new RuinShareFactory() {
-            @Override
-            public int createNumberToBeRemoved() {
-                return initialNumberJobsToRemove;
-            }
-        });
+        setRuinShareFactory(() -> initialNumberJobsToRemove);
         this.jobNeighborhoods = jobNeighborhoods;
         logger.debug("initialise {}", this);
     }
@@ -101,7 +96,7 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
      */
     @Override
     public Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes) {
-        List<Job> unassignedJobs = new ArrayList<Job>();
+        List<Job> unassignedJobs = new ArrayList<>();
         int nOfJobs2BeRemoved = getRuinShareFactory().createNumberToBeRemoved();
         ruin(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs);
         return unassignedJobs;
@@ -112,10 +107,10 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
         Map<Job, VehicleRoute> mappedRoutes = map(vehicleRoutes);
         int toRemove = nOfJobs2BeRemoved;
 
-        Collection<Job> lastRemoved = new ArrayList<Job>();
-        Set<VehicleRoute> ruined = new HashSet<VehicleRoute>();
-        Set<Job> removed = new HashSet<Job>();
-        Set<VehicleRoute> cycleCandidates = new HashSet<VehicleRoute>();
+        Collection<Job> lastRemoved = new ArrayList<>();
+        Set<VehicleRoute> ruined = new HashSet<>();
+        Set<Job> removed = new HashSet<>();
+        Set<VehicleRoute> cycleCandidates = new HashSet<>();
         while (toRemove > 0) {
             Job target;
             VehicleRoute targetRoute = null;
@@ -157,16 +152,8 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
         }
     }
 
-    private List<JobActivityWrapper> wrap(List<TourActivity> activities) {
-        List<JobActivityWrapper> wl = new ArrayList<JobActivityWrapper>();
-        for (TourActivity act : activities) {
-            wl.add(new JobActivityWrapper((TourActivity.JobActivity) act));
-        }
-        return wl;
-    }
-
     private Map<Job, VehicleRoute> map(Collection<VehicleRoute> vehicleRoutes) {
-        Map<Job, VehicleRoute> map = new HashMap<Job, VehicleRoute>(vrp.getJobs().size());
+        Map<Job, VehicleRoute> map = new HashMap<>(vrp.getJobs().size());
         for (VehicleRoute r : vehicleRoutes) {
             for (Job j : r.getTourActivities().getJobs()) {
                 map.put(j, r);
