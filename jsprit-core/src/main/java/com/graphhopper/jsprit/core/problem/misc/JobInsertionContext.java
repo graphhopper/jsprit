@@ -41,7 +41,7 @@ public class JobInsertionContext {
 
     private double newDepTime;
 
-    private List<TourActivity> associatedActivities = new ArrayList<TourActivity>();
+    private List<TourActivity> associatedActivities = new ArrayList<>();
 
     private ActivityContext activityContext;
 
