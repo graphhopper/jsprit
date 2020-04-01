@@ -22,9 +22,8 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Iterator;
 
 
 public class RemoveEmptyVehicles implements InsertionEndsListener {
@@ -43,11 +42,11 @@ public class RemoveEmptyVehicles implements InsertionEndsListener {
 
     @Override
     public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes, Collection<Job> badJobs) {
-        List<VehicleRoute> routes = new ArrayList<>(vehicleRoutes);
-        for (VehicleRoute route : routes) {
+        for (Iterator<VehicleRoute> iterator = vehicleRoutes.iterator(); iterator.hasNext(); ) {
+            VehicleRoute route = iterator.next();
             if (route.isEmpty()) {
                 fleetManager.unlock(route.getVehicle());
-                vehicleRoutes.remove(route);
+                iterator.remove();
             }
         }
     }
