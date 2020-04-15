@@ -38,9 +38,10 @@ import java.util.Map;
 public class AlgorithmUtil {
 
     public static void addCoreConstraints(ConstraintManager constraintManager, StateManager stateManager, final VehicleRoutingProblem vrp){
-        stateManager.addStateUpdater(new UpdateActivityNextLocations());
-        stateManager.addStateUpdater(new UpdateActivityPrevLocations());
-
+        if (vrp.getJobs().size() != vrp.getJobsWithLocation().size()) {
+            stateManager.addStateUpdater(new UpdateActivityNextLocations());
+            stateManager.addStateUpdater(new UpdateActivityPrevLocations());
+        }
         constraintManager.addTimeWindowConstraint();
         constraintManager.addLoadConstraint();
         constraintManager.addSkillsConstraint();
