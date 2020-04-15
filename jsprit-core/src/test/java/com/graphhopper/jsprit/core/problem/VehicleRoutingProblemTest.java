@@ -129,6 +129,23 @@ public class VehicleRoutingProblemTest {
     }
 
     @Test
+    public void whenServicesWithNoLocationAreAdded_vrpShouldKnowThat() {
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.Builder.newInstance().setIndex(1).build()).build();
+        Service s2 = Service.Builder.newInstance("s2").build();
+
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        vrpBuilder.addJob(s1).addJob(s2);
+
+        VehicleRoutingProblem vrp = vrpBuilder.build();
+
+        assertEquals(2, vrp.getJobs().size());
+        assertEquals(s1, vrp.getJobs().get("s1"));
+        assertEquals(s2, vrp.getJobs().get("s2"));
+        assertEquals(1, vrp.getAllLocations().size());
+        assertEquals(1, vrp.getJobsWithLocation().size());
+    }
+
+    @Test
     public void whenServicesAreAdded_vrpShouldContainThem() {
         Service s1 = Service.Builder.newInstance("s1").setLocation(Location.Builder.newInstance().setIndex(1).build()).build();
         Service s2 = Service.Builder.newInstance("s2").setLocation(Location.Builder.newInstance().setIndex(1).build()).build();

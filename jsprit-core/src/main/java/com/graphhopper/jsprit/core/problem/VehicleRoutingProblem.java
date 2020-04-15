@@ -53,6 +53,7 @@ import java.util.*;
  */
 public class VehicleRoutingProblem {
 
+
     /**
      * Builder to build the routing-problem.
      *
@@ -75,6 +76,8 @@ public class VehicleRoutingProblem {
         private VehicleRoutingActivityCosts activityCosts = new WaitingTimeCosts();
 
         private Map<String, Job> jobs = new LinkedHashMap<>();
+
+        private List<Job> jobsWithLocation = new ArrayList<>();
 
         private Map<String, Job> tentativeJobs = new LinkedHashMap<>();
 
@@ -321,6 +324,13 @@ public class VehicleRoutingProblem {
             }
             addLocationToTentativeLocations(job);
             jobs.put(job.getId(), job);
+            boolean hasLocation = true;
+            for (Activity activity : job.getActivities()) {
+                if (activity.getLocation() == null) {
+                    hasLocation = false;
+                }
+            }
+            if (hasLocation) jobsWithLocation.add(job);
         }
 
         /**
@@ -528,6 +538,8 @@ public class VehicleRoutingProblem {
      */
     private final Map<String, Job> jobs;
 
+    private List<Job> jobsWithLocation;
+
     private final Map<String, Job> allJobs;
     /**
      * Collection that contains available vehicles.
@@ -557,6 +569,7 @@ public class VehicleRoutingProblem {
 
     private VehicleRoutingProblem(Builder builder) {
         this.jobs = builder.jobs;
+        this.jobsWithLocation = builder.jobsWithLocation;
         this.fleetSize = builder.fleetSize;
         this.vehicles = builder.uniqueVehicles;
         this.vehicleTypes = builder.vehicleTypes.values();
@@ -596,6 +609,10 @@ public class VehicleRoutingProblem {
      */
     public Map<String, Job> getJobs() {
         return Collections.unmodifiableMap(jobs);
+    }
+
+    public Collection<Job> getJobsWithLocation() {
+        return Collections.unmodifiableList(jobsWithLocation);
     }
 
     public Map<String, Job> getJobsInclusiveInitialJobsInRoutes(){
