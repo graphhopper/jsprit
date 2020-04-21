@@ -170,6 +170,10 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
 
                 double prevActEndTime_deliveryLoop = shipmentPickupEndTime;
 
+                if (bestCost <= pickupAIC + additionalPickupICosts + additionalICostsAtRouteLevel) {
+                    continue;
+                }
+
 			/*
             --------------------------------
 			 */
