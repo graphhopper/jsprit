@@ -61,10 +61,9 @@ public class RandomInsertion extends AbstractInsertionStrategy {
 
         for (Job unassignedJob : unassignedJobList) {
             List<VehicleRoute> routes = new ArrayList<>(vehicleRoutes);
+            Collections.shuffle(routes, random);
             final VehicleRoute newRoute = VehicleRoute.emptyRoute();
             routes.add(newRoute);
-            Collections.shuffle(routes, random);
-
             InsertionData empty = new InsertionData.NoInsertionFound();
             double bestInsertionCost = Double.MAX_VALUE;
             boolean inserted = false;
