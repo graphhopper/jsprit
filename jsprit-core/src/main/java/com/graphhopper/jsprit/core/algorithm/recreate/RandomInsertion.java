@@ -121,7 +121,9 @@ public class RandomInsertion extends AbstractInsertionStrategy {
     }
 
     private static boolean cabBeServedByVehicle(Job job, Vehicle vehicle) {
-        return inTimeWindow(job, vehicle.getEarliestDeparture(), vehicle.getLatestArrival()) && vehicle.getSkills().values().containsAll(job.getRequiredSkills().values()) && vehicle.isTaskPermited(job.getId());
+        return inTimeWindow(job, vehicle.getEarliestDeparture(), vehicle.getLatestArrival()) &&
+            vehicle.getSkills().values().containsAll(job.getRequiredSkills().values()) &&
+            vehicle.isTaskPermited(job.getId());
     }
 
     private static boolean inTimeWindow(Collection<TimeWindow> timeWindows, double earliestDeparture, double latestArrival) {
