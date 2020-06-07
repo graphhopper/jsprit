@@ -81,7 +81,7 @@ public class UpdateVehicleDependentPracticalTimeWindowsTest {
                 .addService((Service) vrp.getJobs().get("service 3"))
                 .build();
             updateVehicleDependentPracticalTimeWindows.visit(route);
-            assertEquals(60.0 - 15 - 5, stateManager.getActivityState(route.getActivities().get(0), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.001);
+            assertEquals(60.0 - 5 - 5, stateManager.getActivityState(route.getActivities().get(0), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.001);
             assertEquals(60.0, stateManager.getActivityState(route.getActivities().get(1), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.001);
             assertEquals(120.0, stateManager.getActivityState(route.getActivities().get(2), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.001);
         }
@@ -94,7 +94,7 @@ public class UpdateVehicleDependentPracticalTimeWindowsTest {
                 .build();
             updateVehicleDependentPracticalTimeWindows.visit(route);
             assertEquals(60, stateManager.getActivityState(route.getActivities().get(0), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.001);
-            assertEquals(120 - 15 - 5, stateManager.getActivityState(route.getActivities().get(1), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.001);
+            assertEquals(120 - 5 - 5, stateManager.getActivityState(route.getActivities().get(1), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.001);
             assertEquals(120.0, stateManager.getActivityState(route.getActivities().get(2), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.001);
         }
         {
@@ -105,7 +105,7 @@ public class UpdateVehicleDependentPracticalTimeWindowsTest {
                 .addService((Service) vrp.getJobs().get("service 1"))
                 .build();
             updateVehicleDependentPracticalTimeWindows.visit(route);
-            assertEquals(60 - 10, stateManager.getActivityState(route.getActivities().get(0), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.001);
+            assertEquals(60 - 15 - 5, stateManager.getActivityState(route.getActivities().get(0), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.001);
             assertEquals(60, stateManager.getActivityState(route.getActivities().get(1), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.001);
             assertEquals(117.0, stateManager.getActivityState(route.getActivities().get(2), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.001);
         }
