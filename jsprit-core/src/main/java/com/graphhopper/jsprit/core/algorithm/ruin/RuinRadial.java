@@ -98,10 +98,10 @@ public final class RuinRadial extends AbstractRuinStrategy {
             return Collections.emptyList();
         }
         int nOfJobs2BeRemoved = Math.min(ruinShareFactory.createNumberToBeRemoved(), noJobsToMemorize);
-        if (nOfJobs2BeRemoved == 0) {
+        Collection<Job> jobs = vrp.getJobsWithLocation();
+        if (nOfJobs2BeRemoved == 0 || jobs.isEmpty()) {
             return Collections.emptyList();
         }
-        Collection<Job> jobs = vrp.getJobsWithLocation();
         Job randomJob = RandomUtils.nextJob(jobs, random);
         return ruinRoutes(vehicleRoutes, randomJob, nOfJobs2BeRemoved);
     }
