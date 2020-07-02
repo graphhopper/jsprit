@@ -463,4 +463,5 @@ public class ShipmentTest {
             .build();
         Assert.assertEquals(Double.MAX_VALUE, s.getMaxTimeInVehicle(),0.001);
     }
+
 }
