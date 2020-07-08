@@ -59,8 +59,6 @@ public class Shipment extends AbstractJob {
 
         private double pickupServiceTime = 0.0;
 
-        private double pickupLoadingTime = 0.0;
-
         private double deliveryServiceTime = 0.0;
 
         private Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
@@ -155,22 +153,6 @@ public class Shipment extends AbstractJob {
             if (serviceTime < 0.0)
                 throw new IllegalArgumentException("The service time of a shipment must not be < 0.0.");
             this.pickupServiceTime = serviceTime;
-            return this;
-        }
-
-        /**
-         * Sets pickupLoadingTime.
-         * <p>
-         * <p>ServiceTime is intended to be the time the implied activity takes at the pickup-location.
-         *
-         * @param loadingTime the loading time / loading duration the pickup of the associated shipment takes
-         * @return builder
-         * @throws IllegalArgumentException if loadingTime < 0.0
-         */
-        public Builder setPickupLoadingTime(double loadingTime) {
-            if (loadingTime < 0.0)
-                throw new IllegalArgumentException("The loading time of a shipment must not be < 0.0.");
-            this.pickupLoadingTime = loadingTime;
             return this;
         }
 
@@ -372,8 +354,6 @@ public class Shipment extends AbstractJob {
 
     private final double pickupServiceTime;
 
-    private final double pickupLoadingTime;
-
     private final double deliveryServiceTime;
 
     private final Capacity capacity;
@@ -400,7 +380,6 @@ public class Shipment extends AbstractJob {
         setUserData(builder.userData);
         this.id = builder.id;
         this.pickupServiceTime = builder.pickupServiceTime;
-        this.pickupLoadingTime = builder.pickupLoadingTime;
         this.deliveryServiceTime = builder.deliveryServiceTime;
         this.capacity = builder.capacity;
         this.skills = builder.skills;
@@ -432,17 +411,6 @@ public class Shipment extends AbstractJob {
      */
     public double getPickupServiceTime() {
         return pickupServiceTime;
-    }
-
-    /**
-     * Returns the pickup service-time.
-     * <p>
-     * <p>By default service-time is 0.0.
-     *
-     * @return service-time
-     */
-    public double getPickupLoadingTime() {
-        return pickupLoadingTime;
     }
 
     public Location getDeliveryLocation() {
