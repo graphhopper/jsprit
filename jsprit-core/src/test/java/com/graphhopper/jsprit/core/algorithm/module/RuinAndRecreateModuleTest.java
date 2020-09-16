@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RuinAndRecreateModuleTest {
 
@@ -42,7 +43,9 @@ public class RuinAndRecreateModuleTest {
         Collection<VehicleRoute> routes = new ArrayList<>();
         List<Job> unassigned = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            unassigned.add(mock(Job.class));
+            Job mockedJob = mock(Job.class);
+            when(mockedJob.getId()).thenReturn(String.valueOf(i));
+            unassigned.add(mockedJob);
         }
         VehicleRoutingProblemSolution previousSolution = new VehicleRoutingProblemSolution(routes, unassigned, 0);
         VehicleRoutingProblemSolution newSolution = module.runAndGetSolution(previousSolution);
@@ -59,7 +62,9 @@ public class RuinAndRecreateModuleTest {
         Collection<VehicleRoute> routes = new ArrayList<>();
         List<Job> unassigned = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            unassigned.add(mock(Job.class));
+            Job mockedJob = mock(Job.class);
+            when(mockedJob.getId()).thenReturn(String.valueOf(i));
+            unassigned.add(mockedJob);
         }
         VehicleRoutingProblemSolution previousSolution = new VehicleRoutingProblemSolution(routes, unassigned, 0);
         VehicleRoutingProblemSolution newSolution = module.runAndGetSolution(previousSolution);
@@ -76,7 +81,9 @@ public class RuinAndRecreateModuleTest {
         Collection<VehicleRoute> routes = new ArrayList<>();
         List<Job> unassigned = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            unassigned.add(mock(Job.class));
+            Job mockedJob = mock(Job.class);
+            when(mockedJob.getId()).thenReturn(String.valueOf(i));
+            unassigned.add(mockedJob);
         }
         VehicleRoutingProblemSolution previousSolution = new VehicleRoutingProblemSolution(routes, unassigned, 0);
         VehicleRoutingProblemSolution newSolution = module.runAndGetSolution(previousSolution);

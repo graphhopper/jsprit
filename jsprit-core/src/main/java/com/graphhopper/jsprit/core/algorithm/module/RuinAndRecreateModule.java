@@ -25,6 +25,7 @@ import com.graphhopper.jsprit.core.algorithm.ruin.RuinStrategy;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 
 import java.util.*;
 
@@ -37,7 +38,7 @@ public class RuinAndRecreateModule implements SearchStrategyModule {
 
     private String moduleName;
 
-    private Random random = new Random(4711);
+    private Random random = RandomNumberGeneration.newInstance();
 
     private int minUnassignedJobsToBeReinserted = Integer.MAX_VALUE;
 
@@ -95,7 +96,13 @@ public class RuinAndRecreateModule implements SearchStrategyModule {
                 stillUnassignedInThisIteration.add(jobList.get(i));
             }
         }
-        Collection<Job> unassignedJobs = insertion.insertJobs(previousVrpSolution.getRoutes(), ruinedJobSet);
+        // Taking the ruinedJobSet and ordering it because the order coming out of the HashSet
+        // is not guaranteed. This can cause slight deviations in the selections of an insertion
+        // and result in different solutions.
+        // Additionally, ArrayList is faster for iteration than iterating over a HashSet
+        List<Job> orderedRuinedJobs = new ArrayList<>(ruinedJobSet);
+        orderedRuinedJobs.sort(Comparator.comparing(Job::getId));
+        Collection<Job> unassignedJobs = insertion.insertJobs(previousVrpSolution.getRoutes(), orderedRuinedJobs);
         previousVrpSolution.getUnassignedJobs().clear();
         previousVrpSolution.getUnassignedJobs().addAll(unassignedJobs);
         previousVrpSolution.getUnassignedJobs().addAll(stillUnassignedInThisIteration);
