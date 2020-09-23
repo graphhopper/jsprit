@@ -115,7 +115,6 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
         Collection<Job> lastRemoved = new ArrayList<Job>();
         Set<VehicleRoute> ruined = new HashSet<VehicleRoute>();
         Set<Job> removed = new HashSet<Job>();
-        Set<VehicleRoute> cycleCandidates = new HashSet<VehicleRoute>();
         while (toRemove > 0) {
             Job target;
             VehicleRoute targetRoute = null;
@@ -135,9 +134,7 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
                 lastRemoved.clear();
             }
             if (targetRoute == null) break;
-            if (cycleCandidates.contains(targetRoute)) break;
             if (ruined.contains(targetRoute)) {
-                cycleCandidates.add(targetRoute);
                 break;
             }
             DBSCANClusterer dbscan = new DBSCANClusterer(vrp.getTransportCosts());
