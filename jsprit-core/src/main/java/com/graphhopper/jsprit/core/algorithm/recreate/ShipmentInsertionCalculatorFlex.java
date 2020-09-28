@@ -157,7 +157,8 @@ public final class ShipmentInsertionCalculatorFlex extends AbstractInsertionCalc
                 tourEnd = true;
             }
             if (i > evalIndexPickup) break;
-            if (i == evalIndexPickup || evalIndexPickup == Integer.MAX_VALUE) {
+//            if (i == evalIndexPickup || evalIndexPickup == Integer.MAX_VALUE) {
+            else {
                 boolean pickupInsertionNotFulfilledBreak = true;
                 for (TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows()) {
                     pickupShipment.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
