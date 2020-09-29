@@ -157,8 +157,7 @@ public final class ShipmentInsertionCalculatorFlex extends AbstractInsertionCalc
                 tourEnd = true;
             }
             if (i > evalIndexPickup) break;
-//            if (i == evalIndexPickup || evalIndexPickup == Integer.MAX_VALUE) {
-            else {
+            if (i == evalIndexPickup || evalIndexPickup == Integer.MAX_VALUE) {
                 boolean pickupInsertionNotFulfilledBreak = true;
                 for (TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows()) {
                     pickupShipment.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
@@ -189,6 +188,10 @@ public final class ShipmentInsertionCalculatorFlex extends AbstractInsertionCalc
                     TourActivity prevActForDeliveryLoop = pickupShipment;
                     double prevActEndTimeForDeliveryLoop = shipmentPickupEndTime;
 
+                    if (bestCost <= pickupAIC + additionalPickupICosts + additionalICostsAtRouteLevel) {
+                        continue;
+                    }
+
 			/*
             --------------------------------
 			 */
@@ -204,7 +207,8 @@ public final class ShipmentInsertionCalculatorFlex extends AbstractInsertionCalc
                             tourEndInDeliveryLoop = true;
                         }
                         if (j > evalIndexDelivery) break;
-                        if (j == evalIndexDelivery || evalIndexDelivery == Integer.MAX_VALUE) {
+//                        if (j == evalIndexDelivery || evalIndexDelivery == Integer.MAX_VALUE) {
+                        else {
                             boolean deliveryInsertionNotFulfilledBreak = true;
                             for (TimeWindow deliveryTimeWindow : shipment.getDeliveryTimeWindows()) {
                                 deliverShipment.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());
