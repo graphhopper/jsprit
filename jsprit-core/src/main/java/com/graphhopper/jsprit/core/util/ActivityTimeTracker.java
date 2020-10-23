@@ -27,7 +27,7 @@ public class ActivityTimeTracker implements ActivityVisitor {
 
     public static enum ActivityPolicy {
 
-        AS_SOON_AS_TIME_WINDOW_OPENS, AS_SOON_AS_ARRIVED, AS_SOON_AS_TIME_WINDOW_OPENS_WITHIN_GROUP
+        AS_SOON_AS_TIME_WINDOW_OPENS, AS_SOON_AS_ARRIVED
 
     }
 
@@ -85,39 +85,22 @@ public class ActivityTimeTracker implements ActivityVisitor {
         double transportTime = this.transportTime.getTransportTime(prevAct.getLocation(), activity.getLocation(), startAtPrevAct, route.getDriver(), route.getVehicle());
         double arrivalTimeAtCurrAct = startAtPrevAct + transportTime;
 
-        // modify the activity arrival time if this activity can be grouped with the previous one
-        // they will both have the same arrival and end times afterwards
-        if (canGroupActivities(activity, arrivalTimeAtCurrAct)) {
-            actArrTime = arrivalTimeAtCurrAct - prevAct.getOperationTime();
-        } else {
-            actArrTime = arrivalTimeAtCurrAct;
-        }
+        actArrTime = arrivalTimeAtCurrAct;
         double operationStartTime;
 
         if (activityPolicy.equals(ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS)) {
             operationStartTime = Math.max(activity.getTheoreticalEarliestOperationStartTime(), arrivalTimeAtCurrAct);
         } else if (activityPolicy.equals(ActivityPolicy.AS_SOON_AS_ARRIVED)) {
             operationStartTime = actArrTime;
-        } else if (activityPolicy.equals(ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS_WITHIN_GROUP)) {
-            operationStartTime = Math.max(activity.getTheoreticalEarliestOperationStartTime(), actArrTime);
         } else operationStartTime = actArrTime;
 
-        double operationEndTime;
-        // if the current activity can be grouped with the previous one adjust the operation end time
-        // select the operation time which is bigger
-        // as we iterate over each activity, we need to change the operation end time of the previous activity so that they have the same end time
-        // (we didn't know when inserting the previous activity, that we should use the operating time of the current activity)
-        if (canGroupActivities(activity, arrivalTimeAtCurrAct)) {
-            operationEndTime = operationStartTime + Math.max(prevAct.getOperationTime(), activity.getOperationTime());
-            prevAct.setEndTime(operationEndTime);
-        } else {
-            operationEndTime = operationStartTime + activity.getOperationTime();
-        }
+        double operationEndTime = operationStartTime + activityCosts.getActivityDuration(activity,actArrTime,route.getDriver(),route.getVehicle());
 
         actEndTime = operationEndTime;
 
         prevAct = activity;
         startAtPrevAct = operationEndTime;
+
     }
 
     @Override
@@ -131,20 +114,5 @@ public class ActivityTimeTracker implements ActivityVisitor {
         beginFirst = false;
     }
 
-
-    private boolean canGroupActivities(TourActivity activity, double arrivalTimeAtCurrAct) {
-        if (!activityPolicy.equals(ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS_WITHIN_GROUP)) {
-            return false;
-        }
-
-        // group activities if the end time of the previous activity is matching the arrival time of the current activity
-        if (Double.compare(arrivalTimeAtCurrAct, startAtPrevAct) == 0) {
-            // check if the current activity could start at the same time as the previous activity by subtracting the operation time / service time
-            // and compare this time to the lower bound of the time window.
-            double theoreticalArrivalTimeAtCurrActWithoutPrevOperatingTime = arrivalTimeAtCurrAct - prevAct.getOperationTime();
-            return theoreticalArrivalTimeAtCurrActWithoutPrevOperatingTime >= activity.getTheoreticalEarliestOperationStartTime();
-        }
-        return false;
-    }
 
 }
