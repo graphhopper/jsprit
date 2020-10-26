@@ -126,10 +126,13 @@ public class UpdateActivityTimes implements ActivityVisitor, StateUpdater {
     }
 
     private boolean isSameLocation(Location location, Location other) {
-        double maxDelta = 0.000001;
-        double diffLng = Math.abs(location.getCoordinate().getX() - other.getCoordinate().getX());
-        double diffLat = Math.abs(location.getCoordinate().getY() - other.getCoordinate().getY());
-        return diffLat < maxDelta && diffLng < maxDelta;
+        if (location.getCoordinate() != null && other.getCoordinate() != null) {
+            double maxDelta = 0.000001;
+            double diffLng = Math.abs(location.getCoordinate().getX() - other.getCoordinate().getX());
+            double diffLat = Math.abs(location.getCoordinate().getY() - other.getCoordinate().getY());
+            return diffLat < maxDelta && diffLng < maxDelta;
+        }
+        return location.equals(other);
     }
 
     private boolean shouldOperateAtSameTime(TourActivity next, double endTime, double accumulatedOperatingTime) {
