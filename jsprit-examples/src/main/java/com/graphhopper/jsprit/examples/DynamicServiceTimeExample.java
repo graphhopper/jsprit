@@ -2,11 +2,8 @@ package com.graphhopper.jsprit.examples;
 
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
-import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.algorithm.state.UpdateActivityTimes;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
@@ -17,7 +14,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
-import com.graphhopper.jsprit.core.util.ActivityTimeTracker;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.VehicleRoutingTransportCostsMatrix;
@@ -126,16 +122,8 @@ public class DynamicServiceTimeExample {
             }
         };
 
-        StateManager stateManager = new StateManager(vrp);
-        stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(),ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS_WITHIN_GROUP,  vrp.getActivityCosts()));
-
-        ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
-        constraintManager.addTimeWindowConstraint();
-        constraintManager.addLoadConstraint();
-        constraintManager.addSkillsConstraint();
-
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
-            .setStateAndConstraintManager(stateManager, constraintManager)
+            .addCoreStateAndConstraintStuff(true)
             .setObjectiveFunction(objectiveFunction)
             .setProperty(Jsprit.Parameter.FAST_REGRET, "true")
             .buildAlgorithm();
