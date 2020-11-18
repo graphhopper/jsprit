@@ -2,12 +2,14 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.constraint.*;
+import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
+import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.BreakForMultipleTimeWindows;
 import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.misc.ActivityContext;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakForMultipleTimeWindowsActivity;
@@ -105,6 +107,9 @@ final class BreakForMultipleTimeWindowsInsertionCalculator implements JobInserti
             breakAct2Insert.setLocation(location);
             breakAct2Insert.setTheoreticalEarliestOperationStartTime(breakToInsert.getTimeWindow().getStart());
             breakAct2Insert.setTheoreticalLatestOperationStartTime(breakToInsert.getTimeWindow().getEnd());
+            ActivityContext activityContext = new ActivityContext();
+            activityContext.setInsertionIndex(actIndex);
+            insertionContext.setActivityContext(activityContext);
             HardActivityConstraint.ConstraintsStatus status = constraintManager.fulfilled(insertionContext, prevAct, breakAct2Insert, nextAct, prevActStartTime);
             if (status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED)) {
                 //from job2insert induced costs at activity level
