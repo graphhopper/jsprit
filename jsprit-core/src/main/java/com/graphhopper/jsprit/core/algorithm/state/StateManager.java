@@ -50,13 +50,13 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private ReverseRouteActivityVisitor revRouteActivityVisitor = new ReverseRouteActivityVisitor();
 
-    private Collection<RouteVisitor> routeVisitors = new ArrayList<RouteVisitor>();
+    private Collection<RouteVisitor> routeVisitors = new ArrayList<>();
 
     private RuinListeners ruinListeners = new RuinListeners();
 
     private InsertionListeners insertionListeners = new InsertionListeners();
 
-    private Collection<StateUpdater> updaters = new ArrayList<StateUpdater>();
+    private Collection<StateUpdater> updaters = new ArrayList<>();
 
     private boolean updateLoad = false;
 
@@ -66,7 +66,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private int stateIndexCounter;
 
-    private Map<String, StateId> createdStateIds = new HashMap<String, StateId>();
+    private Map<String, StateId> createdStateIds = new HashMap<>();
 
     private int nuActivities;
 
@@ -137,16 +137,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         nuVehicleTypeKeys = Math.max(3, getNuVehicleTypes(vrp) + 2);
         activityStates = new Object[nuActivities][initialStateArrayLength];
         vehicleDependentActivityStates = new Object[nuActivities][nuVehicleTypeKeys][initialStateArrayLength];
-//        if(vehicleRoutingProblem.getFleetSize().equals(VehicleRoutingProblem.FleetSize.FINITE)){
-//            isIndexedBased = true;
-//            routeStatesArr = new Object[vrp.getVehicles().size() + 2][initialStateArrayLength];
-//            vehicleDependentRouteStatesArr = new Object[vrp.getVehicles().size() + 2][nuVehicleTypeKeys][initialStateArrayLength];
-//        }
-//        else {
-            isIndexedBased = false;
-            routeStateMap = new HashMap<VehicleRoute, Object[]>();
-            vehicleDependentRouteStateMap = new HashMap<VehicleRoute, Object[][]>();
-//        }
+        isIndexedBased = false;
+        routeStateMap = new HashMap<>();
+        vehicleDependentRouteStateMap = new HashMap<>();
         problemStates = new Object[initialStateArrayLength];
     }
 
@@ -169,7 +162,6 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      */
     public <T> void putProblemState(StateId stateId, Class<T> type, T state) {
         problemStates[stateId.getIndex()] = state;
-//         problemStates.putState(stateId, type, state);
     }
 
     /**
@@ -577,7 +569,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     public void reCalculateStates(VehicleRoute route){
-        informInsertionStarts(Arrays.asList(route),Collections.<Job>emptyList());
+        informInsertionStarts(Arrays.asList(route), Collections.emptyList());
     }
 
     @Override

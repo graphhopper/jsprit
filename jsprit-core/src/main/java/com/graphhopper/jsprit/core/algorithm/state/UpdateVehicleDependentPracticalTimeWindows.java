@@ -42,20 +42,13 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
         finish();
     }
 
-    public static interface VehiclesToUpdate {
+    public interface VehiclesToUpdate {
 
-        public Collection<Vehicle> get(VehicleRoute route);
+        Collection<Vehicle> get(VehicleRoute route);
 
     }
 
-    private VehiclesToUpdate vehiclesToUpdate = new VehiclesToUpdate() {
-
-        @Override
-        public Collection<Vehicle> get(VehicleRoute route) {
-            return Arrays.asList(route.getVehicle());
-        }
-
-    };
+    private VehiclesToUpdate vehiclesToUpdate = route -> Arrays.asList(route.getVehicle());
 
     private final StateManager stateManager;
 

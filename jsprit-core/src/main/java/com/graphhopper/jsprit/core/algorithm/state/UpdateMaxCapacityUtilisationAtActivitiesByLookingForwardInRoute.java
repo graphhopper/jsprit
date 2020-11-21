@@ -43,8 +43,6 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute implements
 
     private StateManager stateManager;
 
-    private VehicleRoute route;
-
     private Capacity maxLoad;
 
     private Capacity defaultValue;
@@ -57,7 +55,6 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute implements
 
     @Override
     public void begin(VehicleRoute route) {
-        this.route = route;
         maxLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class);
         if (maxLoad == null) maxLoad = defaultValue;
     }
@@ -66,8 +63,6 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute implements
     public void visit(TourActivity act) {
         maxLoad = Capacity.max(maxLoad, stateManager.getActivityState(act, InternalStates.LOAD, Capacity.class));
         stateManager.putInternalTypedActivityState(act, InternalStates.FUTURE_MAXLOAD, maxLoad);
-//		assert maxLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "maxLoad can in every capacity dimension never be bigger than vehicleCap";
-//		assert maxLoad.isGreaterOrEqual(Capacity.Builder.newInstance().build()) : "maxLoad can never be smaller than 0";
     }
 
     @Override

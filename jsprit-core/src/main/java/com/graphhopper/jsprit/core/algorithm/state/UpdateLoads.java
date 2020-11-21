@@ -52,8 +52,6 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 
     private Capacity defaultValue;
 
-    private VehicleRoute route;
-
     public UpdateLoads(StateManager stateManager) {
         super();
         this.stateManager = stateManager;
@@ -64,15 +62,12 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
     public void begin(VehicleRoute route) {
         currentLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
         if (currentLoad == null) currentLoad = defaultValue;
-        this.route = route;
     }
 
     @Override
     public void visit(TourActivity act) {
         currentLoad = Capacity.addup(currentLoad, act.getSize());
         stateManager.putInternalTypedActivityState(act, InternalStates.LOAD, currentLoad);
-//		assert currentLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "currentLoad at activity must not be > vehicleCapacity";
-//		assert currentLoad.isGreaterOrEqual(Capacity.Builder.newInstance().build()) : "currentLoad at act must not be < 0 in one of the applied dimensions";
     }
 
     @Override

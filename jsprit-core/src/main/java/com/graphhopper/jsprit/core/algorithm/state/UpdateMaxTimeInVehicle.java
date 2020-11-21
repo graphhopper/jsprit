@@ -57,15 +57,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
 
     private final VehicleRoutingActivityCosts activityCosts;
 
-    private UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate vehiclesToUpdate = new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
-
-        @Override
-        public Collection<Vehicle> get(VehicleRoute route) {
-            return Arrays.asList(route.getVehicle());
-        }
-
-    };
-
+    private UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate vehiclesToUpdate = route -> Arrays.asList(route.getVehicle());
 
     public UpdateMaxTimeInVehicle(StateManager stateManager, StateId slackTimeId, TransportTime transportTime, VehicleRoutingActivityCosts activityCosts, StateId openJobsId) {
         this.stateManager = stateManager;
@@ -90,11 +82,11 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
         actStartTimesPerVehicle.clear();
         vehicles = vehiclesToUpdate.get(route);
         this.route = route;
-        for(Vehicle v : vehicles){
+        for(Vehicle v : vehicles) {
             int vehicleIndex = v.getVehicleTypeIdentifier().getIndex();
-            openPickupEndTimesPerVehicle.put(vehicleIndex, new HashMap<Job, Double>());
-            slackTimesPerVehicle.put(vehicleIndex, new HashMap<TourActivity, Double>());
-            actStartTimesPerVehicle.put(vehicleIndex, new HashMap<TourActivity, Double>());
+            openPickupEndTimesPerVehicle.put(vehicleIndex, new HashMap<>());
+            slackTimesPerVehicle.put(vehicleIndex, new HashMap<>());
+            actStartTimesPerVehicle.put(vehicleIndex, new HashMap<>());
             prevActEndTimes[vehicleIndex] = v.getEarliestDeparture();
             prevActLocations[vehicleIndex] = v.getStartLocation();
         }
