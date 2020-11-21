@@ -25,7 +25,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import org.junit.Test;
 
 
-public class TestJobDistanceAvgCosts {
+public class JobDistanceAvgCostsTest {
 
     public static void main(String[] args) {
         VehicleRoutingTransportCosts costs = new VehicleRoutingTransportCosts() {
