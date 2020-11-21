@@ -30,6 +30,6 @@ public interface PrematureAlgorithmTermination {
      * @param discoveredSolution the discovered solution
      * @return true if algorithm should terminate, false otherwise
      */
-    public boolean isPrematureBreak(DiscoveredSolution discoveredSolution);
+    boolean isPrematureBreak(DiscoveredSolution discoveredSolution);
 
 }

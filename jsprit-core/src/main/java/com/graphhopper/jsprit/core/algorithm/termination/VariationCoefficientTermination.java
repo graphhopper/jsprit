@@ -96,9 +96,7 @@ public class VariationCoefficientTermination implements PrematureAlgorithmTermin
             double mean = StatUtils.mean(solutionValues);
             double stdDev = new StandardDeviation(true).evaluate(solutionValues, mean);
             double variationCoefficient = stdDev / mean;
-            if (variationCoefficient < variationCoefficientThreshold) {
-                return true;
-            }
+            return variationCoefficient < variationCoefficientThreshold;
         }
         return false;
     }

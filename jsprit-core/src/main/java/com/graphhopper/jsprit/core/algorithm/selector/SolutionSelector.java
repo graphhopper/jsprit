@@ -24,6 +24,6 @@ import java.util.Collection;
 
 public interface SolutionSelector {
 
-    public VehicleRoutingProblemSolution selectSolution(Collection<VehicleRoutingProblemSolution> solutions);
+    VehicleRoutingProblemSolution selectSolution(Collection<VehicleRoutingProblemSolution> solutions);
 
 }
