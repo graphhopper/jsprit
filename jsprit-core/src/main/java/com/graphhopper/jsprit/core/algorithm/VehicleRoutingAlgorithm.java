@@ -46,11 +46,9 @@ import java.util.Set;
  */
 public class VehicleRoutingAlgorithm {
 
-
-
     private static class TerminationManager implements PrematureAlgorithmTermination {
 
-        private Collection<PrematureAlgorithmTermination> terminationCriteria = new ArrayList<PrematureAlgorithmTermination>();
+        private Collection<PrematureAlgorithmTermination> terminationCriteria = new ArrayList<>();
 
         void addTermination(PrematureAlgorithmTermination termination) {
             terminationCriteria.add(termination);
@@ -144,14 +142,11 @@ public class VehicleRoutingAlgorithm {
    * @param solution the solution to be added
    */
   public void addInitialSolution(VehicleRoutingProblemSolution solution) {
-        // We will make changes so let's make a copy
         solution = VehicleRoutingProblemSolution.copyOf(solution);
         verifyAndAdaptSolution(solution);
         initialSolutions.add(solution);
     }
 
-    //this method may lead to errors if tour activities in the solution are different to the ones in the VRP
-    //(including differences in indexing)
     private void verifyAndAdaptSolution(VehicleRoutingProblemSolution solution) {
         Set<Job> jobsNotInSolution = new HashSet<>(problem.getJobs().values());
         jobsNotInSolution.removeAll(solution.getUnassignedJobs());
@@ -168,16 +163,8 @@ public class VehicleRoutingAlgorithm {
                         " then the activities that are created to build the route are identical to the ones used in VehicleRoutingProblem");
             }
         }
-
-        //if solution is partial (not all jobs are considered), add these jobs to solution.unassignedJobs
         solution.getUnassignedJobs().addAll(jobsNotInSolution);
-        //update the cost of solution (regardless if partial or not)
         solution.setCost(getObjectiveFunction().getCosts(solution));
-
-        //        if (nuJobs != problem.getJobs().values().size()) {
-        //            logger.warn("number of jobs in initial solution ({}) is not equal nuJobs in vehicle routing problem ({})" +
-        //                "\n this might yield unintended effects, e.g. initial solution cannot be improved anymore.", nuJobs, problem.getJobs().values().size());
-        //        }
     }
 
     /**
@@ -228,9 +215,7 @@ public class VehicleRoutingAlgorithm {
         Collection<VehicleRoutingProblemSolution> solutions = new ArrayList<>(initialSolutions);
         algorithmStarts(problem, solutions);
         bestEver = Solutions.bestOf(solutions);
-        if (logger.isTraceEnabled()) {
-            log(solutions);
-        }
+        if (logger.isTraceEnabled()) log(solutions);
         logger.info("iterations start");
         for (int i = 0; i < maxIterations; i++) {
             iterationStarts(i + 1, problem, solutions);
@@ -238,9 +223,7 @@ public class VehicleRoutingAlgorithm {
             counter.incCounter();
             SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
             DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
-            if (logger.isTraceEnabled()) {
-                log(discoveredSolution);
-            }
+            if (logger.isTraceEnabled()) log(discoveredSolution);
             memorizeIfBestEver(discoveredSolution);
             selectedStrategy(discoveredSolution, problem, solutions);
             if (terminationManager.isPrematureBreak(discoveredSolution)) {
@@ -258,9 +241,7 @@ public class VehicleRoutingAlgorithm {
     }
 
     private void addBestEver(Collection<VehicleRoutingProblemSolution> solutions) {
-        if (bestEver != null) {
-            solutions.add(bestEver);
-        }
+        if (bestEver != null) solutions.add(bestEver);
     }
 
     private void log(Collection<VehicleRoutingProblemSolution> solutions) {
@@ -296,7 +277,6 @@ public class VehicleRoutingAlgorithm {
         log(discoveredSolution.getSolution());
     }
 
-
     private void memorizeIfBestEver(DiscoveredSolution discoveredSolution) {
         if (discoveredSolution == null) return;
         if (bestEver == null) {
@@ -305,7 +285,6 @@ public class VehicleRoutingAlgorithm {
             bestEver = discoveredSolution.getSolution();
         }
     }
-
 
     private void selectedStrategy(DiscoveredSolution discoveredSolution, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
         algoListeners.selectedStrategy(discoveredSolution, problem, solutions);
