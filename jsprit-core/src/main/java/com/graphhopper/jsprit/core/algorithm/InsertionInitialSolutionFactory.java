@@ -40,7 +40,7 @@ public final class InsertionInitialSolutionFactory implements InitialSolutionFac
 
     private final InsertionStrategy insertion;
 
-    private SolutionCostCalculator solutionCostsCalculator;
+    private final SolutionCostCalculator solutionCostsCalculator;
 
     public InsertionInitialSolutionFactory(InsertionStrategy insertionStrategy, SolutionCostCalculator solutionCostCalculator) {
         super();
@@ -51,8 +51,7 @@ public final class InsertionInitialSolutionFactory implements InitialSolutionFac
     @Override
     public VehicleRoutingProblemSolution createSolution(final VehicleRoutingProblem vrp) {
         logger.info("create initial solution");
-        List<VehicleRoute> vehicleRoutes = new ArrayList<>();
-        vehicleRoutes.addAll(vrp.getInitialVehicleRoutes());
+        List<VehicleRoute> vehicleRoutes = new ArrayList<>(vrp.getInitialVehicleRoutes());
         Collection<Job> badJobs = insertion.insertJobs(vehicleRoutes, getUnassignedJobs(vrp));
         VehicleRoutingProblemSolution solution = new VehicleRoutingProblemSolution(vehicleRoutes, badJobs, Double.MAX_VALUE);
         double costs = solutionCostsCalculator.getCosts(solution);

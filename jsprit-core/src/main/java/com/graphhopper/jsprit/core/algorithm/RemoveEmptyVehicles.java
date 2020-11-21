@@ -28,7 +28,7 @@ import java.util.Iterator;
 
 public class RemoveEmptyVehicles implements InsertionEndsListener {
 
-    private VehicleFleetManager fleetManager;
+    private final VehicleFleetManager fleetManager;
 
     public RemoveEmptyVehicles(VehicleFleetManager fleetManager) {
         super();

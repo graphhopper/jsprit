@@ -38,7 +38,7 @@ public class ResetAndIniFleetManager implements InsertionStartsListener {
     @Override
     public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
         vehicleFleetManager.unlockAll();
-        Collection<VehicleRoute> routes = new ArrayList<VehicleRoute>(vehicleRoutes);
+        Collection<VehicleRoute> routes = new ArrayList<>(vehicleRoutes);
         for (VehicleRoute route : routes) {
             vehicleFleetManager.lock(route.getVehicle());
         }

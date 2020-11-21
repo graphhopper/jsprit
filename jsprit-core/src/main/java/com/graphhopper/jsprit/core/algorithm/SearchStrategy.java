@@ -66,9 +66,9 @@ public class SearchStrategy {
         }
     }
 
-    private static Logger logger = LoggerFactory.getLogger(SearchStrategy.class);
+    private static final Logger logger = LoggerFactory.getLogger(SearchStrategy.class);
 
-    private final Collection<SearchStrategyModule> searchStrategyModules = new ArrayList<SearchStrategyModule>();
+    private final Collection<SearchStrategyModule> searchStrategyModules = new ArrayList<>();
 
     private final SolutionSelector solutionSelector;
 
