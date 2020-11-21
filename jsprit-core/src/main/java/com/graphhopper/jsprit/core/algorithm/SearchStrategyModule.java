@@ -23,10 +23,10 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 
 public interface SearchStrategyModule {
 
-    public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution);
+    VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution vrpSolution);
 
-    public String getName();
+    String getName();
 
-    public void addModuleListener(SearchStrategyModuleListener moduleListener);
+    void addModuleListener(SearchStrategyModuleListener moduleListener);
 
 }

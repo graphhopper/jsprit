@@ -20,23 +20,19 @@ package com.graphhopper.jsprit.core.algorithm;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyListener;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyModuleListener;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 
 public class SearchStrategyManager {
 
-    private final static Logger logger = LoggerFactory.getLogger(SearchStrategyManager.class);
+    private List<SearchStrategyListener> searchStrategyListeners = new ArrayList<>();
 
-    private List<SearchStrategyListener> searchStrategyListeners = new ArrayList<SearchStrategyListener>();
+    private List<SearchStrategy> strategies = new ArrayList<>();
 
-    private List<SearchStrategy> strategies = new ArrayList<SearchStrategy>();
+    private List<Double> weights = new ArrayList<>();
 
-    private List<Double> weights = new ArrayList<Double>();
-
-    private Map<String, Integer> id2index = new HashMap<String, Integer>();
+    private Map<String, Integer> id2index = new HashMap<>();
 
     private Random random = RandomNumberGeneration.getRandom();
 
@@ -71,7 +67,7 @@ public class SearchStrategyManager {
         if (strategy == null) {
             throw new IllegalStateException("strategy is null. make sure adding a valid strategy.");
         }
-        if (id2index.keySet().contains(strategy.getId())) {
+        if (id2index.containsKey(strategy.getId())) {
             throw new IllegalStateException("strategyId " + strategy.getId() + " already in use. replace strateId in your config file or code with a unique strategy id");
         }
         if (weight < 0.0) {
