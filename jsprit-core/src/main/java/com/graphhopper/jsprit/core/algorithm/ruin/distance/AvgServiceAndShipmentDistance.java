@@ -19,10 +19,11 @@ package com.graphhopper.jsprit.core.algorithm.ruin.distance;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
+import com.graphhopper.jsprit.core.problem.job.Activity;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Service;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
+
+import java.util.List;
 
 
 /**
@@ -39,7 +40,6 @@ public class AvgServiceAndShipmentDistance implements JobDistance {
     public AvgServiceAndShipmentDistance(VehicleRoutingTransportCosts costs) {
         super();
         this.costs = costs;
-
     }
 
     /**
@@ -50,36 +50,17 @@ public class AvgServiceAndShipmentDistance implements JobDistance {
     @Override
     public double getDistance(Job i, Job j) {
         if (i.equals(j)) return 0.0;
+        return calcDist(i.getActivities(), j.getActivities());
+    }
 
-        if (i instanceof Service && j instanceof Service) {
-            return calcDist((Service) i, (Service) j);
-        } else if (i instanceof Service && j instanceof Shipment) {
-            return calcDist((Service) i, (Shipment) j);
-        } else if (i instanceof Shipment && j instanceof Service) {
-            return calcDist((Service) j, (Shipment) i);
-        } else if (i instanceof Shipment && j instanceof Shipment) {
-            return calcDist((Shipment) i, (Shipment) j);
-        } else {
-            throw new IllegalStateException("this supports only shipments or services");
+    private double calcDist(List<Activity> iActivities, List<Activity> jActivities) {
+        double sum = 0;
+        for (Activity iActivity : iActivities) {
+            for (Activity jActivity : jActivities) {
+                sum += calcDist(iActivity.getLocation(), jActivity.getLocation());
+            }
         }
-    }
-
-    private double calcDist(Service i, Service j) {
-        return calcDist(i.getLocation(), j.getLocation());
-    }
-
-    private double calcDist(Service i, Shipment j) {
-        double c_ij1 = calcDist(i.getLocation(), j.getPickupLocation());
-        double c_ij2 = calcDist(i.getLocation(), j.getDeliveryLocation());
-        return (c_ij1 + c_ij2) / 2.0;
-    }
-
-    private double calcDist(Shipment i, Shipment j) {
-        double c_i1j1 = calcDist(i.getPickupLocation(), j.getPickupLocation());
-        double c_i1j2 = calcDist(i.getPickupLocation(), j.getDeliveryLocation());
-        double c_i2j1 = calcDist(i.getDeliveryLocation(), j.getPickupLocation());
-        double c_i2j2 = calcDist(i.getDeliveryLocation(), j.getDeliveryLocation());
-        return (c_i1j1 + c_i1j2 + c_i2j1 + c_i2j2) / 4.0;
+        return sum / (iActivities.size() * jActivities.size());
     }
 
     private double calcDist(Location location_i, Location location_j) {
