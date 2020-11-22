@@ -42,9 +42,9 @@ public class DBSCANClusterer {
 
         private final Job job;
 
-        private List<Location> locations;
+        private final List<Location> locations;
 
-        private int id;
+        private final int id;
 
         public LocationWrapper(Job job, List<Location> locations) {
             this.locations = locations;
@@ -52,18 +52,6 @@ public class DBSCANClusterer {
             this.job = job;
             this.id = objCounter;
         }
-
-//        private List<Location> getLocations(Job job){
-//            List<Location> locs = new ArrayList<Location>();
-//            if(job instanceof Service) {
-//                locs.add(((Service) job).getLocation());
-//            }
-//            else if(job instanceof Shipment){
-//                locs.add(((Shipment) job).getPickupLocation());
-//                locs.add(((Shipment) job).getDeliveryLocation());
-//            }
-//            return locs;
-//        }
 
         public List<Location> getLocations() {
             return locations;
@@ -81,12 +69,12 @@ public class DBSCANClusterer {
 
     private static class MyDistance implements DistanceMeasure {
 
-        private Map<Integer, LocationWrapper> locations;
+        private final Map<Integer, LocationWrapper> locations;
 
-        private VehicleRoutingTransportCosts costs;
+        private final VehicleRoutingTransportCosts costs;
 
         public MyDistance(List<LocationWrapper> locations, VehicleRoutingTransportCosts costs) {
-            this.locations = new HashMap<Integer, LocationWrapper>();
+            this.locations = new HashMap<>();
             for (LocationWrapper lw : locations) {
                 this.locations.put((int) lw.getPoint()[0], lw);
             }
@@ -148,13 +136,13 @@ public class DBSCANClusterer {
     }
 
     private List<LocationWrapper> getLocationWrappers(VehicleRoute route) {
-        List<LocationWrapper> locations = new ArrayList<LocationWrapper>(route.getTourActivities().getJobs().size());
-        Map<Job, List<Location>> jobs2locations = new HashMap<Job, List<Location>>();
+        List<LocationWrapper> locations = new ArrayList<>(route.getTourActivities().getJobs().size());
+        Map<Job, List<Location>> jobs2locations = new HashMap<>();
         for (TourActivity act : route.getActivities()) {
             if (act instanceof TourActivity.JobActivity) {
                 Job job = ((TourActivity.JobActivity) act).getJob();
                 if (!jobs2locations.containsKey(job)) {
-                    jobs2locations.put(job, new ArrayList<Location>());
+                    jobs2locations.put(job, new ArrayList<>());
                 }
                 jobs2locations.get(job).add(act.getLocation());
             }
@@ -169,12 +157,12 @@ public class DBSCANClusterer {
         double sampledDistance;
         if (epsDistance != null) sampledDistance = epsDistance;
         else sampledDistance = Math.max(0, sample(costs, route));
-        org.apache.commons.math3.ml.clustering.DBSCANClusterer<LocationWrapper> clusterer = new org.apache.commons.math3.ml.clustering.DBSCANClusterer<LocationWrapper>(sampledDistance, minNoOfJobsInCluster, new MyDistance(locations, costs));
+        org.apache.commons.math3.ml.clustering.DBSCANClusterer<LocationWrapper> clusterer = new org.apache.commons.math3.ml.clustering.DBSCANClusterer<>(sampledDistance, minNoOfJobsInCluster, new MyDistance(locations, costs));
         return clusterer.cluster(locations);
     }
 
     private List<List<Job>> makeList(List<Cluster<LocationWrapper>> clusterResults) {
-        List<List<Job>> l = new ArrayList<List<Job>>();
+        List<List<Job>> l = new ArrayList<>();
         for (Cluster<LocationWrapper> c : clusterResults) {
             List<Job> l_ = getJobList(c);
             l.add(l_);
@@ -183,7 +171,7 @@ public class DBSCANClusterer {
     }
 
     private List<Job> getJobList(Cluster<LocationWrapper> c) {
-        List<Job> l_ = new ArrayList<Job>();
+        List<Job> l_ = new ArrayList<>();
         if (c == null) return l_;
         for (LocationWrapper lw : c.getPoints()) {
             l_.add(lw.getJob());

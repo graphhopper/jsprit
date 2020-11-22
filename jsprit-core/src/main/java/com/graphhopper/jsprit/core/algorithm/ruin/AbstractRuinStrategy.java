@@ -97,7 +97,7 @@ public abstract class AbstractRuinStrategy implements RuinStrategy {
     }
 
     private boolean jobIsInitial(Job job) {
-        return !vrp.getJobs().containsKey(job.getId()); //for initial jobs (being not contained in problem
+        return !vrp.getJobs().containsKey(job.getId()); //for initial jobs being not contained in problem
     }
 
     protected boolean removeJob(Job job, VehicleRoute route) {

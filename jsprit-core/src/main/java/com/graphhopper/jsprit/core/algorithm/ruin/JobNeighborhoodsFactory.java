@@ -31,7 +31,6 @@ public class JobNeighborhoodsFactory {
     }
 
     public JobNeighborhoods createNeighborhoods(VehicleRoutingProblem vrp, JobDistance jobDistance, int capacity) {
-//        return new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, capacity);
         return new JobNeighborhoodsOptimized(vrp, jobDistance, capacity);
     }
 

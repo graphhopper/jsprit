@@ -64,12 +64,11 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
         }
     }
 
-    private Logger logger = LoggerFactory.getLogger(RuinClusters.class);
+    private final Logger logger = LoggerFactory.getLogger(RuinClusters.class);
 
-    private VehicleRoutingProblem vrp;
+    private final VehicleRoutingProblem vrp;
 
-
-    private JobNeighborhoods jobNeighborhoods;
+    private final JobNeighborhoods jobNeighborhoods;
 
     private int noClusters = 2;
 

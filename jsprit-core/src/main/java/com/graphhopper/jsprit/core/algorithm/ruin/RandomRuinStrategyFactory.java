@@ -21,7 +21,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 
 public class RandomRuinStrategyFactory implements RuinStrategyFactory {
 
-    private double fraction;
+    private final double fraction;
 
     public RandomRuinStrategyFactory(double fraction) {
         super();

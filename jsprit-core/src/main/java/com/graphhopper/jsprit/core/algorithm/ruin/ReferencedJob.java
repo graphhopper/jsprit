@@ -24,8 +24,8 @@ import com.graphhopper.jsprit.core.problem.job.Job;
  * Created by schroeder on 07/01/15.
  */
 class ReferencedJob {
-    private Job job;
-    private double distance;
+    private final Job job;
+    private final double distance;
 
     public ReferencedJob(Job job, double distance) {
         super();

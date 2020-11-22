@@ -19,8 +19,6 @@
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
 import com.graphhopper.jsprit.core.problem.job.Job;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 
@@ -29,11 +27,9 @@ import java.util.Iterator;
  */
 class NearestNeighborhoodIterator implements Iterator<Job> {
 
-    private static Logger log = LoggerFactory.getLogger(NearestNeighborhoodIterator.class);
+    private final Iterator<ReferencedJob> jobIter;
 
-    private Iterator<ReferencedJob> jobIter;
-
-    private int nJobs;
+    private final int nJobs;
 
     private int jobCount = 0;
 
@@ -46,10 +42,7 @@ class NearestNeighborhoodIterator implements Iterator<Job> {
     @Override
     public boolean hasNext() {
         if (jobCount < nJobs) {
-            boolean hasNext = jobIter.hasNext();
-//            if (!hasNext)
-//                log.warn("more jobs are requested then iterator can iterate over. probably the number of neighbors memorized in JobNeighborhoods is too small");
-            return hasNext;
+            return jobIter.hasNext();
         }
         return false;
     }

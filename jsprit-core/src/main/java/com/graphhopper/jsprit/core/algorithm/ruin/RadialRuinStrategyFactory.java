@@ -22,9 +22,9 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 
 public class RadialRuinStrategyFactory implements RuinStrategyFactory {
 
-    private double fraction;
+    private final double fraction;
 
-    private JobDistance jobDistance;
+    private final JobDistance jobDistance;
 
     public RadialRuinStrategyFactory(double fraction, JobDistance jobDistance) {
         super();

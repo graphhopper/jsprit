@@ -25,22 +25,25 @@ import com.graphhopper.jsprit.core.util.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * Created by schroeder on 07/01/15.
  */
 class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
 
-    private static Logger logger = LoggerFactory.getLogger(JobNeighborhoodsImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobNeighborhoodsImpl.class);
 
-    private VehicleRoutingProblem vrp;
+    private final VehicleRoutingProblem vrp;
 
-    private Map<String, TreeSet<ReferencedJob>> distanceNodeTree = new HashMap<String, TreeSet<ReferencedJob>>();
+    private final Map<String, TreeSet<ReferencedJob>> distanceNodeTree = new HashMap<>();
 
-    private JobDistance jobDistance;
+    private final JobDistance jobDistance;
 
-    private int capacity;
+    private final int capacity;
 
     private double maxDistance = 0.;
 
@@ -104,15 +107,12 @@ class JobNeighborhoodsImplWithCapRestriction implements JobNeighborhoods {
         int nuOfDistancesStored = 0;
         for (Job i : vrp.getJobs().values()) {
             // Collections.sort(list, );
-            TreeSet<ReferencedJob> treeSet = new TreeSet<ReferencedJob>(
-                new Comparator<ReferencedJob>() {
-                    @Override
-                    public int compare(ReferencedJob o1, ReferencedJob o2) {
-                        if (o1.getDistance() <= o2.getDistance()) {
-                            return -1;
-                        } else {
-                            return 1;
-                        }
+            TreeSet<ReferencedJob> treeSet = new TreeSet<>(
+                (o1, o2) -> {
+                    if (o1.getDistance() <= o2.getDistance()) {
+                        return -1;
+                    } else {
+                        return 1;
                     }
                 });
             distanceNodeTree.put(i.getId(), treeSet);

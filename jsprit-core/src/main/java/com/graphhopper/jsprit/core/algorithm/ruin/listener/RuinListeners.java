@@ -28,7 +28,7 @@ import java.util.Collections;
 
 public class RuinListeners {
 
-    private Collection<RuinListener> ruinListeners = new ArrayList<RuinListener>();
+    private Collection<RuinListener> ruinListeners = new ArrayList<>();
 
     public void ruinStarts(Collection<VehicleRoute> routes) {
         for (RuinListener l : ruinListeners) l.ruinStarts(routes);

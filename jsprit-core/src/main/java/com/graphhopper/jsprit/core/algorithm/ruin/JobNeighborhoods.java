@@ -27,10 +27,10 @@ import java.util.Iterator;
  */
 public interface JobNeighborhoods {
 
-    public Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo);
+    Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo);
 
-    public void initialise();
+    void initialise();
 
-    public double getMaxDistance();
+    double getMaxDistance();
 
 }
