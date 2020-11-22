@@ -125,4 +125,11 @@ public class JobNeighborhoodsImplTest {
         assertEquals(6, services.size());
     }
 
+    @Test
+    public void whenRequestingNeighborhoodOfTargetJob_itShouldReturntheMaxDistance() {
+        JobNeighborhoodsImpl jn = new JobNeighborhoodsImpl(vrp, jobDistance);
+        jn.initialise();
+        assertEquals(6, jn.getMaxDistance(), 0.01);
+    }
+
 }
