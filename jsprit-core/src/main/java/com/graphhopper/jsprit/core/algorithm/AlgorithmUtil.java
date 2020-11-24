@@ -22,15 +22,13 @@ import com.graphhopper.jsprit.core.algorithm.state.*;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.SwitchNotFeasible;
+import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeKey;
 import com.graphhopper.jsprit.core.util.ActivityTimeTracker;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by schroeder on 02/08/16.
@@ -38,7 +36,10 @@ import java.util.Map;
 public class AlgorithmUtil {
 
     public static void addCoreConstraints(ConstraintManager constraintManager, StateManager stateManager, final VehicleRoutingProblem vrp){
-        if (vrp.getJobs().size() != vrp.getJobsWithLocation().size()) {
+        Collection<Job> allJobs = vrp.getJobsInclusiveInitialJobsInRoutes().values();
+        boolean anyJobsWithoutLocation = allJobs.stream().flatMap(job -> job.getActivities().stream()).anyMatch(activity -> activity.getLocation() == null);
+
+        if (anyJobsWithoutLocation) {
             stateManager.addStateUpdater(new UpdateActivityNextLocations());
             stateManager.addStateUpdater(new UpdateActivityPrevLocations());
         }
