@@ -74,6 +74,11 @@ public class DefaultScorer implements ScoringFunction  {
             if (timeWindow == null) timeWindow = tw;
             else if (tw.larger(timeWindow)) timeWindow = tw;
         }
+        
+        if(timeWindow!=null){
+            return TimeWindow.newInstance(timeWindow.getStart(),timeWindow.getEnd());
+        }
+        
         return TimeWindow.newInstance(0, Double.MAX_VALUE);
     }
 
