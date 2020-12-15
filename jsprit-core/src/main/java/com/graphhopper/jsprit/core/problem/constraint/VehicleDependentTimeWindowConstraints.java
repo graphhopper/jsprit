@@ -50,6 +50,43 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
         double latestVehicleArrival = iFacts.getNewVehicle().getLatestArrival();
+        double earliestVehicleDeparture = iFacts.getNewVehicle().getEarliestDeparture();
+        /**
+         * fail to take different time windows of different vehicle types into account.
+         * for example, original vehicle's time window is 07:00-12:00
+         * obviously it cannot delivery the first order with 13:00-21:00 in current route,
+         * but currently it omits this kind of checking logic and only does for time windows among preAct, newAct, nextAct and newVehicle
+         */
+        Location startPoint;
+        if(prevAct instanceof Start){
+            startPoint = prevAct.getLocation();
+        }
+        else{
+            startPoint = iFacts.getRoute().getStart().getLocation();
+        }
+        TourActivity tmpFirstAct,tmpEndAct;
+        if(iFacts.getRoute().getActivities().size() == 0) {
+            tmpFirstAct = newAct;
+            tmpEndAct = newAct;
+        }
+        else{
+            tmpFirstAct = iFacts.getRoute().getActivities().get(0);
+            tmpEndAct = iFacts.getRoute().getActivities().get(iFacts.getRoute().getActivities().size()-1);
+        }
+        double eta = earliestVehicleDeparture + routingCosts.getTransportTime(startPoint, tmpFirstAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        if (eta > tmpFirstAct.getTheoreticalLatestOperationStartTime()
+                || latestVehicleArrival < tmpFirstAct.getArrTime()
+                || latestVehicleArrival < tmpEndAct.getArrTime()) {
+            return ConstraintsStatus.NOT_FULFILLED_BREAK;
+        }
+        if(iFacts.getNewVehicle().isReturnToDepot()){
+            eta = tmpEndAct.getEndTime() + routingCosts.getTransportTime(tmpEndAct.getLocation(), iFacts.getNewVehicle().getEndLocation(), tmpEndAct.getEndTime(), iFacts.getNewDriver(), iFacts.getNewVehicle());
+            if(latestVehicleArrival < eta){
+                return ConstraintsStatus.NOT_FULFILLED_BREAK;
+            }
+        }
+        
+        
         Double latestArrTimeAtNextAct;
         Location prevLocation = prevAct.getLocation();
         if (prevAct instanceof ActWithoutStaticLocation) ((ActWithoutStaticLocation) prevAct).getPreviousLocation();
