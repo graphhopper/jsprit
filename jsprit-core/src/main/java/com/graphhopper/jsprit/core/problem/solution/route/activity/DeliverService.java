@@ -43,6 +43,7 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     }
 
     private DeliverService(DeliverService deliveryActivity) {
+        super(deliveryActivity);
         this.delivery = deliveryActivity.getJob();
         this.arrTime = deliveryActivity.getArrTime();
         this.endTime = deliveryActivity.getEndTime();

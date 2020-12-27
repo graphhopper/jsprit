@@ -24,14 +24,30 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
  * Created by schroeder on 14.07.14.
  */
 public abstract class AbstractActivity implements TourActivity {
+    protected AbstractActivityData activityData;
 
     private int index;
+
+    public AbstractActivity() {
+    }
+
+    public AbstractActivity(AbstractActivity abstractActivity) {
+        this.activityData = abstractActivity.activityData != null ? abstractActivity.activityData.duplicate() : null;
+    }
 
     public int getIndex() {
         return index;
     }
 
+    public AbstractActivityData getActivityData() {
+        return activityData;
+    }
+
     protected void setIndex(int index) {
         this.index = index;
+    }
+
+    public void setActivityData(AbstractActivityData activityData) {
+        this.activityData = activityData;
     }
 }

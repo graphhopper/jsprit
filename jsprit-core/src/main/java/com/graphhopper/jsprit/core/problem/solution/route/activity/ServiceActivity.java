@@ -76,6 +76,7 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     }
 
     protected ServiceActivity(ServiceActivity serviceActivity) {
+        super(serviceActivity);
         this.service = serviceActivity.getJob();
         this.arrTime = serviceActivity.getArrTime();
         this.endTime = serviceActivity.getEndTime();

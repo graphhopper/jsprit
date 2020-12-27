@@ -6,9 +6,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.BreakForMultipleTimeWindows;
 import com.graphhopper.jsprit.core.problem.job.Service;
 
-public class BreakForMultipleTimeWindowsActivity extends AbstractActivity implements TourActivity.JobActivity{
-    public static int counter = 0;
-
+public class BreakForMultipleTimeWindowsActivity extends AbstractActivity implements TourActivity.JobActivity {
     public double arrTime;
 
     public double endTime;
@@ -60,14 +58,13 @@ public class BreakForMultipleTimeWindowsActivity extends AbstractActivity implem
     private double latest = Double.MAX_VALUE;
 
     protected BreakForMultipleTimeWindowsActivity(BreakForMultipleTimeWindows aBreak) {
-        counter++;
         this.aBreak = aBreak;
         this.duration = aBreak.getServiceDuration();
         this.location = aBreak.getLocation();
     }
 
     protected BreakForMultipleTimeWindowsActivity(BreakForMultipleTimeWindowsActivity breakActivity) {
-        counter++;
+        super(breakActivity);
         this.aBreak = (BreakForMultipleTimeWindows) breakActivity.getJob();
         this.arrTime = breakActivity.getArrTime();
         this.endTime = breakActivity.getEndTime();

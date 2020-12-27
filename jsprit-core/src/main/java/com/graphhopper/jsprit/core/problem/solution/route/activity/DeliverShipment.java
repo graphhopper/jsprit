@@ -44,6 +44,7 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
     }
 
     private DeliverShipment(DeliverShipment deliveryShipmentActivity) {
+        super(deliveryShipmentActivity);
         this.shipment = (Shipment) deliveryShipmentActivity.getJob();
         this.arrTime = deliveryShipmentActivity.getArrTime();
         this.endTime = deliveryShipmentActivity.getEndTime();

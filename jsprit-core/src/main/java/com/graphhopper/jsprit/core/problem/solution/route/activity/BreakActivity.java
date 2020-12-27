@@ -81,6 +81,7 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     }
 
     protected BreakActivity(BreakActivity breakActivity) {
+        super(breakActivity);
         this.aBreak = (Break) breakActivity.getJob();
         this.arrTime = breakActivity.getArrTime();
         this.endTime = breakActivity.getEndTime();
