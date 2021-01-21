@@ -83,7 +83,7 @@ class JobNeighborhoodsImpl implements JobNeighborhoods {
 
     @Override
     public double getMaxDistance() {
-        return 0;
+        return maxDistance;
     }
 
     private void calculateDistancesFromJob2Job() {
