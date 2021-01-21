@@ -37,18 +37,11 @@ import java.util.List;
  */
 public final class BestInsertion extends AbstractInsertionStrategy {
 
-    private static Logger logger = LoggerFactory.getLogger(BestInsertion.class);
+    final private static Logger logger = LoggerFactory.getLogger(BestInsertion.class);
 
     private JobInsertionCostsCalculator bestInsertionCostCalculator;
 
-    private NoiseMaker noiseMaker = new NoiseMaker() {
-
-        @Override
-        public double makeNoise() {
-            return 0;
-        }
-
-    };
+    private NoiseMaker noiseMaker = () -> 0;
 
     public BestInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem) {
         super(vehicleRoutingProblem);
@@ -63,10 +56,10 @@ public final class BestInsertion extends AbstractInsertionStrategy {
 
     @Override
     public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
-        List<Job> badJobs = new ArrayList<Job>(unassignedJobs.size());
-        List<Job> unassignedJobList = new ArrayList<Job>(unassignedJobs);
+        List<Job> badJobs = new ArrayList<>(unassignedJobs.size());
+        List<Job> unassignedJobList = new ArrayList<>(unassignedJobs);
         Collections.shuffle(unassignedJobList, random);
-        Collections.sort(unassignedJobList, new AccordingToPriorities());
+        unassignedJobList.sort(new AccordingToPriorities());
         for (Job unassignedJob : unassignedJobList) {
             Insertion bestInsertion = null;
             InsertionData empty = new InsertionData.NoInsertionFound();
