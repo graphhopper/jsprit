@@ -738,7 +738,7 @@ public class VehicleRoutingProblem {
         return acts;
     }
 
-    private void addBreak(Break aBreak) {
+    public void addBreak(Service aBreak) {
         if (activityMap.containsKey(aBreak))
             return;
 
