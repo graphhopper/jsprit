@@ -50,7 +50,7 @@ public class ConfigureLocalActivityInsertionCalculator implements InsertionStart
     }
 
     @Override
-    public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+    public void informJobInserted(Job job2insert, VehicleRoute inRoute, InsertionData insertionData) {
         nuOfJobsToRecreate--;
         double completenessRatio = (1 - ((double) nuOfJobsToRecreate / (double) vrp.getJobs().values().size()));
         localActivityInsertionCostsCalculator.setSolutionCompletenessRatio(Math.max(0.5, completenessRatio));

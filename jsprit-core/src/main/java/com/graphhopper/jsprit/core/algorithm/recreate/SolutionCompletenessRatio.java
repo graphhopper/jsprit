@@ -55,7 +55,7 @@ class SolutionCompletenessRatio implements InsertionStartsListener, JobInsertedL
     }
 
     @Override
-    public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+    public void informJobInserted(Job job2insert, VehicleRoute inRoute, InsertionData insertionData) {
         nuOfJobsToRecreate--;
         solutionCompletenessRatio = (1 - ((double) nuOfJobsToRecreate / (double) nuOfJobs));
     }

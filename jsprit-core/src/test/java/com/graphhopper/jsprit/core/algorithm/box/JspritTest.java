@@ -391,7 +391,7 @@ public class JspritTest {
         final List<String> firstRecord = new ArrayList<String>();
         vra.addListener(new JobInsertedListener() {
             @Override
-            public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+            public void informJobInserted(Job job2insert, VehicleRoute inRoute, InsertionData insertionData) {
                 firstRecord.add(job2insert.getId());
             }
         });
@@ -402,7 +402,7 @@ public class JspritTest {
         final List<String> secondRecord = new ArrayList<String>();
         second.addListener(new JobInsertedListener() {
             @Override
-            public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+            public void informJobInserted(Job job2insert, VehicleRoute inRoute, InsertionData insertionData) {
                 secondRecord.add(job2insert.getId());
             }
         });

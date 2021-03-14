@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.state;
 
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
+import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.*;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListeners;
@@ -546,9 +547,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     @Override
-    public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
-//		log.debug("insert " + job2insert + " in " + inRoute);
-        insertionListeners.informJobInserted(job2insert, inRoute, additionalCosts, additionalTime);
+    public void informJobInserted(Job job2insert, VehicleRoute inRoute, InsertionData insertionData) {
+        insertionListeners.informJobInserted(job2insert, inRoute, insertionData);
         for (RouteVisitor v : routeVisitors) {
             v.visit(inRoute);
         }

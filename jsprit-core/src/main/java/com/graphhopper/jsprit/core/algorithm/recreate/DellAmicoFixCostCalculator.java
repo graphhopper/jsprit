@@ -54,7 +54,7 @@ public class DellAmicoFixCostCalculator implements SoftRouteConstraint, Insertio
     }
 
     @Override
-    public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+    public void informJobInserted(Job job2insert, VehicleRoute inRoute, InsertionData insertionData) {
         nuOfJobsToRecreate--;
         double completenessRatio = (1 - ((double) nuOfJobsToRecreate / (double) nuOfJobs));
         calculator.setSolutionCompletenessRatio(completenessRatio);

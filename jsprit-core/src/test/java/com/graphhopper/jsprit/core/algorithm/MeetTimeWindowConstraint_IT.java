@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
+import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.VehicleSwitchedListener;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -84,7 +85,7 @@ public class MeetTimeWindowConstraint_IT {
         vra.addListener(new JobInsertedListener() {
 
             @Override
-            public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+            public void informJobInserted(Job job2insert, VehicleRoute inRoute, InsertionData insertionData) {
                 if (job2insert.getId().equals("1")) {
                     if (inRoute.getVehicle().getId().equals("19")) {
                         testFailed.add(true);
@@ -180,7 +181,7 @@ public class MeetTimeWindowConstraint_IT {
         vra.addListener(new JobInsertedListener() {
 
             @Override
-            public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+            public void informJobInserted(Job job2insert, VehicleRoute inRoute, InsertionData insertionData) {
                 if (job2insert.getId().equals("1")) {
                     if (inRoute.getVehicle().getId().equals("19")) {
                         testFailed.add(true);

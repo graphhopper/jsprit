@@ -124,7 +124,7 @@ public abstract class AbstractInsertionStrategy implements InsertionStrategy {
         for (Event e : iData.getEvents()) {
             eventListeners.inform(e);
         }
-        insertionsListeners.informJobInserted(unassignedJob, inRoute, iData.getInsertionCost(), iData.getAdditionalTime());
+        insertionsListeners.informJobInserted(unassignedJob, inRoute, iData);
     }
 
 }

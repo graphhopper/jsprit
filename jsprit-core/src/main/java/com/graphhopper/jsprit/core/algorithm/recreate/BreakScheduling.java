@@ -30,7 +30,9 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by schroeder on 07/04/16.
@@ -52,23 +54,23 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
     }
 
     @Override
-    public void informJobInserted(Job job2insert, VehicleRoute inRoute, double additionalCosts, double additionalTime) {
+    public void informJobInserted(Job job2insert, VehicleRoute inRoute, InsertionData insertionData) {
         Break aBreak = inRoute.getVehicle().getBreak();
-        if(aBreak != null){
+        if (aBreak != null) {
             boolean removed = inRoute.getTourActivities().removeJob(aBreak);
-            if(removed){
+            if (removed) {
                 logger.trace("ruin: {}", aBreak.getId());
-                stateManager.removed(aBreak,inRoute);
+                stateManager.removed(aBreak, inRoute);
                 stateManager.reCalculateStates(inRoute);
             }
-            if(inRoute.getEnd().getArrTime() > aBreak.getTimeWindow().getEnd()){
+            if (inRoute.getEnd().getArrTime() > aBreak.getTimeWindow().getEnd()) {
                 InsertionData iData = breakInsertionCalculator.getInsertionData(inRoute, aBreak, inRoute.getVehicle(), inRoute.getDepartureTime(), inRoute.getDriver(), Double.MAX_VALUE);
                 if(!(iData instanceof InsertionData.NoInsertionFound)){
                     logger.trace("insert: [jobId={}]{}", aBreak.getId(), iData);
                     for(Event e : iData.getEvents()){
                         eventListeners.inform(e);
                     }
-                    stateManager.informJobInserted(aBreak,inRoute,0,0);
+                    stateManager.informJobInserted(aBreak, inRoute, iData);
                 }
             }
         }
@@ -110,7 +112,7 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
                         for(Event e : iData.getEvents()){
                             eventListeners.inform(e);
                         }
-                        stateManager.informJobInserted(aBreak,route,0,0);
+                        stateManager.informJobInserted(aBreak, route, iData);
                     }
                 }
             }
