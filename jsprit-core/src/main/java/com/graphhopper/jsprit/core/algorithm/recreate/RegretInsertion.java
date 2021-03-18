@@ -132,7 +132,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         return badJobs;
     }
 
-    private VehicleRoute findRoute(Collection<VehicleRoute> routes, Job job) {
+    protected VehicleRoute findRoute(Collection<VehicleRoute> routes, Job job) {
         for(VehicleRoute r : routes){
             if(r.getVehicle().getBreak() == job) return r;
         }

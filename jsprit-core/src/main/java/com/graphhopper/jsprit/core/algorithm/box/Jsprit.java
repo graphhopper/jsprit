@@ -33,6 +33,7 @@ import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceAndShipment
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectRandomly;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
+import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -59,7 +60,9 @@ public class Jsprit {
 
     public enum Construction {
 
-        BEST_INSERTION("best_insertion"), REGRET_INSERTION("regret_insertion"), RANDOM("random");
+        BEST_INSERTION("best_insertion"), REGRET_INSERTION("regret_insertion"), RANDOM("random"),
+        GREEDY_BY_NEIGHBORHOODS_REGRET("greedy_by_neighborhoods_regret"),
+        GREEDY_BY_DISTANCE_REGRET("greedy_by_distance_regret");
 
         String name;
 
@@ -85,7 +88,9 @@ public class Jsprit {
         CLUSTER_REGRET("cluster_regret"),
         STRING_BEST("string_best"),
         STRING_REGRET("string_regret"),
-        RANDOM("random");
+        RANDOM("random"),
+        GREEDY_BY_NEIGHBORS_REGRET("greedy_by_neighbors_regret"),
+        GREEDY_BY_DISTANCE_REGRET("greedy_by_distance_regret");
 
         String strategyName;
 
@@ -131,8 +136,8 @@ public class Jsprit {
         STRING_L_MIN("string_lmin"),
         STRING_L_MAX("string_lmax"),
         MIN_UNASSIGNED("min_unassigned"),
-        PROPORTION_UNASSIGNED("proportion_unassigned");
-
+        PROPORTION_UNASSIGNED("proportion_unassigned"),
+        DISTANCE_DIFF_FOR_SAME_NEIGHBORHOOD("distance_diff_for_same_neighborhood");
 
 
         String paraName;
@@ -210,6 +215,9 @@ public class Jsprit {
 
             defaults.put(Strategy.RANDOM.toString(), "0.0");
 
+            defaults.put(Strategy.GREEDY_BY_NEIGHBORS_REGRET.toString(), "0.0");
+            defaults.put(Strategy.GREEDY_BY_DISTANCE_REGRET.toString(), "0.0");
+
             defaults.put(Parameter.STRING_K_MIN.toString(), "1");
             defaults.put(Parameter.STRING_K_MAX.toString(), "6");
             defaults.put(Parameter.STRING_L_MIN.toString(), "10");
@@ -256,6 +264,9 @@ public class Jsprit {
 
             defaults.put(Parameter.MIN_UNASSIGNED.toString(), String.valueOf(Integer.MAX_VALUE));
             defaults.put(Parameter.PROPORTION_UNASSIGNED.toString(), String.valueOf(1.0));
+
+            defaults.put(Parameter.DISTANCE_DIFF_FOR_SAME_NEIGHBORHOOD.toString(), String.valueOf(100));
+
             return defaults;
         }
 
@@ -688,6 +699,22 @@ public class Jsprit {
             .build();
         randomInsertion.setRandom(random);
 
+        final AbstractInsertionStrategy greedyByNeighborsInsertion = (AbstractInsertionStrategy) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+            .setInsertionStrategy(InsertionBuilder.Strategy.GREEDY_BY_NEIGHBORS)
+            .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
+            .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
+            .setActivityInsertionCostCalculator(activityInsertion)
+            .setDistanceDiffForNeighbors(Double.valueOf(properties.getProperty(Parameter.DISTANCE_DIFF_FOR_SAME_NEIGHBORHOOD.toString())))
+            .build();
+        greedyByNeighborsInsertion.setRandom(random);
+
+        final AbstractInsertionStrategy greedyByDistanceFromDepotInsertion = (AbstractInsertionStrategy) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+            .setInsertionStrategy(InsertionBuilder.Strategy.GREEDY_BY_DISTANCE)
+            .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
+            .setActivityInsertionCostCalculator(activityInsertion)
+            .build();
+        greedyByDistanceFromDepotInsertion.setRandom(random);
+
         IterationStartsListener schrimpfThreshold = null;
         if(acceptor == null) {
             final SchrimpfAcceptance schrimpfAcceptance = new SchrimpfAcceptance(1, toDouble(getProperty(Parameter.THRESHOLD_ALPHA.toString())));
@@ -741,6 +768,12 @@ public class Jsprit {
         final SearchStrategy randomStrategy = new SearchStrategy(Strategy.RANDOM.toString(), new SelectRandomly(), acceptor, objectiveFunction);
         randomStrategy.addModule(new RuinAndRecreateModule(Strategy.RANDOM.toString(), randomInsertion, random_for_random));
 
+        final SearchStrategy greedyByNeighborsStrategy = new SearchStrategy(Strategy.GREEDY_BY_NEIGHBORS_REGRET.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        greedyByNeighborsStrategy.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_NEIGHBORS_REGRET.toString(), greedyByNeighborsInsertion, clusters));
+
+        final SearchStrategy greedyByDistanceStrategy = new SearchStrategy(Strategy.GREEDY_BY_DISTANCE_REGRET.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        greedyByDistanceStrategy.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_DISTANCE_REGRET.toString(), greedyByDistanceFromDepotInsertion, clusters));
+
         PrettyAlgorithmBuilder prettyBuilder = PrettyAlgorithmBuilder.newInstance(vrp, vehicleFleetManager, stateManager, constraintManager);
         prettyBuilder.setRandom(random);
         if (addCoreConstraints) {
@@ -757,7 +790,9 @@ public class Jsprit {
             .withStrategy(clusters_best, toDouble(getProperty(Strategy.CLUSTER_BEST.toString())))
             .withStrategy(stringBest, toDouble(getProperty(Strategy.STRING_BEST.toString())))
             .withStrategy(stringRegret, toDouble(getProperty(Strategy.STRING_REGRET.toString())))
-            .withStrategy(randomStrategy, toDouble((getProperty(Strategy.RANDOM.toString()))));
+            .withStrategy(randomStrategy, toDouble(getProperty(Strategy.RANDOM.toString())))
+            .withStrategy(greedyByNeighborsStrategy, toDouble(getProperty(Strategy.GREEDY_BY_NEIGHBORS_REGRET.toString())))
+            .withStrategy(greedyByDistanceStrategy, toDouble(getProperty(Strategy.GREEDY_BY_DISTANCE_REGRET.toString())));
 
         for (SearchStrategy customStrategy : customStrategies.keySet()) {
             prettyBuilder.withStrategy(customStrategy, customStrategies.get(customStrategy));
@@ -765,6 +800,10 @@ public class Jsprit {
 
         if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.RANDOM.toString())) {
             prettyBuilder.constructInitialSolutionWith(randomInsertion, objectiveFunction);
+        } else if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.GREEDY_BY_NEIGHBORHOODS_REGRET.toString())) {
+            prettyBuilder.constructInitialSolutionWith(greedyByNeighborsInsertion, objectiveFunction);
+        } else if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.GREEDY_BY_DISTANCE_REGRET.toString())) {
+            prettyBuilder.constructInitialSolutionWith(greedyByDistanceFromDepotInsertion, objectiveFunction);
         } else if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.BEST_INSERTION.toString())) {
             prettyBuilder.constructInitialSolutionWith(best, objectiveFunction);
         } else {

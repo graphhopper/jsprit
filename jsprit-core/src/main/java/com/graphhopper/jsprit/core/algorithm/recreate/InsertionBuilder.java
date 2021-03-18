@@ -38,7 +38,7 @@ public class InsertionBuilder {
 
 
     public enum Strategy {
-        REGRET, BEST, RANDOM
+        REGRET, BEST, RANDOM, GREEDY_BY_NEIGHBORS, GREEDY_BY_DISTANCE
     }
 
     private VehicleRoutingProblem vrp;
@@ -79,6 +79,8 @@ public class InsertionBuilder {
 
     private boolean isFastRegret = false;
 
+    private double distanceDiffForNeighbors = 100;
+
     public InsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
         super();
         this.vrp = vrp;
@@ -89,6 +91,11 @@ public class InsertionBuilder {
 
     public InsertionBuilder setInsertionStrategy(Strategy strategy) {
         this.strategy = strategy;
+        return this;
+    }
+
+    public InsertionBuilder setDistanceDiffForNeighbors(double distanceDiffForNeighbors) {
+        this.distanceDiffForNeighbors = distanceDiffForNeighbors;
         return this;
     }
 
@@ -149,6 +156,8 @@ public class InsertionBuilder {
     }
 
 
+
+
     public InsertionStrategy build() {
         List<InsertionListener> iListeners = new ArrayList<InsertionListener>();
         List<VehicleRoutingAlgorithmListeners.PrioritizedVRAListener> algorithmListeners = new ArrayList<VehicleRoutingAlgorithmListeners.PrioritizedVRAListener>();
@@ -205,6 +214,10 @@ public class InsertionBuilder {
             }
         } else if (strategy.equals(Strategy.RANDOM)) {
             insertion = new RandomInsertion(costCalculator, vrp);
+        } else if (strategy.equals(Strategy.GREEDY_BY_NEIGHBORS)) {
+            insertion = new GreedyByNeighborsInsertion(costCalculator, vrp, distanceDiffForNeighbors);
+        }  else if (strategy.equals(Strategy.GREEDY_BY_DISTANCE)) {
+            insertion = new GreedyInsertionByDistance(costCalculator, vrp, fleetManager);
         } else throw new IllegalStateException("you should never get here");
         for (InsertionListener l : iListeners) insertion.addListener(l);
         return insertion;
