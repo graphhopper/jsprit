@@ -64,6 +64,7 @@ public class GreedyByNeighborsInsertion extends GreedyInsertion {
             }
         };
         try {
+            Collections.shuffle(jobsToInsert);
             Collections.sort(jobsToInsert, withMostNeighborsComparator);
         } catch (Exception e) {
             logger.error("failed to sort", e);
@@ -96,7 +97,7 @@ public class GreedyByNeighborsInsertion extends GreedyInsertion {
             Collection<Job> jobCollection = jobsThaHaveToBeInSameRoute.get(withMostNeighbors.getId());
             for (Job job : jobCollection) {
                 if (jobsToInsert.contains(job)) {
-                    InsertionData iData = bestInsertionCalculator.getInsertionData(route, job, route.getVehicle(), NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
+                    InsertionData iData = bestInsertionCalculator.getInsertionData(route, job, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
                     if (!(iData instanceof InsertionData.NoInsertionFound)) {
                         super.insertJob(job, iData, route);
                         jobsToInsert.remove(job);
