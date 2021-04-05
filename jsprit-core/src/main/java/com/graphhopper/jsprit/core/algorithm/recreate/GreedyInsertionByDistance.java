@@ -115,7 +115,7 @@ public class GreedyInsertionByDistance extends GreedyInsertion {
 
     private void insertJobWithNearest(Collection<VehicleRoute> openRoutes, VehicleRoute route, Job jobToInsert, List<Job> jobsToInsert) {
         if (jobsToInsert.contains(jobToInsert)) {
-            InsertionData iData = bestInsertionCalculator.getInsertionData(route, jobToInsert, route.getVehicle(), NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
+            InsertionData iData = bestInsertionCalculator.getInsertionData(route, jobToInsert, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
             if (!(iData instanceof InsertionData.NoInsertionFound)) {
                 super.insertJob(jobToInsert, iData, route);
                 jobsToInsert.remove(jobToInsert);
