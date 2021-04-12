@@ -81,6 +81,8 @@ public class InsertionBuilder {
 
     private double distanceDiffForNeighbors = 100;
 
+    private double ratioNotToSortJobsGreedyInsertion = 0;
+
     public InsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
         super();
         this.vrp = vrp;
@@ -91,6 +93,11 @@ public class InsertionBuilder {
 
     public InsertionBuilder setInsertionStrategy(Strategy strategy) {
         this.strategy = strategy;
+        return this;
+    }
+
+    public InsertionBuilder setRatioNotToSortJobsGreedyInsertion(double ratioNotToSortJobsGreedyInsertion) {
+        this.ratioNotToSortJobsGreedyInsertion = ratioNotToSortJobsGreedyInsertion;
         return this;
     }
 
