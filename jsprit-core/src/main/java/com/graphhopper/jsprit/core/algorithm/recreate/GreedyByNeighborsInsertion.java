@@ -15,13 +15,19 @@ import java.util.*;
 
 public class GreedyByNeighborsInsertion extends GreedyInsertion {
     final double distanceDiffForSameLocation;
+    final double ratioToSort;
     private static Logger logger = LoggerFactory.getLogger(GreedyByNeighborsInsertion.class);
 
     Map<String, Collection<Job>> jobsThaHaveToBeInSameRoute = new HashMap<>();
 
     public GreedyByNeighborsInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, double distanceDiffForSameLocationMeter) {
+        this(jobInsertionCalculator, vehicleRoutingProblem, distanceDiffForSameLocationMeter, 0);
+    }
+
+    public GreedyByNeighborsInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, double distanceDiffForSameLocationMeter, double ratioToSort) {
         super(jobInsertionCalculator, vehicleRoutingProblem);
         this.distanceDiffForSameLocation = distanceDiffForSameLocationMeter;
+        this.ratioToSort = ratioToSort;
         initializeNeighbors();
     }
 
@@ -65,7 +71,9 @@ public class GreedyByNeighborsInsertion extends GreedyInsertion {
         };
         try {
             Collections.shuffle(jobsToInsert);
-            Collections.sort(jobsToInsert, withMostNeighborsComparator);
+            if (random.nextDouble() <= ratioToSort) {
+                Collections.sort(jobsToInsert, withMostNeighborsComparator);
+            }
         } catch (Exception e) {
             logger.error("failed to sort", e);
         }

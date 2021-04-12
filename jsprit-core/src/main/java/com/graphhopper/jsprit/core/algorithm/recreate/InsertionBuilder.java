@@ -81,6 +81,8 @@ public class InsertionBuilder {
 
     private double distanceDiffForNeighbors = 100;
 
+    private double ratioToSortJobsGreedyInsertion = 0;
+
     public InsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
         super();
         this.vrp = vrp;
@@ -91,6 +93,11 @@ public class InsertionBuilder {
 
     public InsertionBuilder setInsertionStrategy(Strategy strategy) {
         this.strategy = strategy;
+        return this;
+    }
+
+    public InsertionBuilder setRatioToSortJobsGreedyInsertion(double ratioToSortJobsGreedyInsertion) {
+        this.ratioToSortJobsGreedyInsertion = ratioToSortJobsGreedyInsertion;
         return this;
     }
 
@@ -215,7 +222,7 @@ public class InsertionBuilder {
         } else if (strategy.equals(Strategy.RANDOM)) {
             insertion = new RandomInsertion(costCalculator, vrp);
         } else if (strategy.equals(Strategy.GREEDY_BY_NEIGHBORS)) {
-            insertion = new GreedyByNeighborsInsertion(costCalculator, vrp, distanceDiffForNeighbors);
+            insertion = new GreedyByNeighborsInsertion(costCalculator, vrp, distanceDiffForNeighbors, ratioToSortJobsGreedyInsertion);
         }  else if (strategy.equals(Strategy.GREEDY_BY_DISTANCE)) {
             insertion = new GreedyInsertionByDistance(costCalculator, vrp, fleetManager);
         } else throw new IllegalStateException("you should never get here");

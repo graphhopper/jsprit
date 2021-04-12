@@ -33,7 +33,6 @@ import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceAndShipment
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectRandomly;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
-import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -137,7 +136,8 @@ public class Jsprit {
         STRING_L_MAX("string_lmax"),
         MIN_UNASSIGNED("min_unassigned"),
         PROPORTION_UNASSIGNED("proportion_unassigned"),
-        DISTANCE_DIFF_FOR_SAME_NEIGHBORHOOD("distance_diff_for_same_neighborhood");
+        DISTANCE_DIFF_FOR_SAME_NEIGHBORHOOD("distance_diff_for_same_neighborhood"),
+        RATIO_TO_SORT_JOBS_GREEDY_INSERTION("ratio_to_sort_jobs_greedy_insertion");
 
 
         String paraName;
@@ -266,6 +266,7 @@ public class Jsprit {
             defaults.put(Parameter.PROPORTION_UNASSIGNED.toString(), String.valueOf(1.0));
 
             defaults.put(Parameter.DISTANCE_DIFF_FOR_SAME_NEIGHBORHOOD.toString(), String.valueOf(100));
+            defaults.put(Parameter.RATIO_TO_SORT_JOBS_GREEDY_INSERTION.toString(), String.valueOf(.5));
 
             return defaults;
         }
@@ -705,6 +706,7 @@ public class Jsprit {
             .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
             .setActivityInsertionCostCalculator(activityInsertion)
             .setDistanceDiffForNeighbors(Double.valueOf(properties.getProperty(Parameter.DISTANCE_DIFF_FOR_SAME_NEIGHBORHOOD.toString())))
+            .setRatioToSortJobsGreedyInsertion(Double.valueOf(properties.getProperty(Parameter.RATIO_TO_SORT_JOBS_GREEDY_INSERTION.toString())))
             .build();
         greedyByNeighborsInsertion.setRandom(random);
 
