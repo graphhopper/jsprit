@@ -5,6 +5,7 @@ import com.graphhopper.jsprit.core.algorithm.ruin.JobNeighborhoodsFactory;
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceAndShipmentDistance;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.BreakForMultipleTimeWindows;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -43,9 +44,12 @@ public class GreedyByNeighborsInsertion extends GreedyInsertion {
         for (Job job : vrp.getJobs().values()) {
             Location location = getLocation(job);
             Iterator<Job> nearestNeighborsIterator = neighborhoods.getNearestNeighborsIterator(vrp.getJobs().size(), job);
-            HashSet<Job> nearestJobs = new HashSet<>();
+            List<Job> nearestJobs = new ArrayList<>();
             while (nearestNeighborsIterator.hasNext()) {
                 Job next = nearestNeighborsIterator.next();
+                if (next instanceof BreakForMultipleTimeWindows)
+                    continue;
+
                 if (distanceDiffForSameLocation >= vrp.getTransportCosts().getDistance(location, getLocation(next), 0, VehicleImpl.createNoVehicle()))
                     nearestJobs.add(next);
                 else break;
