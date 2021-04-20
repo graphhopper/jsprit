@@ -38,7 +38,7 @@ public class InsertionBuilder {
 
 
     public enum Strategy {
-        REGRET, BEST, RANDOM, GREEDY_BY_NEIGHBORS, GREEDY_BY_DISTANCE
+        REGRET, BEST, RANDOM, GREEDY_BY_NEIGHBORS, GREEDY_BY_DISTANCE, GREEDY_BY_AVERAGE
     }
 
     private VehicleRoutingProblem vrp;
@@ -82,6 +82,11 @@ public class InsertionBuilder {
     private double distanceDiffForNeighbors = 100;
 
     private double ratioToSortJobsGreedyInsertion = 0;
+
+    private double ratioToSelectNearest = .33;
+    private double ratioToSelectRandom = .33;
+    private double ratioToSelectFarthest = .33;
+    private int nJobsToSelectFrom = 3;
 
     public InsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
         super();
@@ -129,6 +134,26 @@ public class InsertionBuilder {
 
     public InsertionBuilder setLocalLevel() {
         local = true;
+        return this;
+    }
+
+    public InsertionBuilder setRatioToSelectNearest(double ratioToSelectNearest) {
+        this.ratioToSelectNearest = ratioToSelectNearest;
+        return this;
+    }
+
+    public InsertionBuilder setRatioToSelectRandom(double ratioToSelectRandom) {
+        this.ratioToSelectRandom = ratioToSelectRandom;
+        return this;
+    }
+
+    public InsertionBuilder setRatioToSelectFarthest(double ratioToSelectFarthest) {
+        this.ratioToSelectFarthest = ratioToSelectFarthest;
+        return this;
+    }
+
+    public InsertionBuilder setNJobsToSelectFrom(int nJobsToSelectFrom) {
+        this.nJobsToSelectFrom = nJobsToSelectFrom;
         return this;
     }
 
@@ -225,6 +250,8 @@ public class InsertionBuilder {
             insertion = new GreedyByNeighborsInsertion(costCalculator, vrp, distanceDiffForNeighbors, ratioToSortJobsGreedyInsertion);
         }  else if (strategy.equals(Strategy.GREEDY_BY_DISTANCE)) {
             insertion = new GreedyInsertionByDistance(costCalculator, vrp, fleetManager);
+        } else if (strategy.equals(Strategy.GREEDY_BY_AVERAGE)) {
+            insertion = new GreedyInsertionByAverage(costCalculator, vrp, fleetManager, ratioToSelectNearest, ratioToSelectRandom, ratioToSelectFarthest, nJobsToSelectFrom);
         } else throw new IllegalStateException("you should never get here");
         for (InsertionListener l : iListeners) insertion.addListener(l);
         return insertion;

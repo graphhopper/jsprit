@@ -89,7 +89,11 @@ public class Jsprit {
         STRING_REGRET("string_regret"),
         RANDOM("random"),
         GREEDY_BY_NEIGHBORS_REGRET("greedy_by_neighbors_regret"),
-        GREEDY_BY_DISTANCE_REGRET("greedy_by_distance_regret");
+        GREEDY_BY_DISTANCE_REGRET("greedy_by_distance_regret"),
+        GREEDY_BY_AVERAGE_REGRET("greedy_by_average_regret"),
+        GREEDY_BY_NEIGHBORS_REGRET_WORST("greedy_by_neighbors_regret_worst"),
+        GREEDY_BY_DISTANCE_REGRET_WORST("greedy_by_distance_regret_worst"),
+        GREEDY_BY_AVERAGE_REGRET_WORST("greedy_by_average_regret_worst");
 
         String strategyName;
 
@@ -137,7 +141,11 @@ public class Jsprit {
         MIN_UNASSIGNED("min_unassigned"),
         PROPORTION_UNASSIGNED("proportion_unassigned"),
         DISTANCE_DIFF_FOR_SAME_NEIGHBORHOOD("distance_diff_for_same_neighborhood"),
-        RATIO_TO_SORT_JOBS_GREEDY_INSERTION("ratio_to_sort_jobs_greedy_insertion");
+        RATIO_TO_SORT_JOBS_GREEDY_INSERTION("ratio_to_sort_jobs_greedy_insertion"),
+        RATIO_TO_SELECT_NEAREST("ratio_to_select_nearest"),
+        RATIO_TO_SELECT_RANDOM("ratio_to_select_random"),
+        RATIO_TO_SELECT_FARTHEST("ratio_to_select_farthest"),
+        NUMBER_OF_JOBS_TO_SELECT_FROM("number_of_jobs_to_select_from");
 
 
         String paraName;
@@ -216,7 +224,11 @@ public class Jsprit {
             defaults.put(Strategy.RANDOM.toString(), "0.0");
 
             defaults.put(Strategy.GREEDY_BY_NEIGHBORS_REGRET.toString(), "0.0");
+            defaults.put(Strategy.GREEDY_BY_NEIGHBORS_REGRET_WORST.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_DISTANCE_REGRET.toString(), "0.0");
+            defaults.put(Strategy.GREEDY_BY_DISTANCE_REGRET_WORST.toString(), "0.0");
+            defaults.put(Strategy.GREEDY_BY_AVERAGE_REGRET.toString(), "0.0");
+            defaults.put(Strategy.GREEDY_BY_AVERAGE_REGRET_WORST.toString(), "0.0");
 
             defaults.put(Parameter.STRING_K_MIN.toString(), "1");
             defaults.put(Parameter.STRING_K_MAX.toString(), "6");
@@ -267,6 +279,11 @@ public class Jsprit {
 
             defaults.put(Parameter.DISTANCE_DIFF_FOR_SAME_NEIGHBORHOOD.toString(), String.valueOf(100));
             defaults.put(Parameter.RATIO_TO_SORT_JOBS_GREEDY_INSERTION.toString(), String.valueOf(.5));
+
+            defaults.put(Parameter.RATIO_TO_SELECT_NEAREST.toString(), String.valueOf(.33));
+            defaults.put(Parameter.RATIO_TO_SELECT_RANDOM.toString(), String.valueOf(.33));
+            defaults.put(Parameter.RATIO_TO_SELECT_FARTHEST.toString(), String.valueOf(.33));
+            defaults.put(Parameter.NUMBER_OF_JOBS_TO_SELECT_FROM.toString(), String.valueOf(3));
 
             return defaults;
         }
@@ -710,6 +727,18 @@ public class Jsprit {
             .build();
         greedyByNeighborsInsertion.setRandom(random);
 
+        final AbstractInsertionStrategy greedyByAverageInsertion = (AbstractInsertionStrategy) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+            .setInsertionStrategy(InsertionBuilder.Strategy.GREEDY_BY_AVERAGE)
+            .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
+            .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
+            .setActivityInsertionCostCalculator(activityInsertion)
+            .setRatioToSelectNearest(Double.valueOf(properties.getProperty(Parameter.RATIO_TO_SELECT_NEAREST.toString())))
+            .setRatioToSelectRandom(Double.valueOf(properties.getProperty(Parameter.RATIO_TO_SELECT_RANDOM.toString())))
+            .setRatioToSelectFarthest(Double.valueOf(properties.getProperty(Parameter.RATIO_TO_SELECT_FARTHEST.toString())))
+            .setNJobsToSelectFrom(Integer.valueOf(properties.getProperty(Parameter.NUMBER_OF_JOBS_TO_SELECT_FROM.toString())))
+            .build();
+        greedyByAverageInsertion.setRandom(random);
+
         final AbstractInsertionStrategy greedyByDistanceFromDepotInsertion = (AbstractInsertionStrategy) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
             .setInsertionStrategy(InsertionBuilder.Strategy.GREEDY_BY_DISTANCE)
             .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
@@ -772,9 +801,18 @@ public class Jsprit {
 
         final SearchStrategy greedyByNeighborsStrategy = new SearchStrategy(Strategy.GREEDY_BY_NEIGHBORS_REGRET.toString(), new SelectRandomly(), acceptor, objectiveFunction);
         greedyByNeighborsStrategy.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_NEIGHBORS_REGRET.toString(), greedyByNeighborsInsertion, clusters));
+        final SearchStrategy greedyByNeighborsStrategyWorst = new SearchStrategy(Strategy.GREEDY_BY_NEIGHBORS_REGRET_WORST.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        greedyByNeighborsStrategy.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_NEIGHBORS_REGRET_WORST.toString(), greedyByNeighborsInsertion, worst));
 
         final SearchStrategy greedyByDistanceStrategy = new SearchStrategy(Strategy.GREEDY_BY_DISTANCE_REGRET.toString(), new SelectRandomly(), acceptor, objectiveFunction);
         greedyByDistanceStrategy.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_DISTANCE_REGRET.toString(), greedyByDistanceFromDepotInsertion, clusters));
+        final SearchStrategy greedyByDistanceStrategyWorst = new SearchStrategy(Strategy.GREEDY_BY_DISTANCE_REGRET_WORST.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        greedyByDistanceStrategy.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_DISTANCE_REGRET_WORST.toString(), greedyByDistanceFromDepotInsertion, worst));
+
+        final SearchStrategy greedyByAverageStrategy = new SearchStrategy(Strategy.GREEDY_BY_AVERAGE_REGRET.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        greedyByAverageStrategy.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_AVERAGE_REGRET.toString(), greedyByAverageInsertion, clusters));
+        final SearchStrategy greedyByAverageStrategyWorst = new SearchStrategy(Strategy.GREEDY_BY_AVERAGE_REGRET_WORST.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        greedyByAverageStrategy.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_AVERAGE_REGRET_WORST.toString(), greedyByAverageInsertion, worst));
 
         PrettyAlgorithmBuilder prettyBuilder = PrettyAlgorithmBuilder.newInstance(vrp, vehicleFleetManager, stateManager, constraintManager);
         prettyBuilder.setRandom(random);
@@ -794,7 +832,11 @@ public class Jsprit {
             .withStrategy(stringRegret, toDouble(getProperty(Strategy.STRING_REGRET.toString())))
             .withStrategy(randomStrategy, toDouble(getProperty(Strategy.RANDOM.toString())))
             .withStrategy(greedyByNeighborsStrategy, toDouble(getProperty(Strategy.GREEDY_BY_NEIGHBORS_REGRET.toString())))
-            .withStrategy(greedyByDistanceStrategy, toDouble(getProperty(Strategy.GREEDY_BY_DISTANCE_REGRET.toString())));
+            .withStrategy(greedyByDistanceStrategy, toDouble(getProperty(Strategy.GREEDY_BY_DISTANCE_REGRET.toString())))
+            .withStrategy(greedyByAverageStrategy, toDouble(getProperty(Strategy.GREEDY_BY_AVERAGE_REGRET.toString())))
+            .withStrategy(greedyByNeighborsStrategyWorst, toDouble(getProperty(Strategy.GREEDY_BY_NEIGHBORS_REGRET_WORST.toString())))
+            .withStrategy(greedyByDistanceStrategyWorst, toDouble(getProperty(Strategy.GREEDY_BY_DISTANCE_REGRET_WORST.toString())))
+            .withStrategy(greedyByAverageStrategyWorst, toDouble(getProperty(Strategy.GREEDY_BY_AVERAGE_REGRET_WORST.toString())));
 
         for (SearchStrategy customStrategy : customStrategies.keySet()) {
             prettyBuilder.withStrategy(customStrategy, customStrategies.get(customStrategy));
