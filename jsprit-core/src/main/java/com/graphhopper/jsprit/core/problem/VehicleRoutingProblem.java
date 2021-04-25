@@ -276,6 +276,9 @@ public class VehicleRoutingProblem {
                     if (!uniqueBreakIds.add(v.getBreak().getId()))
                         throw new IllegalArgumentException("The vehicle routing roblem already contains a vehicle break with id " + v.getBreak().getId() + ". Please choose unique ids for each vehicle break.");
                     hasBreaks = true;
+                    if (activityMap.containsKey(v.getBreak()))
+                        continue;
+
                     List<AbstractActivity> breakActivities = jobActivityFactory.createActivities(v.getBreak());
                     if (breakActivities.isEmpty())
                         throw new IllegalArgumentException("At least one activity for break needs to be created by activityFactory.");
