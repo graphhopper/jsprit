@@ -111,7 +111,8 @@ public class GreedyInsertionByAverage extends GreedyInsertion {
             return selectRouteAndJob(jobsToInsert, vehicles);
         }
 
-        Coordinate center = getCenter(vehicleRoute.getTourActivities().getJobs());
+        Coordinate center = getRouteCenter(vehicleRoute.getTourActivities().getJobs());
+
         if (center == null) {
             return getJobToInsertToRoute(jobsToInsert, random.nextDouble(), vehicleRoute);
         }
@@ -160,7 +161,7 @@ public class GreedyInsertionByAverage extends GreedyInsertion {
         return null;
     }
 
-    private static Coordinate getCenter(Collection<Job> jobs) {
+    public static Coordinate getRouteCenter(Collection<Job> jobs) {
         double sumLat = 0, sumLng = 0, sumCoordinates = 0;
         for (Job job : jobs) {
             Location jobLocation = getJobLocation(job);
@@ -193,7 +194,7 @@ public class GreedyInsertionByAverage extends GreedyInsertion {
         return jobLocation == null ? transportTime : transportCosts.getTransportTime(vehicle.getStartLocation(), jobLocation, vehicle.getEarliestDeparture(), DriverImpl.noDriver(), vehicle);
     }
 
-    static Location getJobLocation(Job job) {
+    public static Location getJobLocation(Job job) {
         if (job instanceof Service)
             return ((Service) job).getLocation();
         if (job instanceof Shipment)
