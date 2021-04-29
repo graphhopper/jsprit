@@ -117,7 +117,7 @@ public class GreedyByNeighborsInsertion extends GreedyInsertion {
                 }
             }
         } else {
-            logger.error("this should not happen route {} jobsThaHavToBeInSameRoute contains key {}", route, jobsThaHaveToBeInSameRoute.containsKey(withMostNeighbors.getId()));
+            logger.warn("this should not happen route {} jobsThaHavToBeInSameRoute contains key {}", route, withMostNeighbors.getId());
         }
 
         return failedToInsert;

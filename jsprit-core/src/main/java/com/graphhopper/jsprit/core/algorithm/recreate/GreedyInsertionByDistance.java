@@ -44,12 +44,14 @@ public class GreedyInsertionByDistance extends GreedyInsertion {
 
     void initialize(VehicleRoutingProblem vehicleRoutingProblem) {
         final VehicleRoutingTransportCosts transportCosts = vehicleRoutingProblem.getTransportCosts();
-        for (final Vehicle vehicle : vehicleRoutingProblem.getVehicles()) {
+        Collection<Vehicle> vehicles = new HashSet<>(vehicleRoutingProblem.getVehicles());
+        for (final Vehicle vehicle : vehicles) {
             if (nearestJobByVehicleStartLocation.containsKey(vehicle.getStartLocation().getCoordinate()))
                 continue;
 
             final Map<String, Double> routingTimes = new HashMap<>();
-            for (Job job : vehicleRoutingProblem.getJobsInclusiveInitialJobsInRoutes().values()) {
+            ArrayList<Job> jobs = new ArrayList<>(vehicleRoutingProblem.getJobsInclusiveInitialJobsInRoutes().values());
+            for (Job job : jobs) {
                 routingTimes.put(job.getId(), transportCosts.getDistance(vehicle.getStartLocation(), getLocation(job), vehicle.getEarliestDeparture(), vehicle));
             }
 
@@ -59,7 +61,6 @@ public class GreedyInsertionByDistance extends GreedyInsertion {
                     return Double.compare(routingTimes.get(job1.getId()), routingTimes.get(job2.getId()));
                 }
             };
-            ArrayList<Job> jobs = new ArrayList<>(vehicleRoutingProblem.getJobsInclusiveInitialJobsInRoutes().values());
             try {
                 Collections.sort(jobs, comparator);
             } catch (Exception e) {
