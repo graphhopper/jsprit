@@ -152,7 +152,7 @@ public class GreedyInsertionByAverage extends GreedyInsertion {
             } else {
                 job = jobsToInsert.get(random.nextInt(jobsToInsert.size()));
             }
-            InsertionData insertionData = bestInsertionCalculator.getInsertionData(route, job, route.getVehicle(), route.getVehicle().getEarliestDeparture(), DriverImpl.noDriver(), Double.MAX_VALUE);
+            InsertionData insertionData = bestInsertionCalculator.getInsertionData(route, job, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
             if (!(insertionData instanceof InsertionData.NoInsertionFound)) {
                 return new RouteAndJob(job, route, insertionData);
             }

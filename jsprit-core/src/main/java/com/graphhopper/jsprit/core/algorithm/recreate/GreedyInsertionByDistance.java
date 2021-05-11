@@ -127,7 +127,7 @@ public class GreedyInsertionByDistance extends GreedyInsertion {
         while (jobNeighborsIterator.hasNext()) {
             Job job = jobNeighborsIterator.next();
             if (jobsToInsert.contains(job)) {
-                InsertionData iData = bestInsertionCalculator.getInsertionData(route, job, route.getVehicle(), NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
+                InsertionData iData = bestInsertionCalculator.getInsertionData(route, job, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
                 if (!(iData instanceof InsertionData.NoInsertionFound)) {
                     super.insertJob(job, iData, route);
                     jobsToInsert.remove(job);
