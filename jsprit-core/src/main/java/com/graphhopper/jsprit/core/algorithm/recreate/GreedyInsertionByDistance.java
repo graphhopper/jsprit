@@ -22,6 +22,7 @@ public class GreedyInsertionByDistance extends GreedyInsertion {
     Map<Coordinate, List<Job>> nearestJobByVehicleStartLocation = new HashMap<>();
     private final JobNeighborhoods neighborhoods;
     private final int maxJobs;
+    private final Map<VehicleTypeKey, Boolean> vehicleTypeKeyBooleanMap = new HashMap<>();
 
     public GreedyInsertionByDistance(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, VehicleFleetManager fleetManager) {
         super(jobInsertionCalculator, vehicleRoutingProblem);
@@ -29,6 +30,9 @@ public class GreedyInsertionByDistance extends GreedyInsertion {
         this.maxJobs = vehicleRoutingProblem.getJobsInclusiveInitialJobsInRoutes().size();
         neighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vehicleRoutingProblem, new AvgServiceAndShipmentDistance(vehicleRoutingProblem.getTransportCosts()));
         neighborhoods.initialise();
+        for (Vehicle vehicle : vehicleRoutingProblem.getVehicles())
+            vehicleTypeKeyBooleanMap.put(vehicle.getVehicleTypeIdentifier(), false);
+
         initialize(vehicleRoutingProblem);
     }
 
@@ -75,15 +79,21 @@ public class GreedyInsertionByDistance extends GreedyInsertion {
         List<Job> jobsToInsert = new ArrayList<>(unassignedJobs);
         Set<Job> failedToAssign = new HashSet<>(insertBreaks(vehicleRoutes, jobsToInsert));
         List<VehicleRoute> openRoutes = new ArrayList<>(vehicleRoutes);
-
+        final Map<VehicleTypeKey, Boolean> lockedVehicleTypes = new HashMap<>(this.vehicleTypeKeyBooleanMap);
         while (!jobsToInsert.isEmpty()) {
             if (openRoutes.isEmpty()) {
                 List<Vehicle> availableVehicles = new ArrayList<>(fleetManager.getAvailableVehicles());
+                Iterator<Vehicle> vehicleIterator = availableVehicles.iterator();
+                while (vehicleIterator.hasNext()) {
+                    Vehicle vehicle = vehicleIterator.next();
+                    if (lockedVehicleTypes.get(vehicle.getVehicleTypeIdentifier()))
+                        vehicleIterator.remove();
+                }
+
                 if (availableVehicles.isEmpty()) {
                     failedToAssign.addAll(jobsToInsert);
                     return failedToAssign;
                 }
-
                 Vehicle nextVehicle = availableVehicles.get(random.nextInt(availableVehicles.size()));
                 fleetManager.lock(nextVehicle);
                 VehicleRoute newRoute = VehicleRoute.Builder.newInstance(nextVehicle).build();
@@ -105,7 +115,9 @@ public class GreedyInsertionByDistance extends GreedyInsertion {
                     nearestJob = routeJobs.get(random.nextInt(routeJobs.size()));
                 } while (nearestJob instanceof Break);
             }
-            insertJobWithNearest(openRoutes, nextRoute, nearestJob, jobsToInsert);
+            boolean inserted = insertJobWithNearest(openRoutes, nextRoute, nearestJob, jobsToInsert);
+            if (!inserted)
+                lockedVehicleTypes.put(nextRoute.getVehicle().getVehicleTypeIdentifier(), true);
         }
         return failedToAssign;
     }
@@ -114,12 +126,14 @@ public class GreedyInsertionByDistance extends GreedyInsertion {
         return nextRoute.getTourActivities().getJobs().size() == 1 && nextRoute.getTourActivities().getJobs().iterator().next() instanceof Break;
     }
 
-    private void insertJobWithNearest(Collection<VehicleRoute> openRoutes, VehicleRoute route, Job jobToInsert, List<Job> jobsToInsert) {
+    private boolean insertJobWithNearest(Collection<VehicleRoute> openRoutes, VehicleRoute route, Job jobToInsert, List<Job> jobsToInsert) {
+        boolean inserted = false;
         if (jobsToInsert.contains(jobToInsert)) {
             InsertionData iData = bestInsertionCalculator.getInsertionData(route, jobToInsert, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
             if (!(iData instanceof InsertionData.NoInsertionFound)) {
                 super.insertJob(jobToInsert, iData, route);
                 jobsToInsert.remove(jobToInsert);
+                inserted = true;
             }
         }
 
@@ -131,9 +145,11 @@ public class GreedyInsertionByDistance extends GreedyInsertion {
                 if (!(iData instanceof InsertionData.NoInsertionFound)) {
                     super.insertJob(job, iData, route);
                     jobsToInsert.remove(job);
+                    inserted = true;
                 }
             }
         }
         openRoutes.remove(route);
+        return inserted;
     }
 }

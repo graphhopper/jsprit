@@ -242,6 +242,67 @@ public class GreedyInsertionByAverageTest {
         }
     }
 
+    @Test
+    public void solutionWithUnassignedJob() {
+        Service s1 = Service.Builder.newInstance("s1").addSizeDimension(0,1).setLocation(Location.newInstance(0, 10)).build();
+        Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0,1).setLocation(Location.newInstance(0, -10)).build();
+        Service s3 = Service.Builder.newInstance("s3").addSizeDimension(0,1).setLocation(Location.newInstance(0, -11)).build();
+        Service s4 = Service.Builder.newInstance("s4").addSizeDimension(0,10).setLocation(Location.newInstance(0, 11)).build();
+
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0,2).build();
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setType(type).setStartLocation(Location.newInstance(0, 10)).build();
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocation(Location.newInstance(0, -10)).build();
+        final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addJob(s4)
+            .addVehicle(v1).addVehicle(v2).setFleetSize(VehicleRoutingProblem.FleetSize.INFINITE).build();
+
+        final StateManager stateManager = new StateManager(vrp);
+        ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
+
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
+            .addCoreStateAndConstraintStuff(true)
+            .setProperty(Jsprit.Strategy.GREEDY_BY_AVERAGE_REGRET, "1")
+            .setStateAndConstraintManager(stateManager, constraintManager)
+            .buildAlgorithm();
+
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
+        assertTrue(solution.getUnassignedJobs().contains(s4));
+    }
+
+    @Test
+    public void finiteWithVehicleWithoutRoute() {
+        HashSet<Object> skills1 = new HashSet<>();
+        skills1.add("a");
+        HashSet<Object> skills2 = new HashSet<>();
+        skills2.add("b");
+        Service s1 = Service.Builder.newInstance("s1").addSizeDimension(0,1).addAllRequiredSkills(skills1).setLocation(Location.newInstance(0, 10)).build();
+        Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0,1).addAllRequiredSkills(skills1).setLocation(Location.newInstance(0, -10)).build();
+        Service s3 = Service.Builder.newInstance("s3").addSizeDimension(0,1).addAllRequiredSkills(skills1).setLocation(Location.newInstance(0, -10)).build();
+        Service s4 = Service.Builder.newInstance("s4").addSizeDimension(0,1).addAllRequiredSkills(skills2).setLocation(Location.newInstance(0, -11)).build();
+        Service s5 = Service.Builder.newInstance("s5").addSizeDimension(0,1).addAllRequiredSkills(skills2).setLocation(Location.newInstance(0, 11)).build();
+        Service s6 = Service.Builder.newInstance("s6").addSizeDimension(0,1).addAllRequiredSkills(skills2).setLocation(Location.newInstance(0, 11)).build();
+
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0,2).build();
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setType(type)
+            .addSkill("a").setStartLocation(Location.newInstance(0, 10)).build();
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").addSkill("b").setType(type).setStartLocation(Location.newInstance(0, -10)).build();
+        VehicleImpl v3 = VehicleImpl.Builder.newInstance("v3").setType(type).setStartLocation(Location.newInstance(0, -10)).build();
+        final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addJob(s4).addJob(s5).addJob(s6)
+            .addVehicle(v1).addVehicle(v2).addVehicle(v3).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
+
+        final StateManager stateManager = new StateManager(vrp);
+        ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
+
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
+            .addCoreStateAndConstraintStuff(true)
+            .setProperty(Jsprit.Strategy.GREEDY_BY_AVERAGE_REGRET, "1")
+            .setStateAndConstraintManager(stateManager, constraintManager)
+            .buildAlgorithm();
+
+        VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
+        assertEquals(2, solution.getRoutes().size());
+        assertEquals(2, solution.getUnassignedJobs().size());
+    }
+
     static JobInsertionCostsCalculator getCalculator(final VehicleRoutingProblem vrp) {
         return new JobInsertionCostsCalculator() {
 
