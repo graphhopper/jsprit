@@ -139,15 +139,37 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 //			log.info(newAct + " arrTime=" + arrTimeAtNewAct);
 
         double arrTimeAtNextAct = endTimeAtNewAct + routingCosts.getTransportTime(newAct.getLocation(), nextActLocation, endTimeAtNewAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
-
-			/*
-             *  |--- newAct ---|
-			 *                       		                 |--- vehicle's arrival @nextAct
-			 *        latest arrival of vehicle @nextAct ---|
-			 */
+        /*
+         *  |--- newAct ---|
+         *                       		                 |--- vehicle's arrival @nextAct
+         *        latest arrival of vehicle @nextAct ---|
+         */
         if (arrTimeAtNextAct > latestArrTimeAtNextAct) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
+
+        if (savingsInNextActivityDuration != 0) {
+            double depTimeAtNextAct = Math.max(nextAct.getTheoreticalEarliestOperationStartTime(), arrTimeAtNextAct) +
+                activityCosts.getActivityDuration(newAct, nextAct, arrTimeAtNextAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            return validateNotLateToActivityAfterNext(iFacts, nextAct, depTimeAtNextAct);
+        }
+        return ConstraintsStatus.FULFILLED;
+    }
+
+    ConstraintsStatus validateNotLateToActivityAfterNext(JobInsertionContext iFacts, TourActivity nextAct, double depTimeAtNextAct) {
+        TourActivity nextAfterNext = iFacts.getRoute().getEnd();
+        Double latestArrTimeAtNextAfterNextAct = iFacts.getNewVehicle().getLatestArrival();
+        if (iFacts.getActivityContext().getInsertionIndex() + 1 < iFacts.getRoute().getActivities().size()) {
+            nextAfterNext = iFacts.getRoute().getActivities().get(iFacts.getActivityContext().getInsertionIndex() + 1);
+            latestArrTimeAtNextAfterNextAct = this.states.getActivityState(nextAfterNext, iFacts.getNewVehicle(), InternalStates.LATEST_OPERATION_START_TIME, Double.class);
+            if (latestArrTimeAtNextAfterNextAct == null)
+                latestArrTimeAtNextAfterNextAct = nextAfterNext.getTheoreticalLatestOperationStartTime();
+        }
+        double arrTimeAtNextAfterNextAct = depTimeAtNextAct +
+            routingCosts.getTransportTime(nextAct.getLocation(), nextAfterNext.getLocation(), depTimeAtNextAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
+
+        if (arrTimeAtNextAfterNextAct > latestArrTimeAtNextAfterNextAct)
+            return ConstraintsStatus.NOT_FULFILLED;
         return ConstraintsStatus.FULFILLED;
     }
 }

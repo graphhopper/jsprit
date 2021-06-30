@@ -37,12 +37,12 @@ import com.graphhopper.jsprit.core.problem.vehicle.*;
 import com.graphhopper.jsprit.core.util.CostFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * unit tests to test vehicle dependent time-windows
@@ -375,9 +375,38 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
 
         when(routeAndActivityStateGetter.getActivityState(nextAct, vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class)).thenReturn(vehicleLatestArrival - travelTime - nextActivitiesDuration);
 
-        final VehicleDependentTimeWindowConstraints timeWindowConstraints = new VehicleDependentTimeWindowConstraints(routeAndActivityStateGetter, getTransportCosts(travelTime), getActivityCost(fixedCostAtSameLocation));
-
+        final VehicleDependentTimeWindowConstraints timeWindowConstraints = spy(new VehicleDependentTimeWindowConstraints(routeAndActivityStateGetter, getTransportCosts(travelTime), getActivityCost(fixedCostAtSameLocation)));
+        doReturn(HardActivityConstraint.ConstraintsStatus.FULFILLED).when(timeWindowConstraints).validateNotLateToActivityAfterNext(iFacts, nextAct, 5+travelTime+nextActivitiesDuration+0+fixedCostAtSameLocation);
         assertEquals(timeWindowConstraints.fulfilled(iFacts, prevAct, newAct, nextAct, 5.0), HardActivityConstraint.ConstraintsStatus.FULFILLED);
+    }
+
+    @Test
+    public void testSquashNotEndLateToNext () {
+        final double fixedCostAtSameLocation = random.nextDouble(),
+            travelTime = random.nextDouble(),
+            firstActDuration = 5, nextActivitiesDuration = 4.0,
+            vehicleLatestArrival = firstActDuration + nextActivitiesDuration + fixedCostAtSameLocation + travelTime * 3;
+
+        Location locationFirst = Location.newInstance(random.nextDouble(), random.nextDouble());
+        Location locationSecond = Location.newInstance(random.nextDouble(), random.nextDouble());
+
+        Vehicle vehicle = mock(Vehicle.class);
+        when(vehicle.getLatestArrival()).thenReturn(vehicleLatestArrival);
+
+        JobInsertionContext iFacts = mock(JobInsertionContext.class);
+        when(iFacts.getNewVehicle()).thenReturn(vehicle);
+
+        RouteAndActivityStateGetter routeAndActivityStateGetter = mock(RouteAndActivityStateGetter.class);
+
+        TourActivity prevAct = getTourActivity(.0, firstActDuration, firstActDuration, locationFirst);
+        TourActivity newAct = getTourActivity(firstActDuration, firstActDuration + nextActivitiesDuration + fixedCostAtSameLocation + travelTime * 2, nextActivitiesDuration, locationSecond);
+        TourActivity nextAct = getTourActivity(firstActDuration, firstActDuration + nextActivitiesDuration + fixedCostAtSameLocation + travelTime * 2, nextActivitiesDuration, locationSecond);
+
+        when(routeAndActivityStateGetter.getActivityState(nextAct, vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class)).thenReturn(vehicleLatestArrival - travelTime - nextActivitiesDuration);
+
+        final VehicleDependentTimeWindowConstraints timeWindowConstraints = spy(new VehicleDependentTimeWindowConstraints(routeAndActivityStateGetter, getTransportCosts(travelTime), getActivityCost(fixedCostAtSameLocation)));
+        doReturn(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED).when(timeWindowConstraints).validateNotLateToActivityAfterNext(iFacts, nextAct, 5+travelTime+nextActivitiesDuration+0+fixedCostAtSameLocation);
+        assertEquals(timeWindowConstraints.fulfilled(iFacts, prevAct, newAct, nextAct, 5.0), HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED);
     }
 
     @Test
