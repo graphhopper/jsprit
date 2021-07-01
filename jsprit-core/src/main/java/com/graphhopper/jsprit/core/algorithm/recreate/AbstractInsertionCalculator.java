@@ -18,11 +18,13 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
 import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakForMultipleTimeWindowsActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 import java.util.ArrayList;
@@ -90,6 +92,15 @@ abstract class AbstractInsertionCalculator implements JobInsertionCostsCalculato
             }
         }
         return ConstraintsStatus.FULFILLED;
+    }
+
+
+    protected TourActivity getBreakCopyWithUpdatedLocation(Location location, TourActivity activity) {
+        final BreakForMultipleTimeWindowsActivity breakForMultipleTimeWindowsActivity = (BreakForMultipleTimeWindowsActivity) activity.duplicate();
+        breakForMultipleTimeWindowsActivity.setLocation(Location.Builder.newInstance()
+            .setId(breakForMultipleTimeWindowsActivity.getJob().getLocation().getId())
+            .setCoordinate(location.getCoordinate()).build());
+        return breakForMultipleTimeWindowsActivity;
     }
 
 }

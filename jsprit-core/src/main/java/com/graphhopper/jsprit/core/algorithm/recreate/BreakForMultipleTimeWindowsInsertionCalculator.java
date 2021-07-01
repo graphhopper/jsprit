@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 
-final class BreakForMultipleTimeWindowsInsertionCalculator implements JobInsertionCostsCalculator {
+final class BreakForMultipleTimeWindowsInsertionCalculator extends AbstractInsertionCalculator {
     private static final Logger logger = LoggerFactory.getLogger(BreakInsertionCalculator.class);
 
     private ConstraintManager constraintManager;
@@ -102,19 +102,24 @@ final class BreakForMultipleTimeWindowsInsertionCalculator implements JobInserti
                 nextAct = end;
                 tourEnd = true;
             }
+            TourActivity next = nextAct;
             boolean breakThis = true;
             final Location location = Location.Builder.newInstance().setId(breakAct2Insert.getJob().getLocation().getId()).setCoordinate(prevAct.getLocation().getCoordinate()).build();
             breakAct2Insert.setLocation(location);
             breakAct2Insert.setTheoreticalEarliestOperationStartTime(breakToInsert.getTimeWindow().getStart());
             breakAct2Insert.setTheoreticalLatestOperationStartTime(breakToInsert.getTimeWindow().getEnd());
+
+            if (nextAct instanceof BreakForMultipleTimeWindowsActivity) {
+                next = getBreakCopyWithUpdatedLocation(location, nextAct);
+            }
             ActivityContext activityContext = new ActivityContext();
             activityContext.setInsertionIndex(actIndex);
             insertionContext.setActivityContext(activityContext);
-            HardActivityConstraint.ConstraintsStatus status = constraintManager.fulfilled(insertionContext, prevAct, breakAct2Insert, nextAct, prevActStartTime);
+            HardActivityConstraint.ConstraintsStatus status = constraintManager.fulfilled(insertionContext, prevAct, breakAct2Insert, next, prevActStartTime);
             if (status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED)) {
                 //from job2insert induced costs at activity level
-                double additionalICostsAtActLevel = constraintManager.getCosts(insertionContext, prevAct, breakAct2Insert, nextAct, prevActStartTime);
-                double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, breakAct2Insert, prevActStartTime);
+                double additionalICostsAtActLevel = constraintManager.getCosts(insertionContext, prevAct, breakAct2Insert, next, prevActStartTime);
+                double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, next, breakAct2Insert, prevActStartTime);
                 if (additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts < bestCost) {
                     bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
                     insertionIndex = actIndex;
@@ -125,8 +130,8 @@ final class BreakForMultipleTimeWindowsInsertionCalculator implements JobInserti
                 breakThis = false;
             }
 
-            double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
-            prevActStartTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(prevAct, nextAct,nextActArrTime,newDriver,newVehicle);
+            double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(prevAct.getLocation(), next.getLocation(), prevActStartTime, newDriver, newVehicle);
+            prevActStartTime = Math.max(nextActArrTime, next.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(prevAct, next,nextActArrTime,newDriver,newVehicle);
             prevAct = nextAct;
             actIndex++;
             if (breakThis) break;
