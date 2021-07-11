@@ -41,8 +41,8 @@ public class RuinFarthest extends AbstractRuinStrategy {
 
         for (int i = 0 ; i < jobs.size() && nOfJobs2BeRemoved > 0; ++i, --nOfJobs2BeRemoved) {
             Job job = jobs.get(i);
-            removeJob(job, jobToRoute.get(job));
-            unassignedJobs.add(job);
+            if (removeJob(job, jobToRoute.get(job)))
+                unassignedJobs.add(job);
         }
 
         return unassignedJobs;
@@ -77,7 +77,8 @@ public class RuinFarthest extends AbstractRuinStrategy {
                     nOfJobs2BeRemoved -= jobs.size();
                     unassignedJobs.addAll(jobs);
                     for (Job job : jobs)
-                        removeJob(job, vehicleRoutes);
+                        if (removeJob(job, vehicleRoutes))
+                            unassignedJobs.add(job);
                 }
             }
         }
