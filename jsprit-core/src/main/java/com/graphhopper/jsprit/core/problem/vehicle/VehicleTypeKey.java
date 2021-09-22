@@ -32,7 +32,7 @@ import java.util.*;
  */
 public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
 
-    private final static String VEHICLE_ID_SKILL_PREFIX = "#vehicleId#_";
+    private final static String VEHICLE_ID_SKILL_PREFIX = "#vehicle_id#_";
 
     public final String type;
     public final String startLocationId;
@@ -65,7 +65,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
     private Skills getSkillsWithoutVehicleId(Skills skills){
         final Set<String> skillsWithoutVehicleId = new HashSet<>();
         for (String skill : skills.values()) {
-            if (!skill.startsWith(VEHICLE_ID_SKILL_PREFIX)) {
+            if (!skill.toLowerCase().startsWith(VEHICLE_ID_SKILL_PREFIX)) {
                 skillsWithoutVehicleId.add(skill);
             }
         }
