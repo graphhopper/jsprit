@@ -1,6 +1,6 @@
 jsprit is licensed under the Apache license, Version 2.0
 
-Copyright 2012 - 2016 GraphHopper GmbH
+Copyright 2012 - 2021 GraphHopper GmbH
 
 The jsprit-core module includes the following software:
 
