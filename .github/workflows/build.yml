@@ -11,10 +11,11 @@ jobs:
 
         steps:
             -   uses: actions/checkout@v2
-            -   name: Set up JDK 11
+            -   name: Set up Java
                 uses: actions/setup-java@v2
                 with:
-                    java-version: 1.8
+                    java-version: '8'
+                    distribution: 'zulu'
                     cache: maven
             -   name: Build with Maven
                 run: mvn --batch-mode --update-snapshots verify
