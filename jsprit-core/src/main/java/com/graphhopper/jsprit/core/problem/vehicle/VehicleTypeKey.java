@@ -19,12 +19,9 @@ package com.graphhopper.jsprit.core.problem.vehicle;
 
 import com.graphhopper.jsprit.core.problem.AbstractVehicle;
 import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
+import java.util.*;
 
 /**
  * Key to identify similar vehicles
@@ -34,6 +31,8 @@ import java.util.Set;
  * @author stefan
  */
 public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
+
+    private final static String VEHICLE_ID_SKILL_PREFIX = "#vehicle_id#_";
 
     public final String type;
     public final String startLocationId;
@@ -54,13 +53,23 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         this.endLocationId = endLocationId;
         this.earliestStart = earliestStart;
         this.latestEnd = latestEnd;
-        this.skills = skills;
+        this.skills = getSkillsWithoutVehicleId(skills);
         this.returnToDepot = returnToDepot;
         this.userData = userData;
         this.earliestBreakStart = earliestBreakStart;
         this.latestBreakStart = latestBreakStart;
         this.breakDuration = breakDuration;
         this.prohibitedTasks.addAll(prohibitedTasks);
+    }
+
+    private Skills getSkillsWithoutVehicleId(Skills skills){
+        final Set<String> skillsWithoutVehicleId = new HashSet<>();
+        for (String skill : skills.values()) {
+            if (!skill.toLowerCase().startsWith(VEHICLE_ID_SKILL_PREFIX)) {
+                skillsWithoutVehicleId.add(skill);
+            }
+        }
+        return Skills.Builder.newInstance().addAllSkills(skillsWithoutVehicleId).build();
     }
 
     public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, Collection<String> prohibitedTasks, boolean returnToDepot, Object userData) {
