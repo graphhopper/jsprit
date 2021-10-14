@@ -151,7 +151,8 @@ public class Jsprit {
         RATIO_TO_SELECT_RANDOM("ratio_to_select_random"),
         RATIO_TO_SELECT_FARTHEST("ratio_to_select_farthest"),
         NUMBER_OF_JOBS_TO_SELECT_FROM("number_of_jobs_to_select_from"),
-        RATIO_IDLE_ROUTE_TO_BE_REMOVED("ratio_idle_route_to_be_removed");
+        RATIO_IDLE_ROUTE_TO_BE_REMOVED("ratio_idle_route_to_be_removed"),
+        RATIO_IDLE_ROUTE_TO_BE_REMOVED_FINAL_STEP("ratio_idle_route_to_be_removed_final_step");
 
 
         String paraName;
@@ -296,6 +297,7 @@ public class Jsprit {
             defaults.put(Parameter.RATIO_TO_SELECT_FARTHEST.toString(), String.valueOf(.33));
             defaults.put(Parameter.NUMBER_OF_JOBS_TO_SELECT_FROM.toString(), String.valueOf(3));
             defaults.put(Parameter.RATIO_IDLE_ROUTE_TO_BE_REMOVED.toString(), String.valueOf(0.9));
+            defaults.put(Parameter.RATIO_IDLE_ROUTE_TO_BE_REMOVED_FINAL_STEP.toString(), String.valueOf(0.95));
 
             return defaults;
         }
@@ -602,7 +604,9 @@ public class Jsprit {
             random)
         );
 
-        farthest = farthest == null ? new RuinFarthest(vrp, toDouble(properties.getProperty(Parameter.RATIO_IDLE_ROUTE_TO_BE_REMOVED.toString()))) : farthest;
+        farthest = farthest == null ? new RuinFarthest(vrp,
+            toDouble(properties.getProperty(Parameter.RATIO_IDLE_ROUTE_TO_BE_REMOVED.toString())),
+            toDouble(properties.getProperty(Parameter.RATIO_IDLE_ROUTE_TO_BE_REMOVED_FINAL_STEP.toString()))) : farthest;
         farthest.setRandom(random);
         farthest.setRuinShareFactory(new RuinShareFactoryImpl(
             toInteger(properties.getProperty(Parameter.FARTHEST_MIN_SHARE.toString())),

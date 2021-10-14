@@ -4,6 +4,7 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.util.Coordinate;
 
 import java.util.*;
@@ -13,10 +14,12 @@ import static com.graphhopper.jsprit.core.algorithm.recreate.GreedyInsertionByAv
 
 public class RuinFarthest extends AbstractRuinStrategy {
     private final double percentileOfFreeTimeRouteToBeRemoved;
+    private final double percentileOfFreeTimeRouteToBeRemovedFinalStep;
 
-    public RuinFarthest(VehicleRoutingProblem vrp, double percentileOfFreeTimeRouteToBeRemoved) {
+    public RuinFarthest(VehicleRoutingProblem vrp, double percentileOfFreeTimeRouteToBeRemoved, double percentileOfFreeTimeRouteToBeRemovedFinalStep) {
         super(vrp);
         this.percentileOfFreeTimeRouteToBeRemoved = percentileOfFreeTimeRouteToBeRemoved;
+        this.percentileOfFreeTimeRouteToBeRemovedFinalStep = percentileOfFreeTimeRouteToBeRemovedFinalStep;
     }
 
     @Override
@@ -27,7 +30,7 @@ public class RuinFarthest extends AbstractRuinStrategy {
 
     private List<Job> ruin(List<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved) {
         List<Job> unassignedJobs = new ArrayList<>();
-        nOfJobs2BeRemoved = removeRoutesWithFreeTimesExceedingMaxRatio(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs);
+        nOfJobs2BeRemoved = removeRoutesWithFreeTimesExceedingMaxRatio(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs, false);
 
         final Map<Job, VehicleRoute> jobToRoute = new HashMap<>();
         final Map<Job, Double> distanceFromCenter = getDistanceFromRouteCenter(vehicleRoutes, jobToRoute);
@@ -44,7 +47,7 @@ public class RuinFarthest extends AbstractRuinStrategy {
             if (removeJob(job, jobToRoute.get(job)))
                 unassignedJobs.add(job);
         }
-
+        removeRoutesWithFreeTimesExceedingMaxRatio(vehicleRoutes, nOfJobs2BeRemoved, unassignedJobs, true);
         return unassignedJobs;
     }
 
@@ -67,20 +70,22 @@ public class RuinFarthest extends AbstractRuinStrategy {
         return distanceFromCenter;
     }
 
-    private int removeRoutesWithFreeTimesExceedingMaxRatio(List<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved, List<Job> unassignedJobs) {
+    private int removeRoutesWithFreeTimesExceedingMaxRatio(List<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved, List<Job> unassignedJobs, boolean force) {
         if (vehicleRoutes.size() > 1) {
             final Map<VehicleRoute, Double> idleTimes = getRouteIdleTimes(vehicleRoutes);
-            ArrayList<VehicleRoute> vehicleRoutesToRemove = getVehicleRoutesToBeRemoved(vehicleRoutes, idleTimes);
+            ArrayList<VehicleRoute> vehicleRoutesToRemove = getVehicleRoutesToBeRemoved(vehicleRoutes, idleTimes, force ? percentileOfFreeTimeRouteToBeRemovedFinalStep : percentileOfFreeTimeRouteToBeRemoved);
             for (VehicleRoute route : vehicleRoutesToRemove) {
                 if (withJobsInInitialRoutes(route))
                     continue;
 
                 Collection<Job> jobs = new HashSet<>(route.getTourActivities().getJobs());
-                if (jobs.size() >= nOfJobs2BeRemoved) {
+                if (force || jobs.size() >= nOfJobs2BeRemoved) {
                     nOfJobs2BeRemoved -= jobs.size();
-                    unassignedJobs.addAll(jobs);
-                    for (Job job : jobs)
-                        removeJob(job, vehicleRoutes);
+
+                    for (Job job : jobs) {
+                        if (removeJob(job, vehicleRoutes))
+                            unassignedJobs.add(job);
+                    }
                 }
             }
         }
@@ -94,7 +99,7 @@ public class RuinFarthest extends AbstractRuinStrategy {
         return false;
     }
 
-    private ArrayList<VehicleRoute> getVehicleRoutesToBeRemoved(List<VehicleRoute> vehicleRoutes, final Map<VehicleRoute, Double> freeTimes) {
+    private ArrayList<VehicleRoute> getVehicleRoutesToBeRemoved(List<VehicleRoute> vehicleRoutes, final Map<VehicleRoute, Double> freeTimes, double percentileOfFreeTimeRouteToBeRemoved) {
         Collections.sort(vehicleRoutes, new Comparator<VehicleRoute>() {
             @Override
             public int compare(VehicleRoute route1, VehicleRoute route2) {
@@ -113,7 +118,12 @@ public class RuinFarthest extends AbstractRuinStrategy {
         for (VehicleRoute route : vehicleRoutes) {
             double operationTime = route.getEnd().getArrTime() - route.getStart().getEndTime();
             double workingTime = route.getVehicle().getLatestArrival() - route.getVehicle().getEarliestDeparture();
-            freeTimes.put(route, (workingTime - operationTime) / workingTime);
+            double waitingTime = 0;
+            for (int i = 0; i < route.getActivities().size(); ++i) {
+                TourActivity act = route.getActivities().get(i);
+                waitingTime += Math.max(0, act.getTheoreticalEarliestOperationStartTime() - act.getArrTime());
+            }
+            freeTimes.put(route, (workingTime - operationTime + waitingTime) / workingTime);
         }
         return freeTimes;
     }

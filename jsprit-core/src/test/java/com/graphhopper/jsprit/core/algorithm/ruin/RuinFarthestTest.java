@@ -27,9 +27,10 @@ public class RuinFarthestTest extends TestCase {
         .setEarliestStart(0).setLatestArrival(8 * 60).build();
     final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addJob(s4)
         .addVehicle(v1).addVehicle(v2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
+
     @Test
     public void testIdleRouteWillBeRemoved() {
-        RuinFarthest ruinFarthest = new RuinFarthest(vrp, 0.8);
+        RuinFarthest ruinFarthest = new RuinFarthest(vrp, 0.8, 0.9);
         ruinFarthest.setRuinShareFactory(new RuinShareFactory() {
             @Override
             public int createNumberToBeRemoved() {
@@ -60,7 +61,7 @@ public class RuinFarthestTest extends TestCase {
 
     @Test
     public void testFarthestJobsWillBeRemoved() {
-        RuinFarthest ruinFarthest = new RuinFarthest(vrp, 0.8);
+        RuinFarthest ruinFarthest = new RuinFarthest(vrp, 0.8, 0.9);
         ruinFarthest.setRuinShareFactory(new RuinShareFactory() {
             @Override
             public int createNumberToBeRemoved() {
