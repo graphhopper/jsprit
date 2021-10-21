@@ -81,6 +81,7 @@ public class RuinAndRecreateModule implements SearchStrategyModule {
     @Override
     public VehicleRoutingProblemSolution runAndGetSolution(VehicleRoutingProblemSolution previousVrpSolution) {
         Collection<Job> ruinedJobs = ruin.ruin(previousVrpSolution.getRoutes());
+        removeEmptyRoutes(previousVrpSolution.getRoutes());
         Set<Job> ruinedJobSet = new HashSet<>();
         ruinedJobSet.addAll(ruinedJobs);
         List<Job> stillUnassignedInThisIteration = new ArrayList<>();
