@@ -24,12 +24,12 @@ import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListeners;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Random;
+import java.util.*;
 
 public abstract class AbstractRuinStrategy implements RuinStrategy {
 
@@ -40,6 +40,7 @@ public abstract class AbstractRuinStrategy implements RuinStrategy {
     protected Random random = RandomNumberGeneration.getRandom();
 
     protected VehicleRoutingProblem vrp;
+    protected Set<Vehicle> vehiclesWithInitialRoutes = new HashSet<>();
 
     public void setRandom(Random random) {
         this.random = random;
@@ -58,12 +59,16 @@ public abstract class AbstractRuinStrategy implements RuinStrategy {
     protected AbstractRuinStrategy(VehicleRoutingProblem vrp) {
         this.vrp = vrp;
         ruinListeners = new RuinListeners();
+        for (VehicleRoute route : vrp.getInitialVehicleRoutes()) {
+            vehiclesWithInitialRoutes.add(route.getVehicle());
+        }
     }
 
     @Override
     public Collection<Job> ruin(Collection<VehicleRoute> vehicleRoutes) {
         ruinListeners.ruinStarts(vehicleRoutes);
         Collection<Job> unassigned = ruinRoutes(vehicleRoutes);
+        removeEmptyRoutes(vehicleRoutes);
         logger.trace("ruin: [ruined={}]", unassigned.size());
         ruinListeners.ruinEnds(vehicleRoutes, unassigned);
         return unassigned;
@@ -109,5 +114,15 @@ public abstract class AbstractRuinStrategy implements RuinStrategy {
             return true;
         }
         return false;
+    }
+
+
+    public void removeEmptyRoutes(Collection<VehicleRoute> vehicleRoutes) {
+        Set<VehicleRoute> routesToRemove = new HashSet<>();
+        for (VehicleRoute route : vehicleRoutes) {
+            if (route.isEmpty() && !vehiclesWithInitialRoutes.contains(route.getVehicle()))
+                routesToRemove.add(route);
+        }
+        vehicleRoutes.removeAll(routesToRemove);
     }
 }
