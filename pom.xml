@@ -120,6 +120,9 @@
                 <version>2.19.1</version>
                 <configuration>
                     <argLine>-Xmx100m -Xms100m</argLine>
+                	<parallel>classes</parallel>
+                	<useUnlimitedThreads>true</useUnlimitedThreads>
+
                 </configuration>
             </plugin>
 
