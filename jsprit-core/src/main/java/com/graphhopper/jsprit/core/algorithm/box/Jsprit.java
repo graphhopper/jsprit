@@ -96,7 +96,10 @@ public class Jsprit {
         GREEDY_BY_AVERAGE_REGRET_WORST("greedy_by_average_regret_worst"),
         GREEDY_BY_NEIGHBORS_REGRET_FARTHEST("greedy_by_neighbors_regret_farthest"),
         GREEDY_BY_DISTANCE_REGRET_FARTHEST("greedy_by_distance_regret_farthest"),
-        GREEDY_BY_AVERAGE_REGRET_FARTHEST("greedy_by_average_regret_farthest");
+        GREEDY_BY_AVERAGE_REGRET_FARTHEST("greedy_by_average_regret_farthest"),
+        GREEDY_BY_NEIGHBORS_REGRET_USER("greedy_by_neighbors_regret_user"),
+        GREEDY_BY_DISTANCE_REGRET_USER("greedy_by_distance_regret_user"),
+        GREEDY_BY_AVERAGE_REGRET_USER("greedy_by_average_regret_user");
 
         String strategyName;
 
@@ -128,6 +131,8 @@ public class Jsprit {
         WORST_MAX_SHARE("worst.max_share"),
         FARTHEST_MIN_SHARE("farthest.min_share"),
         FARTHEST_MAX_SHARE("farthest.max_share"),
+        USER_MIN_SHARE("user.min_share"),
+        USER_MAX_SHARE("user.max_share"),
         THRESHOLD_ALPHA("threshold.alpha"),
         THRESHOLD_INI("threshold.ini"),
         THRESHOLD_INI_ABS("threshold.ini_abs"),
@@ -205,6 +210,7 @@ public class Jsprit {
         private RuinRandom randomForRegret = null;
         private RuinRandom randomForBest = null;
         private RuinRandom randomForRandom = null;
+        private AbstractRuinStrategy ruinStrategy = null;
         private RuinWorst worst = null;
         private RuinClusters clusters = null;
         private RuinString stringRuin = null;
@@ -233,12 +239,15 @@ public class Jsprit {
             defaults.put(Strategy.GREEDY_BY_NEIGHBORS_REGRET.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_NEIGHBORS_REGRET_WORST.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_NEIGHBORS_REGRET_FARTHEST.toString(), "0.0");
+            defaults.put(Strategy.GREEDY_BY_NEIGHBORS_REGRET_USER.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_DISTANCE_REGRET.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_DISTANCE_REGRET_WORST.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_DISTANCE_REGRET_FARTHEST.toString(), "0.0");
+            defaults.put(Strategy.GREEDY_BY_DISTANCE_REGRET_USER.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_AVERAGE_REGRET.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_AVERAGE_REGRET_WORST.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_AVERAGE_REGRET_FARTHEST.toString(), "0.0");
+            defaults.put(Strategy.GREEDY_BY_AVERAGE_REGRET_USER.toString(), "0.0");
 
             defaults.put(Parameter.STRING_K_MIN.toString(), "1");
             defaults.put(Parameter.STRING_K_MAX.toString(), "6");
@@ -265,6 +274,8 @@ public class Jsprit {
             defaults.put(Parameter.WORST_MAX_SHARE.toString(), String.valueOf(maxShare));
             defaults.put(Parameter.FARTHEST_MIN_SHARE.toString(), String.valueOf(minShare));
             defaults.put(Parameter.FARTHEST_MAX_SHARE.toString(), String.valueOf(maxShare));
+            defaults.put(Parameter.USER_MIN_SHARE.toString(), String.valueOf(minShare));
+            defaults.put(Parameter.USER_MAX_SHARE.toString(), String.valueOf(maxShare));
             defaults.put(Parameter.CLUSTER_MIN_SHARE.toString(), String.valueOf(minShare));
             defaults.put(Parameter.CLUSTER_MAX_SHARE.toString(), String.valueOf(maxShare));
             int minShare_ = (int) Math.min(70, Math.max(5, vrp.getJobs().size() * 0.5));
@@ -390,6 +401,10 @@ public class Jsprit {
             return this;
         }
 
+        public void setRuinStrategy(AbstractRuinStrategy ruinStrategy) {
+            this.ruinStrategy = ruinStrategy;
+        }
+
         public Builder setWorst(RuinWorst worst) {
             this.worst = worst;
             return this;
@@ -476,6 +491,7 @@ public class Jsprit {
     private RuinRandom random_for_regret;
     private RuinRandom random_for_best;
     private RuinRandom random_for_random;
+    private AbstractRuinStrategy ruin_strategy;
     private RuinWorst worst;
     private RuinFarthest farthest;
     private RuinClusters clusters;
@@ -499,6 +515,7 @@ public class Jsprit {
         random_for_regret = builder.randomForRegret;
         random_for_best = builder.randomForBest;
         random_for_random = builder.randomForRandom;
+        ruin_strategy = builder.ruinStrategy;
         worst = builder.worst;
         clusters = builder.clusters;
         stringRuin = builder.stringRuin;
@@ -611,6 +628,16 @@ public class Jsprit {
         farthest.setRuinShareFactory(new RuinShareFactoryImpl(
             toInteger(properties.getProperty(Parameter.FARTHEST_MIN_SHARE.toString())),
             toInteger(properties.getProperty(Parameter.FARTHEST_MAX_SHARE.toString())),
+            random)
+        );
+
+        ruin_strategy = ruin_strategy == null ? new RuinFarthest(vrp,
+            toDouble(properties.getProperty(Parameter.RATIO_IDLE_ROUTE_TO_BE_REMOVED.toString())),
+            toDouble(properties.getProperty(Parameter.RATIO_IDLE_ROUTE_TO_BE_REMOVED_FINAL_STEP.toString()))) : ruin_strategy;
+        ruin_strategy.setRandom(random);
+        ruin_strategy.setRuinShareFactory(new RuinShareFactoryImpl(
+            toInteger(properties.getProperty(Parameter.USER_MIN_SHARE.toString())),
+            toInteger(properties.getProperty(Parameter.USER_MAX_SHARE.toString())),
             random)
         );
 
@@ -830,6 +857,8 @@ public class Jsprit {
         greedyByNeighborsStrategyWorst.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_NEIGHBORS_REGRET_WORST.toString(), greedyByNeighborsInsertion, worst));
         final SearchStrategy greedyByNeighborsStrategyFarthest = new SearchStrategy(Strategy.GREEDY_BY_NEIGHBORS_REGRET_FARTHEST.toString(), new SelectRandomly(), acceptor, objectiveFunction);
         greedyByNeighborsStrategyFarthest.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_NEIGHBORS_REGRET_FARTHEST.toString(), greedyByNeighborsInsertion, farthest));
+        final SearchStrategy greedyByNeighborsStrategyUser = new SearchStrategy(Strategy.GREEDY_BY_NEIGHBORS_REGRET_USER.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        greedyByNeighborsStrategyUser.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_NEIGHBORS_REGRET_USER.toString(), greedyByNeighborsInsertion, ruin_strategy));
 
         final SearchStrategy greedyByDistanceStrategy = new SearchStrategy(Strategy.GREEDY_BY_DISTANCE_REGRET.toString(), new SelectRandomly(), acceptor, objectiveFunction);
         greedyByDistanceStrategy.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_DISTANCE_REGRET.toString(), greedyByDistanceFromDepotInsertion, clusters));
@@ -837,6 +866,8 @@ public class Jsprit {
         greedyByDistanceStrategyWorst.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_DISTANCE_REGRET_WORST.toString(), greedyByDistanceFromDepotInsertion, worst));
         final SearchStrategy greedyByDistanceStrategyFarthest = new SearchStrategy(Strategy.GREEDY_BY_DISTANCE_REGRET_FARTHEST.toString(), new SelectRandomly(), acceptor, objectiveFunction);
         greedyByDistanceStrategyFarthest.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_DISTANCE_REGRET_FARTHEST.toString(), greedyByDistanceFromDepotInsertion, farthest));
+        final SearchStrategy greedyByDistanceStrategyUser = new SearchStrategy(Strategy.GREEDY_BY_DISTANCE_REGRET_USER.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        greedyByDistanceStrategyUser.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_DISTANCE_REGRET_USER.toString(), greedyByDistanceFromDepotInsertion, ruin_strategy));
 
         final SearchStrategy greedyByAverageStrategy = new SearchStrategy(Strategy.GREEDY_BY_AVERAGE_REGRET.toString(), new SelectRandomly(), acceptor, objectiveFunction);
         greedyByAverageStrategy.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_AVERAGE_REGRET.toString(), greedyByAverageInsertion, clusters));
@@ -844,6 +875,8 @@ public class Jsprit {
         greedyByAverageStrategyWorst.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_AVERAGE_REGRET_WORST.toString(), greedyByAverageInsertion, worst));
         final SearchStrategy greedyByAverageStrategyFarthest = new SearchStrategy(Strategy.GREEDY_BY_AVERAGE_REGRET_FARTHEST.toString(), new SelectRandomly(), acceptor, objectiveFunction);
         greedyByAverageStrategyFarthest.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_AVERAGE_REGRET_FARTHEST.toString(), greedyByAverageInsertion, farthest));
+        final SearchStrategy greedyByAverageStrategyUser = new SearchStrategy(Strategy.GREEDY_BY_AVERAGE_REGRET_USER.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        greedyByAverageStrategyUser.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_AVERAGE_REGRET_USER.toString(), greedyByAverageInsertion, ruin_strategy));
 
         PrettyAlgorithmBuilder prettyBuilder = PrettyAlgorithmBuilder.newInstance(vrp, vehicleFleetManager, stateManager, constraintManager);
         prettyBuilder.setRandom(random);
@@ -870,7 +903,10 @@ public class Jsprit {
             .withStrategy(greedyByAverageStrategyWorst, toDouble(getProperty(Strategy.GREEDY_BY_AVERAGE_REGRET_WORST.toString())))
             .withStrategy(greedyByNeighborsStrategyFarthest, toDouble(getProperty(Strategy.GREEDY_BY_NEIGHBORS_REGRET_FARTHEST.toString())))
             .withStrategy(greedyByDistanceStrategyFarthest, toDouble(getProperty(Strategy.GREEDY_BY_DISTANCE_REGRET_FARTHEST.toString())))
-            .withStrategy(greedyByAverageStrategyFarthest, toDouble(getProperty(Strategy.GREEDY_BY_AVERAGE_REGRET_FARTHEST.toString())));
+            .withStrategy(greedyByAverageStrategyFarthest, toDouble(getProperty(Strategy.GREEDY_BY_AVERAGE_REGRET_FARTHEST.toString())))
+            .withStrategy(greedyByNeighborsStrategyUser, toDouble(getProperty(Strategy.GREEDY_BY_NEIGHBORS_REGRET_USER.toString())))
+            .withStrategy(greedyByDistanceStrategyUser, toDouble(getProperty(Strategy.GREEDY_BY_DISTANCE_REGRET_USER.toString())))
+            .withStrategy(greedyByAverageStrategyUser, toDouble(getProperty(Strategy.GREEDY_BY_AVERAGE_REGRET_USER.toString())));
 
         for (SearchStrategy customStrategy : customStrategies.keySet()) {
             prettyBuilder.withStrategy(customStrategy, customStrategies.get(customStrategy));
