@@ -56,12 +56,7 @@ public class RuinFarthest extends AbstractRuinStrategy {
 
     protected int removeJobsFromRoutes(List<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved, List<Job> unassignedJobs, Map<Job, VehicleRoute> jobToRoute, ArrayList<Job> jobs) {
         final Map<Job, Double> distanceFromCenter = getDistanceFromRouteCenter(vehicleRoutes, jobToRoute);
-        Collections.sort(jobs, new Comparator<Job>() {
-            @Override
-            public int compare(Job job1, Job job2) {
-                return Double.compare(distanceFromCenter.get(job2), distanceFromCenter.get(job1));
-            }
-        });
+        sortJobsByDistanceToCenter(jobs, distanceFromCenter);
 
         while (nOfJobs2BeRemoved > 0 && !jobs.isEmpty()) {
             Job job = jobs.remove(0);
@@ -69,15 +64,22 @@ public class RuinFarthest extends AbstractRuinStrategy {
                 unassignedJobs.add(job);
                 nOfJobs2BeRemoved--;
                 distanceFromCenter.putAll(getRouteJobDistancesFromCenter(jobToRoute, jobToRoute.get(job)));
-                Collections.sort(jobs, new Comparator<Job>() {
-                    @Override
-                    public int compare(Job job1, Job job2) {
-                        return Double.compare(distanceFromCenter.get(job2), distanceFromCenter.get(job1));
-                    }
-                });
+                sortJobsByDistanceToCenter(jobs, distanceFromCenter);
             }
         }
         return nOfJobs2BeRemoved;
+    }
+
+    private void sortJobsByDistanceToCenter(ArrayList<Job> jobs, final Map<Job, Double> distanceFromCenter) {
+        Collections.sort(jobs, new Comparator<Job>() {
+            @Override
+            public int compare(Job job1, Job job2) {
+                return Double.compare(
+                    distanceFromCenter.containsKey(job2) ? distanceFromCenter.get(job2) : 0,
+                    distanceFromCenter.containsKey(job1) ? distanceFromCenter.get(job1) : 0
+                );
+            }
+        });
     }
 
     private Map<Job, Double> getDistanceFromRouteCenter(List<VehicleRoute> vehicleRoutes, Map<Job, VehicleRoute> jobToRoute) {
