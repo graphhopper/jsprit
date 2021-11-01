@@ -56,6 +56,10 @@ public final class Location implements HasIndex, HasId {
         return Location.Builder.newInstance().setIndex(index).build();
     }
 
+    public String getZipCode() {
+        return zipCode;
+    }
+
     public static class Builder {
 
         private String id;
@@ -65,6 +69,8 @@ public final class Location implements HasIndex, HasId {
         private Coordinate coordinate;
 
         private String name = "";
+
+        private String zipCode = "";
 
         private Object userData;
 
@@ -99,6 +105,10 @@ public final class Location implements HasIndex, HasId {
             if (index < 0) throw new IllegalArgumentException("index must be >= 0");
             this.index = index;
             return this;
+        }
+
+        public void setZipCode(String zipCode) {
+            this.zipCode = zipCode;
         }
 
         /**
@@ -157,6 +167,8 @@ public final class Location implements HasIndex, HasId {
 
     private final String id;
 
+    private final String zipCode;
+
     private final String name;
 
     private Object userData;
@@ -166,6 +178,7 @@ public final class Location implements HasIndex, HasId {
         this.index = builder.index;
         this.coordinate = builder.coordinate;
         this.id = builder.id;
+        this.zipCode = builder.zipCode;
         this.name = builder.name;
     }
 

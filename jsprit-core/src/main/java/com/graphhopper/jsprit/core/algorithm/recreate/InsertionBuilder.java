@@ -38,7 +38,7 @@ public class InsertionBuilder {
 
 
     public enum Strategy {
-        REGRET, BEST, RANDOM, GREEDY_BY_NEIGHBORS, GREEDY_BY_DISTANCE, GREEDY_BY_AVERAGE
+        REGRET, BEST, RANDOM, GREEDY_BY_NEIGHBORS, GREEDY_BY_DISTANCE, GREEDY_BY_AVERAGE, GREEDY_BY_ZIP_CODE
     }
 
     private VehicleRoutingProblem vrp;
@@ -252,6 +252,8 @@ public class InsertionBuilder {
             insertion = new GreedyInsertionByDistance(costCalculator, vrp, fleetManager);
         } else if (strategy.equals(Strategy.GREEDY_BY_AVERAGE)) {
             insertion = new GreedyInsertionByAverage(costCalculator, vrp, fleetManager, ratioToSelectNearest, ratioToSelectRandom, ratioToSelectFarthest, nJobsToSelectFrom);
+        }  else if (strategy.equals(Strategy.GREEDY_BY_ZIP_CODE)) {
+            insertion = new GreedyByZipCodeInsertion(costCalculator, vrp, distanceDiffForNeighbors, ratioToSortJobsGreedyInsertion);
         } else throw new IllegalStateException("you should never get here");
         for (InsertionListener l : iListeners) insertion.addListener(l);
         return insertion;

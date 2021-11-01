@@ -61,6 +61,7 @@ public class Jsprit {
 
         BEST_INSERTION("best_insertion"), REGRET_INSERTION("regret_insertion"), RANDOM("random"),
         GREEDY_BY_NEIGHBORHOODS_REGRET("greedy_by_neighborhoods_regret"),
+        GREEDY_BY_ZIP_CODE_REGRET("greedy_by_zip_code_regret"),
         GREEDY_BY_DISTANCE_REGRET("greedy_by_distance_regret");
 
         String name;
@@ -89,15 +90,19 @@ public class Jsprit {
         STRING_REGRET("string_regret"),
         RANDOM("random"),
         GREEDY_BY_NEIGHBORS_REGRET("greedy_by_neighbors_regret"),
+        GREEDY_BY_ZIP_CODE_REGRET("greedy_by_zipcode_regret"),
         GREEDY_BY_DISTANCE_REGRET("greedy_by_distance_regret"),
         GREEDY_BY_AVERAGE_REGRET("greedy_by_average_regret"),
         GREEDY_BY_NEIGHBORS_REGRET_WORST("greedy_by_neighbors_regret_worst"),
+        GREEDY_BY_ZIP_CODE_REGRET_WORST("greedy_by_zip_code_regret_worst"),
         GREEDY_BY_DISTANCE_REGRET_WORST("greedy_by_distance_regret_worst"),
         GREEDY_BY_AVERAGE_REGRET_WORST("greedy_by_average_regret_worst"),
         GREEDY_BY_NEIGHBORS_REGRET_FARTHEST("greedy_by_neighbors_regret_farthest"),
+        GREEDY_BY_ZIP_CODE_REGRET_FARTHEST("greedy_by_zip_code_regret_farthest"),
         GREEDY_BY_DISTANCE_REGRET_FARTHEST("greedy_by_distance_regret_farthest"),
         GREEDY_BY_AVERAGE_REGRET_FARTHEST("greedy_by_average_regret_farthest"),
         GREEDY_BY_NEIGHBORS_REGRET_USER("greedy_by_neighbors_regret_user"),
+        GREEDY_BY_ZIP_CODE_REGRET_USER("greedy_by_zip_code_regret_user"),
         GREEDY_BY_DISTANCE_REGRET_USER("greedy_by_distance_regret_user"),
         GREEDY_BY_AVERAGE_REGRET_USER("greedy_by_average_regret_user");
 
@@ -240,14 +245,21 @@ public class Jsprit {
             defaults.put(Strategy.GREEDY_BY_NEIGHBORS_REGRET_WORST.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_NEIGHBORS_REGRET_FARTHEST.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_NEIGHBORS_REGRET_USER.toString(), "0.0");
+
             defaults.put(Strategy.GREEDY_BY_DISTANCE_REGRET.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_DISTANCE_REGRET_WORST.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_DISTANCE_REGRET_FARTHEST.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_DISTANCE_REGRET_USER.toString(), "0.0");
+
             defaults.put(Strategy.GREEDY_BY_AVERAGE_REGRET.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_AVERAGE_REGRET_WORST.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_AVERAGE_REGRET_FARTHEST.toString(), "0.0");
             defaults.put(Strategy.GREEDY_BY_AVERAGE_REGRET_USER.toString(), "0.0");
+
+            defaults.put(Strategy.GREEDY_BY_ZIP_CODE_REGRET.toString(), "0.0");
+            defaults.put(Strategy.GREEDY_BY_ZIP_CODE_REGRET_WORST.toString(), "0.0");
+            defaults.put(Strategy.GREEDY_BY_ZIP_CODE_REGRET_FARTHEST.toString(), "0.0");
+            defaults.put(Strategy.GREEDY_BY_ZIP_CODE_REGRET_USER.toString(), "0.0");
 
             defaults.put(Parameter.STRING_K_MIN.toString(), "1");
             defaults.put(Parameter.STRING_K_MAX.toString(), "6");
@@ -779,6 +791,16 @@ public class Jsprit {
             .build();
         greedyByNeighborsInsertion.setRandom(random);
 
+        final AbstractInsertionStrategy greedyByZipCodeInsertion = (AbstractInsertionStrategy) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+            .setInsertionStrategy(InsertionBuilder.Strategy.GREEDY_BY_ZIP_CODE)
+            .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
+            .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
+            .setActivityInsertionCostCalculator(activityInsertion)
+            .setDistanceDiffForNeighbors(Double.valueOf(properties.getProperty(Parameter.DISTANCE_DIFF_FOR_SAME_NEIGHBORHOOD.toString())))
+            .setRatioToSortJobsGreedyInsertion(Double.valueOf(properties.getProperty(Parameter.RATIO_TO_SORT_JOBS_GREEDY_INSERTION.toString())))
+            .build();
+        greedyByZipCodeInsertion.setRandom(random);
+
         final AbstractInsertionStrategy greedyByAverageInsertion = (AbstractInsertionStrategy) new InsertionBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
             .setInsertionStrategy(InsertionBuilder.Strategy.GREEDY_BY_AVERAGE)
             .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
@@ -860,6 +882,15 @@ public class Jsprit {
         final SearchStrategy greedyByNeighborsStrategyUser = new SearchStrategy(Strategy.GREEDY_BY_NEIGHBORS_REGRET_USER.toString(), new SelectRandomly(), acceptor, objectiveFunction);
         greedyByNeighborsStrategyUser.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_NEIGHBORS_REGRET_USER.toString(), greedyByNeighborsInsertion, ruin_strategy));
 
+        final SearchStrategy greedyByZipCodeStrategy = new SearchStrategy(Strategy.GREEDY_BY_ZIP_CODE_REGRET.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        greedyByZipCodeStrategy.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_ZIP_CODE_REGRET.toString(), greedyByNeighborsInsertion, clusters));
+        final SearchStrategy greedyByZipCodeStrategyWorst = new SearchStrategy(Strategy.GREEDY_BY_ZIP_CODE_REGRET_WORST.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        greedyByZipCodeStrategyWorst.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_ZIP_CODE_REGRET_WORST.toString(), greedyByNeighborsInsertion, worst));
+        final SearchStrategy greedyByZipCodeStrategyFarthest = new SearchStrategy(Strategy.GREEDY_BY_ZIP_CODE_REGRET_FARTHEST.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        greedyByZipCodeStrategyFarthest.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_ZIP_CODE_REGRET_FARTHEST.toString(), greedyByNeighborsInsertion, farthest));
+        final SearchStrategy greedyByZipCodeStrategyUser = new SearchStrategy(Strategy.GREEDY_BY_ZIP_CODE_REGRET_USER.toString(), new SelectRandomly(), acceptor, objectiveFunction);
+        greedyByZipCodeStrategyUser.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_ZIP_CODE_REGRET_USER.toString(), greedyByNeighborsInsertion, ruin_strategy));
+
         final SearchStrategy greedyByDistanceStrategy = new SearchStrategy(Strategy.GREEDY_BY_DISTANCE_REGRET.toString(), new SelectRandomly(), acceptor, objectiveFunction);
         greedyByDistanceStrategy.addModule(new RuinAndRecreateModule(Strategy.GREEDY_BY_DISTANCE_REGRET.toString(), greedyByDistanceFromDepotInsertion, clusters));
         final SearchStrategy greedyByDistanceStrategyWorst = new SearchStrategy(Strategy.GREEDY_BY_DISTANCE_REGRET_WORST.toString(), new SelectRandomly(), acceptor, objectiveFunction);
@@ -896,15 +927,19 @@ public class Jsprit {
             .withStrategy(stringRegret, toDouble(getProperty(Strategy.STRING_REGRET.toString())))
             .withStrategy(randomStrategy, toDouble(getProperty(Strategy.RANDOM.toString())))
             .withStrategy(greedyByNeighborsStrategy, toDouble(getProperty(Strategy.GREEDY_BY_NEIGHBORS_REGRET.toString())))
+            .withStrategy(greedyByZipCodeStrategy, toDouble(getProperty(Strategy.GREEDY_BY_ZIP_CODE_REGRET.toString())))
             .withStrategy(greedyByDistanceStrategy, toDouble(getProperty(Strategy.GREEDY_BY_DISTANCE_REGRET.toString())))
             .withStrategy(greedyByAverageStrategy, toDouble(getProperty(Strategy.GREEDY_BY_AVERAGE_REGRET.toString())))
             .withStrategy(greedyByNeighborsStrategyWorst, toDouble(getProperty(Strategy.GREEDY_BY_NEIGHBORS_REGRET_WORST.toString())))
+            .withStrategy(greedyByZipCodeStrategyWorst, toDouble(getProperty(Strategy.GREEDY_BY_ZIP_CODE_REGRET_WORST.toString())))
             .withStrategy(greedyByDistanceStrategyWorst, toDouble(getProperty(Strategy.GREEDY_BY_DISTANCE_REGRET_WORST.toString())))
             .withStrategy(greedyByAverageStrategyWorst, toDouble(getProperty(Strategy.GREEDY_BY_AVERAGE_REGRET_WORST.toString())))
             .withStrategy(greedyByNeighborsStrategyFarthest, toDouble(getProperty(Strategy.GREEDY_BY_NEIGHBORS_REGRET_FARTHEST.toString())))
+            .withStrategy(greedyByZipCodeStrategyFarthest, toDouble(getProperty(Strategy.GREEDY_BY_ZIP_CODE_REGRET_FARTHEST.toString())))
             .withStrategy(greedyByDistanceStrategyFarthest, toDouble(getProperty(Strategy.GREEDY_BY_DISTANCE_REGRET_FARTHEST.toString())))
             .withStrategy(greedyByAverageStrategyFarthest, toDouble(getProperty(Strategy.GREEDY_BY_AVERAGE_REGRET_FARTHEST.toString())))
             .withStrategy(greedyByNeighborsStrategyUser, toDouble(getProperty(Strategy.GREEDY_BY_NEIGHBORS_REGRET_USER.toString())))
+            .withStrategy(greedyByZipCodeStrategyUser, toDouble(getProperty(Strategy.GREEDY_BY_ZIP_CODE_REGRET_USER.toString())))
             .withStrategy(greedyByDistanceStrategyUser, toDouble(getProperty(Strategy.GREEDY_BY_DISTANCE_REGRET_USER.toString())))
             .withStrategy(greedyByAverageStrategyUser, toDouble(getProperty(Strategy.GREEDY_BY_AVERAGE_REGRET_USER.toString())));
 
@@ -918,6 +953,8 @@ public class Jsprit {
             prettyBuilder.constructInitialSolutionWith(greedyByNeighborsInsertion, objectiveFunction);
         } else if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.GREEDY_BY_DISTANCE_REGRET.toString())) {
             prettyBuilder.constructInitialSolutionWith(greedyByDistanceFromDepotInsertion, objectiveFunction);
+        } else if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.GREEDY_BY_ZIP_CODE_REGRET.toString())) {
+            prettyBuilder.constructInitialSolutionWith(greedyByZipCodeInsertion, objectiveFunction);
         } else if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.BEST_INSERTION.toString())) {
             prettyBuilder.constructInitialSolutionWith(best, objectiveFunction);
         } else {

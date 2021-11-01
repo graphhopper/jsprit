@@ -42,21 +42,26 @@ public class GreedyByNeighborsInsertion extends GreedyInsertion {
         JobNeighborhoods neighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()));
         neighborhoods.initialise();
         for (Job job : vrp.getJobs().values()) {
-            Location location = getLocation(job);
-            Iterator<Job> nearestNeighborsIterator = neighborhoods.getNearestNeighborsIterator(vrp.getJobs().size(), job);
-            List<Job> nearestJobs = new ArrayList<>();
-            while (nearestNeighborsIterator.hasNext()) {
-                Job next = nearestNeighborsIterator.next();
-                if (next instanceof BreakForMultipleTimeWindows)
-                    continue;
-
-                if (distanceDiffForSameLocation >= vrp.getTransportCosts().getDistance(location, getLocation(next), 0, VehicleImpl.createNoVehicle()))
-                    nearestJobs.add(next);
-                else break;
-            }
+            List<Job> nearestJobs = getNearestJobs(neighborhoods, job);
             jobsThaHaveToBeInSameRoute.put(job.getId(), nearestJobs);
         }
         return jobsThaHaveToBeInSameRoute;
+    }
+
+    List<Job> getNearestJobs(JobNeighborhoods neighborhoods, Job job) {
+        final Iterator<Job> nearestNeighborsIterator = neighborhoods.getNearestNeighborsIterator(vrp.getJobs().size(), job);
+        final Location location = getLocation(job);
+        final List<Job> nearestJobs = new ArrayList<>();
+        while (nearestNeighborsIterator.hasNext()) {
+            Job next = nearestNeighborsIterator.next();
+            if (next instanceof BreakForMultipleTimeWindows)
+                continue;
+
+            if (distanceDiffForSameLocation >= vrp.getTransportCosts().getDistance(location, getLocation(next), 0, VehicleImpl.createNoVehicle()))
+                nearestJobs.add(next);
+            else break;
+        }
+        return nearestJobs;
     }
 
     @Override
