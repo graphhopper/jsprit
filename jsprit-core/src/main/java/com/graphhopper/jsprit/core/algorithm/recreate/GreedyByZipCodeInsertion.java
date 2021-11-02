@@ -34,7 +34,11 @@ public class GreedyByZipCodeInsertion extends GreedyByNeighborsInsertion {
             }
         });
 
-        nearestJobs.addAll(super.getNearestJobs(neighborhoods, job));
+        List<Job> moreJobs = super.getNearestJobs(neighborhoods, job);
+        for (Job other : moreJobs)
+            if (!nearestJobs.contains(other))
+                nearestJobs.add(other);
+
         return nearestJobs;
     }
 
