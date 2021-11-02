@@ -19,11 +19,21 @@ public class GreedyByZipCodeInsertion extends GreedyByNeighborsInsertion {
             return super.getNearestJobs(neighborhoods, job);
 
         final List<Job> nearestJobs = new ArrayList<>();
+        final Map<Job, Double> transportTimes = new HashMap<>();
         for (Job other : vrp.getJobs().values()) {
             final Location otherLocation = getLocation(other);
-            if (location.equals(otherLocation.getZipCode()))
+            if (location.getZipCode().equals(otherLocation.getZipCode())) {
+                transportTimes.put(other, vrp.getTransportCosts().getTransportTime(location, otherLocation, 0, NO_NEW_DRIVER_YET, NO_NEW_VEHICLE_YET));
                 nearestJobs.add(other);
+            }
         }
+        Collections.sort(nearestJobs,  new Comparator<Job>() {
+            @Override
+            public int compare(Job job1, Job job2) {
+                return Double.compare(transportTimes.get(job1), transportTimes.get(job2));
+            }
+        });
+
         nearestJobs.addAll(super.getNearestJobs(neighborhoods, job));
         return nearestJobs;
     }

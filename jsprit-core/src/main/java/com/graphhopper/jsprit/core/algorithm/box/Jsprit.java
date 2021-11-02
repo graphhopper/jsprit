@@ -62,7 +62,8 @@ public class Jsprit {
         BEST_INSERTION("best_insertion"), REGRET_INSERTION("regret_insertion"), RANDOM("random"),
         GREEDY_BY_NEIGHBORHOODS_REGRET("greedy_by_neighborhoods_regret"),
         GREEDY_BY_ZIP_CODE_REGRET("greedy_by_zip_code_regret"),
-        GREEDY_BY_DISTANCE_REGRET("greedy_by_distance_regret");
+        GREEDY_BY_DISTANCE_REGRET("greedy_by_distance_regret"),
+        GREEDY_BY_AVERAGE_REGRET("greedy_by_average_regret");
 
         String name;
 
@@ -955,6 +956,8 @@ public class Jsprit {
             prettyBuilder.constructInitialSolutionWith(greedyByDistanceFromDepotInsertion, objectiveFunction);
         } else if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.GREEDY_BY_ZIP_CODE_REGRET.toString())) {
             prettyBuilder.constructInitialSolutionWith(greedyByZipCodeInsertion, objectiveFunction);
+        } else if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.GREEDY_BY_AVERAGE_REGRET.toString())) {
+            prettyBuilder.constructInitialSolutionWith(greedyByAverageInsertion, objectiveFunction);
         } else if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.BEST_INSERTION.toString())) {
             prettyBuilder.constructInitialSolutionWith(best, objectiveFunction);
         } else {
