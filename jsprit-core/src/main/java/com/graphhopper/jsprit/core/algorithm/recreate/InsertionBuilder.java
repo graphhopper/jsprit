@@ -87,6 +87,7 @@ public class InsertionBuilder {
     private double ratioToSelectRandom = .33;
     private double ratioToSelectFarthest = .33;
     private int nJobsToSelectFrom = 3;
+    private JobsInsertionSorter jobsInsertionSorter = new JobsInsertionSorter(0);
 
     public InsertionBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
         super();
@@ -101,8 +102,8 @@ public class InsertionBuilder {
         return this;
     }
 
-    public InsertionBuilder setRatioToSortJobsGreedyInsertion(double ratioToSortJobsGreedyInsertion) {
-        this.ratioToSortJobsGreedyInsertion = ratioToSortJobsGreedyInsertion;
+    public InsertionBuilder setJobsInsertionSorter(JobsInsertionSorter jobsInsertionSorter) {
+        this.jobsInsertionSorter = jobsInsertionSorter;
         return this;
     }
 
@@ -247,13 +248,13 @@ public class InsertionBuilder {
         } else if (strategy.equals(Strategy.RANDOM)) {
             insertion = new RandomInsertion(costCalculator, vrp);
         } else if (strategy.equals(Strategy.GREEDY_BY_NEIGHBORS)) {
-            insertion = new GreedyByNeighborsInsertion(costCalculator, vrp, distanceDiffForNeighbors, ratioToSortJobsGreedyInsertion);
+            insertion = new GreedyByNeighborsInsertion(costCalculator, vrp, distanceDiffForNeighbors, jobsInsertionSorter);
         }  else if (strategy.equals(Strategy.GREEDY_BY_DISTANCE)) {
             insertion = new GreedyInsertionByDistance(costCalculator, vrp, fleetManager);
         } else if (strategy.equals(Strategy.GREEDY_BY_AVERAGE)) {
             insertion = new GreedyInsertionByAverage(costCalculator, vrp, fleetManager, ratioToSelectNearest, ratioToSelectRandom, ratioToSelectFarthest, nJobsToSelectFrom);
         }  else if (strategy.equals(Strategy.GREEDY_BY_ZIP_CODE)) {
-            insertion = new GreedyByZipCodeInsertion(costCalculator, vrp, distanceDiffForNeighbors, ratioToSortJobsGreedyInsertion);
+            insertion = new GreedyByZipCodeInsertion(costCalculator, vrp, distanceDiffForNeighbors, jobsInsertionSorter);
         } else throw new IllegalStateException("you should never get here");
         for (InsertionListener l : iListeners) insertion.addListener(l);
         return insertion;

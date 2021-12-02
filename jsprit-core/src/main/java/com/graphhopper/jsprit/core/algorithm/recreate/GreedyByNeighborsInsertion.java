@@ -16,19 +16,19 @@ import java.util.*;
 
 public class GreedyByNeighborsInsertion extends GreedyInsertion {
     final double distanceDiffForSameLocation;
-    final double ratioToSort;
+    final JobsInsertionSorter jobsInsertionSorter;
     private static Logger logger = LoggerFactory.getLogger(GreedyByNeighborsInsertion.class);
 
     Map<String, Collection<Job>> jobsThaHaveToBeInSameRoute = new HashMap<>();
 
     public GreedyByNeighborsInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, double distanceDiffForSameLocationMeter) {
-        this(jobInsertionCalculator, vehicleRoutingProblem, distanceDiffForSameLocationMeter, 0);
+        this(jobInsertionCalculator, vehicleRoutingProblem, distanceDiffForSameLocationMeter, new JobsInsertionSorter(0));
     }
 
-    public GreedyByNeighborsInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, double distanceDiffForSameLocationMeter, double ratioToSort) {
+    public GreedyByNeighborsInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, double distanceDiffForSameLocationMeter, JobsInsertionSorter jobsInsertionSorter) {
         super(jobInsertionCalculator, vehicleRoutingProblem);
         this.distanceDiffForSameLocation = distanceDiffForSameLocationMeter;
-        this.ratioToSort = ratioToSort;
+        this.jobsInsertionSorter = jobsInsertionSorter;
         initializeNeighbors();
     }
 
@@ -61,31 +61,18 @@ public class GreedyByNeighborsInsertion extends GreedyInsertion {
                 nearestJobs.add(next);
             else break;
         }
-        return nearestJobs;
+        return jobsInsertionSorter.getSortedJobNeighborsForInsertionInSameRoute(job, nearestJobs);
     }
 
     @Override
     public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
-        final List<Job> jobsToInsert = new ArrayList<>(unassignedJobs);
+        List<Job> jobsToInsert = new ArrayList<>(unassignedJobs);
         Set<Job> failedToAssign = new HashSet<>(insertBreaks(vehicleRoutes, jobsToInsert));
         final Map<String, Integer> nearestUnassigned = new HashMap<>();
         for (Job job : unassignedJobs)
             nearestUnassigned.put(job.getId(), getNumberOfNearestUnassigned(job, jobsToInsert));
 
-        Comparator<Job> withMostNeighborsComparator = new Comparator<Job>() {
-            @Override
-            public int compare(Job job1, Job job2) {
-                return Double.compare(nearestUnassigned.get(job2.getId()), nearestUnassigned.get(job1.getId()));
-            }
-        };
-        try {
-            Collections.shuffle(jobsToInsert);
-            if (random.nextDouble() <= ratioToSort) {
-                Collections.sort(jobsToInsert, withMostNeighborsComparator);
-            }
-        } catch (Exception e) {
-            logger.error("failed to sort", e);
-        }
+        jobsToInsert = jobsInsertionSorter.getJobsSortedInInsertionOrder(jobsToInsert, nearestUnassigned);
         while (!jobsToInsert.isEmpty()) {
             Job withMostNeighbors = jobsToInsert.remove(0);
             failedToAssign.addAll(insertJobWithNearest(vehicleRoutes, withMostNeighbors, jobsToInsert));

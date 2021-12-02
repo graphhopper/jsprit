@@ -8,8 +8,8 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import java.util.*;
 
 public class GreedyByZipCodeInsertion extends GreedyByNeighborsInsertion {
-    public GreedyByZipCodeInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, double distanceDiffForSameLocationMeter, double ratioToSort) {
-        super(jobInsertionCalculator, vehicleRoutingProblem, distanceDiffForSameLocationMeter, ratioToSort);
+    public GreedyByZipCodeInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, double distanceDiffForSameLocationMeter, JobsInsertionSorter jobsInsertionSorter) {
+        super(jobInsertionCalculator, vehicleRoutingProblem, distanceDiffForSameLocationMeter, jobsInsertionSorter);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class GreedyByZipCodeInsertion extends GreedyByNeighborsInsertion {
             if (!nearestJobs.contains(other))
                 nearestJobs.add(other);
 
-        return nearestJobs;
+        return jobsInsertionSorter.getSortedJobNeighborsForInsertionInSameRoute(job, nearestJobs);
     }
 
     @Override

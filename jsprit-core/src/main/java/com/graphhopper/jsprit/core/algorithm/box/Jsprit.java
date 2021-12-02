@@ -212,6 +212,8 @@ public class Jsprit {
 
         private VehicleFleetManager fleetManager = null;
 
+        private JobsInsertionSorter jobsInsertionSorter = null;
+
         private RuinRadial radial = null;
         private RuinRandom randomForRegret = null;
         private RuinRandom randomForBest = null;
@@ -334,6 +336,11 @@ public class Jsprit {
 
         public Builder setVehicleFleetManager(VehicleFleetManager fleetManager) {
             this.fleetManager = fleetManager;
+            return this;
+        }
+
+        public Builder setJobsInsertionSorter(JobsInsertionSorter jobsInsertionSorter) {
+            this.jobsInsertionSorter = jobsInsertionSorter;
             return this;
         }
 
@@ -500,6 +507,8 @@ public class Jsprit {
 
     private VehicleFleetManager vehicleFleetManager;
 
+    private JobsInsertionSorter jobsInsertionSorter;
+
     private RuinRadial radial;
     private RuinRandom random_for_regret;
     private RuinRandom random_for_best;
@@ -524,6 +533,7 @@ public class Jsprit {
         regretScorer = builder.regretScorer;
         customStrategies.putAll(builder.customStrategies);
         vehicleFleetManager = builder.fleetManager;
+        jobsInsertionSorter = builder.jobsInsertionSorter;
         radial = builder.radial;
         random_for_regret = builder.randomForRegret;
         random_for_best = builder.randomForBest;
@@ -548,6 +558,9 @@ public class Jsprit {
                 finiteFleetManagerFactory.setRandom(random);
                 vehicleFleetManager = finiteFleetManagerFactory.createFleetManager();
             }
+        }
+        if (jobsInsertionSorter == null) {
+            jobsInsertionSorter = new JobsInsertionSorter(Double.valueOf(properties.getProperty(Parameter.RATIO_TO_SORT_JOBS_GREEDY_INSERTION.toString())));
         }
 
         if (stateManager == null) {
@@ -779,6 +792,7 @@ public class Jsprit {
             .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
             .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
             .setActivityInsertionCostCalculator(activityInsertion)
+            .setJobsInsertionSorter(jobsInsertionSorter)
             .build();
         randomInsertion.setRandom(random);
 
@@ -788,7 +802,7 @@ public class Jsprit {
             .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
             .setActivityInsertionCostCalculator(activityInsertion)
             .setDistanceDiffForNeighbors(Double.valueOf(properties.getProperty(Parameter.DISTANCE_DIFF_FOR_SAME_NEIGHBORHOOD.toString())))
-            .setRatioToSortJobsGreedyInsertion(Double.valueOf(properties.getProperty(Parameter.RATIO_TO_SORT_JOBS_GREEDY_INSERTION.toString())))
+            .setJobsInsertionSorter(jobsInsertionSorter)
             .build();
         greedyByNeighborsInsertion.setRandom(random);
 
@@ -798,7 +812,7 @@ public class Jsprit {
             .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
             .setActivityInsertionCostCalculator(activityInsertion)
             .setDistanceDiffForNeighbors(Double.valueOf(properties.getProperty(Parameter.DISTANCE_DIFF_FOR_SAME_NEIGHBORHOOD.toString())))
-            .setRatioToSortJobsGreedyInsertion(Double.valueOf(properties.getProperty(Parameter.RATIO_TO_SORT_JOBS_GREEDY_INSERTION.toString())))
+            .setJobsInsertionSorter(jobsInsertionSorter)
             .build();
         greedyByZipCodeInsertion.setRandom(random);
 
@@ -811,6 +825,7 @@ public class Jsprit {
             .setRatioToSelectRandom(Double.valueOf(properties.getProperty(Parameter.RATIO_TO_SELECT_RANDOM.toString())))
             .setRatioToSelectFarthest(Double.valueOf(properties.getProperty(Parameter.RATIO_TO_SELECT_FARTHEST.toString())))
             .setNJobsToSelectFrom(Integer.valueOf(properties.getProperty(Parameter.NUMBER_OF_JOBS_TO_SELECT_FROM.toString())))
+            .setJobsInsertionSorter(jobsInsertionSorter)
             .build();
         greedyByAverageInsertion.setRandom(random);
 
@@ -818,6 +833,7 @@ public class Jsprit {
             .setInsertionStrategy(InsertionBuilder.Strategy.GREEDY_BY_DISTANCE)
             .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
             .setActivityInsertionCostCalculator(activityInsertion)
+            .setJobsInsertionSorter(jobsInsertionSorter)
             .build();
         greedyByDistanceFromDepotInsertion.setRandom(random);
 
