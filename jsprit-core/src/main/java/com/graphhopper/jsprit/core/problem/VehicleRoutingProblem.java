@@ -531,6 +531,10 @@ public class VehicleRoutingProblem {
         public Collection<VehicleRoute> getInitialRoutes() {
             return Collections.unmodifiableCollection(initialRoutes);
         }
+
+        public Map<String, Job> getJobs() {
+            return jobs;
+        }
     }
 
     /**
