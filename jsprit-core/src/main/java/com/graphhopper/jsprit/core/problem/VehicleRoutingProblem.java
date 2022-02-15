@@ -528,7 +528,9 @@ public class VehicleRoutingProblem {
             return this;
         }
 
-
+        public Collection<VehicleRoute> getInitialRoutes() {
+            return Collections.unmodifiableCollection(initialRoutes);
+        }
     }
 
     /**
