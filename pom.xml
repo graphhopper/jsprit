@@ -65,9 +65,6 @@
     <modules>
         <module>jsprit-core</module>
         <module>jsprit-analysis</module>
-        <module>jsprit-io</module>
-        <module>jsprit-examples</module>
-        <module>jsprit-instances</module>
     </modules>
 
     <properties>
@@ -153,17 +150,6 @@
 
     </build>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
-            </plugin>
-
-        </plugins>
-    </reporting>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -191,7 +177,6 @@
             <id>selected-build</id>
             <modules>
                 <module>jsprit-core</module>
-                <module>jsprit-io</module>
                 <module>jsprit-analysis</module>
             </modules>
         </profile>
