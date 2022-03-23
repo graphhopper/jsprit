@@ -113,8 +113,9 @@ public final class RuinRadial extends AbstractRuinStrategy {
     private Collection<Job> ruinRoutes(Collection<VehicleRoute> vehicleRoutes, Job targetJob, int nOfJobs2BeRemoved) {
         List<Job> unassignedJobs = new ArrayList<>();
         int nNeighbors = nOfJobs2BeRemoved - 1;
-        removeJob(targetJob, vehicleRoutes);
-        unassignedJobs.add(targetJob);
+        if (removeJob(targetJob, vehicleRoutes)) {
+            unassignedJobs.add(targetJob);
+        }
         Iterator<Job> neighborhoodIterator = jobNeighborhoods.getNearestNeighborsIterator(nNeighbors, targetJob);
         while (neighborhoodIterator.hasNext()) {
             Job job = neighborhoodIterator.next();
