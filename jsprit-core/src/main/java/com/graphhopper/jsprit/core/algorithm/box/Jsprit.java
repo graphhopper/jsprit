@@ -441,32 +441,33 @@ public class Jsprit {
         jobNeighborhoods.initialise();
 
         final double maxCosts;
-        if(properties.containsKey(Parameter.MAX_TRANSPORT_COSTS.toString())){
+        if (properties.containsKey(Parameter.MAX_TRANSPORT_COSTS.toString())) {
             maxCosts = Double.parseDouble(getProperty(Parameter.MAX_TRANSPORT_COSTS.toString()));
-        }
-        else{
+        } else {
             maxCosts = jobNeighborhoods.getMaxDistance();
         }
 
-        IterationStartsListener noiseConfigurator;
-        if (noThreads > 1) {
-            ConcurrentInsertionNoiseMaker noiseMaker = new ConcurrentInsertionNoiseMaker(vrp, maxCosts, noiseLevel, noiseProbability);
-            noiseMaker.setRandom(random);
-            constraintManager.addConstraint(noiseMaker);
-            noiseConfigurator = noiseMaker;
-        } else {
-            InsertionNoiseMaker noiseMaker = new InsertionNoiseMaker(vrp, maxCosts, noiseLevel, noiseProbability);
-            noiseMaker.setRandom(random);
-            constraintManager.addConstraint(noiseMaker);
-            noiseConfigurator = noiseMaker;
+        IterationStartsListener noiseConfigurator = null;
+        if (noiseProbability > 0) {
+            if (noThreads > 1) {
+                ConcurrentInsertionNoiseMaker noiseMaker = new ConcurrentInsertionNoiseMaker(vrp, maxCosts, noiseLevel, noiseProbability);
+                noiseMaker.setRandom(random);
+                constraintManager.addConstraint(noiseMaker);
+                noiseConfigurator = noiseMaker;
+            } else {
+                InsertionNoiseMaker noiseMaker = new InsertionNoiseMaker(vrp, maxCosts, noiseLevel, noiseProbability);
+                noiseMaker.setRandom(random);
+                constraintManager.addConstraint(noiseMaker);
+                noiseConfigurator = noiseMaker;
+            }
         }
 
         RuinRadial radial = new RuinRadial(vrp, vrp.getJobs().size(), jobNeighborhoods);
         radial.setRandom(random);
         radial.setRuinShareFactory(new RuinShareFactoryImpl(
-                toInteger(properties.getProperty(Parameter.RADIAL_MIN_SHARE.toString())),
-                toInteger(properties.getProperty(Parameter.RADIAL_MAX_SHARE.toString())),
-                random)
+            toInteger(properties.getProperty(Parameter.RADIAL_MIN_SHARE.toString())),
+            toInteger(properties.getProperty(Parameter.RADIAL_MAX_SHARE.toString())),
+            random)
         );
 
         final RuinRandom random_for_regret = new RuinRandom(vrp, 0.5);
@@ -673,10 +674,10 @@ public class Jsprit {
 
 
         VehicleRoutingAlgorithm vra = prettyBuilder.build();
-        if(schrimpfThreshold != null) {
+        if (schrimpfThreshold != null) {
             vra.addListener(schrimpfThreshold);
         }
-        vra.addListener(noiseConfigurator);
+        if (noiseConfigurator != null) vra.addListener(noiseConfigurator);
         vra.addListener(noise);
         vra.addListener(clusters);
         if (increasingAbsoluteFixedCosts != null) vra.addListener(increasingAbsoluteFixedCosts);
