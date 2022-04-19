@@ -47,6 +47,8 @@ class AdditionalAccessEgressCalculator {
     }
 
     public double getCosts(JobInsertionContext insertionContext) {
+        if (insertionContext.getRoute().isEmpty()) return 0.0;
+        if (insertionContext.getRoute().getVehicle() == insertionContext.getNewVehicle()) return 0.0;
         double delta_access = 0.0;
         double delta_egress = 0.0;
         VehicleRoute currentRoute = insertionContext.getRoute();
