@@ -115,7 +115,7 @@ public final class ShipmentInsertionCalculatorFlex extends AbstractInsertionCalc
         /*
         check hard route constraints
          */
-        InsertionData noInsertion = checkRouteContraints(insertionContext, constraintManager);
+        InsertionData noInsertion = checkRouteConstraints(insertionContext, constraintManager);
         if (noInsertion != null) return noInsertion;
         /*
         check soft route constraints

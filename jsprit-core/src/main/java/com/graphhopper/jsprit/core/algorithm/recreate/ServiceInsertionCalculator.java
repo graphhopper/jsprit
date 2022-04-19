@@ -102,7 +102,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         /*
         check hard constraints at route level
          */
-        InsertionData noInsertion = checkRouteContraints(insertionContext, constraintManager);
+        InsertionData noInsertion = checkRouteConstraints(insertionContext, constraintManager);
         if (noInsertion != null) return noInsertion;
 
         Collection<HardConstraint> failedActivityConstraints = new ArrayList<>();
