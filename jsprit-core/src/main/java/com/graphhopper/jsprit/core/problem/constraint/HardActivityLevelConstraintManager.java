@@ -34,6 +34,8 @@ class HardActivityLevelConstraintManager implements HardActivityConstraint {
 
     private Collection<HardActivityConstraint> lowPrioConstraints = new ArrayList<HardActivityConstraint>();
 
+    private int numActivityConstraints = 0;
+
     public void addConstraint(HardActivityConstraint constraint, ConstraintManager.Priority priority) {
         if (priority.equals(ConstraintManager.Priority.CRITICAL)) {
             criticalConstraints.add(constraint);
@@ -42,6 +44,11 @@ class HardActivityLevelConstraintManager implements HardActivityConstraint {
         } else {
             lowPrioConstraints.add(constraint);
         }
+        numActivityConstraints++;
+    }
+
+    boolean hasHardActivityConstraints() {
+        return numActivityConstraints != 0;
     }
 
     Collection<HardActivityConstraint> getCriticalConstraints() {
@@ -66,6 +73,7 @@ class HardActivityLevelConstraintManager implements HardActivityConstraint {
 
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
+        if (numActivityConstraints == 0) return ConstraintsStatus.FULFILLED;
         ConstraintsStatus notFulfilled = null;
         for (HardActivityConstraint c : criticalConstraints) {
             ConstraintsStatus status = c.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);

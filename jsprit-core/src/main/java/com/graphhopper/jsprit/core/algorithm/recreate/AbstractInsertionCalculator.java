@@ -35,7 +35,7 @@ import java.util.List;
  */
 abstract class AbstractInsertionCalculator implements JobInsertionCostsCalculator {
 
-    InsertionData checkRouteContraints(JobInsertionContext insertionContext, ConstraintManager constraintManager) {
+    InsertionData checkRouteConstraints(JobInsertionContext insertionContext, ConstraintManager constraintManager) {
         for (HardRouteConstraint hardRouteConstraint : constraintManager.getHardRouteConstraints()) {
             if (!hardRouteConstraint.fulfilled(insertionContext)) {
                 InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
@@ -47,6 +47,7 @@ abstract class AbstractInsertionCalculator implements JobInsertionCostsCalculato
     }
 
     ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime, Collection<HardConstraint> failedActivityConstraints, ConstraintManager constraintManager) {
+        if (!constraintManager.hasHardActivityConstraints()) return ConstraintsStatus.FULFILLED;
         ConstraintsStatus notFulfilled = null;
         List<HardConstraint> failed = new ArrayList<>();
         for (HardActivityConstraint c : constraintManager.getCriticalHardActivityConstraints()) {

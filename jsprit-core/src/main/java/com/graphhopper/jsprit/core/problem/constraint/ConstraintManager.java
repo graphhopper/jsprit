@@ -77,6 +77,10 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
         resolveConstraints(constraints);
     }
 
+    public boolean hasHardActivityConstraints() {
+        return actLevelConstraintManager.hasHardActivityConstraints();
+    }
+
     public Collection<HardRouteConstraint> getHardRouteConstraints() {
         return hardRouteConstraintManager.getConstraints();
     }
