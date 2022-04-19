@@ -483,27 +483,28 @@ public class Jsprit {
         random_for_best.setRuinShareFactory(new RuinShareFactoryImpl(
                 toInteger(properties.getProperty(Parameter.RANDOM_BEST_MIN_SHARE.toString())),
                 toInteger(properties.getProperty(Parameter.RANDOM_BEST_MAX_SHARE.toString())),
-                random)
+            random)
         );
 
         final RuinWorst worst = new RuinWorst(vrp, (int) (vrp.getJobs().values().size() * 0.5));
         worst.setRandom(random);
         worst.setRuinShareFactory(new RuinShareFactoryImpl(
-                toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
-                toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())),
-                random)
+            toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
+            toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())),
+            random)
         );
+        double ruinWorstNoiseProb = toDouble(getProperty(Parameter.RUIN_WORST_NOISE_PROB.toString()));
+        double ruinWorstNoiseLevel = toDouble(getProperty(Parameter.RUIN_WORST_NOISE_LEVEL.toString()));
         IterationStartsListener noise = (i, problem, solutions) -> worst.setNoiseMaker(() -> {
-            if (random.nextDouble() < toDouble(getProperty(Parameter.RUIN_WORST_NOISE_PROB.toString()))) {
-                return toDouble(getProperty(Parameter.RUIN_WORST_NOISE_LEVEL.toString()))
-                    * maxCosts * random.nextDouble();
+            if (random.nextDouble() < ruinWorstNoiseProb) {
+                return ruinWorstNoiseLevel * maxCosts * random.nextDouble();
             } else return 0.;
         });
 
         final RuinClusters clusters = new RuinClusters(vrp, (int) (vrp.getJobs().values().size() * 0.5), jobNeighborhoods);
         clusters.setRandom(random);
         clusters.setRuinShareFactory(new RuinShareFactoryImpl(
-                toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
+            toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
                 toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())),
                 random)
         );
