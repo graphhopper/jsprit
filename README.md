@@ -18,10 +18,10 @@ It is lightweight, flexible and easy-to-use, and based on a single all-purpose [
 Setting up the problem, defining additional constraints, modifying the algorithms and visualising the discovered solutions is as easy and handy as
 reading classical VRP instances to benchmark your algorithm. It is fit for change and extension due to a modular design and a comprehensive set of unit and integration-tests. [More features ...](https://github.com/graphhopper/jsprit/blob/master/docs/Features.textile)
 
-The jsprit-project is maintained by [GraphHopper](https://graphhopper.com/).
+The jsprit-project is maintained by [GraphHopper](https://graphhopper.com/). 
 
 ## Getting Started with Documentation
-Please visit [docs](https://github.com/graphhopper/jsprit/blob/master/docs/Home.md) to learn more.
+Please visit [docs](https://github.com/graphhopper/jsprit/blob/master/docs/Home.md) to learn more.The best way to get to know jsprit is by looking at [code examples](https://github.com/graphhopper/jsprit/tree/master/jsprit-examples/src/main/java/com/graphhopper/jsprit/examples).
 
 ## Modules and Dependencies
 Please read [Notice.md](https://github.com/graphhopper/jsprit/blob/master/NOTICE.md) to get to know the direct dependencies of each module.
