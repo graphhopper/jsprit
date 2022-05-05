@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to GraphHopper GmbH under one or more contributor
+  ~ license agreements. See the NOTICE file distributed with this work for
+  ~ additional information regarding copyright ownership.
+  ~
+  ~ GraphHopper GmbH licenses this file to you under the Apache License,
+  ~ Version 2.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.w3schools.com"
+           xmlns="http://www.w3schools.com" elementFormDefault="qualified">
+
+    <xs:element name="algorithm">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice>
+                    <xs:element name="iterations" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="maxIterations" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+                </xs:choice>
+
+                <xs:choice>
+                    <xs:element name="prematureBreak" type="prematureBreakType" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="terminationCriteria">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="termination" type="prematureBreakType" minOccurs="0"
+                                            maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+
+                    </xs:element>
+                </xs:choice>
+
+
+                <xs:element name="construction" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="insertion" type="insertionType" minOccurs="1" maxOccurs="1"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="strategy">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="memory" type="xs:integer" minOccurs="0" maxOccurs="1" default="1"/>
+                            <xs:element name="searchStrategies" minOccurs="1" maxOccurs="1">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="searchStrategy" type="searchStrategyType" minOccurs="1"
+                                                    maxOccurs="unbounded"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="searchStrategyType">
+        <xs:sequence>
+            <xs:element name="selector" type="selectorType"/>
+            <xs:element name="acceptor" type="acceptorType"/>
+            <xs:element name="modules" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="module" type="moduleType" minOccurs="1" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="probability">
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="0.0"/>
+                        <xs:maxInclusive value="1.0"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="selectorType">
+        <xs:attribute name="name">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="selectBest"/>
+                    <xs:enumeration value="selectRandomly"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="acceptorType">
+        <xs:sequence>
+            <xs:element name="alpha" type="xs:double" minOccurs="0" maxOccurs="1"/>
+            <xs:choice>
+                <xs:element name="warmup" type="xs:int" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="initialThreshold" type="xs:double" minOccurs="0" maxOccurs="1"/>
+            </xs:choice>
+
+        </xs:sequence>
+        <xs:attribute name="name">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="acceptNewRemoveWorst"/>
+                    <xs:enumeration value="schrimpfAcceptance"/>
+                    <xs:enumeration value="experimentalSchrimpfAcceptance"/>
+                    <xs:enumeration value="acceptNewRemoveFirst"/>
+                    <xs:enumeration value="greedyAcceptance"/>
+                    <xs:enumeration value="greedyAcceptance_minVehFirst"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+
+    </xs:complexType>
+
+    <xs:complexType name="prematureBreakType">
+        <xs:choice>
+            <xs:group ref="pBreak_iteration_group"/>
+            <xs:group ref="pBreak_time_group"/>
+            <xs:group ref="pBreak_variationCoefficient_group"/>
+        </xs:choice>
+        <xs:attribute name="basedOn">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="time"/>
+                    <xs:enumeration value="iterations"/>
+                    <xs:enumeration value="variationCoefficient"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:group name="pBreak_iteration_group">
+        <xs:sequence>
+            <xs:element name="iterations" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:group name="pBreak_time_group">
+        <xs:sequence>
+            <xs:element name="time" type="xs:long" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:group name="pBreak_variationCoefficient_group">
+        <xs:sequence>
+            <xs:element name="threshold" type="xs:double" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="iterations" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:complexType name="moduleType">
+        <xs:choice>
+            <xs:group ref="ruin_and_recreate_group"/>
+            <xs:group ref="gendreau_group"/>
+        </xs:choice>
+        <xs:attribute name="name">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="ruin_and_recreate"/>
+                    <xs:enumeration value="gendreau"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:group name="ruin_and_recreate_group">
+        <xs:sequence>
+            <xs:element name="ruin" type="ruinType"/>
+            <xs:element name="insertion" type="insertionType"/>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:group name="gendreau_group">
+        <xs:sequence>
+            <xs:element name="iterations" type="xs:integer"/>
+            <xs:element name="share" type="xs:double"/>
+            <xs:element name="ruin" type="ruinType"/>
+            <xs:element name="insertion" type="insertionType"/>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:complexType name="ruinType">
+        <xs:sequence>
+            <xs:element name="share" minOccurs="0" maxOccurs="1">
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="0.0"/>
+                        <xs:maxInclusive value="1.0"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="initRemoveJobs" minOccurs="0" maxOccurs="1">
+              <xs:simpleType>
+                <xs:restriction base="xs:integer">
+                  <xs:minInclusive value="1"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="distance" minOccurs="0" maxOccurs="1">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="euclidean"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="name" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="randomRuin"/>
+                    <xs:enumeration value="radialRuin"/>
+                    <xs:enumeration value="clusterRuin"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="id" type="xs:string"/>
+
+    </xs:complexType>
+
+
+    <xs:complexType name="insertionType">
+        <xs:all>
+            <xs:element name="level" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="forwardLooking" type="xs:string"/>
+                            <xs:attribute name="memory" type="xs:string"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="considerFixedCosts" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="weight" type="xs:double"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="allowVehicleSwitch" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="fastRegret" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="experimental" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:any minOccurs="0"/>
+                    </xs:sequence>
+                    <xs:attribute name="timeSlice" type="xs:string"/>
+                    <xs:attribute name="neighboringSlices" type="xs:string"/>
+                </xs:complexType>
+
+            </xs:element>
+
+        </xs:all>
+        <xs:attribute name="name" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="bestInsertion"/>
+                    <xs:enumeration value="regretInsertion"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="id" type="xs:string"/>
+
+    </xs:complexType>
+
+</xs:schema>

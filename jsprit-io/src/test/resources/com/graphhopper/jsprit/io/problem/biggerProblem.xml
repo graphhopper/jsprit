@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to GraphHopper GmbH under one or more contributor
+  ~ license agreements. See the NOTICE file distributed with this work for
+  ~ additional information regarding copyright ownership.
+  ~
+  ~ GraphHopper GmbH licenses this file to you under the Apache License,
+  ~ Version 2.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<problem xmlns="http://www.w3schools.com"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3schools.com vrp_xml_schema.xsd">
+    <problemType>
+        <fleetSize>FINITE</fleetSize>
+        <fleetComposition>HOMOGENEOUS</fleetComposition>
+    </problemType>
+    <vehicles>
+        <vehicle>
+            <id>18</id>
+            <typeId>3.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>19</id>
+            <typeId>3.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>39600.0</start>
+                <end>64800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>20</id>
+            <typeId>3.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>7</id>
+            <typeId>1.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>23</id>
+            <typeId>5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>11</id>
+            <typeId>3.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>3</id>
+            <typeId>1.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>1</id>
+            <typeId>1.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>12</id>
+            <typeId>3.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>22</id>
+            <typeId>5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>15</id>
+            <typeId>3.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>16</id>
+            <typeId>3.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>9</id>
+            <typeId>1.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>4</id>
+            <typeId>1.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>2</id>
+            <typeId>1.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>24</id>
+            <typeId>5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>5</id>
+            <typeId>1.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>17</id>
+            <typeId>3.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>25</id>
+            <typeId>5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>13</id>
+            <typeId>3.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>27</id>
+            <typeId>8T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>6</id>
+            <typeId>1.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>10</id>
+            <typeId>1.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>8</id>
+            <typeId>1.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>26</id>
+            <typeId>8T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>14</id>
+            <typeId>3.5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+        <vehicle>
+            <id>21</id>
+            <typeId>5T</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>14400.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+    </vehicles>
+    <vehicleTypes>
+        <type>
+            <id>1.5T</id>
+            <capacity-dimensions>
+                <dimension index="0">0</dimension>
+            </capacity-dimensions>
+            <costs>
+                <fixed>0.0</fixed>
+                <distance>1.0</distance>
+                <time>0.0</time>
+            </costs>
+        </type>
+        <type>
+            <id>3.5T</id>
+            <capacity-dimensions>
+                <dimension index="0">0</dimension>
+            </capacity-dimensions>
+            <costs>
+                <fixed>0.0</fixed>
+                <distance>1.0</distance>
+                <time>0.0</time>
+            </costs>
+        </type>
+        <type>
+            <id>5T</id>
+            <capacity-dimensions>
+                <dimension index="0">0</dimension>
+            </capacity-dimensions>
+            <costs>
+                <fixed>0.0</fixed>
+                <distance>1.0</distance>
+                <time>0.0</time>
+            </costs>
+        </type>
+        <type>
+            <id>8T</id>
+            <capacity-dimensions>
+                <dimension index="0">0</dimension>
+            </capacity-dimensions>
+            <costs>
+                <fixed>0.0</fixed>
+                <distance>1.0</distance>
+                <time>0.0</time>
+            </costs>
+        </type>
+    </vehicleTypes>
+    <services>
+        <service id="3" type="service">
+            <locationId>[x=1000.0][y=1000.0]</locationId>
+            <coord x="1000.0" y="1000.0"/>
+            <capacity-dimensions>
+                <dimension index="0">0</dimension>
+            </capacity-dimensions>
+            <duration>0.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>21600.0</start>
+                    <end>36000.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="2" type="service">
+            <locationId>[x=1000.0][y=1000.0]</locationId>
+            <coord x="1000.0" y="1000.0"/>
+            <capacity-dimensions>
+                <dimension index="0">0</dimension>
+            </capacity-dimensions>
+            <duration>0.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>21600.0</start>
+                    <end>36000.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="1" type="service">
+            <locationId>[x=1000.0][y=1000.0]</locationId>
+            <coord x="1000.0" y="1000.0"/>
+            <capacity-dimensions>
+                <dimension index="0">0</dimension>
+            </capacity-dimensions>
+            <duration>0.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>19800.0</start>
+                    <end>21600.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="7" type="service">
+            <locationId>[x=1000.0][y=1000.0]</locationId>
+            <coord x="1000.0" y="1000.0"/>
+            <capacity-dimensions>
+                <dimension index="0">0</dimension>
+            </capacity-dimensions>
+            <duration>0.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>21600.0</start>
+                    <end>43200.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="6" type="service">
+            <locationId>[x=1000.0][y=1000.0]</locationId>
+            <coord x="1000.0" y="1000.0"/>
+            <capacity-dimensions>
+                <dimension index="0">0</dimension>
+            </capacity-dimensions>
+            <duration>0.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>21600.0</start>
+                    <end>43200.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="5" type="service">
+            <locationId>[x=1000.0][y=1000.0]</locationId>
+            <coord x="1000.0" y="1000.0"/>
+            <capacity-dimensions>
+                <dimension index="0">0</dimension>
+            </capacity-dimensions>
+            <duration>0.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>21600.0</start>
+                    <end>36000.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="4" type="service">
+            <locationId>[x=1000.0][y=1000.0]</locationId>
+            <coord x="1000.0" y="1000.0"/>
+            <capacity-dimensions>
+                <dimension index="0">0</dimension>
+            </capacity-dimensions>
+            <duration>0.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>21600.0</start>
+                    <end>36000.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="9" type="service">
+            <locationId>[x=1000.0][y=1000.0]</locationId>
+            <coord x="1000.0" y="1000.0"/>
+            <capacity-dimensions>
+                <dimension index="0">0</dimension>
+            </capacity-dimensions>
+            <duration>0.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>54000.0</start>
+                    <end>64800.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="8" type="service">
+            <locationId>[x=1000.0][y=1000.0]</locationId>
+            <coord x="1000.0" y="1000.0"/>
+            <capacity-dimensions>
+                <dimension index="0">0</dimension>
+            </capacity-dimensions>
+            <duration>0.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>21600.0</start>
+                    <end>50400.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+    </services>
+</problem>

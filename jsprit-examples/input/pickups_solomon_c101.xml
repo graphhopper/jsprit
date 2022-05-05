@@ -1,0 +1,1254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to GraphHopper GmbH under one or more contributor
+  ~ license agreements. See the NOTICE file distributed with this work for
+  ~ additional information regarding copyright ownership.
+  ~
+  ~ GraphHopper GmbH licenses this file to you under the Apache License,
+  ~ Version 2.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<problem xmlns="http://www.w3schools.com"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3schools.com vrp_xml_schema.xsd">
+    <problemType>
+        <fleetSize>INFINITE</fleetSize>
+        <fleetComposition>HOMOGENEOUS</fleetComposition>
+    </problemType>
+    <vehicles>
+        <vehicle>
+            <id>solomonVehicle</id>
+            <typeId>solomonType</typeId>
+            <location>
+                <id>0</id>
+                <coord x="40.0" y="50.0"/>
+            </location>
+            <timeSchedule>
+                <start>0.0</start>
+                <end>1236.0</end>
+            </timeSchedule>
+        </vehicle>
+    </vehicles>
+    <vehicleTypes>
+        <type>
+            <id>solomonType</id>
+            <capacity>200</capacity>
+            <costs>
+                <fixed>0.0</fixed>
+                <distance>1.0</distance>
+                <time>0.0</time>
+            </costs>
+        </type>
+    </vehicleTypes>
+    <services>
+        <service id="35" type="pickup">
+            <locationId>[x=5.0][y=35.0]</locationId>
+            <coord x="5.0" y="35.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>283.0</start>
+                    <end>344.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="36" type="pickup">
+            <locationId>[x=5.0][y=45.0]</locationId>
+            <coord x="5.0" y="45.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>665.0</start>
+                    <end>716.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="33" type="pickup">
+            <locationId>[x=8.0][y=40.0]</locationId>
+            <coord x="8.0" y="40.0"/>
+            <capacity-demand>40</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>87.0</start>
+                    <end>158.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="34" type="pickup">
+            <locationId>[x=8.0][y=45.0]</locationId>
+            <coord x="8.0" y="45.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>751.0</start>
+                    <end>816.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="39" type="pickup">
+            <locationId>[x=0.0][y=45.0]</locationId>
+            <coord x="0.0" y="45.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>567.0</start>
+                    <end>624.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="37" type="pickup">
+            <locationId>[x=2.0][y=40.0]</locationId>
+            <coord x="2.0" y="40.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>383.0</start>
+                    <end>434.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="38" type="pickup">
+            <locationId>[x=0.0][y=40.0]</locationId>
+            <coord x="0.0" y="40.0"/>
+            <capacity-demand>30</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>479.0</start>
+                    <end>522.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="43" type="pickup">
+            <locationId>[x=33.0][y=35.0]</locationId>
+            <coord x="33.0" y="35.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>16.0</start>
+                    <end>80.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="42" type="pickup">
+            <locationId>[x=33.0][y=32.0]</locationId>
+            <coord x="33.0" y="32.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>68.0</start>
+                    <end>149.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="41" type="pickup">
+            <locationId>[x=35.0][y=32.0]</locationId>
+            <coord x="35.0" y="32.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>166.0</start>
+                    <end>235.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="40" type="pickup">
+            <locationId>[x=35.0][y=30.0]</locationId>
+            <coord x="35.0" y="30.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>264.0</start>
+                    <end>321.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="22" type="pickup">
+            <locationId>[x=28.0][y=52.0]</locationId>
+            <coord x="28.0" y="52.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>812.0</start>
+                    <end>883.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="23" type="pickup">
+            <locationId>[x=28.0][y=55.0]</locationId>
+            <coord x="28.0" y="55.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>732.0</start>
+                    <end>777.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="24" type="pickup">
+            <locationId>[x=25.0][y=50.0]</locationId>
+            <coord x="25.0" y="50.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>65.0</start>
+                    <end>144.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="25" type="pickup">
+            <locationId>[x=25.0][y=52.0]</locationId>
+            <coord x="25.0" y="52.0"/>
+            <capacity-demand>40</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>169.0</start>
+                    <end>224.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="26" type="pickup">
+            <locationId>[x=25.0][y=55.0]</locationId>
+            <coord x="25.0" y="55.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>622.0</start>
+                    <end>701.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="27" type="pickup">
+            <locationId>[x=23.0][y=52.0]</locationId>
+            <coord x="23.0" y="52.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>261.0</start>
+                    <end>316.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="28" type="pickup">
+            <locationId>[x=23.0][y=55.0]</locationId>
+            <coord x="23.0" y="55.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>546.0</start>
+                    <end>593.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="29" type="pickup">
+            <locationId>[x=20.0][y=50.0]</locationId>
+            <coord x="20.0" y="50.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>358.0</start>
+                    <end>405.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="3" type="pickup">
+            <locationId>[x=42.0][y=66.0]</locationId>
+            <coord x="42.0" y="66.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>65.0</start>
+                    <end>146.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="2" type="pickup">
+            <locationId>[x=45.0][y=70.0]</locationId>
+            <coord x="45.0" y="70.0"/>
+            <capacity-demand>30</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>825.0</start>
+                    <end>870.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="1" type="pickup">
+            <locationId>[x=45.0][y=68.0]</locationId>
+            <coord x="45.0" y="68.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>912.0</start>
+                    <end>967.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="30" type="pickup">
+            <locationId>[x=20.0][y=55.0]</locationId>
+            <coord x="20.0" y="55.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>449.0</start>
+                    <end>504.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="7" type="pickup">
+            <locationId>[x=40.0][y=66.0]</locationId>
+            <coord x="40.0" y="66.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>170.0</start>
+                    <end>225.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="6" type="pickup">
+            <locationId>[x=40.0][y=69.0]</locationId>
+            <coord x="40.0" y="69.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>621.0</start>
+                    <end>702.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="5" type="pickup">
+            <locationId>[x=42.0][y=65.0]</locationId>
+            <coord x="42.0" y="65.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>15.0</start>
+                    <end>67.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="32" type="pickup">
+            <locationId>[x=10.0][y=40.0]</locationId>
+            <coord x="10.0" y="40.0"/>
+            <capacity-demand>30</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>31.0</start>
+                    <end>100.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="4" type="pickup">
+            <locationId>[x=42.0][y=68.0]</locationId>
+            <coord x="42.0" y="68.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>727.0</start>
+                    <end>782.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="31" type="pickup">
+            <locationId>[x=10.0][y=35.0]</locationId>
+            <coord x="10.0" y="35.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>200.0</start>
+                    <end>237.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="9" type="pickup">
+            <locationId>[x=38.0][y=70.0]</locationId>
+            <coord x="38.0" y="70.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>534.0</start>
+                    <end>605.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="8" type="pickup">
+            <locationId>[x=38.0][y=68.0]</locationId>
+            <coord x="38.0" y="68.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>255.0</start>
+                    <end>324.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="19" type="pickup">
+            <locationId>[x=15.0][y=80.0]</locationId>
+            <coord x="15.0" y="80.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>278.0</start>
+                    <end>345.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="17" type="pickup">
+            <locationId>[x=18.0][y=75.0]</locationId>
+            <coord x="18.0" y="75.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>99.0</start>
+                    <end>148.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="18" type="pickup">
+            <locationId>[x=15.0][y=75.0]</locationId>
+            <coord x="15.0" y="75.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>179.0</start>
+                    <end>254.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="15" type="pickup">
+            <locationId>[x=20.0][y=80.0]</locationId>
+            <coord x="20.0" y="80.0"/>
+            <capacity-demand>40</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>384.0</start>
+                    <end>429.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="16" type="pickup">
+            <locationId>[x=20.0][y=85.0]</locationId>
+            <coord x="20.0" y="85.0"/>
+            <capacity-demand>40</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>475.0</start>
+                    <end>528.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="13" type="pickup">
+            <locationId>[x=22.0][y=75.0]</locationId>
+            <coord x="22.0" y="75.0"/>
+            <capacity-demand>30</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>30.0</start>
+                    <end>92.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="14" type="pickup">
+            <locationId>[x=22.0][y=85.0]</locationId>
+            <coord x="22.0" y="85.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>567.0</start>
+                    <end>620.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="11" type="pickup">
+            <locationId>[x=35.0][y=69.0]</locationId>
+            <coord x="35.0" y="69.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>448.0</start>
+                    <end>505.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="12" type="pickup">
+            <locationId>[x=25.0][y=85.0]</locationId>
+            <coord x="25.0" y="85.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>652.0</start>
+                    <end>721.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="21" type="pickup">
+            <locationId>[x=30.0][y=52.0]</locationId>
+            <coord x="30.0" y="52.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>914.0</start>
+                    <end>965.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="20" type="pickup">
+            <locationId>[x=30.0][y=50.0]</locationId>
+            <coord x="30.0" y="50.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>10.0</start>
+                    <end>73.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="99" type="pickup">
+            <locationId>[x=55.0][y=80.0]</locationId>
+            <coord x="55.0" y="80.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>743.0</start>
+                    <end>820.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="100" type="pickup">
+            <locationId>[x=55.0][y=85.0]</locationId>
+            <coord x="55.0" y="85.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>647.0</start>
+                    <end>726.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="98" type="pickup">
+            <locationId>[x=58.0][y=75.0]</locationId>
+            <coord x="58.0" y="75.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>30.0</start>
+                    <end>84.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="97" type="pickup">
+            <locationId>[x=60.0][y=85.0]</locationId>
+            <coord x="60.0" y="85.0"/>
+            <capacity-demand>30</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>561.0</start>
+                    <end>622.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="96" type="pickup">
+            <locationId>[x=60.0][y=80.0]</locationId>
+            <coord x="60.0" y="80.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>95.0</start>
+                    <end>156.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="95" type="pickup">
+            <locationId>[x=62.0][y=80.0]</locationId>
+            <coord x="62.0" y="80.0"/>
+            <capacity-demand>30</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>196.0</start>
+                    <end>239.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="94" type="pickup">
+            <locationId>[x=65.0][y=82.0]</locationId>
+            <coord x="65.0" y="82.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>285.0</start>
+                    <end>336.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="93" type="pickup">
+            <locationId>[x=65.0][y=85.0]</locationId>
+            <coord x="65.0" y="85.0"/>
+            <capacity-demand>40</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>475.0</start>
+                    <end>518.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="92" type="pickup">
+            <locationId>[x=67.0][y=85.0]</locationId>
+            <coord x="67.0" y="85.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>368.0</start>
+                    <end>441.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="91" type="pickup">
+            <locationId>[x=60.0][y=60.0]</locationId>
+            <coord x="60.0" y="60.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>836.0</start>
+                    <end>889.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="90" type="pickup">
+            <locationId>[x=60.0][y=55.0]</locationId>
+            <coord x="60.0" y="55.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>20.0</start>
+                    <end>84.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="10" type="pickup">
+            <locationId>[x=35.0][y=66.0]</locationId>
+            <coord x="35.0" y="66.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>357.0</start>
+                    <end>410.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="88" type="pickup">
+            <locationId>[x=65.0][y=60.0]</locationId>
+            <coord x="65.0" y="60.0"/>
+            <capacity-demand>30</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>645.0</start>
+                    <end>708.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="89" type="pickup">
+            <locationId>[x=63.0][y=58.0]</locationId>
+            <coord x="63.0" y="58.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>737.0</start>
+                    <end>802.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="79" type="pickup">
+            <locationId>[x=87.0][y=30.0]</locationId>
+            <coord x="87.0" y="30.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>668.0</start>
+                    <end>731.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="78" type="pickup">
+            <locationId>[x=88.0][y=35.0]</locationId>
+            <coord x="88.0" y="35.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>109.0</start>
+                    <end>170.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="77" type="pickup">
+            <locationId>[x=88.0][y=30.0]</locationId>
+            <coord x="88.0" y="30.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>574.0</start>
+                    <end>643.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="82" type="pickup">
+            <locationId>[x=75.0][y=55.0]</locationId>
+            <coord x="75.0" y="55.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>369.0</start>
+                    <end>420.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="83" type="pickup">
+            <locationId>[x=72.0][y=55.0]</locationId>
+            <coord x="72.0" y="55.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>265.0</start>
+                    <end>338.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="80" type="pickup">
+            <locationId>[x=85.0][y=25.0]</locationId>
+            <coord x="85.0" y="25.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>769.0</start>
+                    <end>820.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="81" type="pickup">
+            <locationId>[x=85.0][y=35.0]</locationId>
+            <coord x="85.0" y="35.0"/>
+            <capacity-demand>30</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>47.0</start>
+                    <end>124.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="86" type="pickup">
+            <locationId>[x=66.0][y=55.0]</locationId>
+            <coord x="66.0" y="55.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>173.0</start>
+                    <end>238.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="87" type="pickup">
+            <locationId>[x=65.0][y=55.0]</locationId>
+            <coord x="65.0" y="55.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>85.0</start>
+                    <end>144.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="84" type="pickup">
+            <locationId>[x=70.0][y=58.0]</locationId>
+            <coord x="70.0" y="58.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>458.0</start>
+                    <end>523.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="85" type="pickup">
+            <locationId>[x=68.0][y=60.0]</locationId>
+            <coord x="68.0" y="60.0"/>
+            <capacity-demand>30</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>555.0</start>
+                    <end>612.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="67" type="pickup">
+            <locationId>[x=47.0][y=40.0]</locationId>
+            <coord x="47.0" y="40.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>12.0</start>
+                    <end>77.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="66" type="pickup">
+            <locationId>[x=47.0][y=35.0]</locationId>
+            <coord x="47.0" y="35.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>826.0</start>
+                    <end>875.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="69" type="pickup">
+            <locationId>[x=45.0][y=35.0]</locationId>
+            <coord x="45.0" y="35.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>916.0</start>
+                    <end>969.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="68" type="pickup">
+            <locationId>[x=45.0][y=30.0]</locationId>
+            <coord x="45.0" y="30.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>734.0</start>
+                    <end>777.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="70" type="pickup">
+            <locationId>[x=95.0][y=30.0]</locationId>
+            <coord x="95.0" y="30.0"/>
+            <capacity-demand>30</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>387.0</start>
+                    <end>456.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="71" type="pickup">
+            <locationId>[x=95.0][y=35.0]</locationId>
+            <coord x="95.0" y="35.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>293.0</start>
+                    <end>360.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="72" type="pickup">
+            <locationId>[x=53.0][y=30.0]</locationId>
+            <coord x="53.0" y="30.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>450.0</start>
+                    <end>505.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="73" type="pickup">
+            <locationId>[x=92.0][y=30.0]</locationId>
+            <coord x="92.0" y="30.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>478.0</start>
+                    <end>551.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="74" type="pickup">
+            <locationId>[x=53.0][y=35.0]</locationId>
+            <coord x="53.0" y="35.0"/>
+            <capacity-demand>50</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>353.0</start>
+                    <end>412.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="75" type="pickup">
+            <locationId>[x=45.0][y=65.0]</locationId>
+            <coord x="45.0" y="65.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>997.0</start>
+                    <end>1068.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="76" type="pickup">
+            <locationId>[x=90.0][y=35.0]</locationId>
+            <coord x="90.0" y="35.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>203.0</start>
+                    <end>260.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="59" type="pickup">
+            <locationId>[x=38.0][y=15.0]</locationId>
+            <coord x="38.0" y="15.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>651.0</start>
+                    <end>740.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="58" type="pickup">
+            <locationId>[x=38.0][y=5.0]</locationId>
+            <coord x="38.0" y="5.0"/>
+            <capacity-demand>30</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>471.0</start>
+                    <end>534.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="57" type="pickup">
+            <locationId>[x=40.0][y=15.0]</locationId>
+            <coord x="40.0" y="15.0"/>
+            <capacity-demand>40</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>35.0</start>
+                    <end>87.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="56" type="pickup">
+            <locationId>[x=40.0][y=5.0]</locationId>
+            <coord x="40.0" y="5.0"/>
+            <capacity-demand>30</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>385.0</start>
+                    <end>436.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="55" type="pickup">
+            <locationId>[x=42.0][y=15.0]</locationId>
+            <coord x="42.0" y="15.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>95.0</start>
+                    <end>158.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="64" type="pickup">
+            <locationId>[x=48.0][y=30.0]</locationId>
+            <coord x="48.0" y="30.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>632.0</start>
+                    <end>693.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="65" type="pickup">
+            <locationId>[x=48.0][y=40.0]</locationId>
+            <coord x="48.0" y="40.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>76.0</start>
+                    <end>129.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="62" type="pickup">
+            <locationId>[x=50.0][y=35.0]</locationId>
+            <coord x="50.0" y="35.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>262.0</start>
+                    <end>317.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="63" type="pickup">
+            <locationId>[x=50.0][y=40.0]</locationId>
+            <coord x="50.0" y="40.0"/>
+            <capacity-demand>50</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>171.0</start>
+                    <end>218.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="60" type="pickup">
+            <locationId>[x=35.0][y=5.0]</locationId>
+            <coord x="35.0" y="5.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>562.0</start>
+                    <end>629.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="61" type="pickup">
+            <locationId>[x=50.0][y=30.0]</locationId>
+            <coord x="50.0" y="30.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>531.0</start>
+                    <end>610.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="49" type="pickup">
+            <locationId>[x=28.0][y=35.0]</locationId>
+            <coord x="28.0" y="35.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>1001.0</start>
+                    <end>1066.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="48" type="pickup">
+            <locationId>[x=28.0][y=30.0]</locationId>
+            <coord x="28.0" y="30.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>632.0</start>
+                    <end>693.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="45" type="pickup">
+            <locationId>[x=30.0][y=30.0]</locationId>
+            <coord x="30.0" y="30.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>541.0</start>
+                    <end>600.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="44" type="pickup">
+            <locationId>[x=32.0][y=30.0]</locationId>
+            <coord x="32.0" y="30.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>359.0</start>
+                    <end>412.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="47" type="pickup">
+            <locationId>[x=30.0][y=35.0]</locationId>
+            <coord x="30.0" y="35.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>1054.0</start>
+                    <end>1127.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="46" type="pickup">
+            <locationId>[x=30.0][y=32.0]</locationId>
+            <coord x="30.0" y="32.0"/>
+            <capacity-demand>30</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>448.0</start>
+                    <end>509.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="51" type="pickup">
+            <locationId>[x=25.0][y=30.0]</locationId>
+            <coord x="25.0" y="30.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>725.0</start>
+                    <end>786.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="52" type="pickup">
+            <locationId>[x=25.0][y=35.0]</locationId>
+            <coord x="25.0" y="35.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>912.0</start>
+                    <end>969.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="53" type="pickup">
+            <locationId>[x=44.0][y=5.0]</locationId>
+            <coord x="44.0" y="5.0"/>
+            <capacity-demand>20</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>286.0</start>
+                    <end>347.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="54" type="pickup">
+            <locationId>[x=42.0][y=10.0]</locationId>
+            <coord x="42.0" y="10.0"/>
+            <capacity-demand>40</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>186.0</start>
+                    <end>257.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="50" type="pickup">
+            <locationId>[x=26.0][y=32.0]</locationId>
+            <coord x="26.0" y="32.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>815.0</start>
+                    <end>880.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+    </services>
+</problem>

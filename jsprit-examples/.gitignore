@@ -1,0 +1,15 @@
+/output
+/bin
+/target
+.DS_Store
+
+# IntelliJ
+*.ipr
+*.iws
+*.iml
+.idea
+
+# Eclipse
+.project
+.classpath
+.settings

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to GraphHopper GmbH under one or more contributor
+  ~ license agreements. See the NOTICE file distributed with this work for
+  ~ additional information regarding copyright ownership.
+  ~
+  ~ GraphHopper GmbH licenses this file to you under the Apache License,
+  ~ Version 2.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<problem xmlns="http://www.w3schools.com"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3schools.com vrp_xml_schema.xsd">
+    <problemType>
+        <fleetSize>FINITE</fleetSize>
+        <fleetComposition>HOMOGENEOUS</fleetComposition>
+    </problemType>
+    <vehicles>
+        <vehicle>
+            <id>veh1</id>
+            <typeId>type1</typeId>
+            <startLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </startLocation>
+            <endLocation>
+                <id>[x=0.0][y=0.0]</id>
+                <coord x="0.0" y="0.0"/>
+            </endLocation>
+            <timeSchedule>
+                <start>0.0</start>
+                <end>46800.0</end>
+            </timeSchedule>
+            <returnToDepot>true</returnToDepot>
+        </vehicle>
+    </vehicles>
+    <vehicleTypes>
+        <type>
+            <id>type1</id>
+            <capacity-dimensions>
+                <dimension index="0">100</dimension>
+            </capacity-dimensions>
+            <costs>
+                <fixed>0.0</fixed>
+                <distance>1.0</distance>
+                <time>0.0</time>
+            </costs>
+        </type>
+    </vehicleTypes>
+
+    <shipments>
+        <shipment id="3">
+            <pickup>
+                <locationId>loc_pickup_shipment_3</locationId>
+                <coord x="0." y="10.0"/>
+            </pickup>
+            <delivery>
+                <locationId>loc_deliver_shipment_3</locationId>
+                <coord x="0." y="20.0"/>
+            </delivery>
+            <capacity-dimensions>
+                <dimension index="0">100</dimension>
+            </capacity-dimensions>
+        </shipment>
+
+        <shipment id="4">
+            <pickup>
+                <locationId>loc_pickup_shipment_4</locationId>
+                <coord x="0." y="12.0"/>
+            </pickup>
+            <delivery>
+                <locationId>loc_deliver_shipment_4</locationId>
+                <coord x="0." y="18.0"/>
+            </delivery>
+            <capacity-dimensions>
+                <dimension index="0">50</dimension>
+            </capacity-dimensions>
+        </shipment>
+
+    </shipments>
+
+    <initialRoutes>
+        <route>
+            <driverId>noDriver</driverId>
+            <vehicleId>veh1</vehicleId>
+            <start>0.</start>
+            <act type="pickupShipment">
+                <shipmentId>3</shipmentId>
+            </act>
+            <act type="deliverShipment">
+                <shipmentId>3</shipmentId>
+            </act>
+            <end/>
+        </route>
+    </initialRoutes>
+</problem>
