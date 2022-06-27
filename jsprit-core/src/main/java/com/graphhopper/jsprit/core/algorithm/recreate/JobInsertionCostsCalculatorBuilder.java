@@ -102,6 +102,8 @@ public class JobInsertionCostsCalculatorBuilder {
 
     private BreakForMultipleTimeWindowsInsertionCalculatorFactory breakForMultipleTimeWindowsInsertionCalculatorFactory = new BreakForMultipleTimeWindowsInsertionCalculatorFactory();
 
+    private RelativeBreakInsertionCalculatorFactory relativeBreakInsertionCalculatorFactory = new RelativeBreakInsertionCalculatorFactory();
+
     /**
      * Constructs the builder.
      * <p>
@@ -316,6 +318,7 @@ public class JobInsertionCostsCalculatorBuilder {
         JobInsertionCostsCalculator serviceInsertion = serviceCalculatorFactory.create(vrp, actInsertionCalc, activityFactory, constraintManager);
         JobInsertionCostsCalculator breakInsertion = breakCalculatorFactory.create(vrp, actInsertionCalc, activityFactory, constraintManager);
         JobInsertionCostsCalculator breakForMultipleTimeWindowsInsertionCalculator = breakForMultipleTimeWindowsInsertionCalculatorFactory.create(vrp, actInsertionCalc, activityFactory, constraintManager);
+        JobInsertionCostsCalculator relativeBreakInsertionCalculator = relativeBreakInsertionCalculatorFactory.create(vrp, actInsertionCalc, activityFactory, constraintManager);
 
         JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
         switcher.put(Shipment.class, shipmentInsertion);
@@ -323,6 +326,7 @@ public class JobInsertionCostsCalculatorBuilder {
         switcher.put(Pickup.class, serviceInsertion);
         switcher.put(Delivery.class, serviceInsertion);
         switcher.put(Break.class, breakInsertion);
+        switcher.put(RelativeBreak.class, relativeBreakInsertionCalculator);
         switcher.put(BreakForMultipleTimeWindows.class, breakForMultipleTimeWindowsInsertionCalculator);
         switcher.put(ShipmentWithMutablePickupDeliverOptions.class, shipmentInsertion);
 

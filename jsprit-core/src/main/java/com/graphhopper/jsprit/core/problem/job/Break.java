@@ -40,7 +40,7 @@ public class Break extends Service {
             return new Builder(id);
         }
 
-        private boolean variableLocation = true;
+        protected boolean variableLocation = true;
 
         Builder(String id) {
             super(id);
@@ -66,7 +66,7 @@ public class Break extends Service {
 
     }
 
-    private boolean variableLocation = true;
+    protected boolean variableLocation = true;
 
     Break(Builder builder) {
         super(builder);
