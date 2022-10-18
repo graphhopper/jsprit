@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -47,13 +47,13 @@ import java.util.concurrent.Future;
 public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
 
-    private static Logger logger = LoggerFactory.getLogger(RegretInsertionConcurrentFast.class);
+    private final static Logger logger = LoggerFactory.getLogger(RegretInsertionConcurrentFast.class);
 
     private ScoringFunction scoringFunction;
 
     private final JobInsertionCostsCalculator insertionCostsCalculator;
 
-    private final ExecutorCompletionService<ScoredJob> completionService;
+    private final ExecutorService executorService;
 
     /**
      * Sets the scoring function.
@@ -71,7 +71,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
         this.insertionCostsCalculator = jobInsertionCalculator;
         this.vrp = vehicleRoutingProblem;
-        completionService = new ExecutorCompletionService<>(executorService);
+        this.executorService = executorService;
         logger.debug("initialise " + this);
     }
 
@@ -136,15 +136,15 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
     private ScoredJob nextJob(final Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<ScoredJob> badJobList) {
         ScoredJob bestScoredJob = null;
-
+        List<Callable<ScoredJob>> tasks = new ArrayList<>(unassignedJobList.size());
         for (final Job unassignedJob : unassignedJobList) {
-            completionService.submit(() -> RegretInsertion.getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction));
+            tasks.add(() -> RegretInsertion.getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction));
         }
 
         try {
+            List<Future<ScoredJob>> futureResponses = executorService.invokeAll(tasks);
             for (int i = 0; i < unassignedJobList.size(); i++) {
-                Future<ScoredJob> fsj = completionService.take();
-                ScoredJob sJob = fsj.get();
+                ScoredJob sJob = futureResponses.get(i).get();
                 if (sJob instanceof ScoredJob.BadJob) {
                     badJobList.add(sJob);
                     continue;
