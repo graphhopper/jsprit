@@ -202,6 +202,7 @@ public class Jsprit {
 
             defaults.put(Strategy.WORST_BEST.toString(), "0.");
             defaults.put(Strategy.WORST_REGRET.toString(), "1.");
+
             defaults.put(Strategy.CLUSTER_BEST.toString(), "0.");
             defaults.put(Strategy.CLUSTER_REGRET.toString(), "1.");
 
@@ -400,8 +401,9 @@ public class Jsprit {
 
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp) {
         ini(vrp);
+        boolean isInfinite = vrp.getFleetSize().equals(VehicleRoutingProblem.FleetSize.INFINITE);
         if (vehicleFleetManager == null) {
-            if (vrp.getFleetSize().equals(VehicleRoutingProblem.FleetSize.INFINITE)) {
+            if (isInfinite) {
                 vehicleFleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
             } else {
                 FiniteFleetManagerFactory finiteFleetManagerFactory = new FiniteFleetManagerFactory(vrp.getVehicles());
@@ -579,7 +581,7 @@ public class Jsprit {
         regret.setRandom(random);
 
         AbstractInsertionStrategy best;
-        if (vrp.getJobs().size() < 250 || es == null) {
+        if ((vrp.getVehicles().size() == 1 && !isInfinite) || vrp.getJobs().size() < 100 || es == null) {
             BestInsertion bestInsertion = (BestInsertion) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                 .setInsertionStrategy(InsertionStrategyBuilder.Strategy.BEST)
                 .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
