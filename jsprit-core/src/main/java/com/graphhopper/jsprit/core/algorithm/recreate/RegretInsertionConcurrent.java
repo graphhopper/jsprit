@@ -46,8 +46,9 @@ import java.util.concurrent.Future;
  */
 public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
+    private static final Logger logger = LoggerFactory.getLogger(RegretInsertionConcurrentFast.class);
 
-    private final static Logger logger = LoggerFactory.getLogger(RegretInsertionConcurrentFast.class);
+    private final ExecutorService executorService;
 
     private ScoringFunction scoringFunction;
 
@@ -116,7 +117,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<>(jobs);
             List<ScoredJob> badJobList = new ArrayList<>();
-            ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
+            ScoredJob bestScoredJob = calculateBestJob(routes, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
@@ -134,7 +135,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         return badJobs;
     }
 
-    private ScoredJob nextJob(final Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<ScoredJob> badJobList) {
+    private ScoredJob calculateBestJob(final Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<ScoredJob> badJobList) {
         ScoredJob bestScoredJob = null;
         List<Callable<ScoredJob>> tasks = new ArrayList<>(unassignedJobList.size());
         for (final Job unassignedJob : unassignedJobList) {
