@@ -54,8 +54,6 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
     private final JobInsertionCostsCalculator insertionCostsCalculator;
 
-    private final ExecutorService executorService;
-
     /**
      * Sets the scoring function.
      * <p>
