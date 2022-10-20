@@ -23,30 +23,29 @@ import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
+import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 
 
 public class InsertionStrategyBuilder {
 
-    private boolean fastRegret;
-
-
     public enum Strategy {
         REGRET, BEST
     }
 
-    private VehicleRoutingProblem vrp;
+    private final VehicleRoutingProblem vrp;
 
-    private StateManager stateManager;
+    private final StateManager stateManager;
 
     private boolean local = true;
 
-    private ConstraintManager constraintManager;
+    private final ConstraintManager constraintManager;
 
-    private VehicleFleetManager fleetManager;
+    private final VehicleFleetManager fleetManager;
 
     private double weightOfFixedCosts;
 
@@ -62,12 +61,6 @@ public class InsertionStrategyBuilder {
 
     private int nuOfThreads;
 
-    private double timeSlice;
-
-    private int nNeighbors;
-
-    private boolean timeScheduling = false;
-
     private boolean allowVehicleSwitch = true;
 
     private boolean addDefaultCostCalc = true;
@@ -81,6 +74,8 @@ public class InsertionStrategyBuilder {
     private JobInsertionCostsCalculatorFactory serviceInsertionCalculatorFactory;
 
     private JobInsertionCostsCalculatorFactory breakInsertionCalculatorFactory;
+
+    private Random random = RandomNumberGeneration.getRandom();
 
     public InsertionStrategyBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
         super();
@@ -110,6 +105,11 @@ public class InsertionStrategyBuilder {
         return this;
     }
 
+    public InsertionStrategyBuilder setRandom(Random random) {
+        this.random = random;
+        return this;
+    }
+
     public InsertionStrategyBuilder setRouteLevel(int forwardLooking, int memory) {
         local = false;
         this.forwaredLooking = forwardLooking;
@@ -136,13 +136,6 @@ public class InsertionStrategyBuilder {
         return this;
     }
 
-    /**
-     * If addDefaulMarginalCostCalculation is false, no calculator is set which implicitly assumes that marginal cost calculation
-     * is controlled by your custom soft constraints.
-     *
-     * @param addDefaultMarginalCostCalculation
-     * @return
-     */
     public InsertionStrategyBuilder setLocalLevel(boolean addDefaultMarginalCostCalculation) {
         local = true;
         addDefaultCostCalc = addDefaultMarginalCostCalculation;
@@ -168,8 +161,8 @@ public class InsertionStrategyBuilder {
 
 
     public InsertionStrategy build() {
-        List<InsertionListener> iListeners = new ArrayList<InsertionListener>();
-        List<VehicleRoutingAlgorithmListeners.PrioritizedVRAListener> algorithmListeners = new ArrayList<VehicleRoutingAlgorithmListeners.PrioritizedVRAListener>();
+        List<InsertionListener> iListeners = new ArrayList<>();
+        List<VehicleRoutingAlgorithmListeners.PrioritizedVRAListener> algorithmListeners = new ArrayList<>();
         JobInsertionCostsCalculatorBuilder calcBuilder = new JobInsertionCostsCalculatorBuilder(iListeners, algorithmListeners);
         if (local) {
             calcBuilder.setLocalLevel(addDefaultCostCalc);
@@ -190,27 +183,30 @@ public class InsertionStrategyBuilder {
         if (considerFixedCosts) {
             calcBuilder.considerFixedCosts(weightOfFixedCosts);
         }
-        if (timeScheduling) {
-            calcBuilder.experimentalTimeScheduler(timeSlice, nNeighbors);
-        }
         calcBuilder.setAllowVehicleSwitch(allowVehicleSwitch);
         JobInsertionCostsCalculator costCalculator = calcBuilder.build();
 
         InsertionStrategy insertion;
         if (strategy.equals(Strategy.BEST)) {
             if (executor == null) {
-                insertion = new BestInsertion(costCalculator, vrp);
+                BestInsertion bestInsertion = new BestInsertion(costCalculator, vrp);
+                bestInsertion.setRandom(random);
+                insertion = bestInsertion;
             } else {
-                insertion = new BestInsertionConcurrent(costCalculator, executor, nuOfThreads, vrp);
+                BestInsertionConcurrent bestInsertion = new BestInsertionConcurrent(costCalculator, executor, nuOfThreads, vrp);
+                bestInsertion.setRandom(random);
+                insertion = bestInsertion;
             }
         } else if (strategy.equals(Strategy.REGRET)) {
             if (executor == null) {
                 if (isFastRegret) {
                     RegretInsertionFast regret = new RegretInsertionFast(costCalculator, vrp, fleetManager);
                     regret.setSwitchAllowed(allowVehicleSwitch);
+                    regret.setRandom(random);
                     insertion = regret;
                 } else {
                     RegretInsertion regret = new RegretInsertion(costCalculator, vrp);
+                    regret.setRandom(random);
                     insertion = regret;
                 }
 
@@ -218,9 +214,11 @@ public class InsertionStrategyBuilder {
                 if (isFastRegret) {
                     RegretInsertionConcurrentFast regret = new RegretInsertionConcurrentFast(costCalculator, vrp, executor, fleetManager);
                     regret.setSwitchAllowed(allowVehicleSwitch);
+                    regret.setRandom(random);
                     insertion = regret;
                 } else {
                     RegretInsertionConcurrent regret = new RegretInsertionConcurrent(costCalculator, vrp, executor);
+                    regret.setRandom(random);
                     insertion = regret;
                 }
 
