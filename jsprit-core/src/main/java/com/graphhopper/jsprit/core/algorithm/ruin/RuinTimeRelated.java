@@ -121,15 +121,15 @@ public final class RuinTimeRelated extends AbstractRuinStrategy {
         }
         final double maxT = maxTime;
         final double maxD = maxDistance;
-        final double timeI = 10;
+        final double timeInfluence = 10;
         final double distanceI;
         double distanceInfluence = 1;
         if (random.nextDouble() < 0.5) {
             distanceI = 0;
         } else distanceI = distanceInfluence;
         neighborActivities.sort((o1, o2) -> {
-            double rO1 = relatedness(o1, maxD, maxT, timeI, distanceI);
-            double rO2 = relatedness(o2, maxD, maxT, timeI, distanceI);
+            double rO1 = relatedness(o1, maxD, maxT, timeInfluence, distanceI);
+            double rO2 = relatedness(o2, maxD, maxT, timeInfluence, distanceI);
             return Double.compare(rO1, rO2);
         });
         int toRemove = getRuinShareFactory().createNumberToBeRemoved();
@@ -144,8 +144,20 @@ public final class RuinTimeRelated extends AbstractRuinStrategy {
         return unassignedJobs;
     }
 
-    private double relatedness(RelatednessToTourActivity o1, double maxDistance, double maxTime, double timeI, double distanceI) {
-        return timeI * o1.time / maxTime + distanceI * o1.distance / maxDistance;
+    private double relatedness(RelatednessToTourActivity o1, double maxDistance, double maxTime, double timeInfluence, double distanceInfluence) {
+        double time;
+        if (maxTime == 0) {
+            time = 0;
+        } else {
+            time = o1.time / maxTime;
+        }
+        double distance;
+        if (maxDistance == 0) {
+            distance = 0;
+        } else {
+            distance = o1.distance / maxDistance;
+        }
+        return timeInfluence * time + distanceInfluence * distance;
     }
 
     @Override
