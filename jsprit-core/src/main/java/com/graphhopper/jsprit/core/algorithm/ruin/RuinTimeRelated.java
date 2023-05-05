@@ -120,7 +120,7 @@ public final class RuinTimeRelated extends AbstractRuinStrategy {
             }
         }
         final double maxT = maxTime;
-        final double maxD = maxTime;
+        final double maxD = maxDistance;
         final double timeI = 10;
         final double distanceI;
         double distanceInfluence = 1;
