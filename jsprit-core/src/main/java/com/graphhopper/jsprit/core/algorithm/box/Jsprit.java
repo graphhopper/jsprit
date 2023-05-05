@@ -82,7 +82,10 @@ public class Jsprit {
         CLUSTER_BEST("cluster_best"),
         CLUSTER_REGRET("cluster_regret"),
         STRING_BEST("string_best"),
-        STRING_REGRET("string_regret");
+        STRING_REGRET("string_regret"),
+        TIME_RELATED_REGRET("time_related_regret"),
+        TIME_RELATED_BEST("time_related_best");
+
 
         String strategyName;
 
@@ -189,6 +192,10 @@ public class Jsprit {
             Properties defaults = new Properties();
             defaults.put(Strategy.RADIAL_BEST.toString(), "0.");
             defaults.put(Strategy.RADIAL_REGRET.toString(), ".5");
+
+            defaults.put(Strategy.TIME_RELATED_BEST.toString(), "0.");
+            defaults.put(Strategy.TIME_RELATED_REGRET.toString(), "0.");
+
             defaults.put(Strategy.RANDOM_BEST.toString(), ".5");
             defaults.put(Strategy.RANDOM_REGRET.toString(), ".5");
 
@@ -466,18 +473,18 @@ public class Jsprit {
 
         RuinRadial radial = new RuinRadial(vrp, vrp.getJobs().size(), jobNeighborhoods);
         radial.setRandom(random);
-        radial.setRuinShareFactory(new RuinShareFactoryImpl(
+        RuinShareFactoryImpl radialRuinFactory = new RuinShareFactoryImpl(
             toInteger(properties.getProperty(Parameter.RADIAL_MIN_SHARE.toString())),
             toInteger(properties.getProperty(Parameter.RADIAL_MAX_SHARE.toString())),
-            random)
-        );
+            random);
+        radial.setRuinShareFactory(radialRuinFactory);
 
         final RuinRandom random_for_regret = new RuinRandom(vrp, 0.5);
         random_for_regret.setRandom(random);
         random_for_regret.setRuinShareFactory(new RuinShareFactoryImpl(
-                toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MIN_SHARE.toString())),
-                toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MAX_SHARE.toString())),
-                random)
+            toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MIN_SHARE.toString())),
+            toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MAX_SHARE.toString())),
+            random)
         );
 
         final RuinRandom random_for_best = new RuinRandom(vrp, 0.5);
@@ -521,12 +528,16 @@ public class Jsprit {
         stringRuin.setStringLength(lMin, lMax);
         stringRuin.setRandom(random);
 
+        final RuinTimeRelated ruinTimeRelated = new RuinTimeRelated(vrp);
+        ruinTimeRelated.setRuinShareFactory(radialRuinFactory);
+        ruinTimeRelated.setRandom(random);
+
         AbstractInsertionStrategy regret;
         final ScoringFunction scorer;
 
         boolean fastRegret = Boolean.parseBoolean(getProperty(Parameter.FAST_REGRET.toString()));
         if (es != null) {
-            if(fastRegret){
+            if (fastRegret) {
                 RegretInsertionConcurrentFast regretInsertion = (RegretInsertionConcurrentFast) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
                     .setConcurrentMode(es, noThreads)
@@ -624,6 +635,12 @@ public class Jsprit {
         SearchStrategy radialBest = new SearchStrategy(Strategy.RADIAL_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
         radialBest.addModule(configureModule(new RuinAndRecreateModule(Strategy.RADIAL_BEST.toString(), best, radial)));
 
+        SearchStrategy timeRelatedRegret = new SearchStrategy(Strategy.TIME_RELATED_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
+        timeRelatedRegret.addModule(configureModule(new RuinAndRecreateModule(Strategy.TIME_RELATED_REGRET.toString(), regret, ruinTimeRelated)));
+
+        SearchStrategy timeRelatedBest = new SearchStrategy(Strategy.TIME_RELATED_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
+        timeRelatedBest.addModule(configureModule(new RuinAndRecreateModule(Strategy.TIME_RELATED_BEST.toString(), best, ruinTimeRelated)));
+
         SearchStrategy randomBest = new SearchStrategy(Strategy.RANDOM_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
         randomBest.addModule(configureModule(new RuinAndRecreateModule(Strategy.RANDOM_BEST.toString(), best, random_for_best)));
 
@@ -655,6 +672,10 @@ public class Jsprit {
         }
         prettyBuilder.withStrategy(radialRegret, toDouble(getProperty(Strategy.RADIAL_REGRET.toString())))
             .withStrategy(radialBest, toDouble(getProperty(Strategy.RADIAL_BEST.toString())))
+
+            .withStrategy(timeRelatedBest, toDouble(getProperty(Strategy.TIME_RELATED_BEST.toString())))
+            .withStrategy(timeRelatedRegret, toDouble(getProperty(Strategy.TIME_RELATED_REGRET.toString())))
+
             .withStrategy(randomBest, toDouble(getProperty(Strategy.RANDOM_BEST.toString())))
             .withStrategy(randomRegret, toDouble(getProperty(Strategy.RANDOM_REGRET.toString())))
             .withStrategy(worstBest, toDouble(getProperty(Strategy.WORST_BEST.toString())))
