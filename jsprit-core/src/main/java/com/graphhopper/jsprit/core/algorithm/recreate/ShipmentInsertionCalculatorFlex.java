@@ -178,7 +178,7 @@ public final class ShipmentInsertionCalculatorFlex extends AbstractInsertionCalc
                     double pickupAIC = calculate(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime);
 
                     double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), pickupShipment.getLocation(), prevActEndTime, newDriver, newVehicle);
-                    double shipmentPickupEndTime = Math.max(shipmentPickupArrTime, pickupShipment.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(pickupShipment, shipmentPickupArrTime, newDriver, newVehicle);
+                    double shipmentPickupEndTime = Math.max(shipmentPickupArrTime, pickupShipment.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(pickupShipment, shipmentPickupArrTime, newDriver, newVehicle, prevAct);
 
                     pickupContext.setArrivalTime(shipmentPickupArrTime);
                     pickupContext.setEndTime(shipmentPickupEndTime);
@@ -238,7 +238,7 @@ public final class ShipmentInsertionCalculatorFlex extends AbstractInsertionCalc
                         }
                         //update prevAct and endTime
                         double nextActArrTime = prevActEndTimeForDeliveryLoop + transportCosts.getTransportTime(prevActForDeliveryLoop.getLocation(), nextActForDeliveryLoop.getLocation(), prevActEndTimeForDeliveryLoop, newDriver, newVehicle);
-                        prevActEndTimeForDeliveryLoop = Math.max(nextActArrTime, nextActForDeliveryLoop.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextActForDeliveryLoop, nextActArrTime, newDriver, newVehicle);
+                        prevActEndTimeForDeliveryLoop = Math.max(nextActArrTime, nextActForDeliveryLoop.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextActForDeliveryLoop, nextActArrTime, newDriver, newVehicle, prevActForDeliveryLoop);
                         prevActForDeliveryLoop = nextActForDeliveryLoop;
                         j++;
                     }
@@ -250,7 +250,7 @@ public final class ShipmentInsertionCalculatorFlex extends AbstractInsertionCalc
 
             //update prevAct and endTime
             double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActEndTime, newDriver, newVehicle);
-            prevActEndTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, nextActArrTime, newDriver, newVehicle);
+            prevActEndTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, nextActArrTime, newDriver, newVehicle, prevAct);
             prevAct = nextAct;
             i++;
         }

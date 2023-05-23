@@ -78,12 +78,12 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         activityCosts = new VehicleRoutingActivityCosts() {
 
             @Override
-            public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+            public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle, TourActivity prevAct) {
                 return Math.max(0., arrivalTime - tourAct.getTheoreticalLatestOperationStartTime());
             }
 
             @Override
-            public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+            public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle, TourActivity prevAct) {
                 return tourAct.getOperationTime();
             }
 
