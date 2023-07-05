@@ -67,6 +67,8 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
 
     private final AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
+    private final ServiceInsertionCalculator serviceInsertionCalculator;
+
     public BreakInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager, JobActivityFactory activityFactory) {
         super();
         this.transportCosts = routingCosts;
@@ -78,6 +80,7 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
         this.additionalTransportCostsCalculator = additionalTransportCostsCalculator;
         additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
         this.activityFactory = activityFactory;
+        this.serviceInsertionCalculator = new ServiceInsertionCalculator(routingCosts, activityCosts, additionalTransportCostsCalculator, constraintManager, activityFactory);
         logger.debug("initialise " + this);
     }
 
@@ -104,6 +107,11 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
 
         BreakActivity breakAct2Insert = (BreakActivity) activityFactory.createActivities(breakToInsert).get(0);
         insertionContext.getAssociatedActivities().add(breakAct2Insert);
+
+        if (!breakToInsert.hasVariableLocation()) {
+            breakAct2Insert.setLocation(breakToInsert.getLocation());
+            return serviceInsertionCalculator.getInsertionData(insertionContext, breakToInsert, breakAct2Insert, currentRoute, newVehicle, newVehicleDepartureTime, newDriver, bestKnownCosts);
+        }
 
         /*
         check hard constraints at route level
