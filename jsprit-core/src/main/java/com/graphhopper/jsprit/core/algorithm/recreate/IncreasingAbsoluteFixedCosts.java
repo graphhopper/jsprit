@@ -55,7 +55,7 @@ public final class IncreasingAbsoluteFixedCosts extends SolutionCompletenessRati
             currentFix = currentRoute.getVehicle().getType().getVehicleCostParams().fix;
         }
         double increasingAbsoluteFixedCosts = solutionCompletenessRatio * (insertionContext.getNewVehicle().getType().getVehicleCostParams().fix - currentFix);
-        return weightDeltaFixCost * solutionCompletenessRatio * increasingAbsoluteFixedCosts;
+        return weightDeltaFixCost * increasingAbsoluteFixedCosts;
     }
 
 }
