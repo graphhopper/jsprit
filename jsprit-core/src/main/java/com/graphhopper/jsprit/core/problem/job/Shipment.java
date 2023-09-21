@@ -21,7 +21,9 @@ import com.graphhopper.jsprit.core.problem.AbstractJob;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindows;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 
 import java.util.ArrayList;
@@ -76,13 +78,13 @@ public class Shipment extends AbstractJob {
 
         private Location deliveryLocation_;
 
-        protected TimeWindowsImpl deliveryTimeWindows;
+        protected TimeWindows deliveryTimeWindows;
 
         private boolean deliveryTimeWindowAdded = false;
 
         private boolean pickupTimeWindowAdded = false;
 
-        private TimeWindowsImpl pickupTimeWindows;
+        private TimeWindows pickupTimeWindows;
 
         private int priority = 2;
 
@@ -176,7 +178,18 @@ public class Shipment extends AbstractJob {
             return this;
         }
 
-
+        public Builder setPickupTimeWindows(TimeWindows timeWindows){
+            if (timeWindows == null) throw new IllegalArgumentException("The time windows must not be null.");
+            if (pickupTimeWindows != null) {
+                // Report already added TW for ascending compatibility and API clarity
+                // (otherwise previous calls to addXXXTimeWindow would be silently ignored)
+                for (TimeWindow tw : this.pickupTimeWindows.getTimeWindows()) {
+                    timeWindows.add(tw);
+                }
+            }
+            this.pickupTimeWindows = timeWindows;
+            return this;
+        }
 
         /**
          * Sets delivery location.
@@ -219,6 +232,19 @@ public class Shipment extends AbstractJob {
             if (timeWindow == null) throw new IllegalArgumentException("The delivery time window must not be null.");
             this.deliveryTimeWindows = new TimeWindowsImpl();
             this.deliveryTimeWindows.add(timeWindow);
+            return this;
+        }
+
+        public Builder setDeliveryTimeWindows(TimeWindows timeWindows){
+            if (timeWindows == null) throw new IllegalArgumentException("The time windows must not be null.");
+            if (deliveryTimeWindows != null) {
+                // Report already added TW for ascending compatibility and API clarity
+                // (otherwise previous calls to addXXXTimeWindow would be silently ignored)
+                for (TimeWindow tw : this.deliveryTimeWindows.getTimeWindows()) {
+                    timeWindows.add(tw);
+                }
+            }
+            this.deliveryTimeWindows = timeWindows;
             return this;
         }
 
@@ -367,9 +393,9 @@ public class Shipment extends AbstractJob {
 
     private final Location deliveryLocation_;
 
-    private final TimeWindowsImpl deliveryTimeWindows;
+    private final TimeWindows deliveryTimeWindows;
 
-    private final TimeWindowsImpl pickupTimeWindows;
+    private final TimeWindows pickupTimeWindows;
 
     private final int priority;
 
@@ -442,6 +468,10 @@ public class Shipment extends AbstractJob {
         return deliveryTimeWindows.getTimeWindows();
     }
 
+    public Collection<TimeWindow> getDeliveryTimeWindows(JobInsertionContext insertionContext) {
+        return deliveryTimeWindows.getTimeWindows(insertionContext);
+    }
+
     /**
      * Returns the time-window of pickup.
      *
@@ -453,6 +483,10 @@ public class Shipment extends AbstractJob {
 
     public Collection<TimeWindow> getPickupTimeWindows() {
         return pickupTimeWindows.getTimeWindows();
+    }
+
+    public Collection<TimeWindow> getPickupTimeWindows(JobInsertionContext insertionContext) {
+        return pickupTimeWindows.getTimeWindows(insertionContext);
     }
 
 

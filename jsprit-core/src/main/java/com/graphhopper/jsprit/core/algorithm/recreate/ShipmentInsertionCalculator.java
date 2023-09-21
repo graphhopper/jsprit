@@ -140,13 +140,10 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
             }
 
             boolean pickupInsertionNotFulfilledBreak = true;
-            for(TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows()) {
-                ActivityContext activityContext = new ActivityContext();
-                activityContext.setInsertionIndex(i);
-                insertionContext.setActivityContext(activityContext);
-                if (!pickupTimeWindow.isApplicable(insertionContext)) {
-                    pickupTimeWindow = defaultTimeWindow;
-                }
+            ActivityContext activityContext = new ActivityContext();
+            activityContext.setInsertionIndex(i);
+            insertionContext.setActivityContext(activityContext);
+            for(TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows(insertionContext)) {
                 pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
                 pickupShipment.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
 
@@ -194,13 +191,10 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                     }
 
                     boolean deliveryInsertionNotFulfilledBreak = true;
-                    for (TimeWindow deliveryTimeWindow : shipment.getDeliveryTimeWindows()) {
-                        ActivityContext activityContext_ = new ActivityContext();
-                        activityContext_.setInsertionIndex(j);
-                        insertionContext.setActivityContext(activityContext_);
-                        if (!deliveryTimeWindow.isApplicable(insertionContext)) {
-                            deliveryTimeWindow = defaultTimeWindow;
-                        }
+                    ActivityContext activityContext_ = new ActivityContext();
+                    activityContext_.setInsertionIndex(j);
+                    insertionContext.setActivityContext(activityContext_);
+                    for (TimeWindow deliveryTimeWindow : shipment.getDeliveryTimeWindows(insertionContext)) {
                         deliverShipment.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());
                         deliverShipment.setTheoreticalLatestOperationStartTime(deliveryTimeWindow.getEnd());
 

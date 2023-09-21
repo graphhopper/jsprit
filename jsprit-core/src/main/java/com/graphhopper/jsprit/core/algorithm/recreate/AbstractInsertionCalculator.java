@@ -24,7 +24,6 @@ import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.Con
 import com.graphhopper.jsprit.core.problem.constraint.HardConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 import java.util.ArrayList;
@@ -35,8 +34,6 @@ import java.util.List;
  * Created by schroeder on 06/02/17.
  */
 abstract class AbstractInsertionCalculator implements JobInsertionCostsCalculator {
-    protected TimeWindow defaultTimeWindow = TimeWindow.newInstance(0.0, Double.MAX_VALUE);
-
     InsertionData checkRouteConstraints(JobInsertionContext insertionContext, ConstraintManager constraintManager) {
         for (HardRouteConstraint hardRouteConstraint : constraintManager.getHardRouteConstraints()) {
             if (!hardRouteConstraint.fulfilled(insertionContext)) {
