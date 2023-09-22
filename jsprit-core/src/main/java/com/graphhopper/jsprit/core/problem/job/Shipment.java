@@ -110,9 +110,9 @@ public class Shipment extends AbstractJob {
             if (id == null) throw new IllegalArgumentException("id must not be null");
             this.id = id;
             pickupTimeWindows = new TimeWindowsImpl();
-            pickupTimeWindows.add(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
+            pickupTimeWindows.add(TimeWindowsImpl.defaultTimeWindow);
             deliveryTimeWindows = new TimeWindowsImpl();
-            deliveryTimeWindows.add(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
+            deliveryTimeWindows.add(TimeWindowsImpl.defaultTimeWindow);
         }
 
         /**
@@ -180,7 +180,7 @@ public class Shipment extends AbstractJob {
 
         public Builder setPickupTimeWindows(TimeWindows timeWindows){
             if (timeWindows == null) throw new IllegalArgumentException("The time windows must not be null.");
-            if (pickupTimeWindows != null) {
+            if (pickupTimeWindowAdded) {
                 // Report already added TW for ascending compatibility and API clarity
                 // (otherwise previous calls to addXXXTimeWindow would be silently ignored)
                 for (TimeWindow tw : this.pickupTimeWindows.getTimeWindows()) {
@@ -188,6 +188,7 @@ public class Shipment extends AbstractJob {
                 }
             }
             this.pickupTimeWindows = timeWindows;
+            pickupTimeWindowAdded = true;
             return this;
         }
 
@@ -237,7 +238,7 @@ public class Shipment extends AbstractJob {
 
         public Builder setDeliveryTimeWindows(TimeWindows timeWindows){
             if (timeWindows == null) throw new IllegalArgumentException("The time windows must not be null.");
-            if (deliveryTimeWindows != null) {
+            if (deliveryTimeWindowAdded) {
                 // Report already added TW for ascending compatibility and API clarity
                 // (otherwise previous calls to addXXXTimeWindow would be silently ignored)
                 for (TimeWindow tw : this.deliveryTimeWindows.getTimeWindows()) {
@@ -245,6 +246,7 @@ public class Shipment extends AbstractJob {
                 }
             }
             this.deliveryTimeWindows = timeWindows;
+            deliveryTimeWindowAdded = true;
             return this;
         }
 

@@ -103,7 +103,7 @@ public class Service extends AbstractJob {
 		Builder(String id){
 			this.id = id;
 			timeWindows = new TimeWindowsImpl();
-			timeWindows.add(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
+			timeWindows.add(TimeWindowsImpl.defaultTimeWindow);
 		}
 
         /**
