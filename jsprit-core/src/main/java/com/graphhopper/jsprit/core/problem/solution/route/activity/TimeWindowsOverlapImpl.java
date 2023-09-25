@@ -61,22 +61,6 @@ public class TimeWindowsOverlapImpl implements TimeWindows {
 
     @Override
     public Collection<TimeWindow> getTimeWindows(JobInsertionContext insertionContext) {
-        // First easy case: no exclusions, no performance loss.
-        if (excludedTimeWindows.isEmpty()) {
-            return getTimeWindows();
-        }
-
-        // Second easy case: no applicable exclusions.
-        List<TimeWindow> applicableExclusions = new ArrayList<TimeWindow>(excludedTimeWindows.size());
-        for (TimeWindow excludedTw : excludedTimeWindows) {
-            if (excludedTw.isApplicable(insertionContext)) {
-                applicableExclusions.add(excludedTw);
-            }
-        }
-        if (applicableExclusions.isEmpty()) {
-            return getTimeWindows();
-        }
-
         // First: filter included TW that are applicable
         List<TimeWindow> result = new ArrayList<TimeWindow>(includedTimeWindows.size());
         for(TimeWindow includedTw : includedTimeWindows) {
@@ -88,6 +72,22 @@ public class TimeWindowsOverlapImpl implements TimeWindows {
         if (result.isEmpty()) {
             // No applicable TW means the job has no time insertion constraints. So just use the "infinite" TW.
             result.add(defaultTimeWindow);
+        }
+
+        // First easy case: no exclusions, no performance loss.
+        if (excludedTimeWindows.isEmpty()) {
+            return Collections.unmodifiableCollection(result);
+        }
+
+        // Second easy case: no applicable exclusions.
+        List<TimeWindow> applicableExclusions = new ArrayList<TimeWindow>(excludedTimeWindows.size());
+        for (TimeWindow excludedTw : excludedTimeWindows) {
+            if (excludedTw.isApplicable(insertionContext)) {
+                applicableExclusions.add(excludedTw);
+            }
+        }
+        if (applicableExclusions.isEmpty()) {
+            return Collections.unmodifiableCollection(result);
         }
 
         // Then remove the exclusions
@@ -142,7 +142,7 @@ public class TimeWindowsOverlapImpl implements TimeWindows {
         for (TimeWindow tw : includedTimeWindows) {
             sb.append("[timeWindow=").append(tw).append("]");
         }
-        sb.append("Excluded:\n");
+        sb.append("\nExcluded:\n");
         for (TimeWindow tw : excludedTimeWindows) {
             sb.append("[timeWindow=").append(tw).append("]");
         }
