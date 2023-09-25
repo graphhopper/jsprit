@@ -21,7 +21,7 @@ public class TimeWindowsOverlapImpl implements TimeWindows {
 
     public static TimeWindowsOverlapImpl newInstance(List<TimeWindow> includedTimeWindows) {
         TimeWindowsOverlapImpl res = new TimeWindowsOverlapImpl();
-        res.includedTimeWindows = includedTimeWindows;
+        res.includedTimeWindows = new ArrayList<>(includedTimeWindows);
         return res;
     }
 
