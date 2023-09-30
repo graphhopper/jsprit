@@ -103,7 +103,7 @@ public class TimeWindowsOverlapImpl implements TimeWindows {
     protected List<TimeWindow> cutTimeWindowsIfNeeded(TimeWindow excludedTw, List<TimeWindow> currentResult) {
         List<TimeWindow> newResult = new ArrayList<TimeWindow>();
         for (TimeWindow includedTw : currentResult) {
-            if (excludedTw.getStart() >= includedTw.getStart() && excludedTw.getEnd() <= excludedTw.getEnd()) {
+            if (excludedTw.getStart() >= includedTw.getStart() && excludedTw.getEnd() <= includedTw.getEnd()) {
                 // Inclusion           [            ]
                 // Exclusion             [      ]
                 if (excludedTw.getStart() > includedTw.getStart()) {
@@ -129,6 +129,7 @@ public class TimeWindowsOverlapImpl implements TimeWindows {
                 // => nothing to add
             }
             else {
+                // The exclusion does not overlap with the inclusion - keep inclusion as-is.
                 newResult.add(includedTw);
             }
         }

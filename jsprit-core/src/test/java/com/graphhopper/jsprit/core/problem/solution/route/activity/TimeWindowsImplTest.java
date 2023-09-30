@@ -19,6 +19,7 @@
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -71,5 +72,27 @@ public class TimeWindowsImplTest {
         Collection<TimeWindow> res = tws.getTimeWindows(null);
 
         Assert.assertEquals(0, res.size());
+    }
+
+    @Test
+    public void twoIncludedAndExcludedTW_shouldReturnTwoExclusions() {
+        TimeWindowsOverlapImpl tws = new TimeWindowsOverlapImpl();
+        tws.addExcludedTimeWindow(TimeWindow.newInstance(10, 100));
+        tws.addExcludedTimeWindow(TimeWindow.newInstance(120, 200));
+        tws.addIncludedTimeWindow(TimeWindow.newInstance(0, 90));
+        tws.addIncludedTimeWindow(TimeWindow.newInstance(110, 150));
+
+        Collection<TimeWindow> res = tws.getTimeWindows(null);
+
+        Assert.assertEquals(2, res.size());
+        Iterator<TimeWindow> iterator = res.iterator();
+        TimeWindow first = iterator.next();
+        TimeWindow second = iterator.next();
+
+        Assert.assertEquals(0, first.getStart(), 1);
+        Assert.assertEquals(110, second.getStart(), 1);
+
+        Assert.assertEquals(10, first.getEnd(), 1);
+        Assert.assertEquals(120, second.getEnd(), 1);
     }
 }
