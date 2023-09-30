@@ -34,7 +34,6 @@ import java.util.List;
  * Created by schroeder on 06/02/17.
  */
 abstract class AbstractInsertionCalculator implements JobInsertionCostsCalculator {
-
     InsertionData checkRouteConstraints(JobInsertionContext insertionContext, ConstraintManager constraintManager) {
         for (HardRouteConstraint hardRouteConstraint : constraintManager.getHardRouteConstraints()) {
             if (!hardRouteConstraint.fulfilled(insertionContext)) {
