@@ -123,6 +123,9 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
                 bestKnownCost_ = iData.getInsertionCost();
             }
         }
+        if (relevantVehicles.isEmpty()) {
+            bestIData.getFailedConstraintNames().add("HasNoEnoughVehicle");
+        }
         return bestIData;
     }
 
