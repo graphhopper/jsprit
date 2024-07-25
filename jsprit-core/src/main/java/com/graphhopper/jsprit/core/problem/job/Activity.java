@@ -33,7 +33,7 @@ public class Activity {
 
         private final Type activityType;
 
-        private Location location;
+        private final Location location;
 
         Collection<TimeWindow> timeWindows;
 
@@ -59,13 +59,13 @@ public class Activity {
         }
     }
 
-    private Location location;
+    private final Location location;
 
-    private Collection<TimeWindow> timeWindows;
+    private final Collection<TimeWindow> timeWindows;
 
-    private double serviceTime;
+    private final double serviceTime;
 
-    private Activity.Type activityType;
+    private final Activity.Type activityType;
 
     Activity(Builder builder) {
         location = builder.location;
