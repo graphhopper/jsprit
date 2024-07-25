@@ -21,9 +21,11 @@ import com.graphhopper.jsprit.core.problem.AbstractJob;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindows;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsOverlapImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 
 import java.util.ArrayList;
@@ -87,7 +89,7 @@ public class Service extends AbstractJob {
 
         protected Location location;
 
-        protected TimeWindowsImpl timeWindows;
+        protected TimeWindows timeWindows;
 
         private boolean twAdded = false;
 
@@ -101,7 +103,7 @@ public class Service extends AbstractJob {
 		Builder(String id){
 			this.id = id;
 			timeWindows = new TimeWindowsImpl();
-			timeWindows.add(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
+			timeWindows.add(TimeWindowsImpl.defaultTimeWindow);
 		}
 
         /**
@@ -181,6 +183,20 @@ public class Service extends AbstractJob {
             if (tw == null) throw new IllegalArgumentException("The time window must not be null.");
             this.timeWindows = new TimeWindowsImpl();
             timeWindows.add(tw);
+            return this;
+        }
+
+        public Builder<T> setTimeWindows(TimeWindows timeWindows){
+            if (timeWindows == null) throw new IllegalArgumentException("The time windows must not be null.");
+            if (twAdded) {
+                // Report already added TW for ascending compatibility and API clarity
+                // (otherwise previous calls to addTimeWindow would be silently ignored)
+                for (TimeWindow tw : this.timeWindows.getTimeWindows()) {
+                    timeWindows.add(tw);
+                }
+            }
+            this.timeWindows = timeWindows;
+            twAdded = true;
             return this;
         }
 
@@ -308,6 +324,10 @@ public class Service extends AbstractJob {
 
     public Collection<TimeWindow> getTimeWindows(){
         return timeWindows.getTimeWindows();
+    }
+
+    public Collection<TimeWindow> getTimeWindows(JobInsertionContext insertionContext){
+        return timeWindows.getTimeWindows(insertionContext);
     }
 
     @Override
