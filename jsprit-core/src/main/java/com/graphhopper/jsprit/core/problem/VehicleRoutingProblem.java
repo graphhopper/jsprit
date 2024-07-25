@@ -538,7 +538,7 @@ public class VehicleRoutingProblem {
      */
     private final Map<String, Job> jobs;
 
-    private List<Job> jobsWithLocation;
+    private final List<Job> jobsWithLocation;
 
     private final Map<String, Job> allJobs;
     /**
