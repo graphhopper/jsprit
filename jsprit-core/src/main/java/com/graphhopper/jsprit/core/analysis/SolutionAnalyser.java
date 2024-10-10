@@ -231,6 +231,8 @@ public class SolutionAnalyser {
 
         private VehicleRoute route;
 
+        private TourActivity prevAct;
+
         double sum_waiting_time = 0.;
 
         double sum_transport_time = 0.;
@@ -277,9 +279,10 @@ public class SolutionAnalyser {
             sum_transport_time += transportTime;
             prevActDeparture = activity.getEndTime();
             //service time
-            sum_service_time += activityCosts.getActivityDuration(activity, activity.getArrTime(), route.getDriver(), route.getVehicle());
+            sum_service_time += activityCosts.getActivityDuration(activity, activity.getArrTime(), route.getDriver(), route.getVehicle(), prevAct);
 
             stateManager.putActivityState(activity, transport_time_id, sum_transport_time);
+            prevAct = activity;
 
         }
 
