@@ -50,7 +50,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
     private final ExecutorService executorService;
 
-    private ScoringFunction scoringFunction;
+    private RegretScoringFunction regretScoringFunction;
 
     private final JobInsertionCostsCalculator insertionCostsCalculator;
 
@@ -62,12 +62,17 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
      * @param scoringFunction to score
      */
     public void setScoringFunction(ScoringFunction scoringFunction) {
-        this.scoringFunction = scoringFunction;
+        this.regretScoringFunction = new DefaultRegretScoringFunction(scoringFunction);
+    }
+
+    public void setRegretScoringFunction(RegretScoringFunction regretScoringFunction) {
+        this.regretScoringFunction = regretScoringFunction;
     }
 
     public RegretInsertionConcurrent(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, ExecutorService executorService) {
         super(vehicleRoutingProblem);
-        this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
+//        this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
+        this.regretScoringFunction = new DefaultRegretScoringFunction(new DefaultScorer(vehicleRoutingProblem));
         this.insertionCostsCalculator = jobInsertionCalculator;
         this.vrp = vehicleRoutingProblem;
         this.executorService = executorService;
@@ -76,7 +81,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
     @Override
     public String toString() {
-        return "[name=regretInsertion][additionalScorer=" + scoringFunction + "]";
+        return "[name=regretInsertion][additionalScorer=" + regretScoringFunction + "]";
     }
 
 
@@ -137,7 +142,7 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         ScoredJob bestScoredJob = null;
         List<Callable<ScoredJob>> tasks = new ArrayList<>(unassignedJobList.size());
         for (final Job unassignedJob : unassignedJobList) {
-            tasks.add(() -> RegretInsertion.getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction));
+            tasks.add(() -> Scorer.scoreUnassignedJob(routes, unassignedJob, insertionCostsCalculator, regretScoringFunction));
         }
 
         try {

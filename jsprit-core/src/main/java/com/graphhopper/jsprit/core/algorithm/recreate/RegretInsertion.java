@@ -43,13 +43,16 @@ import java.util.List;
 public class RegretInsertion extends AbstractInsertionStrategy {
 
 
+    private static final Logger logger = LoggerFactory.getLogger(RegretInsertionFast.class);
 
-    private static Logger logger = LoggerFactory.getLogger(RegretInsertionFast.class);
+    private final JobInsertionCostsCalculator insertionCostsCalculator;
 
-    private ScoringFunction scoringFunction;
+    private RegretScoringFunction regretScoringFunction;
 
-    private JobInsertionCostsCalculator insertionCostsCalculator;
 
+    public void setRegretScoringFunction(RegretScoringFunction regretScoringFunction) {
+        this.regretScoringFunction = regretScoringFunction;
+    }
 
     /**
      * Sets the scoring function.
@@ -59,12 +62,12 @@ public class RegretInsertion extends AbstractInsertionStrategy {
      * @param scoringFunction to score
      */
     public void setScoringFunction(ScoringFunction scoringFunction) {
-        this.scoringFunction = scoringFunction;
+        this.regretScoringFunction = new DefaultRegretScoringFunction(scoringFunction);
     }
 
     public RegretInsertion(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem) {
         super(vehicleRoutingProblem);
-        this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
+        this.regretScoringFunction = new DefaultRegretScoringFunction(new DefaultScorer(vehicleRoutingProblem));
         this.insertionCostsCalculator = jobInsertionCalculator;
         this.vrp = vehicleRoutingProblem;
         logger.debug("initialise {}", this);
@@ -72,7 +75,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
 
     @Override
     public String toString() {
-        return "[name=regretInsertion][additionalScorer=" + scoringFunction + "]";
+        return "[name=regretInsertion][additionalScorer=" + regretScoringFunction + "]";
     }
 
 
@@ -83,7 +86,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
      */
     @Override
     public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
-        List<Job> badJobs = new ArrayList<Job>(unassignedJobs.size());
+        List<Job> badJobs = new ArrayList<>(unassignedJobs.size());
 
         Iterator<Job> jobIterator = unassignedJobs.iterator();
         while (jobIterator.hasNext()){
@@ -109,7 +112,7 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         while (!jobs.isEmpty()) {
             List<Job> unassignedJobList = new ArrayList<>(jobs);
             List<ScoredJob> badJobList = new ArrayList<>();
-            ScoredJob bestScoredJob = nextJob(routes, unassignedJobList, badJobList);
+            ScoredJob bestScoredJob = getBestScoredUnassignedJob(routes, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
@@ -134,10 +137,10 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         return null;
     }
 
-    private ScoredJob nextJob(Collection<VehicleRoute> routes, Collection<Job> unassignedJobList, List<ScoredJob> badJobs) {
+    private ScoredJob getBestScoredUnassignedJob(Collection<VehicleRoute> routes, Collection<Job> unassignedJobList, List<ScoredJob> badJobs) {
         ScoredJob bestScoredJob = null;
         for (Job unassignedJob : unassignedJobList) {
-            ScoredJob scoredJob = getScoredJob(routes, unassignedJob, insertionCostsCalculator, scoringFunction);
+            ScoredJob scoredJob = Scorer.scoreUnassignedJob(routes, unassignedJob, insertionCostsCalculator, regretScoringFunction);
             if (scoredJob instanceof ScoredJob.BadJob) {
                 badJobs.add(scoredJob);
                 continue;
@@ -154,64 +157,6 @@ public class RegretInsertion extends AbstractInsertionStrategy {
             }
         }
         return bestScoredJob;
-    }
-
-    static ScoredJob getScoredJob(Collection<VehicleRoute> routes, Job unassignedJob, JobInsertionCostsCalculator insertionCostsCalculator, ScoringFunction scoringFunction) {
-        InsertionData best = null;
-        InsertionData secondBest = null;
-        VehicleRoute bestRoute = null;
-        List<String> failedConstraintNames = new ArrayList<>();
-        double benchmark = Double.MAX_VALUE;
-        for (VehicleRoute route : routes) {
-            if (secondBest != null) {
-                benchmark = secondBest.getInsertionCost();
-            }
-            InsertionData iData = insertionCostsCalculator.getInsertionData(route, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
-            if (iData instanceof InsertionData.NoInsertionFound) {
-                failedConstraintNames.addAll(iData.getFailedConstraintNames());
-                continue;
-            }
-            if (best == null) {
-                best = iData;
-                bestRoute = route;
-            } else if (iData.getInsertionCost() < best.getInsertionCost()) {
-                secondBest = best;
-                best = iData;
-                bestRoute = route;
-            } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
-                secondBest = iData;
-            }
-        }
-
-        VehicleRoute emptyRoute = VehicleRoute.emptyRoute();
-        InsertionData iData = insertionCostsCalculator.getInsertionData(emptyRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
-        if (!(iData instanceof InsertionData.NoInsertionFound)) {
-            if (best == null) {
-                best = iData;
-                bestRoute = emptyRoute;
-            } else if (iData.getInsertionCost() < best.getInsertionCost()) {
-                secondBest = best;
-                best = iData;
-                bestRoute = emptyRoute;
-            } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
-                secondBest = iData;
-            }
-        } else failedConstraintNames.addAll(iData.getFailedConstraintNames());
-        if (best == null) {
-            ScoredJob.BadJob badJob = new ScoredJob.BadJob(unassignedJob, failedConstraintNames);
-            return badJob;
-        }
-        double score = score(unassignedJob, best, secondBest, scoringFunction);
-        ScoredJob scoredJob;
-        if (bestRoute == emptyRoute) {
-            scoredJob = new ScoredJob(unassignedJob, score, best, bestRoute, true);
-        } else scoredJob = new ScoredJob(unassignedJob, score, best, bestRoute, false);
-        return scoredJob;
-    }
-
-
-    static double score(Job unassignedJob, InsertionData best, InsertionData secondBest, ScoringFunction scoringFunction) {
-        return Scorer.score(unassignedJob,best,secondBest,scoringFunction);
     }
 
 

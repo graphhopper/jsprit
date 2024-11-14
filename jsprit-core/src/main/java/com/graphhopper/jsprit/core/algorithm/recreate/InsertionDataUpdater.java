@@ -68,16 +68,16 @@ class InsertionDataUpdater {
         };
     }
 
-    static ScoredJob getBest(boolean switchAllowed, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, ScoringFunction scoringFunction, TreeSet<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, List<Job> unassignedJobList, List<ScoredJob> badJobs) {
+    static ScoredJob getBest(boolean switchAllowed, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, RegretScoringFunction scoringFunction, TreeSet<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, List<Job> unassignedJobList, List<ScoredJob> badJobs) {
         ScoredJob bestScoredJob = null;
-        for(Job j : unassignedJobList){
+        for (Job j : unassignedJobList) {
             VehicleRoute bestRoute = null;
             InsertionData best = null;
             InsertionData secondBest = null;
             TreeSet<VersionedInsertionData> priorityQueue = priorityQueues[j.getIndex()];
             Iterator<VersionedInsertionData> iterator = priorityQueue.iterator();
             List<String> failedConstraintNames = new ArrayList<>();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 VersionedInsertionData versionedIData = iterator.next();
                 if(bestRoute != null){
                     if(versionedIData.getRoute() == bestRoute){
@@ -142,7 +142,7 @@ class InsertionDataUpdater {
                 badJobs.add(new ScoredJob.BadJob(j, failedConstraintNames));
                 continue;
             }
-            double score = score(j, best, secondBest, scoringFunction);
+            double score = scoringFunction.score(best, secondBest, j);
             ScoredJob scoredJob;
             if (bestRoute == emptyRoute) {
                 scoredJob = new ScoredJob(j, score, best, bestRoute, true);
@@ -158,8 +158,5 @@ class InsertionDataUpdater {
         return bestScoredJob;
     }
 
-    private static double score(Job unassignedJob, InsertionData best, InsertionData secondBest, ScoringFunction scoringFunction) {
-        return Scorer.score(unassignedJob,best,secondBest,scoringFunction);
-    }
 
 }

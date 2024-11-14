@@ -46,7 +46,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
 
     private static Logger logger = LoggerFactory.getLogger(RegretInsertionConcurrentFast.class);
 
-    private ScoringFunction scoringFunction;
+    private RegretScoringFunction regretScoringFunction;
 
     private final JobInsertionCostsCalculator insertionCostsCalculator;
 
@@ -69,12 +69,16 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
      * @param scoringFunction to score
      */
     public void setScoringFunction(ScoringFunction scoringFunction) {
-        this.scoringFunction = scoringFunction;
+        this.regretScoringFunction = new DefaultRegretScoringFunction(scoringFunction);
+    }
+
+    public void setRegretScoringFunction(RegretScoringFunction regretScoringFunction) {
+        this.regretScoringFunction = regretScoringFunction;
     }
 
     public RegretInsertionConcurrentFast(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, ExecutorService executorService, VehicleFleetManager fleetManager) {
         super(vehicleRoutingProblem);
-        this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
+        this.regretScoringFunction = new DefaultRegretScoringFunction(new DefaultScorer(vehicleRoutingProblem));
         this.insertionCostsCalculator = jobInsertionCalculator;
         this.vrp = vehicleRoutingProblem;
         this.executor = executorService;
@@ -85,7 +89,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
 
     @Override
     public String toString() {
-        return "[name=regretInsertion][additionalScorer=" + scoringFunction + "]";
+        return "[name=regretInsertion][additionalScorer=" + regretScoringFunction + "]";
     }
 
     public void setSwitchAllowed(boolean switchAllowed) {
@@ -149,7 +153,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
             updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound,firstRun,lastModified,updates);
             if(firstRun) firstRun = false;
             updateRound++;
-            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed,initialVehicleIds,fleetManager, insertionCostsCalculator, scoringFunction, priorityQueues, updates, unassignedJobList, badJobList);
+            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, regretScoringFunction, priorityQueues, updates, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());

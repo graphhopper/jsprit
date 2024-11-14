@@ -18,25 +18,77 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by schroeder on 24/05/16.
  */
 class Scorer {
 
-    static double score(Job unassignedJob, InsertionData best, InsertionData secondBest, ScoringFunction scoringFunction){
+    final static double NO_NEW_DEPARTURE_TIME_YET = -12345.12345;
+
+    final static Vehicle NO_NEW_VEHICLE_YET = null;
+
+    final static Driver NO_NEW_DRIVER_YET = null;
+
+
+    static ScoredJob scoreUnassignedJob(Collection<VehicleRoute> routes, Job unassignedJob, JobInsertionCostsCalculator insertionCostsCalculator, RegretScoringFunction scoringFunction) {
+        InsertionData best = null;
+        InsertionData secondBest = null;
+        VehicleRoute bestRoute = null;
+        List<String> failedConstraintNames = new ArrayList<>();
+        double benchmark = Double.MAX_VALUE;
+        for (VehicleRoute route : routes) {
+            if (secondBest != null) {
+                benchmark = secondBest.getInsertionCost();
+            }
+            InsertionData iData = insertionCostsCalculator.getInsertionData(route, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
+            if (iData instanceof InsertionData.NoInsertionFound) {
+                failedConstraintNames.addAll(iData.getFailedConstraintNames());
+                continue;
+            }
+            if (best == null) {
+                best = iData;
+                bestRoute = route;
+            } else if (iData.getInsertionCost() < best.getInsertionCost()) {
+                secondBest = best;
+                best = iData;
+                bestRoute = route;
+            } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
+                secondBest = iData;
+            }
+        }
+
+        VehicleRoute emptyRoute = VehicleRoute.emptyRoute();
+        InsertionData iData = insertionCostsCalculator.getInsertionData(emptyRoute, unassignedJob, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, benchmark);
+        if (!(iData instanceof InsertionData.NoInsertionFound)) {
+            if (best == null) {
+                best = iData;
+                bestRoute = emptyRoute;
+            } else if (iData.getInsertionCost() < best.getInsertionCost()) {
+                secondBest = best;
+                best = iData;
+                bestRoute = emptyRoute;
+            } else if (secondBest == null || (iData.getInsertionCost() < secondBest.getInsertionCost())) {
+                secondBest = iData;
+            }
+        } else failedConstraintNames.addAll(iData.getFailedConstraintNames());
         if (best == null) {
-            throw new IllegalStateException("cannot insert job " + unassignedJob.getId());
+            ScoredJob.BadJob badJob = new ScoredJob.BadJob(unassignedJob, failedConstraintNames);
+            return badJob;
         }
-        double score;
-        if (secondBest == null) { //either there is only one vehicle or there are more vehicles, but they cannot load unassignedJob
-            //if only one vehicle, I want the job to be inserted with min iCosts
-            //if there are more vehicles, I want this job to be prioritized since there are no alternatives
-            score = (11 - unassignedJob.getPriority()) * (Integer.MAX_VALUE - best.getInsertionCost()) + scoringFunction.score(best, unassignedJob);
-        } else {
-            score = (11 - unassignedJob.getPriority()) * (secondBest.getInsertionCost() - best.getInsertionCost()) + scoringFunction.score(best, unassignedJob);
-        }
-        return score;
+        double score = scoringFunction.score(best, secondBest, unassignedJob);
+        ScoredJob scoredJob;
+        if (bestRoute == emptyRoute) {
+            scoredJob = new ScoredJob(unassignedJob, score, best, bestRoute, true);
+        } else scoredJob = new ScoredJob(unassignedJob, score, best, bestRoute, false);
+        return scoredJob;
     }
 }

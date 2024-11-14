@@ -42,7 +42,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
 
     private static Logger logger = LoggerFactory.getLogger(RegretInsertionFast.class);
 
-    private ScoringFunction scoringFunction;
+    private RegretScoringFunction regretScoringFunction;
 
     private JobInsertionCostsCalculator insertionCostsCalculator;
 
@@ -56,7 +56,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
 
     public RegretInsertionFast(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, VehicleFleetManager fleetManager) {
         super(vehicleRoutingProblem);
-        this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
+        this.regretScoringFunction = new DefaultRegretScoringFunction(new DefaultScorer(vehicleRoutingProblem));
         this.insertionCostsCalculator = jobInsertionCalculator;
         this.fleetManager = fleetManager;
         this.vrp = vehicleRoutingProblem;
@@ -72,14 +72,18 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
      * @param scoringFunction to score
      */
     public void setScoringFunction(ScoringFunction scoringFunction) {
-        this.scoringFunction = scoringFunction;
+        this.regretScoringFunction = new DefaultRegretScoringFunction(scoringFunction);
+    }
+
+    public void setRegretScoringFunction(RegretScoringFunction regretScoringFunction) {
+        this.regretScoringFunction = regretScoringFunction;
     }
 
     public void setSwitchAllowed(boolean switchAllowed) {
         this.switchAllowed = switchAllowed;
     }
 
-    public void setDependencyTypes(DependencyType[] dependencyTypes){
+    public void setDependencyTypes(DependencyType[] dependencyTypes) {
         this.dependencyTypes = dependencyTypes;
     }
 
@@ -93,7 +97,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
 
     @Override
     public String toString() {
-        return "[name=regretInsertion][additionalScorer=" + scoringFunction + "]";
+        return "[name=regretInsertion][additionalScorer=" + regretScoringFunction + "]";
     }
 
 
@@ -146,7 +150,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
 //                updates.put(lastModified,updateRound);
             }
             updateRound++;
-            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed,initialVehicleIds,fleetManager,insertionCostsCalculator,scoringFunction,priorityQueues,updates,unassignedJobList,badJobList);
+            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, regretScoringFunction, priorityQueues, updates, unassignedJobList, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
