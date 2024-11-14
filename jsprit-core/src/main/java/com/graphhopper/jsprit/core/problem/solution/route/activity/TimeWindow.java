@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
+import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
+
 /**
  * TimeWindow consists of a startTime and endTime.
  *
@@ -116,5 +118,12 @@ public class TimeWindow {
         return true;
     }
 
-
+    /**
+     * Returns true if this time window is applicable in the current context. By default always true, only sub classes of TimeWindow may return false.
+     * @param time
+     * @return
+     */
+    public boolean isApplicable(JobInsertionContext insertionContext) {
+        return true;
+    }
 }
