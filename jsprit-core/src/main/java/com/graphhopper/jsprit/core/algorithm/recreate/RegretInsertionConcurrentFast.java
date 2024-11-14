@@ -44,7 +44,7 @@ import java.util.concurrent.ExecutorService;
 public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
 
 
-    private static Logger logger = LoggerFactory.getLogger(RegretInsertionConcurrentFast.class);
+    private static final Logger logger = LoggerFactory.getLogger(RegretInsertionConcurrentFast.class);
 
     private RegretScoringFunction regretScoringFunction;
 
@@ -52,9 +52,9 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
 
     private final ExecutorService executor;
 
-    private VehicleFleetManager fleetManager;
+    private final VehicleFleetManager fleetManager;
 
-    private Set<String> initialVehicleIds;
+    private final Set<String> initialVehicleIds;
 
     private boolean switchAllowed = true;
 
