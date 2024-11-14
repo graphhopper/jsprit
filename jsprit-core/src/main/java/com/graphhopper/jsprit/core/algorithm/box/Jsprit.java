@@ -175,6 +175,8 @@ public class Jsprit {
 
         private ScoringFunction regretScorer = null;
 
+        private RegretScoringFunction regretScoringFunction = null;
+
         private Map<SearchStrategy, Double> customStrategies = new HashMap<>();
 
         private VehicleFleetManager fleetManager = null;
@@ -318,6 +320,11 @@ public class Jsprit {
             return this;
         }
 
+        public Builder setRegretScoringFunction(RegretScoringFunction scoringFunction) {
+            this.regretScoringFunction = scoringFunction;
+            return this;
+        }
+
         public VehicleRoutingAlgorithm buildAlgorithm() {
             return new Jsprit(this).create(vrp);
         }
@@ -382,6 +389,8 @@ public class Jsprit {
 
     private ScoringFunction regretScorer;
 
+    private RegretScoringFunction regretScoringFunction;
+
     private final Map<SearchStrategy, Double> customStrategies = new HashMap<>();
 
     private VehicleFleetManager vehicleFleetManager;
@@ -398,12 +407,18 @@ public class Jsprit {
         this.activityInsertion = builder.activityInsertionCalculator;
         this.acceptor = builder.solutionAcceptor;
         regretScorer = builder.regretScorer;
+        regretScoringFunction = builder.regretScoringFunction;
         customStrategies.putAll(builder.customStrategies);
         vehicleFleetManager = builder.fleetManager;
     }
 
     private void ini(VehicleRoutingProblem vrp) {
-        if (regretScorer == null) regretScorer = getRegretScorer(vrp);
+        if (regretScorer == null) {
+            regretScorer = getRegretScorer(vrp);
+        }
+        if (regretScoringFunction == null) {
+            regretScoringFunction = new DefaultRegretScoringFunction(regretScorer);
+        }
     }
 
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp) {
@@ -533,7 +548,6 @@ public class Jsprit {
         ruinTimeRelated.setRandom(random);
 
         AbstractInsertionStrategy regret;
-        final ScoringFunction scorer;
 
         boolean fastRegret = Boolean.parseBoolean(getProperty(Parameter.FAST_REGRET.toString()));
         if (es != null) {
@@ -546,8 +560,7 @@ public class Jsprit {
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .build();
-                scorer = regretScorer;
-                regretInsertion.setScoringFunction(scorer);
+                regretInsertion.setRegretScoringFunction(regretScoringFunction);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
                 regret = regretInsertion;
             }
@@ -559,8 +572,7 @@ public class Jsprit {
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .build();
-                scorer = regretScorer;
-                regretInsertion.setScoringFunction(scorer);
+                regretInsertion.setRegretScoringFunction(regretScoringFunction);
                 regret = regretInsertion;
             }
         } else {
@@ -572,8 +584,7 @@ public class Jsprit {
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .build();
-                scorer = regretScorer;
-                regretInsertion.setScoringFunction(scorer);
+                regretInsertion.setRegretScoringFunction(regretScoringFunction);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
                 regret = regretInsertion;
             }
@@ -584,8 +595,7 @@ public class Jsprit {
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .build();
-                scorer = regretScorer;
-                regretInsertion.setScoringFunction(scorer);
+                regretInsertion.setRegretScoringFunction(regretScoringFunction);
                 regret = regretInsertion;
             }
         }
