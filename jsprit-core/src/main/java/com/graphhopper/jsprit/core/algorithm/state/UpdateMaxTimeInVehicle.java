@@ -41,6 +41,8 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
 
     private VehicleRoute route;
 
+    private TourActivity prevAct;
+
     private final StateManager stateManager;
 
     private final StateId minSlackId;
@@ -103,7 +105,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
             double activityArrival = prevActEndTimes[v.getVehicleTypeIdentifier().getIndex()] + transportTime.getTransportTime(prevActLocation,activity.getLocation(),prevActEndTime,route.getDriver(),v);
             double activityStart = Math.max(activityArrival,activity.getTheoreticalEarliestOperationStartTime());
             memorizeActStart(activity,v,activityStart);
-            double activityEnd = activityStart + activityCosts.getActivityDuration(activity, activityArrival, route.getDriver(), v);
+            double activityEnd = activityStart + activityCosts.getActivityDuration(activity, activityArrival, route.getDriver(), v, prevAct);
             Map<Job, Double> openPickups = openPickupEndTimesPerVehicle.get(vehicleIndex);
             if (activity instanceof ServiceActivity || activity instanceof PickupActivity) {
                 openPickups.put(((TourActivity.JobActivity) activity).getJob(), activityEnd);
@@ -119,6 +121,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
             }
             prevActLocations[vehicleIndex] = activity.getLocation();
             prevActEndTimes[vehicleIndex] = activityEnd;
+            prevAct = activity;
         }
 
     }

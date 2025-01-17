@@ -272,19 +272,19 @@ public class VehicleRoutingProblemTest {
         builder.setActivityCosts(new VehicleRoutingActivityCosts() {
 
             @Override
-            public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+            public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle, TourActivity prevAct) {
                 return 4.0;
             }
 
             @Override
-            public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
+            public double getActivityDuration(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle, TourActivity prevAct) {
                 return tourAct.getOperationTime();
             }
 
         });
 
         VehicleRoutingProblem problem = builder.build();
-        assertEquals(4.0, problem.getActivityCosts().getActivityCost(null, 0.0, null, null), 0.01);
+        assertEquals(4.0, problem.getActivityCosts().getActivityCost(null, 0.0, null, null, null), 0.01);
     }
 
     @Test
