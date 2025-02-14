@@ -103,15 +103,15 @@ public class SearchStrategyManager {
     public SearchStrategy getRandomStrategy() {
         if (random == null)
             throw new IllegalStateException("randomizer is null. make sure you set random object correctly");
-        double randomFig = random.nextDouble();
-        double sumProbabilities = 0.0;
+        double randomValue = random.nextDouble();
+        double cumulativeProbability = 0.0;
         for (int i = 0; i < weights.size(); i++) {
-            sumProbabilities += weights.get(i) / sumWeights;
-            if (randomFig < sumProbabilities) {
+            cumulativeProbability += weights.get(i) / sumWeights;
+            if (randomValue < cumulativeProbability) {
                 return strategies.get(i);
             }
         }
-        throw new IllegalStateException("no search-strategy found");
+        return strategies.get(strategies.size() - 1);
     }
 
     public void addSearchStrategyListener(SearchStrategyListener strategyListener) {
