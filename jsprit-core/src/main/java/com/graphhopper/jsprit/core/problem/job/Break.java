@@ -78,4 +78,7 @@ public class Break extends Service {
         return variableLocation;
     }
 
+    public Type getJobType() {
+        return Type.BREAK_SERVICE;
+    }
 }

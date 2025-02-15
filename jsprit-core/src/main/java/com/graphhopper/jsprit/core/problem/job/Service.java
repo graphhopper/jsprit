@@ -352,6 +352,10 @@ public class Service extends AbstractJob {
         return type;
     }
 
+    public Type getJobType() {
+        return Type.SERVICE;
+    }
+
     /**
      * Returns a string with the service's attributes.
      * <p>
@@ -360,7 +364,7 @@ public class Service extends AbstractJob {
     @Override
     public String toString() {
         return "[id=" + id + "][name=" + name + "][type=" + type + "][location=" + location
-                + "][capacity=" + size + "][serviceTime=" + serviceTime + "][timeWindows="
+            + "][capacity=" + size + "][serviceTime=" + serviceTime + "][timeWindows="
                 + timeWindows + "]";
     }
 
@@ -428,5 +432,6 @@ public class Service extends AbstractJob {
     public List<Activity> getActivities() {
         return activities;
     }
+
 
 }

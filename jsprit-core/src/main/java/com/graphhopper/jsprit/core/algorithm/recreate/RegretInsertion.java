@@ -19,7 +19,6 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import org.slf4j.Logger;
@@ -91,12 +90,11 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         Iterator<Job> jobIterator = unassignedJobs.iterator();
         while (jobIterator.hasNext()){
             Job job = jobIterator.next();
-            if(job instanceof Break){
-                VehicleRoute route = findRoute(routes,job);
-                if(route == null){
+            if (job.getJobType().isBreak()) {
+                VehicleRoute route = findRoute(routes, job);
+                if (route == null) {
                     badJobs.add(job);
-                }
-                else {
+                } else {
                     InsertionData iData = insertionCostsCalculator.getInsertionData(route, job, NO_NEW_VEHICLE_YET, NO_NEW_DEPARTURE_TIME_YET, NO_NEW_DRIVER_YET, Double.MAX_VALUE);
                     if (iData instanceof InsertionData.NoInsertionFound) {
                         badJobs.add(job);

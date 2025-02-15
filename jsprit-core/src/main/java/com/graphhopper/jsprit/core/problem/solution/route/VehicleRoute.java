@@ -120,19 +120,19 @@ public class VehicleRoute {
         private final Set<Shipment> openShipments = new HashSet<Shipment>();
 
         private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
-            
+
             private final TourShipmentActivityFactory shipmentActivityFactory = new DefaultShipmentActivityFactory();
-            
+
             private final  TourActivityFactory serviceActivityFactory = new DefaultTourActivityFactory();
 
             @Override
             public List<AbstractActivity> createActivities(Job job) {
                 List<AbstractActivity> acts = new ArrayList<AbstractActivity>();
-                if (job instanceof Break) {
+                if (job.getJobType().isBreak()) {
                     acts.add(BreakActivity.newInstance((Break) job));
-                } else if (job instanceof Service) {
+                } else if (job.getJobType().isService()) {
                     acts.add(serviceActivityFactory.createActivity((Service) job));
-                } else if (job instanceof Shipment) {
+                } else if (job.getJobType().isShipment()) {
                     acts.add(shipmentActivityFactory.createPickup((Shipment) job));
                     acts.add(shipmentActivityFactory.createDelivery((Shipment) job));
                 }

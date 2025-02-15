@@ -71,4 +71,7 @@ public class Pickup extends Service {
         super(builder);
     }
 
+    public Type getJobType() {
+        return Type.PICKUP_SERVICE;
+    }
 }

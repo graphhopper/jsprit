@@ -24,7 +24,6 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
@@ -121,7 +120,7 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
             for (Job openJob : openJobsAtNext.keySet()) {
                 double slack = openJobsAtNext.get(openJob);
                 double additionalTimeOfNewJob = additionalTimeOfNewAct;
-                if (openJob instanceof Shipment) {
+                if (openJob.getJobType().isShipment()) {
                     Map<Job, Double> openJobsAtNextOfPickup = Collections.emptyMap();
                     TourActivity nextAfterPickup;
                     if (iFacts.getAssociatedActivities().size() == 1 && !iFacts.getRoute().isEmpty())

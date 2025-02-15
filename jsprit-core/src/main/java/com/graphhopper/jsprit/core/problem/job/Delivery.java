@@ -70,4 +70,8 @@ public class Delivery extends Service {
 
     }
 
+    public Type getJobType() {
+        return Type.DELIVERY_SERVICE;
+    }
+
 }

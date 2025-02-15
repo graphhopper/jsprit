@@ -306,7 +306,7 @@ public class TestVehicleRoute {
         TourActivity act = route.getActivities().get(0);
         assertTrue(act.getName().equals("pickup"));
         assertTrue(act instanceof PickupService);
-        assertTrue(((TourActivity.JobActivity) act).getJob() instanceof Pickup);
+        assertTrue(((TourActivity.JobActivity) act).getJob().getJobType().isPickup());
 
     }
 
@@ -320,7 +320,7 @@ public class TestVehicleRoute {
         TourActivity act = route.getActivities().get(0);
         assertTrue(act.getName().equals("pickup"));
         assertTrue(act instanceof PickupService);
-        assertTrue(((TourActivity.JobActivity) act).getJob() instanceof Pickup);
+        assertTrue(((TourActivity.JobActivity) act).getJob().getJobType().isPickup());
 
     }
 
@@ -334,7 +334,7 @@ public class TestVehicleRoute {
         TourActivity act = route.getActivities().get(0);
         assertTrue(act.getName().equals("delivery"));
         assertTrue(act instanceof DeliverService);
-        assertTrue(((TourActivity.JobActivity) act).getJob() instanceof Delivery);
+        assertTrue(((TourActivity.JobActivity) act).getJob().getJobType().isDelivery());
 
     }
 
@@ -348,7 +348,7 @@ public class TestVehicleRoute {
         TourActivity act = route.getActivities().get(0);
         assertTrue(act.getName().equals("delivery"));
         assertTrue(act instanceof DeliverService);
-        assertTrue(((TourActivity.JobActivity) act).getJob() instanceof Delivery);
+        assertTrue(((TourActivity.JobActivity) act).getJob().getJobType().isDelivery());
 
     }
 }

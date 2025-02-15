@@ -32,6 +32,44 @@ import java.util.List;
  */
 public interface Job extends HasId, HasIndex {
 
+    enum Type {
+        SHIPMENT,
+        SERVICE,
+        PICKUP_SERVICE,
+        DELIVERY_SERVICE,
+        BREAK_SERVICE;
+
+        public boolean isShipment() {
+            return this == SHIPMENT;
+        }
+
+        public boolean isService() {
+            return !isShipment();
+        }
+
+        public boolean isPickup() {
+            return this == PICKUP_SERVICE;
+        }
+
+        public boolean isDelivery() {
+            return this == DELIVERY_SERVICE;
+        }
+
+        public boolean isBreak() {
+            return this == BREAK_SERVICE;
+        }
+    }
+
+    // Add default method for type to maintain backward compatibility
+    default Type getJobType() {
+        // Default implementation based on class type
+        if (this instanceof Shipment) return Type.SHIPMENT;
+        if (this instanceof Pickup) return Type.PICKUP_SERVICE;
+        if (this instanceof Delivery) return Type.DELIVERY_SERVICE;
+        if (this instanceof Break) return Type.BREAK_SERVICE;
+        if (this instanceof Service) return Type.SERVICE;
+        throw new IllegalStateException("Unknown job type: " + this.getClass());
+    }
 
     /**
      * Returns the unique identifier (id) of a job.

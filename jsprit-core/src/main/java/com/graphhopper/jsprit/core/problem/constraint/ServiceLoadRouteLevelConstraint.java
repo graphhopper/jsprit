@@ -19,9 +19,6 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.Capacity;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 
@@ -53,13 +50,13 @@ public class ServiceLoadRouteLevelConstraint implements HardRouteConstraint {
         if (!maxLoadAtRoute.isLessOrEqual(capacityDimensions)) {
             return false;
         }
-        if (insertionContext.getJob() instanceof Delivery) {
+        if (insertionContext.getJob().getJobType().isDelivery()) {
             Capacity loadAtDepot = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
             if (loadAtDepot == null) loadAtDepot = defaultValue;
             if (!Capacity.addup(loadAtDepot, insertionContext.getJob().getSize()).isLessOrEqual(capacityDimensions)) {
                 return false;
             }
-        } else if (insertionContext.getJob() instanceof Pickup || insertionContext.getJob() instanceof Service) {
+        } else if (insertionContext.getJob().getJobType().isPickup() || insertionContext.getJob().getJobType().isService()) {
             Capacity loadAtEnd = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_END, Capacity.class);
             if (loadAtEnd == null) loadAtEnd = defaultValue;
             if (!Capacity.addup(loadAtEnd, insertionContext.getJob().getSize()).isLessOrEqual(capacityDimensions)) {

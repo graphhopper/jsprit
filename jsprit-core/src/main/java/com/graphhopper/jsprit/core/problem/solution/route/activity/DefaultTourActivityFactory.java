@@ -23,20 +23,23 @@ import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
 
 public class DefaultTourActivityFactory implements TourActivityFactory {
-
     @Override
     public AbstractActivity createActivity(Service service) {
-        AbstractActivity act;
-        if (service instanceof Pickup) {
-            act = new PickupService((Pickup) service);
-        } else if (service instanceof Delivery) {
-            act = new DeliverService((Delivery) service);
-        } else {
-            if (service.getLocation() == null) {
-                act = new ActWithoutStaticLocation(service);
-            } else act = new PickupService(service);
+        if (service.getJobType().isPickup()) {
+            return new PickupService((Pickup) service);
         }
-        return act;
+
+        if (service.getJobType().isDelivery()) {
+            return new DeliverService((Delivery) service);
+        }
+
+        return createDefaultServiceActivity(service);
+    }
+
+    private AbstractActivity createDefaultServiceActivity(Service service) {
+        return service.getLocation() == null
+            ? new ActWithoutStaticLocation(service)
+            : new PickupService(service);
     }
 
 }

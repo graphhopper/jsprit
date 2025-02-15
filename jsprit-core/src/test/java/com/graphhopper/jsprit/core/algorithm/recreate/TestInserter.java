@@ -24,6 +24,7 @@ import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
+import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -45,10 +46,21 @@ import static org.mockito.Mockito.when;
 
 public class TestInserter {
 
+    private Service createMock() {
+        Service s = mock(Service.class);
+        when(s.getJobType()).thenReturn(Job.Type.SERVICE);
+        return s;
+    }
+
+    private Shipment createShipmentMock() {
+        Shipment s = mock(Shipment.class);
+        when(s.getJobType()).thenReturn(Job.Type.SHIPMENT);
+        return s;
+    }
 
     @Test
     public void whenInsertingServiceAndRouteIsClosed_itInsertsCorrectly() {
-        Service service = mock(Service.class);
+        Service service = createMock();
         Vehicle vehicle = mock(Vehicle.class);
         when(vehicle.getStartLocation()).thenReturn(loc("vehLoc"));
         when(vehicle.getEndLocation()).thenReturn(loc("vehLoc"));
@@ -59,7 +71,7 @@ public class TestInserter {
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addService(service).build();
         //start - pick(shipment) - del(shipment) - end
-        Service serviceToInsert = mock(Service.class);
+        Service serviceToInsert = createMock();
         when(serviceToInsert.getLocation()).thenReturn(loc("delLoc"));
 
         InsertionData iData = mock(InsertionData.class);
@@ -85,7 +97,7 @@ public class TestInserter {
 
     @Test
     public void whenInsertingServiceAndRouteIsOpen_itInsertsCorrectlyAndSwitchesEndLocation() {
-        Service service = mock(Service.class);
+        Service service = createMock();
         Vehicle vehicle = mock(Vehicle.class);
         when(vehicle.getStartLocation()).thenReturn(Location.newInstance("vehLoc"));
         when(vehicle.getEndLocation()).thenReturn(Location.newInstance("vehLoc"));
@@ -95,7 +107,7 @@ public class TestInserter {
         when(service.getTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addService(service).build();
-        Service serviceToInsert = mock(Service.class);
+        Service serviceToInsert = createMock();
         when(serviceToInsert.getLocation()).thenReturn(Location.Builder.newInstance().setId("delLoc").build());
 
         InsertionData iData = mock(InsertionData.class);
@@ -122,7 +134,7 @@ public class TestInserter {
 
     @Test
     public void whenInsertingShipmentAndRouteIsClosed_itInsertsCorrectly() {
-        Shipment shipment = mock(Shipment.class);
+        Shipment shipment = createShipmentMock();
         Capacity capacity = Capacity.Builder.newInstance().build();
         when(shipment.getSize()).thenReturn(capacity);
         Vehicle vehicle = mock(Vehicle.class);
@@ -163,7 +175,7 @@ public class TestInserter {
 
     @Test
     public void whenInsertingShipmentAndRouteIsOpen_itInsertsCorrectlyAndSwitchesEndLocation() {
-        Shipment shipment = mock(Shipment.class);
+        Shipment shipment = createShipmentMock();
         Capacity capacity = Capacity.Builder.newInstance().build();
         when(shipment.getSize()).thenReturn(capacity);
         Vehicle vehicle = mock(Vehicle.class);
@@ -194,7 +206,7 @@ public class TestInserter {
 
     @Test
     public void whenSwitchingVehicleAndRouteIsClosed_newStartAndEndShouldBeTheLocationOfNewVehicle() {
-        Shipment shipment = mock(Shipment.class);
+        Shipment shipment = createShipmentMock();
         Capacity capacity = Capacity.Builder.newInstance().build();
         when(shipment.getSize()).thenReturn(capacity);
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setStartLocation(Location.newInstance("vehLoc")).setType(mock(VehicleType.class)).build();
@@ -222,7 +234,7 @@ public class TestInserter {
 
     @Test
     public void whenSwitchingVehicleAndRouteIsOpen_endLocationShouldBeTheLocationOfTheLastActivity() {
-        Shipment shipment = mock(Shipment.class);
+        Shipment shipment = createShipmentMock();
         Capacity capacity = Capacity.Builder.newInstance().build();
         when(shipment.getSize()).thenReturn(capacity);
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setStartLocation(Location.newInstance("vehLoc")).setType(mock(VehicleType.class)).build();
@@ -250,7 +262,7 @@ public class TestInserter {
 
     @Test
     public void whenInsertingShipmentAtBeginningAndSwitchingVehicleAndRouteIsOpen_endLocationShouldBeTheLocationOfTheLastActivity() {
-        Shipment shipment = mock(Shipment.class);
+        Shipment shipment = createShipmentMock();
         Capacity capacity = Capacity.Builder.newInstance().build();
         when(shipment.getSize()).thenReturn(capacity);
         when(shipment.getDeliveryLocation()).thenReturn(Location.Builder.newInstance().setId("oldShipmentDelLoc").build());

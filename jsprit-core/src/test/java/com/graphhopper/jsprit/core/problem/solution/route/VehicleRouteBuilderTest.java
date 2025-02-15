@@ -20,10 +20,12 @@ package com.graphhopper.jsprit.core.problem.solution.route;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
+import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -33,6 +35,32 @@ import static org.mockito.Mockito.when;
 
 public class VehicleRouteBuilderTest {
 
+    private Driver driver;
+    private VehicleRoute.Builder builder;
+    private Capacity emptyCapacity;
+    private TimeWindow defaultTimeWindow;
+
+    @Before
+    public void setUp() {
+        Vehicle vehicle = mock(Vehicle.class);
+        driver = mock(Driver.class);
+        builder = VehicleRoute.Builder.newInstance(vehicle, driver);
+        emptyCapacity = Capacity.Builder.newInstance().build();
+        defaultTimeWindow = TimeWindow.newInstance(0., 10.);
+    }
+
+    private Shipment createMockShipment(String deliveryLocationId) {
+        Shipment shipment = mock(Shipment.class);
+        when(shipment.getJobType()).thenReturn(Job.Type.SHIPMENT);
+        when(shipment.getSize()).thenReturn(emptyCapacity);
+        when(shipment.getPickupTimeWindow()).thenReturn(defaultTimeWindow);
+        when(shipment.getDeliveryTimeWindow()).thenReturn(defaultTimeWindow);
+        if (deliveryLocationId != null) {
+            when(shipment.getDeliveryLocation()).thenReturn(loc(deliveryLocationId));
+        }
+        return shipment;
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void whenDeliveryIsAddedBeforePickup_throwsException() {
         Shipment s = mock(Shipment.class);
@@ -41,110 +69,83 @@ public class VehicleRouteBuilderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenPickupIsAddedTwice_throwsException() {
-        Shipment s = mock(Shipment.class);
-        when(s.getSize()).thenReturn(Capacity.Builder.newInstance().build());
-        when(s.getPickupTimeWindow()).thenReturn(TimeWindow.newInstance(0., 10.));
-        VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
-        builder.addPickup(s);
-        builder.addPickup(s);
+    public void shouldThrowException_whenPickupIsAddedTwice() {
+        Shipment shipment = createMockShipment(null);
+
+        builder.addPickup(shipment);
+        builder.addPickup(shipment);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenShipmentIsPickedDeliveredAndDeliveredAgain_throwsException() {
-        Shipment s = mock(Shipment.class);
-        Capacity capacity = Capacity.Builder.newInstance().build();
-        when(s.getSize()).thenReturn(capacity);
-        when(s.getPickupTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s.getDeliveryTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
-        builder.addPickup(s);
-        builder.addDelivery(s);
-        builder.addDelivery(s);
+    public void shouldThrowException_whenShipmentIsDeliveredTwice() {
+        Shipment shipment = createMockShipment(null);
+
+        builder.addPickup(shipment);
+        builder.addDelivery(shipment);
+        builder.addDelivery(shipment);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenShipmentIsPickedUpThoughButHasNotBeenDeliveredAndRouteIsBuilt_throwsException() {
-        Shipment s = mock(Shipment.class);
-        Capacity capacity = Capacity.Builder.newInstance().build();
-        Shipment s2 = mock(Shipment.class);
-        when(s2.getSize()).thenReturn(capacity);
-        when(s.getSize()).thenReturn(capacity);
-        when(s2.getPickupTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s2.getDeliveryTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s.getPickupTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s.getDeliveryTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
-        builder.addPickup(s);
-        builder.addPickup(s2);
-        builder.addDelivery(s);
+    public void shouldThrowException_whenBuildingRouteWithUndeliveredShipment() {
+        Shipment shipment1 = createMockShipment(null);
+        Shipment shipment2 = createMockShipment(null);
+
+        builder.addPickup(shipment1);
+        builder.addPickup(shipment2);
+        builder.addDelivery(shipment1);
+
         builder.build();
     }
 
     @Test
-    public void whenTwoShipmentsHaveBeenAdded_nuOfActivitiesMustEqualFour() {
-        Shipment s = mock(Shipment.class);
-        Shipment s2 = mock(Shipment.class);
-        Capacity capacity = Capacity.Builder.newInstance().build();
-        when(s.getSize()).thenReturn(capacity);
-        when(s2.getSize()).thenReturn(capacity);
-        when(s2.getPickupTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s2.getDeliveryTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s.getPickupTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s.getDeliveryTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(mock(Vehicle.class), mock(Driver.class));
-        builder.addPickup(s);
-        builder.addPickup(s2);
-        builder.addDelivery(s);
-        builder.addDelivery(s2);
+    public void shouldHaveFourActivities_whenTwoShipmentsAreAdded() {
+        Shipment shipment1 = createMockShipment(null);
+        Shipment shipment2 = createMockShipment(null);
+
+        builder.addPickup(shipment1)
+            .addPickup(shipment2)
+            .addDelivery(shipment1)
+            .addDelivery(shipment2);
+
         VehicleRoute route = builder.build();
+
         assertEquals(4, route.getTourActivities().getActivities().size());
     }
 
     @Test
-    public void whenBuildingClosedRoute_routeEndShouldHaveLocationOfVehicle() {
-        Shipment s = mock(Shipment.class);
-        Shipment s2 = mock(Shipment.class);
-        Capacity capacity = Capacity.Builder.newInstance().build();
-        when(s.getSize()).thenReturn(capacity);
-        when(s2.getSize()).thenReturn(capacity);
-        when(s2.getPickupTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s2.getDeliveryTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s.getPickupTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s.getDeliveryTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
+    public void shouldUseVehicleLocation_whenBuildingClosedRoute() {
+        Shipment s = createMockShipment(null);
+        Shipment s2 = createMockShipment(null);
+
         Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("vehLoc")).setEndLocation(Location.newInstance("vehLoc"))
             .build();
 
-        VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
-        builder.addPickup(s);
-        builder.addPickup(s2);
-        builder.addDelivery(s);
-        builder.addDelivery(s2);
-        VehicleRoute route = builder.build();
+        VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver)
+            .addPickup(s)
+            .addPickup(s2)
+            .addDelivery(s)
+            .addDelivery(s2)
+            .build();
+
         assertEquals("vehLoc", route.getEnd().getLocation().getId());
     }
 
     @Test
-    public void whenBuildingOpenRoute_routeEndShouldHaveLocationOfLastActivity() {
-        Shipment s = mock(Shipment.class);
-        Shipment s2 = mock(Shipment.class);
-        Capacity capacity = Capacity.Builder.newInstance().build();
-        when(s.getSize()).thenReturn(capacity);
-        when(s2.getSize()).thenReturn(capacity);
-        when(s2.getDeliveryLocation()).thenReturn(loc("delLoc"));
-        when(s.getPickupTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s.getDeliveryTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s2.getPickupTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s2.getDeliveryTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
+    public void shouldUseLastActivityLocation_whenBuildingOpenRoute() {
+        Shipment s = createMockShipment(null);
+        Shipment s2 = createMockShipment("vehLoc");
+
         Vehicle vehicle = mock(Vehicle.class);
         when(vehicle.isReturnToDepot()).thenReturn(false);
         when(vehicle.getStartLocation()).thenReturn(loc("vehLoc"));
-        VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
-        builder.addPickup(s);
-        builder.addPickup(s2);
-        builder.addDelivery(s);
-        builder.addDelivery(s2);
-        VehicleRoute route = builder.build();
+
+        VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
+            .addPickup(s)
+            .addPickup(s2)
+            .addDelivery(s)
+            .addDelivery(s2)
+            .build();
+
         assertEquals(route.getEnd().getLocation().getId(), s2.getDeliveryLocation().getId());
     }
 
@@ -153,27 +154,22 @@ public class VehicleRouteBuilderTest {
     }
 
     @Test
-    public void whenSettingDepartureTime() {
-        Shipment s = mock(Shipment.class);
-        Shipment s2 = mock(Shipment.class);
-        Capacity capacity = Capacity.Builder.newInstance().build();
-        when(s.getSize()).thenReturn(capacity);
-        when(s2.getSize()).thenReturn(capacity);
-        when(s2.getDeliveryLocation()).thenReturn(Location.Builder.newInstance().setId("delLoc").build());
-        when(s.getPickupTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s.getDeliveryTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
-        when(s2.getPickupTimeWindow()).thenReturn(TimeWindow.newInstance(0., 10.));
-        when(s2.getDeliveryTimeWindow()).thenReturn(TimeWindow.newInstance(0.,10.));
+    public void houldSetDepartureTimeCorrectly() {
+        Shipment s = createMockShipment(null);
+        Shipment s2 = createMockShipment("delLoc");
+
         Vehicle vehicle = mock(Vehicle.class);
         when(vehicle.isReturnToDepot()).thenReturn(false);
         when(vehicle.getStartLocation()).thenReturn(Location.Builder.newInstance().setId("vehLoc").build());
-        VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class));
-        builder.addPickup(s);
-        builder.addPickup(s2);
-        builder.addDelivery(s);
-        builder.addDelivery(s2);
-        builder.setDepartureTime(100);
-        VehicleRoute route = builder.build();
+
+        VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class))
+            .addPickup(s)
+            .addPickup(s2)
+            .addDelivery(s)
+            .addDelivery(s2)
+            .setDepartureTime(100)
+            .build();
+
         assertEquals(100.0, route.getDepartureTime(), 0.01);
         assertEquals(100.0, route.getStart().getEndTime(), 0.01);
     }

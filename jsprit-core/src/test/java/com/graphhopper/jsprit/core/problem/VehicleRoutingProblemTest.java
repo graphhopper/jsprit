@@ -45,6 +45,25 @@ import static org.mockito.Mockito.when;
 
 public class VehicleRoutingProblemTest {
 
+    Delivery createDeliveryMock() {
+        Delivery d = mock(Delivery.class);
+        when(d.getJobType()).thenReturn(Job.Type.DELIVERY_SERVICE);
+        return d;
+    }
+
+    Service createServiceMock() {
+        Service d = mock(Service.class);
+        when(d.getJobType()).thenReturn(Job.Type.SERVICE);
+        return d;
+    }
+
+    Pickup createPickupMock() {
+        Pickup d = mock(Pickup.class);
+        when(d.getJobType()).thenReturn(Job.Type.PICKUP_SERVICE);
+        return d;
+    }
+
+
     @Test
     public void whenBuildingWithInfiniteFleet_fleetSizeShouldBeInfinite() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
@@ -164,10 +183,10 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenPickupsAreAdded_vrpShouldContainThem() {
-        Pickup s1 = mock(Pickup.class);
+        Pickup s1 = createPickupMock();
         when(s1.getId()).thenReturn("s1");
         when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
-        Pickup s2 = mock(Pickup.class);
+        Pickup s2 = createPickupMock();
         when(s2.getId()).thenReturn("s2");
         when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 
@@ -183,10 +202,10 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenPickupsAreAddedAllAtOnce_vrpShouldContainThem() {
-        Pickup s1 = mock(Pickup.class);
+        Pickup s1 = createPickupMock();
         when(s1.getId()).thenReturn("s1");
         when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
-        Pickup s2 = mock(Pickup.class);
+        Pickup s2 = createPickupMock();
         when(s2.getId()).thenReturn("s2");
         when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 
@@ -202,11 +221,11 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenDelivieriesAreAdded_vrpShouldContainThem() {
-        Delivery s1 = mock(Delivery.class);
+        Delivery s1 = createDeliveryMock();
         when(s1.getId()).thenReturn("s1");
         when(s1.getSize()).thenReturn(Capacity.Builder.newInstance().build());
         when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
-        Delivery s2 = mock(Delivery.class);
+        Delivery s2 = createDeliveryMock();
         when(s2.getId()).thenReturn("s2");
         when(s2.getSize()).thenReturn(Capacity.Builder.newInstance().build());
         when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
@@ -223,11 +242,11 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenDelivieriesAreAddedAllAtOnce_vrpShouldContainThem() {
-        Delivery s1 = mock(Delivery.class);
+        Delivery s1 = createDeliveryMock();
         when(s1.getId()).thenReturn("s1");
         when(s1.getSize()).thenReturn(Capacity.Builder.newInstance().build());
         when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
-        Delivery s2 = mock(Delivery.class);
+        Delivery s2 = createDeliveryMock();
         when(s2.getId()).thenReturn("s2");
         when(s2.getSize()).thenReturn(Capacity.Builder.newInstance().build());
         when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
@@ -244,10 +263,10 @@ public class VehicleRoutingProblemTest {
 
     @Test
     public void whenServicesAreAddedAllAtOnce_vrpShouldContainThem() {
-        Service s1 = mock(Service.class);
+        Service s1 = createServiceMock();
         when(s1.getId()).thenReturn("s1");
         when(s1.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
-        Service s2 = mock(Service.class);
+        Service s2 = createServiceMock();
         when(s2.getId()).thenReturn("s2");
         when(s2.getLocation()).thenReturn(Location.Builder.newInstance().setIndex(1).build());
 

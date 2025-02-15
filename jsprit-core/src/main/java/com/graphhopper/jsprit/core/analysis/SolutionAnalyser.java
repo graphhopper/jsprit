@@ -21,10 +21,7 @@ package com.graphhopper.jsprit.core.analysis;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -280,9 +277,9 @@ public class SolutionAnalyser {
             Capacity loadAtDepot = Capacity.Builder.newInstance().build();
             Capacity loadAtEnd = Capacity.Builder.newInstance().build();
             for (Job j : route.getTourActivities().getJobs()) {
-                if (j instanceof Delivery) {
+                if (j.getJobType().isDelivery()) {
                     loadAtDepot = Capacity.addup(loadAtDepot, j.getSize());
-                } else if (j instanceof Pickup || j instanceof Service) {
+                } else if (j.getJobType().isPickup() || j.getJobType().isService()) {
                     loadAtEnd = Capacity.addup(loadAtEnd, j.getSize());
                 }
             }

@@ -103,7 +103,7 @@ class Inserter {
 
         @Override
         public void handleJobInsertion(Job job, InsertionData iData, VehicleRoute route) {
-            if (job instanceof Shipment) {
+            if (job.getJobType().isShipment()) {
                 List<AbstractActivity> acts = vehicleRoutingProblem.copyAndGetActivities(job);
                 TourActivity pickupShipment = acts.get(0);
                 TourActivity deliverShipment = acts.get(1);

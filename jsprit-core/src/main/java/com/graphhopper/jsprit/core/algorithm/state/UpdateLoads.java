@@ -21,10 +21,7 @@ import com.graphhopper.jsprit.core.algorithm.recreate.InsertionData;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobInsertedListener;
 import com.graphhopper.jsprit.core.problem.Capacity;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Job;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
@@ -80,9 +77,9 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
         Capacity loadAtDepot = Capacity.Builder.newInstance().build();
         Capacity loadAtEnd = Capacity.Builder.newInstance().build();
         for (Job j : route.getTourActivities().getJobs()) {
-            if (j instanceof Delivery) {
+            if (j.getJobType().isDelivery()) {
                 loadAtDepot = Capacity.addup(loadAtDepot, j.getSize());
-            } else if (j instanceof Pickup || j instanceof Service) {
+            } else if (j.getJobType().isPickup() || j.getJobType().isService()) {
                 loadAtEnd = Capacity.addup(loadAtEnd, j.getSize());
             }
         }
@@ -99,11 +96,11 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 
     @Override
     public void informJobInserted(Job job2insert, VehicleRoute inRoute, InsertionData insertionData) {
-        if (job2insert instanceof Delivery) {
+        if (job2insert.getJobType().isDelivery()) {
             Capacity loadAtDepot = stateManager.getRouteState(inRoute, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
             if (loadAtDepot == null) loadAtDepot = defaultValue;
             stateManager.putTypedInternalRouteState(inRoute, InternalStates.LOAD_AT_BEGINNING, Capacity.addup(loadAtDepot, job2insert.getSize()));
-        } else if (job2insert instanceof Pickup || job2insert instanceof Service) {
+        } else if (job2insert.getJobType().isPickup() || job2insert.getJobType().isService()) {
             Capacity loadAtEnd = stateManager.getRouteState(inRoute, InternalStates.LOAD_AT_END, Capacity.class);
             if (loadAtEnd == null) loadAtEnd = defaultValue;
             stateManager.putTypedInternalRouteState(inRoute, InternalStates.LOAD_AT_END, Capacity.addup(loadAtEnd, job2insert.getSize()));

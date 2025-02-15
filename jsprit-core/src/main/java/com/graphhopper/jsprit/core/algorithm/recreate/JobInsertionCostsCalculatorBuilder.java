@@ -260,7 +260,7 @@ public class JobInsertionCostsCalculatorBuilder {
 
     private void checkServicesOnly() {
         for (Job j : vrp.getJobs().values()) {
-            if (j instanceof Shipment) {
+            if (j.getJobType().isShipment()) {
                 throw new UnsupportedOperationException("currently the 'insert-on-route-level' option is only available for services (i.e. service, pickup, delivery), \n" +
                     "if you want to deal with shipments switch to option 'local-level' by either setting bestInsertionBuilder.setLocalLevel() or \n"
                     + "by omitting the xml-tag '<level forwardLooking=2 memory=1>route</level>' when defining your insertionStrategy in algo-config.xml file");

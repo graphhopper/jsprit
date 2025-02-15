@@ -27,7 +27,6 @@ import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionStartsLi
 import com.graphhopper.jsprit.core.algorithm.ruin.listener.RuinListener;
 import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
@@ -145,7 +144,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
             Job job = ((TourActivity.JobActivity) act).getJob();
             if (job instanceof Service) {
                 nodeId = job.getId();
-            } else if (job instanceof Shipment) {
+            } else if (job.getJobType().isShipment()) {
                 if (act.getName().equals("pickupShipment")) nodeId = getFromNodeId((Shipment) job);
                 else nodeId = getToNodeId((Shipment) job);
             }
@@ -166,7 +165,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
     public void removed(Job job, VehicleRoute fromRoute) {
         if (!record()) return;
         if (job instanceof Service) removeService(job, fromRoute);
-        else if (job instanceof Shipment) removeShipment(job, fromRoute);
+        else if (job.getJobType().isShipment()) removeShipment(job, fromRoute);
     }
 
     private void removeShipment(Job job, VehicleRoute fromRoute) {
@@ -309,7 +308,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
             Service service = (Service) job;
             addNode(service.getId(), service.getLocation().getCoordinate());
             markService(service);
-        } else if (job instanceof Shipment) {
+        } else if (job.getJobType().isShipment()) {
             Shipment shipment = (Shipment) job;
             String fromNodeId = getFromNodeId(shipment);
             addNode(fromNodeId, shipment.getPickupLocation().getCoordinate());
@@ -329,7 +328,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
     }
 
     private void markService(Service service) {
-        if (service instanceof Delivery) {
+        if (service.getJobType().isDelivery()) {
             markDelivery(service.getId());
         } else {
             markPickup(service.getId());
@@ -407,7 +406,7 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
 
     private void insertJob(Job job, InsertionData data, VehicleRoute route) {
         if (job instanceof Service) insertService(job, data, route);
-        else if (job instanceof Shipment) insertShipment(job, data, route);
+        else if (job.getJobType().isShipment()) insertShipment(job, data, route);
     }
 
     private void insertShipment(Job job, InsertionData data, VehicleRoute route) {

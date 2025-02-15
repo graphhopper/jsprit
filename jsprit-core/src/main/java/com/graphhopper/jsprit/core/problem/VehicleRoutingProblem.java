@@ -100,12 +100,11 @@ public class VehicleRoutingProblem {
             @Override
             public List<AbstractActivity> createActivities(Job job) {
                 List<AbstractActivity> acts = new ArrayList<>();
-                if( job instanceof Break){
+                if (job.getJobType().isBreak()) {
                     acts.add(BreakActivity.newInstance((Break) job));
-                }
-                else if (job instanceof Service) {
+                } else if (job instanceof Service) {
                     acts.add(serviceActivityFactory.createActivity((Service) job));
-                } else if (job instanceof Shipment) {
+                } else if (job.getJobType().isShipment()) {
                     acts.add(shipmentActivityFactory.createPickup((Shipment) job));
                     acts.add(shipmentActivityFactory.createDelivery((Shipment) job));
                 }
@@ -218,7 +217,7 @@ public class VehicleRoutingProblem {
         public Builder addJob(AbstractJob job) {
             if (tentativeJobs.containsKey(job.getId()))
                 throw new IllegalArgumentException("The vehicle routing problem already contains a service or shipment with id " + job.getId() + ". Please make sure you use unique ids for all services and shipments.");
-            if (!(job instanceof Service || job instanceof Shipment))
+            if (!(job instanceof Service || job.getJobType().isShipment()))
                 throw new IllegalArgumentException("Job must be either a service or a shipment.");
             tentativeJobs.put(job.getId(), job);
             addLocationToTentativeLocations(job);

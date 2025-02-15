@@ -89,7 +89,7 @@ public class BreakScheduling implements InsertionStartsListener,JobInsertedListe
         }
         List<Break> breaks = new ArrayList<>();
         for (Job j : unassignedJobs) {
-            if (j instanceof Break) {
+            if (j.getJobType().isBreak()) {
                 breaks.add((Break) j);
             }
         }

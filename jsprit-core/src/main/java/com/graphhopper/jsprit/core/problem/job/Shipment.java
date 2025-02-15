@@ -537,4 +537,8 @@ public class Shipment extends AbstractJob {
     public List<Activity> getActivities() {
         return activities;
     }
+
+    public Type getJobType() {
+        return Type.SHIPMENT;
+    }
 }
