@@ -335,6 +335,8 @@ public class VehicleRoute {
 
     private End end;
 
+    private int index = -1;
+
     /**
      * Copy constructor copying a route.
      *
@@ -359,6 +361,14 @@ public class VehicleRoute {
         this.driver = builder.driver;
         this.start = builder.start;
         this.end = builder.end;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     /**
