@@ -47,17 +47,22 @@ import java.util.*;
  */
 public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
 
-    private RouteActivityVisitor routeActivityVisitor = new RouteActivityVisitor();
+    // Growth factor for array resizing
+    private static final double GROWTH_FACTOR = 1.5;
+    // Initial capacity - should be tuned based on typical usage
+    private static final int INITIAL_CAPACITY = 32;
 
-    private ReverseRouteActivityVisitor revRouteActivityVisitor = new ReverseRouteActivityVisitor();
+    private final RouteActivityVisitor routeActivityVisitor = new RouteActivityVisitor();
 
-    private Collection<RouteVisitor> routeVisitors = new ArrayList<>();
+    private final ReverseRouteActivityVisitor revRouteActivityVisitor = new ReverseRouteActivityVisitor();
 
-    private RuinListeners ruinListeners = new RuinListeners();
+    private final Collection<RouteVisitor> routeVisitors = new ArrayList<>();
 
-    private InsertionListeners insertionListeners = new InsertionListeners();
+    private final RuinListeners ruinListeners = new RuinListeners();
 
-    private Collection<StateUpdater> updaters = new ArrayList<>();
+    private final InsertionListeners insertionListeners = new InsertionListeners();
+
+    private final Collection<StateUpdater> updaters = new ArrayList<>();
 
     private boolean updateLoad = false;
 
@@ -67,11 +72,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private int stateIndexCounter;
 
-    private Map<String, StateId> createdStateIds = new HashMap<>();
+    private final Map<String, StateId> createdStateIds = new HashMap<>();
 
-    private int nuActivities;
+    private final int nuActivities;
 
-    private int nuVehicleTypeKeys;
+    private final int nuVehicleTypeKeys;
 
     private Object[] problemStates;
 
@@ -79,45 +84,14 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private Object[][][] vehicleDependentActivityStates;
 
+    private Object[] nullArray;
+
     private final Map<VehicleRoute, Object[]> routeStateMap;
 
     private final Map<VehicleRoute, Object[][]> vehicleDependentRouteStateMap;
 
-    private Object[][] routeStatesArr;
-
-    private Object[][][] vehicleDependentRouteStatesArr;
-
-    private final VehicleRoutingProblem vrp;
-
-    private final boolean isIndexedBased;
-
     int getMaxIndexOfVehicleTypeIdentifiers() {
         return nuVehicleTypeKeys;
-    }
-
-    /**
-     * Create and returns a stateId with the specified state-name.
-     * <p>
-     * <p>If a stateId with the specified name has already been created, it returns the created stateId.</p>
-     * <p>If the specified is equal to a name that is already used internally, it throws an IllegalStateException</p>
-     *
-     * @param name the specified name of the state
-     * @return the stateId with which a state can be identified, no matter if it is a problem, route or activity state.
-     * @throws java.lang.IllegalStateException if name of state is already used internally
-     */
-    public StateId createStateId(String name) {
-        if (createdStateIds.containsKey(name)) return createdStateIds.get(name);
-        if (stateIndexCounter >= activityStates[0].length) {
-            activityStates = new Object[nuActivities][stateIndexCounter + 1];
-            vehicleDependentActivityStates = new Object[nuActivities][nuVehicleTypeKeys][stateIndexCounter + 1];
-            routeStatesArr = new Object[vrp.getVehicles().size() + 2][stateIndexCounter+1];
-            vehicleDependentRouteStatesArr = new Object[vrp.getVehicles().size() + 2][nuVehicleTypeKeys][stateIndexCounter+1];
-            problemStates = new Object[stateIndexCounter+1];
-        }
-        StateId id = StateFactory.createId(name, stateIndexCounter);
-        incStateIndexCounter();
-        createdStateIds.put(name, id);
-        return id;
     }
 
     private void incStateIndexCounter() {
@@ -132,17 +106,76 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      */
     public StateManager(VehicleRoutingProblem vehicleRoutingProblem) {
         stateIndexCounter = initialNoStates;
-        int initialStateArrayLength = 30;
-        this.vrp = vehicleRoutingProblem;
-        nuActivities = Math.max(10, vrp.getNuActivities() + 1);
-        nuVehicleTypeKeys = Math.max(3, getNuVehicleTypes(vrp) + 2);
-        activityStates = new Object[nuActivities][initialStateArrayLength];
-        vehicleDependentActivityStates = new Object[nuActivities][nuVehicleTypeKeys][initialStateArrayLength];
-        isIndexedBased = false;
+        nuActivities = Math.max(10, vehicleRoutingProblem.getNuActivities() + 1);
+        nuVehicleTypeKeys = Math.max(3, getNuVehicleTypes(vehicleRoutingProblem) + 2);
         routeStateMap = new HashMap<>();
         vehicleDependentRouteStateMap = new HashMap<>();
-        problemStates = new Object[initialStateArrayLength];
+        initArrays();
     }
+
+    private void initArrays() {
+        activityStates = new Object[nuActivities][StateManager.INITIAL_CAPACITY];
+        vehicleDependentActivityStates = new Object[nuActivities][nuVehicleTypeKeys][StateManager.INITIAL_CAPACITY];
+        problemStates = new Object[StateManager.INITIAL_CAPACITY];
+        nullArray = new Object[StateManager.INITIAL_CAPACITY];
+    }
+
+    /**
+     * Create and returns a stateId with the specified state-name.
+     * <p>
+     * <p>If a stateId with the specified name has already been created, it returns the created stateId.</p>
+     * <p>If the specified is equal to a name that is already used internally, it throws an IllegalStateException</p>
+     *
+     * @param name the specified name of the state
+     * @return the stateId with which a state can be identified, no matter if it is a problem, route or activity state.
+     * @throws java.lang.IllegalStateException if name of state is already used internally
+     */
+    public StateId createStateId(String name) {
+        // Check existing state
+        if (createdStateIds.containsKey(name)) {
+            return createdStateIds.get(name);
+        }
+
+        // Check if we need to grow arrays
+        if (stateIndexCounter >= activityStates[0].length) {
+            growArrays();
+        }
+
+        // Create new state ID
+        StateId id = StateFactory.createId(name, stateIndexCounter);
+        incStateIndexCounter();
+        createdStateIds.put(name, id);
+        return id;
+    }
+
+    private void growArrays() {
+        // Calculate new capacity
+        int oldCapacity = activityStates[0].length;
+        int newCapacity = Math.max((int) (oldCapacity * GROWTH_FACTOR), oldCapacity + 1);
+
+        // Create new arrays
+        Object[][] newActivityStates = new Object[nuActivities][newCapacity];
+        Object[][][] newVehicleDependentActivityStates = new Object[nuActivities][nuVehicleTypeKeys][newCapacity];
+        Object[] newProblemStates = new Object[newCapacity];
+
+        // Copy existing data using System.arraycopy
+        copyStates(activityStates, newActivityStates);
+        copyStates(vehicleDependentActivityStates, newVehicleDependentActivityStates);
+        System.arraycopy(problemStates, 0, newProblemStates, 0, problemStates.length);
+
+        // Assign new arrays
+        activityStates = newActivityStates;
+        vehicleDependentActivityStates = newVehicleDependentActivityStates;
+        problemStates = newProblemStates;
+        nullArray = new Object[newCapacity];
+    }
+
+    private void copyStates(Object[][] source, Object[][] target) {
+        for (int i = 0; i < source.length; i++) {
+            System.arraycopy(source[i], 0, target[i], 0, source[i].length);
+        }
+    }
+
 
     private int getNuVehicleTypes(VehicleRoutingProblem vrp) {
         int maxIndex = 0;
@@ -179,35 +212,41 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     /**
-     * Clears all states, i.e. set all value to null.
+     * Clears all states by setting all values to null.
+     * Uses optimized sequential clearing with System.arraycopy.
      */
     public void clear() {
-        fill_twoDimArr(activityStates, null);
-        fill_threeDimArr(vehicleDependentActivityStates, null);
-        if(isIndexedBased) {
-            fill_twoDimArr(routeStatesArr, null);
-            fill_threeDimArr(vehicleDependentRouteStatesArr, null);
-        }
-        else{
-            routeStateMap.clear();
-            vehicleDependentRouteStateMap.clear();
-        }
-        Arrays.fill(problemStates,null);
+        // Clear activity states
+        clearActivityStates();
+
+        // Clear vehicle dependent activity states
+        clearVehicleDependentStates();
+
+        // Clear maps
+        routeStateMap.clear();
+        vehicleDependentRouteStateMap.clear();
+
+        // Clear problem states
+        System.arraycopy(nullArray, 0, problemStates, 0, problemStates.length);
     }
 
-    private void fill_threeDimArr(Object[][][] states, Object o) {
-        for (Object[][] twoDimArr : states) {
-            for (Object[] oneDimArr : twoDimArr) {
-                Arrays.fill(oneDimArr, o);
+    private void clearActivityStates() {
+        final int rowLength = activityStates[0].length;
+        for (int i = 0; i < activityStates.length; i++) {
+            System.arraycopy(nullArray, 0, activityStates[i], 0, rowLength);
+        }
+    }
+
+    private void clearVehicleDependentStates() {
+        final int innerLength = vehicleDependentActivityStates[0][0].length;
+        for (int i = 0; i < vehicleDependentActivityStates.length; i++) {
+            Object[][] middleArray = vehicleDependentActivityStates[i];
+            for (int j = 0; j < middleArray.length; j++) {
+                System.arraycopy(nullArray, 0, middleArray[j], 0, innerLength);
             }
         }
     }
 
-    private void fill_twoDimArr(Object[][] states, Object o) {
-        for (Object[] rows : states) {
-            Arrays.fill(rows, o);
-        }
-    }
 
     /**
      * Returns associated state for the specified activity and stateId, or it returns null if no value is associated.
@@ -299,21 +338,12 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     public <T> T getRouteState(VehicleRoute route, StateId stateId, Class<T> type) {
         if (route == null) return null;
         T state = null;
-        if(isIndexedBased){
-            try {
-                state = type.cast(routeStatesArr[route.getVehicle().getIndex()][stateId.getIndex()]);
-            } catch (ClassCastException e) {
-                throw getClassCastException(e,stateId,type.toString(),routeStatesArr[route.getVehicle().getIndex()][stateId.getIndex()].getClass().toString());
+        try {
+            if (routeStateMap.containsKey(route)) {
+                state = type.cast(routeStateMap.get(route)[stateId.getIndex()]);
             }
-        }
-        else {
-            try {
-                if (routeStateMap.containsKey(route)) {
-                    state = type.cast(routeStateMap.get(route)[stateId.getIndex()]);
-                }
-            } catch (ClassCastException e) {
-                throw getClassCastException(e, stateId, type.toString(), routeStateMap.get(route)[stateId.getIndex()].getClass().toString());
-            }
+        } catch (ClassCastException e) {
+            throw getClassCastException(e, stateId, type.toString(), routeStateMap.get(route)[stateId.getIndex()].getClass().toString());
         }
         return state;
     }
@@ -349,21 +379,12 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     public <T> T getRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, Class<T> type) {
 //        if (route.isEmpty()) return null;
         T state = null;
-        if(isIndexedBased){
-            try {
-                state = type.cast(vehicleDependentRouteStatesArr[route.getVehicle().getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
-            } catch (ClassCastException e) {
-                throw getClassCastException(e, stateId, type.toString(), vehicleDependentRouteStatesArr[route.getVehicle().getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()].getClass().toString());
+        try {
+            if (vehicleDependentRouteStateMap.containsKey(route)) {
+                state = type.cast(vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
             }
-        }
-        else {
-            try {
-                if (vehicleDependentRouteStateMap.containsKey(route)) {
-                    state = type.cast(vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
-                }
-            } catch (ClassCastException e) {
-                throw getClassCastException(e, stateId, type.toString(), vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()].getClass().toString());
-            }
+        } catch (ClassCastException e) {
+            throw getClassCastException(e, stateId, type.toString(), vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()].getClass().toString());
         }
         return state;
     }
@@ -454,30 +475,17 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     <T> void putTypedInternalRouteState(VehicleRoute route, StateId stateId, T state) {
-//        if (route.isEmpty()) return;
-        if(isIndexedBased){
-            routeStatesArr[route.getVehicle().getIndex()][stateId.getIndex()] = state;
+        if (!routeStateMap.containsKey(route)) {
+            routeStateMap.put(route, new Object[stateIndexCounter]);
         }
-        else {
-            if (!routeStateMap.containsKey(route)) {
-                routeStateMap.put(route, new Object[stateIndexCounter]);
-            }
-            routeStateMap.get(route)[stateId.getIndex()] = state;
-        }
+        routeStateMap.get(route)[stateId.getIndex()] = state;
     }
 
     <T> void putTypedInternalRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, T state) {
-//        if (route.isEmpty()) return;
-        if(isIndexedBased){
-            vehicleDependentRouteStatesArr[route.getVehicle().getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] = state;
+        if (!vehicleDependentRouteStateMap.containsKey(route)) {
+            vehicleDependentRouteStateMap.put(route, new Object[nuVehicleTypeKeys][stateIndexCounter]);
         }
-        else {
-            if (!vehicleDependentRouteStateMap.containsKey(route)) {
-                vehicleDependentRouteStateMap.put(route, new Object[nuVehicleTypeKeys][stateIndexCounter]);
-            }
-            vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] = state;
-        }
-
+        vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] = state;
     }
 
     /**
@@ -572,7 +580,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     public void reCalculateStates(VehicleRoute route){
-        informInsertionStarts(Arrays.asList(route), Collections.emptyList());
+        informInsertionStarts(Collections.singletonList(route), Collections.emptyList());
     }
 
     @Override
