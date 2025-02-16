@@ -79,15 +79,15 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private Object[][][] vehicleDependentActivityStates;
 
-    private Map<VehicleRoute, Object[]> routeStateMap;
+    private final Map<VehicleRoute, Object[]> routeStateMap;
 
-    private Map<VehicleRoute, Object[][]> vehicleDependentRouteStateMap;
+    private final Map<VehicleRoute, Object[][]> vehicleDependentRouteStateMap;
 
     private Object[][] routeStatesArr;
 
     private Object[][][] vehicleDependentRouteStatesArr;
 
-    private VehicleRoutingProblem vrp;
+    private final VehicleRoutingProblem vrp;
 
     private final boolean isIndexedBased;
 
@@ -223,15 +223,18 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      */
     @Override
     public <T> T getActivityState(TourActivity act, StateId stateId, Class<T> type) {
-        if (act.getIndex() == 0) throw new IllegalStateException("activity index is 0. this should not be.");
-        if (act.getIndex() < 0) return null;
-        T state;
-        try {
-            state = type.cast(activityStates[act.getIndex()][stateId.getIndex()]);
-        } catch (ClassCastException e) {
-            throw getClassCastException(e, stateId, type.toString(), activityStates[act.getIndex()][stateId.getIndex()].getClass().toString());
+        final int actIndex = act.getIndex();
+        if (actIndex <= 0) {
+            if (actIndex == 0) throw new IllegalStateException("activity index is 0. this should not be.");
+            return null;
         }
-        return state;
+        final int stateIndex = stateId.getIndex();
+        final Object state = activityStates[actIndex][stateIndex];
+        try {
+            return type.cast(state);
+        } catch (ClassCastException e) {
+            throw getClassCastException(e, stateId, type.toString(), state.getClass().toString());
+        }
     }
 
     /**
