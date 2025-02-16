@@ -204,7 +204,7 @@ public class SolutionAnalyser {
             );
             timeViolationStates.put(route.getEnd(), endTimeWindowViolation);
             totalTimeWindowViolation += endTimeWindowViolation;
-            totalOperationTime = currentTime;
+            totalOperationTime = currentTime - route.getDepartureTime();
 
         }
 

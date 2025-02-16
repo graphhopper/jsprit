@@ -652,6 +652,29 @@ public class SolutionAnalyserTest {
     }
 
     @Test
+    public void whenSettingStartTime_operationTimeShouldWork() {
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100.).setCostPerDistance(2.).addCapacityDimension(0, 15).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v2").setType(type)
+            .setEarliestStart(100)
+            .setStartLocation(Location.newInstance(5, 0)).build();
+        Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance(20, 0)).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
+            .addVehicle(vehicle)
+            .addJob(service)
+            .setRoutingCost(new ManhattanCosts())
+            .build();
+
+        VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle)
+            .setJobActivityFactory(vrp.getJobActivityFactory())
+            .addService(service)
+            .build();
+
+        SolutionAnalyser analyser = new SolutionAnalyser(vrp, new VehicleRoutingProblemSolution(Collections.singletonList(route), 300), vrp.getTransportCosts());
+        assertEquals(30, analyser.getOperationTime(), 0.01);
+        assertEquals(30, analyser.getOperationTime(route), 0.01);
+    }
+
+    @Test
     public void waitingTime_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
