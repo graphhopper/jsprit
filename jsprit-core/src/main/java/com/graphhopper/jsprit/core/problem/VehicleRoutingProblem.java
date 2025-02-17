@@ -83,7 +83,7 @@ public class VehicleRoutingProblem {
 
         private final Map<String, Job> jobsInInitialRoutes = new LinkedHashMap<>();
 
-        private final Map<String, Coordinate> tentative_coordinates = new HashMap<>();
+        private final Map<String, Coordinate> tentativeCoordinates = new HashMap<>();
 
         private FleetSize fleetSize = FleetSize.INFINITE;
 
@@ -143,7 +143,7 @@ public class VehicleRoutingProblem {
          * @return map with locations
          */
         public Map<String, Coordinate> getLocationMap() {
-            return Collections.unmodifiableMap(tentative_coordinates);
+            return Collections.unmodifiableMap(tentativeCoordinates);
         }
 
 
@@ -156,7 +156,7 @@ public class VehicleRoutingProblem {
          * @return locations
          */
         public Locations getLocations() {
-            return tentative_coordinates::get;
+            return tentativeCoordinates::get;
         }
 
         /**
@@ -232,7 +232,7 @@ public class VehicleRoutingProblem {
 
         private void addLocationToTentativeLocations(Location location) {
             if (location == null) return;
-            tentative_coordinates.put(location.getId(), location.getCoordinate());
+            tentativeCoordinates.put(location.getId(), location.getCoordinate());
             allLocations.add(location);
         }
 
@@ -447,7 +447,7 @@ public class VehicleRoutingProblem {
 
         @Deprecated
         public Builder addLocation(String locationId, Coordinate coordinate) {
-            tentative_coordinates.put(locationId, coordinate);
+            tentativeCoordinates.put(locationId, coordinate);
             return this;
         }
 
