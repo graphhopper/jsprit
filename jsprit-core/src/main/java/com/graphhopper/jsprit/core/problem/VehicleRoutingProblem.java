@@ -75,25 +75,25 @@ public class VehicleRoutingProblem {
 
         private VehicleRoutingActivityCosts activityCosts = new WaitingTimeCosts();
 
-        private Map<String, Job> jobs = new LinkedHashMap<>();
+        private final Map<String, Job> jobs = new LinkedHashMap<>();
 
-        private List<Job> jobsWithLocation = new ArrayList<>();
+        private final List<Job> jobsWithLocation = new ArrayList<>();
 
-        private Map<String, Job> tentativeJobs = new LinkedHashMap<>();
+        private final Map<String, Job> tentativeJobs = new LinkedHashMap<>();
 
-        private Map<String, Job> jobsInInitialRoutes = new LinkedHashMap<>();
+        private final Map<String, Job> jobsInInitialRoutes = new LinkedHashMap<>();
 
-        private Map<String, Coordinate> tentative_coordinates = new HashMap<>();
+        private final Map<String, Coordinate> tentative_coordinates = new HashMap<>();
 
         private FleetSize fleetSize = FleetSize.INFINITE;
 
-        private Map<String, VehicleType> vehicleTypes = new HashMap<>();
+        private final Map<String, VehicleType> vehicleTypes = new HashMap<>();
 
-        private Collection<VehicleRoute> initialRoutes = new ArrayList<>();
+        private final Collection<VehicleRoute> initialRoutes = new ArrayList<>();
 
-        private Set<Vehicle> uniqueVehicles = new LinkedHashSet<>();
+        private final Set<Vehicle> uniqueVehicles = new LinkedHashSet<>();
 
-        private Set<String> addedVehicleIds = new LinkedHashSet<>();
+        private final Set<String> addedVehicleIds = new LinkedHashSet<>();
 
         private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
 
@@ -119,9 +119,9 @@ public class VehicleRoutingProblem {
 
         private int vehicleTypeIdIndexCounter = 1;
 
-        private Map<VehicleTypeKey, Integer> typeKeyIndices = new HashMap<>();
+        private final Map<VehicleTypeKey, Integer> typeKeyIndices = new HashMap<>();
 
-        private Map<Job, List<AbstractActivity>> activityMap = new HashMap<>();
+        private final Map<Job, List<AbstractActivity>> activityMap = new HashMap<>();
 
         private final DefaultShipmentActivityFactory shipmentActivityFactory = new DefaultShipmentActivityFactory();
 
@@ -135,7 +135,7 @@ public class VehicleRoutingProblem {
             vehicleTypeIdIndexCounter++;
         }
 
-        private Set<Location> allLocations = new HashSet<>();
+        private final Set<Location> allLocations = new HashSet<>();
 
         /**
          * Returns the unmodifiable map of collected locations (mapped by their location-id).
@@ -156,7 +156,7 @@ public class VehicleRoutingProblem {
          * @return locations
          */
         public Locations getLocations() {
-            return id -> tentative_coordinates.get(id);
+            return tentative_coordinates::get;
         }
 
         /**
@@ -562,7 +562,7 @@ public class VehicleRoutingProblem {
 
     private Map<Job, List<AbstractActivity>> activityMap;
 
-    private int nuActivities;
+    private final int nuActivities;
 
     private final JobActivityFactory jobActivityFactory = this::copyAndGetActivities;
 
