@@ -42,7 +42,7 @@ import java.util.List;
 public class RegretInsertion extends AbstractInsertionStrategy {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(RegretInsertionFast.class);
+    private static final Logger logger = LoggerFactory.getLogger(RegretInsertion.class);
 
     private final JobInsertionCostsCalculator insertionCostsCalculator;
 
