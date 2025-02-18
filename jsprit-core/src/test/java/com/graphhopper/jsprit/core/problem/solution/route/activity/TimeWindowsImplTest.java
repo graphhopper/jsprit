@@ -15,34 +15,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Created by schroeder on 18/12/15.
  */
-public class TimeWindowsImplTest {
+@DisplayName("Time Windows Impl Test")
+class TimeWindowsImplTest {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void overlappingTW_shouldThrowException(){
-        TimeWindowsImpl tws = new TimeWindowsImpl();
-        tws.add(TimeWindow.newInstance(50, 100));
-        tws.add(TimeWindow.newInstance(90,150));
+    @Test
+    @DisplayName("Overlapping TW _ should Throw Exception")
+    void overlappingTW_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            TimeWindowsImpl tws = new TimeWindowsImpl();
+            tws.add(TimeWindow.newInstance(50, 100));
+            tws.add(TimeWindow.newInstance(90, 150));
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void overlappingTW2_shouldThrowException(){
-        TimeWindowsImpl tws = new TimeWindowsImpl();
-        tws.add(TimeWindow.newInstance(50, 100));
-        tws.add(TimeWindow.newInstance(40,150));
+    @Test
+    @DisplayName("Overlapping TW 2 _ should Throw Exception")
+    void overlappingTW2_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            TimeWindowsImpl tws = new TimeWindowsImpl();
+            tws.add(TimeWindow.newInstance(50, 100));
+            tws.add(TimeWindow.newInstance(40, 150));
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void overlappingTW3_shouldThrowException(){
-        TimeWindowsImpl tws = new TimeWindowsImpl();
-        tws.add(TimeWindow.newInstance(50, 100));
-        tws.add(TimeWindow.newInstance(50, 100));
+    @Test
+    @DisplayName("Overlapping TW 3 _ should Throw Exception")
+    void overlappingTW3_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            TimeWindowsImpl tws = new TimeWindowsImpl();
+            tws.add(TimeWindow.newInstance(50, 100));
+            tws.add(TimeWindow.newInstance(50, 100));
+        });
     }
 }

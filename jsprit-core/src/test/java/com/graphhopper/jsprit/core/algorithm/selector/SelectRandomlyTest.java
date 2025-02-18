@@ -18,64 +18,57 @@
 package com.graphhopper.jsprit.core.algorithm.selector;
 
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
-public class SelectRandomlyTest {
+@DisplayName("Select Randomly Test")
+class SelectRandomlyTest {
 
     @Test
-    public void whenHaving2Solutions_selectSecond() {
+    @DisplayName("When Having 2 Solutions _ select Second")
+    void whenHaving2Solutions_selectSecond() {
         VehicleRoutingProblemSolution sol1 = mock(VehicleRoutingProblemSolution.class);
         VehicleRoutingProblemSolution sol2 = mock(VehicleRoutingProblemSolution.class);
-
         when(sol1.getCost()).thenReturn(1.0);
         when(sol2.getCost()).thenReturn(2.0);
-
         Random random = mock(Random.class);
         when(random.nextInt(2)).thenReturn(1);
-
         SelectRandomly selectRandomly = new SelectRandomly();
         selectRandomly.setRandom(random);
-
         assertThat(selectRandomly.selectSolution(Arrays.asList(sol1, sol2)), is(sol2));
     }
 
     @Test
-    public void whenHaving2Solutions_selectFirst() {
-
+    @DisplayName("When Having 2 Solutions _ select First")
+    void whenHaving2Solutions_selectFirst() {
         VehicleRoutingProblemSolution sol1 = mock(VehicleRoutingProblemSolution.class);
         VehicleRoutingProblemSolution sol2 = mock(VehicleRoutingProblemSolution.class);
-
         when(sol1.getCost()).thenReturn(1.0);
         when(sol2.getCost()).thenReturn(2.0);
-
         Random random = mock(Random.class);
         when(random.nextInt(2)).thenReturn(0);
-
         SelectRandomly selectRandomly = new SelectRandomly();
         selectRandomly.setRandom(random);
-
         assertThat(selectRandomly.selectSolution(Arrays.asList(sol1, sol2)), is(sol1));
     }
 
     @Test
-    public void whenHavingNoSolutions_returnNull() {
+    @DisplayName("When Having No Solutions _ return Null")
+    void whenHavingNoSolutions_returnNull() {
         Random random = mock(Random.class);
         when(random.nextInt(2)).thenReturn(0);
-
         SelectRandomly selectRandomly = new SelectRandomly();
         selectRandomly.setRandom(random);
-
         assertNull(selectRandomly.selectSolution(Collections.<VehicleRoutingProblemSolution>emptyList()));
     }
 }

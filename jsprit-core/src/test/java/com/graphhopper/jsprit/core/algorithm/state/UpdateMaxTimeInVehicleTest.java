@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.graphhopper.jsprit.core.algorithm.state;
 
 import com.graphhopper.jsprit.core.problem.Location;
@@ -30,9 +29,10 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,7 +40,8 @@ import java.util.Collection;
 /**
  * Created by schroeder on 15/09/16.
  */
-public class UpdateMaxTimeInVehicleTest {
+@DisplayName("Update Max Time In Vehicle Test")
+class UpdateMaxTimeInVehicleTest {
 
     private VehicleRoute route;
 
@@ -62,142 +63,113 @@ public class UpdateMaxTimeInVehicleTest {
 
     private StateId openJobsId;
 
-    @Before
-    public void doBefore() {
+    @BeforeEach
+    void doBefore() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").build();
-
-        v = VehicleImpl.Builder.newInstance("v0").setStartLocation(Location.newInstance(0, 0))
-            .setType(type).build();
-
-        vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0,0))
-            .setEndLocation(Location.newInstance(0,50)).setType(type).build();
-
-        vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance(0,10))
-            .setEndLocation(Location.newInstance(0,40)).setType(type).build();
-
+        v = VehicleImpl.Builder.newInstance("v0").setStartLocation(Location.newInstance(0, 0)).setType(type).build();
+        vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).setEndLocation(Location.newInstance(0, 50)).setType(type).build();
+        vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance(0, 10)).setEndLocation(Location.newInstance(0, 40)).setType(type).build();
         Pickup service = Pickup.Builder.newInstance("s").setLocation(Location.newInstance(0, 10)).build();
         Pickup service2 = Pickup.Builder.newInstance("s2").setLocation(Location.newInstance(0, 20)).build();
-
         Pickup service3 = Pickup.Builder.newInstance("s3").setLocation(Location.newInstance(0, 30)).build();
         Pickup service4 = Pickup.Builder.newInstance("s4").setLocation(Location.newInstance(0, 40)).build();
-
-        Delivery d1 = Delivery.Builder.newInstance("d1").setLocation(Location.newInstance(10,0)).build();
-
-        Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.newInstance(20,0))
-            .setDeliveryLocation(Location.newInstance(40,0))
-            .setMaxTimeInVehicle(20d)
-            .build();
-
-        Delivery d2 = Delivery.Builder.newInstance("d2").setLocation(Location.newInstance(30,0)).setServiceTime(10).build();
-
-
-        vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addVehicle(vehicle).addVehicle(vehicle2).addJob(service)
-            .addJob(service2).addJob(service3).addJob(service4)
-            .addJob(d1).addJob(shipment).addJob(d2)
-            .build();
-
-        route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory())
-            .addService(service).addService(service2).addService(service3).addService(service4).build();
-
-        route2 = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory())
-            .addDelivery(d1).addPickup(shipment).addDelivery(shipment).build();
-
+        Delivery d1 = Delivery.Builder.newInstance("d1").setLocation(Location.newInstance(10, 0)).build();
+        Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.newInstance(20, 0)).setDeliveryLocation(Location.newInstance(40, 0)).setMaxTimeInVehicle(20d).build();
+        Delivery d2 = Delivery.Builder.newInstance("d2").setLocation(Location.newInstance(30, 0)).setServiceTime(10).build();
+        vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addVehicle(vehicle).addVehicle(vehicle2).addJob(service).addJob(service2).addJob(service3).addJob(service4).addJob(d1).addJob(shipment).addJob(d2).build();
+        route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(service).addService(service2).addService(service3).addService(service4).build();
+        route2 = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addDelivery(d1).addPickup(shipment).addDelivery(shipment).build();
         stateManager = new StateManager(vrp);
-        stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(),vrp.getActivityCosts()));
+        stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), vrp.getActivityCosts()));
         stateManager.informInsertionStarts(Arrays.asList(route), null);
-
         minSlackId = stateManager.createStateId("min-slack-id");
         openJobsId = stateManager.createStateId("open-jobs-id");
-
-//        Map<String,Double> maxTimes = new HashMap<>();
-//        maxTimes.put("s",40d);
-//        maxTimes.put("shipment",20d);
+        // Map<String,Double> maxTimes = new HashMap<>();
+        // maxTimes.put("s",40d);
+        // maxTimes.put("shipment",20d);
         maxTimeInVehicleConstraint = new UpdateMaxTimeInVehicle(stateManager, minSlackId, vrp.getTransportCosts(), vrp.getActivityCosts(), openJobsId);
         maxTimeInVehicleConstraint.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
+
             @Override
             public Collection<Vehicle> get(VehicleRoute route) {
-                return Arrays.asList((Vehicle)vehicle,(Vehicle)vehicle2,v);
+                return Arrays.asList((Vehicle) vehicle, (Vehicle) vehicle2, v);
             }
         });
         stateManager.addStateUpdater(maxTimeInVehicleConstraint);
     }
 
-//    @Test
-//    public void testVehicle(){
-//        stateManager.informInsertionStarts(Arrays.asList(route), null);
-//        for(TourActivity act : route.getActivities()){
-//            String jobId = ((TourActivity.JobActivity)act).getJob().getId();
-//            if(jobId.equals("s4")){
-//                Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
-//                Assert.assertEquals(40, slackTime, 0.001);
-//            }
-//            if(jobId.equals("s3")){
-//                Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
-//                Assert.assertEquals(30, slackTime, 0.001);
-//            }
-//            if(jobId.equals("s2")){
-//                Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
-//                Assert.assertEquals(20, slackTime, 0.001);
-//            }
-//            if(jobId.equals("s")){
-//                Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
-//                Assert.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
-//            }
-//        }
-//        Double slackTime = stateManager.getRouteState(route,route.getVehicle(), minSlackId,Double.class);
-//        Assert.assertNotNull(slackTime);
-//        Assert.assertEquals(50,slackTime,0.001);
-//    }
-//
-//    @Test
-//    public void testVehicle2(){
-//        stateManager.informInsertionStarts(Arrays.asList(route), null);
-//        for(TourActivity act : route.getActivities()){
-//            String jobId = ((TourActivity.JobActivity)act).getJob().getId();
-//            if(jobId.equals("s4")){
-//                Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
-//                Assert.assertEquals(40, slackTime, 0.001);
-//            }
-//            if(jobId.equals("s3")){
-//                Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
-//                Assert.assertEquals(30, slackTime, 0.001);
-//            }
-//            if(jobId.equals("s2")){
-//                Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
-//                Assert.assertEquals(20, slackTime, 0.001);
-//            }
-//            if(jobId.equals("s")){
-//                Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
-//                Assert.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
-//            }
-//        }
-//        Double slackTime = stateManager.getRouteState(route,vehicle2, minSlackId,Double.class);
-//        Assert.assertNotNull(slackTime);
-//        Assert.assertEquals(40,slackTime,0.001);
-//    }
-
+    // @Test
+    // public void testVehicle(){
+    // stateManager.informInsertionStarts(Arrays.asList(route), null);
+    // for(TourActivity act : route.getActivities()){
+    // String jobId = ((TourActivity.JobActivity)act).getJob().getId();
+    // if(jobId.equals("s4")){
+    // Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
+    // Assert.assertEquals(40, slackTime, 0.001);
+    // }
+    // if(jobId.equals("s3")){
+    // Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
+    // Assert.assertEquals(30, slackTime, 0.001);
+    // }
+    // if(jobId.equals("s2")){
+    // Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
+    // Assert.assertEquals(20, slackTime, 0.001);
+    // }
+    // if(jobId.equals("s")){
+    // Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
+    // Assert.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
+    // }
+    // }
+    // Double slackTime = stateManager.getRouteState(route,route.getVehicle(), minSlackId,Double.class);
+    // Assert.assertNotNull(slackTime);
+    // Assert.assertEquals(50,slackTime,0.001);
+    // }
+    //
+    // @Test
+    // public void testVehicle2(){
+    // stateManager.informInsertionStarts(Arrays.asList(route), null);
+    // for(TourActivity act : route.getActivities()){
+    // String jobId = ((TourActivity.JobActivity)act).getJob().getId();
+    // if(jobId.equals("s4")){
+    // Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
+    // Assert.assertEquals(40, slackTime, 0.001);
+    // }
+    // if(jobId.equals("s3")){
+    // Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
+    // Assert.assertEquals(30, slackTime, 0.001);
+    // }
+    // if(jobId.equals("s2")){
+    // Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
+    // Assert.assertEquals(20, slackTime, 0.001);
+    // }
+    // if(jobId.equals("s")){
+    // Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
+    // Assert.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
+    // }
+    // }
+    // Double slackTime = stateManager.getRouteState(route,vehicle2, minSlackId,Double.class);
+    // Assert.assertNotNull(slackTime);
+    // Assert.assertEquals(40,slackTime,0.001);
+    // }
     @Test
-    public void testWithShipment(){
+    @DisplayName("Test With Shipment")
+    void testWithShipment() {
         stateManager.informInsertionStarts(Arrays.asList(route2), null);
-        for(TourActivity act : route2.getActivities()){
-            String jobId = ((TourActivity.JobActivity)act).getJob().getId();
-            if(jobId.equals("d1")){
+        for (TourActivity act : route2.getActivities()) {
+            String jobId = ((TourActivity.JobActivity) act).getJob().getId();
+            if (jobId.equals("d1")) {
                 Double slackTime = stateManager.getActivityState(act, v, minSlackId, Double.class);
-                Assert.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
+                Assertions.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
             }
-            if(jobId.equals("shipment")){
-                if(act instanceof PickupActivity){
+            if (jobId.equals("shipment")) {
+                if (act instanceof PickupActivity) {
                     Double slackTime = stateManager.getActivityState(act, v, minSlackId, Double.class);
-                    Assert.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
-                }
-                else{
+                    Assertions.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
+                } else {
                     Double slackTime = stateManager.getActivityState(act, v, minSlackId, Double.class);
-                    Assert.assertEquals(0, slackTime, 0.001);
+                    Assertions.assertEquals(0, slackTime, 0.001);
                 }
-
             }
         }
     }
-
-
 }

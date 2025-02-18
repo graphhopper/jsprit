@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.algorithm.state;
 
-public class UpdateVariableCostsTest {
+import org.junit.jupiter.api.DisplayName;
 
+@DisplayName("Update Variable Costs Test")
+class UpdateVariableCostsTest {
 }

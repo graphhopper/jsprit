@@ -17,14 +17,15 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-public class FiniteVehicleFleetManagerFactoryTest {
+@DisplayName("Finite Vehicle Fleet Manager Factory Test")
+class FiniteVehicleFleetManagerFactoryTest {
 
     @Test
-    public void whenFiniteVehicleManagerIsCreated_itShouldReturnCorrectManager() {
-//		VehicleFleetManager vfm = new FiniteFleetManagerFactory(Arrays.asList(mock(Vehicle.class))).createFleetManager();
-
+    @DisplayName("When Finite Vehicle Manager Is Created _ it Should Return Correct Manager")
+    void whenFiniteVehicleManagerIsCreated_itShouldReturnCorrectManager() {
+        // VehicleFleetManager vfm = new FiniteFleetManagerFactory(Arrays.asList(mock(Vehicle.class))).createFleetManager();
     }
-
 }

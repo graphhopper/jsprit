@@ -19,43 +19,48 @@ package com.graphhopper.jsprit.core.problem.solution;
 
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class VehicleRoutingProblemSolutionTest {
+@DisplayName("Vehicle Routing Problem Solution Test")
+class VehicleRoutingProblemSolutionTest {
 
     @Test
-    public void whenCreatingSolutionWithTwoRoutes_solutionShouldContainTheseRoutes() {
+    @DisplayName("When Creating Solution With Two Routes _ solution Should Contain These Routes")
+    void whenCreatingSolutionWithTwoRoutes_solutionShouldContainTheseRoutes() {
         VehicleRoute r1 = mock(VehicleRoute.class);
         VehicleRoute r2 = mock(VehicleRoute.class);
-
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Arrays.asList(r1, r2), 0.0);
         assertEquals(2, sol.getRoutes().size());
     }
 
     @Test
-    public void whenSettingSolutionCostsTo10_solutionCostsShouldBe10() {
+    @DisplayName("When Setting Solution Costs To 10 _ solution Costs Should Be 10")
+    void whenSettingSolutionCostsTo10_solutionCostsShouldBe10() {
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), 10.0);
         assertEquals(10.0, sol.getCost(), 0.01);
     }
 
     @Test
-    public void whenCreatingSolWithCostsOf10AndSettingCostsAfterwardsTo20_solutionCostsShouldBe20() {
+    @DisplayName("When Creating Sol With Costs Of 10 And Setting Costs Afterwards To 20 _ solution Costs Should Be 20")
+    void whenCreatingSolWithCostsOf10AndSettingCostsAfterwardsTo20_solutionCostsShouldBe20() {
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), 10.0);
         sol.setCost(20.0);
         assertEquals(20.0, sol.getCost(), 0.01);
     }
 
     @Test
-    public void sizeOfBadJobsShouldBeCorrect() {
+    @DisplayName("Size Of Bad Jobs Should Be Correct")
+    void sizeOfBadJobsShouldBeCorrect() {
         Job badJob = mock(Job.class);
         List<Job> badJobs = new ArrayList<Job>();
         badJobs.add(badJob);
@@ -64,7 +69,8 @@ public class VehicleRoutingProblemSolutionTest {
     }
 
     @Test
-    public void sizeOfBadJobsShouldBeCorrect_2() {
+    @DisplayName("Size Of Bad Jobs Should Be Correct _ 2")
+    void sizeOfBadJobsShouldBeCorrect_2() {
         Job badJob = mock(Job.class);
         List<Job> badJobs = new ArrayList<Job>();
         badJobs.add(badJob);
@@ -74,22 +80,23 @@ public class VehicleRoutingProblemSolutionTest {
     }
 
     @Test
-    public void badJobsShouldBeCorrect() {
+    @DisplayName("Bad Jobs Should Be Correct")
+    void badJobsShouldBeCorrect() {
         Job badJob = mock(Job.class);
         List<Job> badJobs = new ArrayList<Job>();
         badJobs.add(badJob);
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), badJobs, 10.0);
-        Assert.assertEquals(badJob, sol.getUnassignedJobs().iterator().next());
+        Assertions.assertEquals(badJob, sol.getUnassignedJobs().iterator().next());
     }
 
     @Test
-    public void badJobsShouldBeCorrect_2() {
+    @DisplayName("Bad Jobs Should Be Correct _ 2")
+    void badJobsShouldBeCorrect_2() {
         Job badJob = mock(Job.class);
         List<Job> badJobs = new ArrayList<Job>();
         badJobs.add(badJob);
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), 10.0);
         sol.getUnassignedJobs().addAll(badJobs);
-        Assert.assertEquals(badJob, sol.getUnassignedJobs().iterator().next());
+        Assertions.assertEquals(badJob, sol.getUnassignedJobs().iterator().next());
     }
-
 }

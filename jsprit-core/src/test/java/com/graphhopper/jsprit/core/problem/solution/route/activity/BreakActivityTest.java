@@ -20,90 +20,92 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Service;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-
-public class BreakActivityTest {
+@DisplayName("Break Activity Test")
+class BreakActivityTest {
 
     private Break service;
 
     private BreakActivity serviceActivity;
 
-    @Before
-    public void doBefore() {
-        service = Break.Builder.newInstance("service")
-            .setTimeWindow(TimeWindow.newInstance(1., 2.)).setServiceTime(3).build();
+    @BeforeEach
+    void doBefore() {
+        service = Break.Builder.newInstance("service").setTimeWindow(TimeWindow.newInstance(1., 2.)).setServiceTime(3).build();
         serviceActivity = BreakActivity.newInstance(service);
         serviceActivity.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
         serviceActivity.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());
     }
 
     @Test
-    public void whenCallingCapacity_itShouldReturnCorrectCapacity() {
+    @DisplayName("When Calling Capacity _ it Should Return Correct Capacity")
+    void whenCallingCapacity_itShouldReturnCorrectCapacity() {
         assertEquals(0, serviceActivity.getSize().get(0));
     }
 
     @Test
-    public void hasVariableLocationShouldBeTrue() {
+    @DisplayName("Has Variable Location Should Be True")
+    void hasVariableLocationShouldBeTrue() {
         Break aBreak = (Break) serviceActivity.getJob();
         assertTrue(aBreak.hasVariableLocation());
     }
 
-
     @Test
-    public void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly() {
+    @DisplayName("When Start Is Ini With Earliest Start _ it Should Be Set Correctly")
+    void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly() {
         assertEquals(1., serviceActivity.getTheoreticalEarliestOperationStartTime(), 0.01);
     }
 
     @Test
-    public void whenStartIsIniWithLatestStart_itShouldBeSetCorrectly() {
+    @DisplayName("When Start Is Ini With Latest Start _ it Should Be Set Correctly")
+    void whenStartIsIniWithLatestStart_itShouldBeSetCorrectly() {
         assertEquals(2., serviceActivity.getTheoreticalLatestOperationStartTime(), 0.01);
     }
 
     @Test
-    public void whenSettingArrTime_itShouldBeSetCorrectly() {
+    @DisplayName("When Setting Arr Time _ it Should Be Set Correctly")
+    void whenSettingArrTime_itShouldBeSetCorrectly() {
         serviceActivity.setArrTime(4.0);
         assertEquals(4., serviceActivity.getArrTime(), 0.01);
     }
 
     @Test
-    public void whenSettingEndTime_itShouldBeSetCorrectly() {
+    @DisplayName("When Setting End Time _ it Should Be Set Correctly")
+    void whenSettingEndTime_itShouldBeSetCorrectly() {
         serviceActivity.setEndTime(5.0);
         assertEquals(5., serviceActivity.getEndTime(), 0.01);
     }
 
-
     @Test
-    public void whenCopyingStart_itShouldBeDoneCorrectly() {
+    @DisplayName("When Copying Start _ it Should Be Done Correctly")
+    void whenCopyingStart_itShouldBeDoneCorrectly() {
         BreakActivity copy = (BreakActivity) serviceActivity.duplicate();
         assertEquals(1., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
         assertEquals(2., copy.getTheoreticalLatestOperationStartTime(), 0.01);
         assertTrue(copy != serviceActivity);
     }
 
-
     @Test
-    public void whenTwoDeliveriesHaveTheSameUnderlyingJob_theyAreEqual() {
+    @DisplayName("When Two Deliveries Have The Same Underlying Job _ they Are Equal")
+    void whenTwoDeliveriesHaveTheSameUnderlyingJob_theyAreEqual() {
         Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
         Service s2 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
-
         ServiceActivity d1 = ServiceActivity.newInstance(s1);
         ServiceActivity d2 = ServiceActivity.newInstance(s2);
-
         assertTrue(d1.equals(d2));
     }
 
     @Test
-    public void whenTwoDeliveriesHaveTheDifferentUnderlyingJob_theyAreNotEqual() {
+    @DisplayName("When Two Deliveries Have The Different Underlying Job _ they Are Not Equal")
+    void whenTwoDeliveriesHaveTheDifferentUnderlyingJob_theyAreNotEqual() {
         Service s1 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
         Service s2 = Service.Builder.newInstance("s1").setLocation(Location.newInstance("loc")).build();
-
         ServiceActivity d1 = ServiceActivity.newInstance(s1);
         ServiceActivity d2 = ServiceActivity.newInstance(s2);
-
         assertFalse(d1.equals(d2));
     }
 }

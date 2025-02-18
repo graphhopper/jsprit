@@ -19,16 +19,19 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class SoftActivityConstraintManagerTest {
+@DisplayName("Soft Activity Constraint Manager Test")
+class SoftActivityConstraintManagerTest {
 
     @Test
-    public void whenAddingSoftConstraint_managerShouldHaveIt() {
+    @DisplayName("When Adding Soft Constraint _ manager Should Have It")
+    void whenAddingSoftConstraint_managerShouldHaveIt() {
         SoftActivityConstraint c = mock(SoftActivityConstraint.class);
         SoftActivityConstraintManager man = new SoftActivityConstraintManager();
         assertEquals(0, man.getConstraints().size());
@@ -37,7 +40,8 @@ public class SoftActivityConstraintManagerTest {
     }
 
     @Test
-    public void whenAddingTwoSoftConstraints_managerShouldHaveIt() {
+    @DisplayName("When Adding Two Soft Constraints _ manager Should Have It")
+    void whenAddingTwoSoftConstraints_managerShouldHaveIt() {
         SoftActivityConstraint c1 = mock(SoftActivityConstraint.class);
         SoftActivityConstraint c2 = mock(SoftActivityConstraint.class);
         SoftActivityConstraintManager man = new SoftActivityConstraintManager();
@@ -48,7 +52,8 @@ public class SoftActivityConstraintManagerTest {
     }
 
     @Test
-    public void whenAddingTwoSoftConstrainta_managerShouldSumCostsCorrectly() {
+    @DisplayName("When Adding Two Soft Constrainta _ manager Should Sum Costs Correctly")
+    void whenAddingTwoSoftConstrainta_managerShouldSumCostsCorrectly() {
         SoftActivityConstraint c1 = mock(SoftActivityConstraint.class);
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         TourActivity act_i = mock(TourActivity.class);
@@ -57,9 +62,7 @@ public class SoftActivityConstraintManagerTest {
         when(c1.getCosts(iContext, act_i, act_k, act_j, 0.0)).thenReturn(1.0);
         SoftActivityConstraint c2 = mock(SoftActivityConstraint.class);
         when(c2.getCosts(iContext, act_i, act_k, act_j, 0.0)).thenReturn(2.0);
-
         SoftActivityConstraintManager man = new SoftActivityConstraintManager();
-
         man.addConstraint(c1);
         man.addConstraint(c2);
         assertEquals(3.0, man.getCosts(iContext, act_i, act_k, act_j, 0.0), 0.01);

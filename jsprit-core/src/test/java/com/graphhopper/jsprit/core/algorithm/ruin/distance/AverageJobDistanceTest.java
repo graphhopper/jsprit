@@ -23,42 +23,38 @@ import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.CrowFlyCosts;
 import com.graphhopper.jsprit.core.util.Locations;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
-public class AverageJobDistanceTest {
-
+@DisplayName("Average Job Distance Test")
+class AverageJobDistanceTest {
 
     private CrowFlyCosts routingCosts;
 
-    @Before
-    public void doBefore() {
+    @BeforeEach
+    void doBefore() {
         Locations locations = new Locations() {
 
             @Override
             public Coordinate getCoord(String id) {
-                //assume: locationId="x,y"
+                // assume: locationId="x,y"
                 String[] splitted = id.split(",");
-                return Coordinate.newInstance(Double.parseDouble(splitted[0]),
-                    Double.parseDouble(splitted[1]));
+                return Coordinate.newInstance(Double.parseDouble(splitted[0]), Double.parseDouble(splitted[1]));
             }
-
         };
         routingCosts = new CrowFlyCosts(locations);
-
     }
 
     @Test
-    public void distanceOfTwoEqualShipmentsShouldBeSmallerThanAnyOtherDistance() {
+    @DisplayName("Distance Of Two Equal Shipments Should Be Smaller Than Any Other Distance")
+    void distanceOfTwoEqualShipmentsShouldBeSmallerThanAnyOtherDistance() {
         Shipment s1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
         Shipment s2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
-
         double dist = new AvgServiceAndShipmentDistance(routingCosts).getDistance(s1, s2);
-
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 Shipment other1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance(i + "," + j)).build();
@@ -69,12 +65,11 @@ public class AverageJobDistanceTest {
         }
     }
 
-
     @Test
-    public void whenServicesHaveSameLocation_distanceShouldBeZero() {
+    @DisplayName("When Services Have Same Location _ distance Should Be Zero")
+    void whenServicesHaveSameLocation_distanceShouldBeZero() {
         Service s1 = Service.Builder.newInstance("s1").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
         Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
-
         double dist = new AvgServiceAndShipmentDistance(routingCosts).getDistance(s1, s2);
         assertEquals(0.0, dist, 0.01);
     }

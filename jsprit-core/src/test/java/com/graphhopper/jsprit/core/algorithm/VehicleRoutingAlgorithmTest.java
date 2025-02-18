@@ -21,33 +21,36 @@ import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.algorithm.termination.PrematureAlgorithmTermination;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class VehicleRoutingAlgorithmTest {
+@DisplayName("Vehicle Routing Algorithm Test")
+class VehicleRoutingAlgorithmTest {
 
     @Test
-    public void whenSettingIterations_itIsSetCorrectly() {
-        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class),
-            mock(SearchStrategyManager.class));
+    @DisplayName("When Setting Iterations _ it Is Set Correctly")
+    void whenSettingIterations_itIsSetCorrectly() {
+        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class), mock(SearchStrategyManager.class));
         algorithm.setMaxIterations(50);
         assertEquals(50, algorithm.getMaxIterations());
     }
 
     @Test
-    public void whenSettingIterationsWithMaxIterations_itIsSetCorrectly() {
-        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class),
-            mock(SearchStrategyManager.class));
+    @DisplayName("When Setting Iterations With Max Iterations _ it Is Set Correctly")
+    void whenSettingIterationsWithMaxIterations_itIsSetCorrectly() {
+        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class), mock(SearchStrategyManager.class));
         algorithm.setMaxIterations(50);
         assertEquals(50, algorithm.getMaxIterations());
     }
 
+    @DisplayName("Count Iterations")
     private static class CountIterations implements IterationStartsListener {
 
         private int countIterations = 0;
@@ -60,14 +63,13 @@ public class VehicleRoutingAlgorithmTest {
         public int getCountIterations() {
             return countIterations;
         }
-
     }
 
     @Test
-    public void whenSettingIterationsWithMaxIterations_iterAreExecutedCorrectly() {
+    @DisplayName("When Setting Iterations With Max Iterations _ iter Are Executed Correctly")
+    void whenSettingIterationsWithMaxIterations_iterAreExecutedCorrectly() {
         SearchStrategyManager stratManager = mock(SearchStrategyManager.class);
-        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class),
-            stratManager);
+        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class), stratManager);
         when(stratManager.getRandomStrategy()).thenReturn(mock(SearchStrategy.class));
         when(stratManager.getWeights()).thenReturn(Arrays.asList(1.0));
         algorithm.setMaxIterations(1000);
@@ -78,10 +80,10 @@ public class VehicleRoutingAlgorithmTest {
     }
 
     @Test
-    public void whenSettingIterations_iterAreExecutedCorrectly() {
+    @DisplayName("When Setting Iterations _ iter Are Executed Correctly")
+    void whenSettingIterations_iterAreExecutedCorrectly() {
         SearchStrategyManager stratManager = mock(SearchStrategyManager.class);
-        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class),
-            stratManager);
+        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class), stratManager);
         when(stratManager.getRandomStrategy()).thenReturn(mock(SearchStrategy.class));
         when(stratManager.getWeights()).thenReturn(Arrays.asList(1.0));
         algorithm.setMaxIterations(1000);
@@ -92,10 +94,10 @@ public class VehicleRoutingAlgorithmTest {
     }
 
     @Test
-    public void whenSettingPrematureTermination_itIsExecutedCorrectly() {
+    @DisplayName("When Setting Premature Termination _ it Is Executed Correctly")
+    void whenSettingPrematureTermination_itIsExecutedCorrectly() {
         SearchStrategyManager stratManager = mock(SearchStrategyManager.class);
-        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class),
-            stratManager);
+        VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class), stratManager);
         when(stratManager.getRandomStrategy()).thenReturn(mock(SearchStrategy.class));
         when(stratManager.getWeights()).thenReturn(Arrays.asList(1.0));
         algorithm.setMaxIterations(1000);
@@ -105,7 +107,8 @@ public class VehicleRoutingAlgorithmTest {
 
             @Override
             public boolean isPrematureBreak(SearchStrategy.DiscoveredSolution discoveredSolution) {
-                if (nuOfIterations == 50) return true;
+                if (nuOfIterations == 50)
+                    return true;
                 nuOfIterations++;
                 return false;
             }
@@ -118,7 +121,8 @@ public class VehicleRoutingAlgorithmTest {
     }
 
     @Test
-    public void whenAddingPrematureTermination_itIsExecutedCorrectly() {
+    @DisplayName("When Adding Premature Termination _ it Is Executed Correctly")
+    void whenAddingPrematureTermination_itIsExecutedCorrectly() {
         SearchStrategyManager stratManager = mock(SearchStrategyManager.class);
         VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class), stratManager);
         when(stratManager.getRandomStrategy()).thenReturn(mock(SearchStrategy.class));
@@ -130,11 +134,11 @@ public class VehicleRoutingAlgorithmTest {
 
             @Override
             public boolean isPrematureBreak(SearchStrategy.DiscoveredSolution discoveredSolution) {
-                if (nuOfIterations == 50) return true;
+                if (nuOfIterations == 50)
+                    return true;
                 nuOfIterations++;
                 return false;
             }
-
         };
         CountIterations counter = new CountIterations();
         algorithm.addListener(counter);
@@ -144,7 +148,8 @@ public class VehicleRoutingAlgorithmTest {
     }
 
     @Test
-    public void whenAddingPrematureTwoTerminationCriteria_itIsExecutedCorrectly() {
+    @DisplayName("When Adding Premature Two Termination Criteria _ it Is Executed Correctly")
+    void whenAddingPrematureTwoTerminationCriteria_itIsExecutedCorrectly() {
         SearchStrategyManager stratManager = mock(SearchStrategyManager.class);
         VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class), stratManager);
         when(stratManager.getRandomStrategy()).thenReturn(mock(SearchStrategy.class));
@@ -156,11 +161,11 @@ public class VehicleRoutingAlgorithmTest {
 
             @Override
             public boolean isPrematureBreak(SearchStrategy.DiscoveredSolution discoveredSolution) {
-                if (nuOfIterations == 50) return true;
+                if (nuOfIterations == 50)
+                    return true;
                 nuOfIterations++;
                 return false;
             }
-
         };
         PrematureAlgorithmTermination termination2 = new PrematureAlgorithmTermination() {
 
@@ -168,11 +173,11 @@ public class VehicleRoutingAlgorithmTest {
 
             @Override
             public boolean isPrematureBreak(SearchStrategy.DiscoveredSolution discoveredSolution) {
-                if (nuOfIterations == 25) return true;
+                if (nuOfIterations == 25)
+                    return true;
                 nuOfIterations++;
                 return false;
             }
-
         };
         CountIterations counter = new CountIterations();
         algorithm.addListener(counter);
@@ -181,5 +186,4 @@ public class VehicleRoutingAlgorithmTest {
         algorithm.searchSolutions();
         assertEquals(25, counter.getCountIterations());
     }
-
 }

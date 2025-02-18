@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
@@ -25,43 +24,35 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-import com.graphhopper.jsprit.core.util.Solutions;
-import junit.framework.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Collection;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ExternalInitialSolutionIsInValidTest {
+@DisplayName("External Initial Solution Is In Valid Test")
+class ExternalInitialSolutionIsInValidTest {
 
     @Test
-    public void itShouldSolveProblemWithIniSolutionExternallyCreated() {
-
+    @DisplayName("It Should Solve Problem With Ini Solution Externally Created")
+    void itShouldSolveProblemWithIniSolutionExternallyCreated() {
         Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(10, 0)).build();
         Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(0, 10)).build();
-
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance(0, 0)).build();
-
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(vehicle).build();
-
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
-
         /*
         create ini sol
          */
         VehicleRoute route1 = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(s1).build();
-
         vra.addInitialSolution(new VehicleRoutingProblemSolution(Arrays.asList(route1), 20.));
-
         try {
             vra.searchSolutions();
-            Assert.assertTrue(true);
+            assertTrue(true);
+        } catch (Exception e) {
+            assertFalse(true);
         }
-        catch (Exception e){
-            Assert.assertFalse(true);
-        }
-
     }
-
 }

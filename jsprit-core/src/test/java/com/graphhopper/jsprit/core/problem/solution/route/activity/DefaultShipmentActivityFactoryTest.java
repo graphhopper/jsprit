@@ -19,28 +19,30 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DefaultShipmentActivityFactoryTest {
+@DisplayName("Default Shipment Activity Factory Test")
+class DefaultShipmentActivityFactoryTest {
 
     @Test
-    public void whenCreatingPickupActivityWithShipment_itShouldReturnPickupShipment() {
+    @DisplayName("When Creating Pickup Activity With Shipment _ it Should Return Pickup Shipment")
+    void whenCreatingPickupActivityWithShipment_itShouldReturnPickupShipment() {
         DefaultShipmentActivityFactory factory = new DefaultShipmentActivityFactory();
-        Shipment shipment = Shipment.Builder.newInstance("s")
-            .setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
+        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
         TourActivity act = factory.createPickup(shipment);
         assertNotNull(act);
         assertTrue(act instanceof PickupShipment);
     }
 
     @Test
-    public void whenCreatingDeliverActivityWithShipment_itShouldReturnDeliverShipment() {
+    @DisplayName("When Creating Deliver Activity With Shipment _ it Should Return Deliver Shipment")
+    void whenCreatingDeliverActivityWithShipment_itShouldReturnDeliverShipment() {
         DefaultShipmentActivityFactory factory = new DefaultShipmentActivityFactory();
-        Shipment shipment = Shipment.Builder.newInstance("s")
-            .setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
+        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
         TourActivity act = factory.createDelivery(shipment);
         assertNotNull(act);
         assertTrue(act instanceof DeliverShipment);

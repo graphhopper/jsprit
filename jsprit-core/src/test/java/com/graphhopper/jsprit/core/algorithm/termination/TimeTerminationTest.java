@@ -15,42 +15,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.graphhopper.jsprit.core.algorithm.termination;
 
-import junit.framework.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by schroeder on 16.12.14.
  */
-public class TimeTerminationTest {
+@DisplayName("Time Termination Test")
+class TimeTerminationTest {
 
     @Test
-    public void whenTimeThreshold2000msAndCurrentTime0_itShouldNotBreak() {
+    @DisplayName("When Time Threshold 2000 ms And Current Time 0 _ it Should Not Break")
+    void whenTimeThreshold2000msAndCurrentTime0_itShouldNotBreak() {
         long threshold = 2000;
         TimeTermination tt = new TimeTermination(threshold);
         tt.setTimeGetter(new TimeTermination.TimeGetter() {
+
             @Override
             public long getCurrentTime() {
                 return 0;
             }
         });
         tt.start(0);
-        Assert.assertFalse(tt.isPrematureBreak(null));
+        assertFalse(tt.isPrematureBreak(null));
     }
 
     @Test
-    public void whenTimeThreshold2000msAndCurrentTime2000ms_itShouldBreak() {
+    @DisplayName("When Time Threshold 2000 ms And Current Time 2000 ms _ it Should Break")
+    void whenTimeThreshold2000msAndCurrentTime2000ms_itShouldBreak() {
         long threshold = 2000;
         TimeTermination tt = new TimeTermination(threshold);
         tt.setTimeGetter(new TimeTermination.TimeGetter() {
+
             @Override
             public long getCurrentTime() {
                 return 2001;
             }
         });
         tt.start(0);
-        Assert.assertTrue(tt.isPrematureBreak(null));
+        assertTrue(tt.isPrematureBreak(null));
     }
 }

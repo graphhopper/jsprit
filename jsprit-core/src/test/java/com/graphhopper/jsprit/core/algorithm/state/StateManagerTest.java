@@ -27,19 +27,21 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class StateManagerTest {
+@DisplayName("State Manager Test")
+class StateManagerTest {
 
+    @DisplayName("Act Fac")
     static class ActFac implements JobActivityFactory {
 
         @Override
@@ -58,14 +60,15 @@ public class StateManagerTest {
 
     private VehicleRoutingProblem vrpMock;
 
-    @Before
-    public void doBefore(){
+    @BeforeEach
+    void doBefore() {
         vrpMock = mock(VehicleRoutingProblem.class);
         when(vrpMock.getFleetSize()).thenReturn(VehicleRoutingProblem.FleetSize.INFINITE);
     }
 
     @Test
-    public void whenInternalRouteStateIsSet_itMustBeSetCorrectly() {
+    @DisplayName("When Internal Route State Is Set _ it Must Be Set Correctly")
+    void whenInternalRouteStateIsSet_itMustBeSetCorrectly() {
         VehicleRoute route = getRoute(mock(Vehicle.class));
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = InternalStates.COSTS;
@@ -74,7 +77,8 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenInternalRouteStateIsNotSet_itShouldReturnNull() {
+    @DisplayName("When Internal Route State Is Not Set _ it Should Return Null")
+    void whenInternalRouteStateIsNotSet_itShouldReturnNull() {
         VehicleRoute route = getRoute(mock(Vehicle.class));
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = InternalStates.COSTS;
@@ -83,11 +87,11 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenVehicleDependentInternalRouteStateIsSet_itMustBeSetCorrectly() {
+    @DisplayName("When Vehicle Dependent Internal Route State Is Set _ it Must Be Set Correctly")
+    void whenVehicleDependentInternalRouteStateIsSet_itMustBeSetCorrectly() {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
-        //noinspection UnusedDeclaration
+        // noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
-
         VehicleRoute route = getRoute(vehicle);
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = InternalStates.COSTS;
@@ -96,11 +100,11 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenVehicleDependentInternalRouteStateIsNotSet_itMustBeSetCorrectly() {
+    @DisplayName("When Vehicle Dependent Internal Route State Is Not Set _ it Must Be Set Correctly")
+    void whenVehicleDependentInternalRouteStateIsNotSet_itMustBeSetCorrectly() {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
-        //noinspection UnusedDeclaration
+        // noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
-
         VehicleRoute route = getRoute(vehicle);
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = InternalStates.COSTS;
@@ -109,7 +113,8 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenRouteStateIsSetWithGenericMethodAndBoolean_itMustBeSetCorrectly() {
+    @DisplayName("When Route State Is Set With Generic Method And Boolean _ it Must Be Set Correctly")
+    void whenRouteStateIsSetWithGenericMethodAndBoolean_itMustBeSetCorrectly() {
         VehicleRoute route = getRoute(mock(Vehicle.class));
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = stateManager.createStateId("myState");
@@ -118,7 +123,8 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenRouteStateIsSetWithGenericMethodAndInteger_itMustBeSetCorrectly() {
+    @DisplayName("When Route State Is Set With Generic Method And Integer _ it Must Be Set Correctly")
+    void whenRouteStateIsSetWithGenericMethodAndInteger_itMustBeSetCorrectly() {
         VehicleRoute route = getRoute(mock(Vehicle.class));
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = stateManager.createStateId("myState");
@@ -129,7 +135,8 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenRouteStateIsSetWithGenericMethodAndCapacity_itMustBeSetCorrectly() {
+    @DisplayName("When Route State Is Set With Generic Method And Capacity _ it Must Be Set Correctly")
+    void whenRouteStateIsSetWithGenericMethodAndCapacity_itMustBeSetCorrectly() {
         VehicleRoute route = getRoute(mock(Vehicle.class));
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = stateManager.createStateId("myState");
@@ -139,9 +146,9 @@ public class StateManagerTest {
         assertEquals(500, getCap.get(0));
     }
 
-
     @Test
-    public void whenActivityStateIsSetWithGenericMethodAndBoolean_itMustBeSetCorrectly() {
+    @DisplayName("When Activity State Is Set With Generic Method And Boolean _ it Must Be Set Correctly")
+    void whenActivityStateIsSetWithGenericMethodAndBoolean_itMustBeSetCorrectly() {
         TourActivity activity = mock(TourActivity.class);
         when(activity.getIndex()).thenReturn(1);
         StateManager stateManager = new StateManager(vrpMock);
@@ -151,7 +158,8 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenActivityStateIsSetWithGenericMethodAndInteger_itMustBeSetCorrectly() {
+    @DisplayName("When Activity State Is Set With Generic Method And Integer _ it Must Be Set Correctly")
+    void whenActivityStateIsSetWithGenericMethodAndInteger_itMustBeSetCorrectly() {
         TourActivity activity = mock(TourActivity.class);
         when(activity.getIndex()).thenReturn(1);
         StateManager stateManager = new StateManager(vrpMock);
@@ -163,7 +171,8 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenActivityStateIsSetWithGenericMethodAndCapacity_itMustBeSetCorrectly() {
+    @DisplayName("When Activity State Is Set With Generic Method And Capacity _ it Must Be Set Correctly")
+    void whenActivityStateIsSetWithGenericMethodAndCapacity_itMustBeSetCorrectly() {
         TourActivity activity = mock(TourActivity.class);
         when(activity.getIndex()).thenReturn(1);
         StateManager stateManager = new StateManager(vrpMock);
@@ -175,7 +184,8 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenProblemStateIsSet_itMustBeSetCorrectly() {
+    @DisplayName("When Problem State Is Set _ it Must Be Set Correctly")
+    void whenProblemStateIsSet_itMustBeSetCorrectly() {
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = stateManager.createStateId("problemState");
         stateManager.putProblemState(id, Boolean.class, true);
@@ -183,18 +193,22 @@ public class StateManagerTest {
         assertTrue(problemState);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void whenProblemStateIsSetAndStateManagerClearedAfterwards_itThrowsException() {
-        StateManager stateManager = new StateManager(vrpMock);
-        StateId id = stateManager.createStateId("problemState");
-        stateManager.putProblemState(id, Boolean.class, true);
-        stateManager.clear();
-        @SuppressWarnings("unused")
-        boolean problemState = stateManager.getProblemState(id, Boolean.class);
+    @Test
+    @DisplayName("When Problem State Is Set And State Manager Cleared Afterwards _ it Throws Exception")
+    void whenProblemStateIsSetAndStateManagerClearedAfterwards_itThrowsException() {
+        assertThrows(NullPointerException.class, () -> {
+            StateManager stateManager = new StateManager(vrpMock);
+            StateId id = stateManager.createStateId("problemState");
+            stateManager.putProblemState(id, Boolean.class, true);
+            stateManager.clear();
+            @SuppressWarnings("unused")
+            boolean problemState = stateManager.getProblemState(id, Boolean.class);
+        });
     }
 
     @Test
-    public void whenProblemStateIsSetAndStateManagerClearedAfterwards_itReturnsNull() {
+    @DisplayName("When Problem State Is Set And State Manager Cleared Afterwards _ it Returns Null")
+    void whenProblemStateIsSetAndStateManagerClearedAfterwards_itReturnsNull() {
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = stateManager.createStateId("problemState");
         stateManager.putProblemState(id, Boolean.class, true);
@@ -204,34 +218,38 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenCreatingNewState_itShouldHaveAnIndex() {
+    @DisplayName("When Creating New State _ it Should Have An Index")
+    void whenCreatingNewState_itShouldHaveAnIndex() {
         StateManager stateManager = new StateManager(vrpMock);
         StateId stateId = stateManager.createStateId("foo-state");
-        Assert.assertEquals(21, stateId.getIndex());
+        assertEquals(21, stateId.getIndex());
     }
 
     @Test
-    public void whenCreatingNewStates_theyShouldHaveAnIndex() {
+    @DisplayName("When Creating New States _ they Should Have An Index")
+    void whenCreatingNewStates_theyShouldHaveAnIndex() {
         StateManager stateManager = new StateManager(vrpMock);
         StateId fooState = stateManager.createStateId("foo-state");
         StateId foofooState = stateManager.createStateId("foo-foo-state");
-        Assert.assertEquals(21, fooState.getIndex());
-        Assert.assertEquals(22, foofooState.getIndex());
+        assertEquals(21, fooState.getIndex());
+        assertEquals(22, foofooState.getIndex());
     }
 
     @Test
-    public void whenCreatingTwoStatesWithTheSameName_theyShouldHaveTheSameIndex() {
+    @DisplayName("When Creating Two States With The Same Name _ they Should Have The Same Index")
+    void whenCreatingTwoStatesWithTheSameName_theyShouldHaveTheSameIndex() {
         StateManager stateManager = new StateManager(vrpMock);
         StateId fooState = stateManager.createStateId("foo-state");
         StateId foofooState = stateManager.createStateId("foo-state");
-        Assert.assertEquals(21, fooState.getIndex());
-        Assert.assertEquals(21, foofooState.getIndex());
+        assertEquals(21, fooState.getIndex());
+        assertEquals(21, foofooState.getIndex());
     }
 
     @Test
-    public void whenCreatingAVehicleDependentRouteState_itShouldBeMemorized() {
+    @DisplayName("When Creating A Vehicle Dependent Route State _ it Should Be Memorized")
+    void whenCreatingAVehicleDependentRouteState_itShouldBeMemorized() {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
-        //noinspection UnusedDeclaration
+        // noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
         VehicleRoute route = getRoute(vehicle);
         StateManager stateManager = new StateManager(vrpMock);
@@ -243,9 +261,10 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenCreatingAVehicleDependentActivityState_itShouldBeMemorized() {
+    @DisplayName("When Creating A Vehicle Dependent Activity State _ it Should Be Memorized")
+    void whenCreatingAVehicleDependentActivityState_itShouldBeMemorized() {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
-        //noinspection UnusedDeclaration
+        // noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = stateManager.createStateId("myState");
@@ -258,9 +277,10 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenMemorizingVehicleInfo_itShouldBeMemorized() {
+    @DisplayName("When Memorizing Vehicle Info _ it Should Be Memorized")
+    void whenMemorizingVehicleInfo_itShouldBeMemorized() {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
-        //noinspection UnusedDeclaration
+        // noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
         VehicleRoute route = getRoute(vehicle);
         StateManager stateManager = new StateManager(vrpMock);
@@ -271,16 +291,15 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenMemorizingTwoVehicleInfoForRoute_itShouldBeMemorized() {
+    @DisplayName("When Memorizing Two Vehicle Info For Route _ it Should Be Memorized")
+    void whenMemorizingTwoVehicleInfoForRoute_itShouldBeMemorized() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerDistance(4.).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("loc")).setType(type).build();
         VehicleRoute route = getRoute(vehicle);
-
-        //getting the indices created in vrpBuilder
+        // getting the indices created in vrpBuilder
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         VehicleRoutingProblem vrp = vrpBuilder.addVehicle(vehicle).addVehicle(vehicle2).build();
-
         StateManager stateManager = new StateManager(vrp);
         StateId id = stateManager.createStateId("vehicleParam");
         double distanceParam = vehicle.getType().getVehicleCostParams().perDistanceUnit;
@@ -291,15 +310,14 @@ public class StateManagerTest {
     }
 
     @Test
-    public void whenMemorizingTwoVehicleInfoForAct_itShouldBeMemorized() {
+    @DisplayName("When Memorizing Two Vehicle Info For Act _ it Should Be Memorized")
+    void whenMemorizingTwoVehicleInfoForAct_itShouldBeMemorized() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerDistance(4.).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("loc")).setType(type).build();
-
-        //getting the indices created in vrpBuilder
+        // getting the indices created in vrpBuilder
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         VehicleRoutingProblem vrp = vrpBuilder.addVehicle(vehicle).addVehicle(vehicle2).build();
-
         TourActivity act = mock(TourActivity.class);
         when(act.getIndex()).thenReturn(1);
         StateManager stateManager = new StateManager(vrp);
@@ -307,21 +325,19 @@ public class StateManagerTest {
         double distanceParam = vehicle.getType().getVehicleCostParams().perDistanceUnit;
         stateManager.putActivityState(act, vehicle, id, distanceParam);
         stateManager.putActivityState(act, vehicle2, id, vehicle2.getType().getVehicleCostParams().perDistanceUnit);
-
         assertEquals(1., stateManager.getActivityState(act, vehicle, id, Double.class), 0.01);
         assertEquals(4., stateManager.getActivityState(act, vehicle2, id, Double.class), 0.01);
     }
 
     @Test
-    public void whenClearing_arrElementsShouldBeNull() {
+    @DisplayName("When Clearing _ arr Elements Should Be Null")
+    void whenClearing_arrElementsShouldBeNull() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerDistance(4.).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("loc")).setType(type).build();
-
-        //getting the indices created in vrpBuilder
+        // getting the indices created in vrpBuilder
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         VehicleRoutingProblem vrp = vrpBuilder.addVehicle(vehicle).addVehicle(vehicle2).build();
-
         TourActivity act = mock(TourActivity.class);
         when(act.getIndex()).thenReturn(1);
         StateManager stateManager = new StateManager(vrp);
@@ -329,31 +345,27 @@ public class StateManagerTest {
         double distanceParam = vehicle.getType().getVehicleCostParams().perDistanceUnit;
         stateManager.putActivityState(act, vehicle, id, distanceParam);
         stateManager.putActivityState(act, vehicle2, id, vehicle2.getType().getVehicleCostParams().perDistanceUnit);
-
         stateManager.clear();
-
         assertNull(stateManager.getActivityState(act, vehicle, id, Double.class));
         assertNull(stateManager.getActivityState(act, vehicle2, id, Double.class));
     }
 
     @Test
-    public void arrayIniShouldWork(){
+    @DisplayName("Array Ini Should Work")
+    void arrayIniShouldWork() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerDistance(4.).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("loc")).setType(type).build();
-
-        //getting the indices created in vrpBuilder
+        // getting the indices created in vrpBuilder
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         VehicleRoutingProblem vrp = vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addVehicle(vehicle).addVehicle(vehicle2).build();
-
         VehicleRoute route = mock(VehicleRoute.class);
         when(route.getVehicle()).thenReturn(vehicle2);
-
         StateManager stateManager = new StateManager(vrp);
         StateId myState = null;
-        for(int i=0;i<10;i++){
-            myState = stateManager.createStateId("myState"+i);
+        for (int i = 0; i < 10; i++) {
+            myState = stateManager.createStateId("myState" + i);
         }
-        stateManager.putTypedInternalRouteState(route,myState,1.);
+        stateManager.putTypedInternalRouteState(route, myState, 1.);
     }
 }

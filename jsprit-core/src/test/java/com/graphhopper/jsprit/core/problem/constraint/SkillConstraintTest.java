@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
@@ -27,16 +26,17 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
-public class SkillConstraintTest {
+@DisplayName("Skill Constraint Test")
+class SkillConstraintTest {
 
     private HardRouteConstraint skillConstraint;
 
@@ -48,58 +48,55 @@ public class SkillConstraintTest {
 
     private VehicleRoutingProblem vrp;
 
-    @Before
-    public void doBefore() {
+    @BeforeEach
+    void doBefore() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").build();
         vehicle = VehicleImpl.Builder.newInstance("v").addSkill("skill1").addSkill("skill2").addSkill("skill3").addSkill("skill4").setStartLocation(Location.newInstance("start")).setType(type).build();
         vehicle2 = VehicleImpl.Builder.newInstance("v2").addSkill("skill4").addSkill("skill5").setStartLocation(Location.newInstance("start")).setType(type).build();
-
         Service service = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").build();
         Service service2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").addRequiredSkill("skill2").addRequiredSkill("skill3").build();
-
         Service service3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance("loc")).addRequiredSkill("skill4").addRequiredSkill("skill5").build();
         Service service4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("loc")).addRequiredSkill("skill1").build();
-
-        vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addVehicle(vehicle2).addJob(service)
-            .addJob(service2).addJob(service3).addJob(service4).build();
-
+        vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addVehicle(vehicle2).addJob(service).addJob(service2).addJob(service3).addJob(service4).build();
         route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(service).addService(service2).build();
-
         StateManager stateManager = new StateManager(vrp);
         stateManager.updateSkillStates();
         stateManager.informInsertionStarts(Arrays.asList(route), null);
-
         skillConstraint = new HardSkillConstraint(stateManager);
     }
 
     @Test
-    public void whenJobToBeInsertedRequiresSkillsThatNewVehicleDoesNotHave_itShouldReturnFalse() {
+    @DisplayName("When Job To Be Inserted Requires Skills That New Vehicle Does Not Have _ it Should Return False")
+    void whenJobToBeInsertedRequiresSkillsThatNewVehicleDoesNotHave_itShouldReturnFalse() {
         JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s3"), vehicle, route.getDriver(), 0.);
         assertFalse(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
-    public void whenJobToBeInsertedRequiresSkillsThatVehicleHave_itShouldReturnTrue() {
+    @DisplayName("When Job To Be Inserted Requires Skills That Vehicle Have _ it Should Return True")
+    void whenJobToBeInsertedRequiresSkillsThatVehicleHave_itShouldReturnTrue() {
         JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s4"), vehicle, route.getDriver(), 0.);
         assertTrue(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
-    public void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesNotHave_itShouldReturnFalse() {
+    @DisplayName("When Route To Be Overtaken Requires Skills That Vehicle Does Not Have _ it Should Return False")
+    void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesNotHave_itShouldReturnFalse() {
         JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s3"), vehicle2, route.getDriver(), 0.);
         assertFalse(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
-    public void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesNotHave2_itShouldReturnFalse() {
+    @DisplayName("When Route To Be Overtaken Requires Skills That Vehicle Does Not Have 2 _ it Should Return False")
+    void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesNotHave2_itShouldReturnFalse() {
         JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s4"), vehicle2, route.getDriver(), 0.);
         assertFalse(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
-    public void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesHave_itShouldReturnTrue() {
+    @DisplayName("When Route To Be Overtaken Requires Skills That Vehicle Does Have _ it Should Return True")
+    void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesHave_itShouldReturnTrue() {
         JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s4"), vehicle, route.getDriver(), 0.);
         assertTrue(skillConstraint.fulfilled(insertionContext));
     }
-
 }

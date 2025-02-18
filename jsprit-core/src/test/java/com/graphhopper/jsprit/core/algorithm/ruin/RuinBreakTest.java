@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
 import com.graphhopper.jsprit.core.problem.Location;
@@ -26,31 +25,35 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-import junit.framework.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * Created by schroeder on 04/08/15.
  */
-public class RuinBreakTest {
+@DisplayName("Ruin Break Test")
+class RuinBreakTest {
 
     @Test
-    public void itShouldRuinBreaks() {
+    @DisplayName("It Should Ruin Breaks")
+    void itShouldRuinBreaks() {
         Break aBreak = Break.Builder.newInstance("break").build();
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc"))
-            .setBreak(aBreak).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setBreak(aBreak).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addVehicle(v).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(aBreak).build();
         TourActivity tourActivity = route.getActivities().get(0);
-        Assert.assertTrue(tourActivity instanceof BreakActivity);
+        assertTrue(tourActivity instanceof BreakActivity);
         RuinBreaks ruinBreaks = new RuinBreaks();
         List<Job> unassigned = new ArrayList<Job>();
         ruinBreaks.ruinEnds(Arrays.asList(route), unassigned);
-        Assert.assertEquals(1, unassigned.size());
-        Assert.assertEquals(aBreak, unassigned.get(0));
+        assertEquals(1, unassigned.size());
+        assertEquals(aBreak, unassigned.get(0));
     }
 }

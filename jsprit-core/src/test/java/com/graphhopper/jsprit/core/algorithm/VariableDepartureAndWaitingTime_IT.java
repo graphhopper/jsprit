@@ -39,7 +39,6 @@ import com.graphhopper.jsprit.core.util.Solutions;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 /**
  * Created by schroeder on 22/07/15.

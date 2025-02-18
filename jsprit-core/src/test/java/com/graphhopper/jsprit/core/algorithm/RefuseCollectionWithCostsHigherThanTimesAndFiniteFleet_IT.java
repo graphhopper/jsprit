@@ -28,7 +28,6 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.VehicleRoutingTransportCostsMatrix;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

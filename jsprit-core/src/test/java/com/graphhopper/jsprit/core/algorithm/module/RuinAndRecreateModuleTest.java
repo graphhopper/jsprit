@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.graphhopper.jsprit.core.algorithm.module;
 
 import com.graphhopper.jsprit.core.algorithm.recreate.InsertionStrategy;
@@ -23,8 +22,9 @@ import com.graphhopper.jsprit.core.algorithm.ruin.RuinStrategy;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,10 +33,12 @@ import java.util.List;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class RuinAndRecreateModuleTest {
+@DisplayName("Ruin And Recreate Module Test")
+class RuinAndRecreateModuleTest {
 
     @Test
-    public void initialNumOfUnassignedShouldWorkCorrectly() {
+    @DisplayName("Initial Num Of Unassigned Should Work Correctly")
+    void initialNumOfUnassignedShouldWorkCorrectly() {
         InsertionStrategy insertionStrategy = mock(InsertionStrategy.class);
         RuinStrategy ruinStrategy = mock(RuinStrategy.class);
         RuinAndRecreateModule module = new RuinAndRecreateModule("name", insertionStrategy, ruinStrategy);
@@ -49,11 +51,12 @@ public class RuinAndRecreateModuleTest {
         }
         VehicleRoutingProblemSolution previousSolution = new VehicleRoutingProblemSolution(routes, unassigned, 0);
         VehicleRoutingProblemSolution newSolution = module.runAndGetSolution(previousSolution);
-        Assert.assertEquals(0, newSolution.getUnassignedJobs().size());
+        Assertions.assertEquals(0, newSolution.getUnassignedJobs().size());
     }
 
     @Test
-    public void proportionOfUnassignedShouldWorkCorrectly() {
+    @DisplayName("Proportion Of Unassigned Should Work Correctly")
+    void proportionOfUnassignedShouldWorkCorrectly() {
         InsertionStrategy insertionStrategy = mock(InsertionStrategy.class);
         RuinStrategy ruinStrategy = mock(RuinStrategy.class);
         RuinAndRecreateModule module = new RuinAndRecreateModule("name", insertionStrategy, ruinStrategy);
@@ -68,11 +71,12 @@ public class RuinAndRecreateModuleTest {
         }
         VehicleRoutingProblemSolution previousSolution = new VehicleRoutingProblemSolution(routes, unassigned, 0);
         VehicleRoutingProblemSolution newSolution = module.runAndGetSolution(previousSolution);
-        Assert.assertEquals(15, newSolution.getUnassignedJobs().size());
+        Assertions.assertEquals(15, newSolution.getUnassignedJobs().size());
     }
 
     @Test
-    public void proportionOfUnassignedShouldWorkCorrectly2() {
+    @DisplayName("Proportion Of Unassigned Should Work Correctly 2")
+    void proportionOfUnassignedShouldWorkCorrectly2() {
         InsertionStrategy insertionStrategy = mock(InsertionStrategy.class);
         RuinStrategy ruinStrategy = mock(RuinStrategy.class);
         RuinAndRecreateModule module = new RuinAndRecreateModule("name", insertionStrategy, ruinStrategy);
@@ -87,6 +91,6 @@ public class RuinAndRecreateModuleTest {
         }
         VehicleRoutingProblemSolution previousSolution = new VehicleRoutingProblemSolution(routes, unassigned, 0);
         VehicleRoutingProblemSolution newSolution = module.runAndGetSolution(previousSolution);
-        Assert.assertEquals(10, newSolution.getUnassignedJobs().size());
+        Assertions.assertEquals(10, newSolution.getUnassignedJobs().size());
     }
 }

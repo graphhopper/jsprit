@@ -15,21 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.graphhopper.jsprit.core.algorithm.termination;
 
-
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
-import junit.framework.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class IterationsWithoutImprovementTest {
+@DisplayName("Iterations Without Improvement Test")
+class IterationsWithoutImprovementTest {
 
     @Test
-    public void itShouldTerminateAfter100() {
+    @DisplayName("It Should Terminate After 100")
+    void itShouldTerminateAfter100() {
         IterationWithoutImprovementTermination termination = new IterationWithoutImprovementTermination(100);
         SearchStrategy.DiscoveredSolution discoveredSolution = mock(SearchStrategy.DiscoveredSolution.class);
         when(discoveredSolution.isAccepted()).thenReturn(false);
@@ -41,11 +42,12 @@ public class IterationsWithoutImprovementTest {
                 break;
             }
         }
-        Assert.assertEquals(100, terminatedAfter);
+        assertEquals(100, terminatedAfter);
     }
 
     @Test
-    public void itShouldTerminateAfter1() {
+    @DisplayName("It Should Terminate After 1")
+    void itShouldTerminateAfter1() {
         IterationWithoutImprovementTermination termination = new IterationWithoutImprovementTermination(1);
         SearchStrategy.DiscoveredSolution discoveredSolution = mock(SearchStrategy.DiscoveredSolution.class);
         when(discoveredSolution.isAccepted()).thenReturn(false);
@@ -57,23 +59,25 @@ public class IterationsWithoutImprovementTest {
                 break;
             }
         }
-        Assert.assertEquals(1, terminatedAfter);
+        assertEquals(1, terminatedAfter);
     }
 
     @Test
-    public void itShouldTerminateAfter150() {
+    @DisplayName("It Should Terminate After 150")
+    void itShouldTerminateAfter150() {
         IterationWithoutImprovementTermination termination = new IterationWithoutImprovementTermination(100);
         SearchStrategy.DiscoveredSolution discoveredSolution = mock(SearchStrategy.DiscoveredSolution.class);
         int terminatedAfter = 0;
         for (int i = 0; i < 200; i++) {
             when(discoveredSolution.isAccepted()).thenReturn(false);
-            if (i == 49) when(discoveredSolution.isAccepted()).thenReturn(true);
+            if (i == 49)
+                when(discoveredSolution.isAccepted()).thenReturn(true);
             boolean terminate = termination.isPrematureBreak(discoveredSolution);
             if (terminate) {
                 terminatedAfter = i;
                 break;
             }
         }
-        Assert.assertEquals(150, terminatedAfter);
+        assertEquals(150, terminatedAfter);
     }
 }

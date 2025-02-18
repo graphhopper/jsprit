@@ -23,50 +23,55 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
-public class JobNeighborhoodsWithCapRestrictionImplTest {
+@DisplayName("Job Neighborhoods With Cap Restriction Impl Test")
+class JobNeighborhoodsWithCapRestrictionImplTest {
 
     VehicleRoutingProblem vrp;
 
     JobDistance jobDistance;
 
     Service target;
+
     Service s2;
+
     Service s3;
+
     Service s4;
+
     Service s5;
+
     Service s6;
+
     Service s7;
 
-    @Before
-    public void doBefore() {
+    @BeforeEach
+    void doBefore() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         target = Service.Builder.newInstance("s1").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 5)).build();
         s2 = Service.Builder.newInstance("s2").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 4)).build();
         s3 = Service.Builder.newInstance("s3").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 3)).build();
         s4 = Service.Builder.newInstance("s4").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 2)).build();
-
         s5 = Service.Builder.newInstance("s5").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 6)).build();
         s6 = Service.Builder.newInstance("s6").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 7)).build();
         s7 = Service.Builder.newInstance("s7").addSizeDimension(0, 1).setLocation(Location.newInstance(0, 8)).build();
-
         vrp = builder.addJob(target).addJob(s2).addJob(s3).addJob(s4).addJob(s5).addJob(s6).addJob(s7).build();
-
         jobDistance = new EuclideanServiceDistance();
     }
 
     @Test
-    public void whenRequestingNeighborhoodOfTargetJob_nNeighborsShouldBeTwo() {
+    @DisplayName("When Requesting Neighborhood Of Target Job _ n Neighbors Should Be Two")
+    void whenRequestingNeighborhoodOfTargetJob_nNeighborsShouldBeTwo() {
         JobNeighborhoodsImplWithCapRestriction jn = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, 2);
         jn.initialise();
         Iterator<Job> iter = jn.getNearestNeighborsIterator(2, target);
@@ -78,7 +83,8 @@ public class JobNeighborhoodsWithCapRestrictionImplTest {
     }
 
     @Test
-    public void whenRequestingNeighborhoodOfTargetJob_s2ShouldBeNeighbor() {
+    @DisplayName("When Requesting Neighborhood Of Target Job _ s 2 Should Be Neighbor")
+    void whenRequestingNeighborhoodOfTargetJob_s2ShouldBeNeighbor() {
         JobNeighborhoodsImplWithCapRestriction jn = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, 2);
         jn.initialise();
         Iterator<Job> iter = jn.getNearestNeighborsIterator(2, target);
@@ -90,7 +96,8 @@ public class JobNeighborhoodsWithCapRestrictionImplTest {
     }
 
     @Test
-    public void whenRequestingNeighborhoodOfTargetJob_s4ShouldBeNeighbor() {
+    @DisplayName("When Requesting Neighborhood Of Target Job _ s 4 Should Be Neighbor")
+    void whenRequestingNeighborhoodOfTargetJob_s4ShouldBeNeighbor() {
         JobNeighborhoodsImplWithCapRestriction jn = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, 2);
         jn.initialise();
         Iterator<Job> iter = jn.getNearestNeighborsIterator(2, target);
@@ -102,7 +109,8 @@ public class JobNeighborhoodsWithCapRestrictionImplTest {
     }
 
     @Test
-    public void whenRequestingNeighborhoodOfTargetJob_sizeShouldBe4() {
+    @DisplayName("When Requesting Neighborhood Of Target Job _ size Should Be 4")
+    void whenRequestingNeighborhoodOfTargetJob_sizeShouldBe4() {
         JobNeighborhoodsImplWithCapRestriction jn = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, 4);
         jn.initialise();
         Iterator<Job> iter = jn.getNearestNeighborsIterator(4, target);
@@ -114,7 +122,8 @@ public class JobNeighborhoodsWithCapRestrictionImplTest {
     }
 
     @Test
-    public void whenRequestingMoreNeighborsThanExisting_itShouldReturnMaxNeighbors() {
+    @DisplayName("When Requesting More Neighbors Than Existing _ it Should Return Max Neighbors")
+    void whenRequestingMoreNeighborsThanExisting_itShouldReturnMaxNeighbors() {
         JobNeighborhoodsImplWithCapRestriction jn = new JobNeighborhoodsImplWithCapRestriction(vrp, jobDistance, 2);
         jn.initialise();
         Iterator<Job> iter = jn.getNearestNeighborsIterator(100, target);
@@ -124,5 +133,4 @@ public class JobNeighborhoodsWithCapRestrictionImplTest {
         }
         assertEquals(2, services.size());
     }
-
 }

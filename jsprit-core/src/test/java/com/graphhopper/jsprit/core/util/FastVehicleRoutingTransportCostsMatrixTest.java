@@ -21,16 +21,19 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class FastVehicleRoutingTransportCostsMatrixTest {
+@DisplayName("Fast Vehicle Routing Transport Costs Matrix Test")
+class FastVehicleRoutingTransportCostsMatrixTest {
 
     @Test
-    public void whenAddingDistanceToSymmetricMatrix_itShouldReturnCorrectValues() {
+    @DisplayName("When Adding Distance To Symmetric Matrix _ it Should Return Correct Values")
+    void whenAddingDistanceToSymmetricMatrix_itShouldReturnCorrectValues() {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(3, true);
         matrixBuilder.addTransportDistance(1, 2, 2.);
         FastVehicleRoutingTransportCostsMatrix matrix = matrixBuilder.build();
@@ -40,9 +43,9 @@ public class FastVehicleRoutingTransportCostsMatrixTest {
         assertEquals(2., matrix.getDistance(2, 1), 0.1);
     }
 
-
     @Test
-    public void whenAddingDistanceToAsymmetricMatrix_itShouldReturnCorrectValues() {
+    @DisplayName("When Adding Distance To Asymmetric Matrix _ it Should Return Correct Values")
+    void whenAddingDistanceToAsymmetricMatrix_itShouldReturnCorrectValues() {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(3, false);
         matrixBuilder.addTransportDistance(1, 2, 2.);
         FastVehicleRoutingTransportCostsMatrix matrix = matrixBuilder.build();
@@ -53,9 +56,9 @@ public class FastVehicleRoutingTransportCostsMatrixTest {
         return Location.Builder.newInstance().setIndex(index).build();
     }
 
-
     @Test
-    public void whenAddingTimeToSymmetricMatrix_itShouldReturnCorrectValues() {
+    @DisplayName("When Adding Time To Symmetric Matrix _ it Should Return Correct Values")
+    void whenAddingTimeToSymmetricMatrix_itShouldReturnCorrectValues() {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(3, true);
         matrixBuilder.addTransportTime(1, 2, 2.);
         FastVehicleRoutingTransportCostsMatrix matrix = matrixBuilder.build();
@@ -64,19 +67,20 @@ public class FastVehicleRoutingTransportCostsMatrixTest {
     }
 
     @Test
-    public void whenAddingTimeAndDistanceToSymmetricMatrix_itShouldReturnCorrectValues2() {
+    @DisplayName("When Adding Time And Distance To Symmetric Matrix _ it Should Return Correct Values 2")
+    void whenAddingTimeAndDistanceToSymmetricMatrix_itShouldReturnCorrectValues2() {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(3, true);
         matrixBuilder.addTransportTimeAndDistance(1, 2, 2., 100.);
         FastVehicleRoutingTransportCostsMatrix matrix = matrixBuilder.build();
         assertEquals(2., matrix.getTransportTime(loc(1), loc(2), 0.0, null, null), 0.1);
         assertEquals(2., matrix.getTransportTime(loc(2), loc(1), 0.0, null, null), 0.1);
-
         assertEquals(100., matrix.getDistance(loc(1), loc(2), 0.0, null), 0.1);
         assertEquals(100., matrix.getDistance(loc(2), loc(1), 0.0, null), 0.1);
     }
 
     @Test
-    public void whenAddingTimeToAsymmetricMatrix_itShouldReturnCorrectValues() {
+    @DisplayName("When Adding Time To Asymmetric Matrix _ it Should Return Correct Values")
+    void whenAddingTimeToAsymmetricMatrix_itShouldReturnCorrectValues() {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(3, false);
         matrixBuilder.addTransportTime(1, 2, 2.);
         FastVehicleRoutingTransportCostsMatrix matrix = matrixBuilder.build();
@@ -84,7 +88,8 @@ public class FastVehicleRoutingTransportCostsMatrixTest {
     }
 
     @Test
-    public void whenAddingTimeAndDistanceToSymmetricMatrix_itShouldReturnCorrectValues() {
+    @DisplayName("When Adding Time And Distance To Symmetric Matrix _ it Should Return Correct Values")
+    void whenAddingTimeAndDistanceToSymmetricMatrix_itShouldReturnCorrectValues() {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(3, true);
         matrixBuilder.addTransportDistance(1, 2, 20.);
         matrixBuilder.addTransportTime(1, 2, 2.);
@@ -97,7 +102,8 @@ public class FastVehicleRoutingTransportCostsMatrixTest {
     }
 
     @Test
-    public void whenAddingTimeAndDistanceToAsymmetricMatrix_itShouldReturnCorrectValues() {
+    @DisplayName("When Adding Time And Distance To Asymmetric Matrix _ it Should Return Correct Values")
+    void whenAddingTimeAndDistanceToAsymmetricMatrix_itShouldReturnCorrectValues() {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(3, false);
         matrixBuilder.addTransportTime(1, 2, 2.);
         matrixBuilder.addTransportTime(2, 1, 8.);
@@ -108,6 +114,4 @@ public class FastVehicleRoutingTransportCostsMatrixTest {
         assertEquals(4., matrix.getTransportCost(loc(1), loc(2), 0.0, null, vehicle), 0.1);
         assertEquals(16., matrix.getTransportCost(loc(2), loc(1), 0.0, null, vehicle), 0.1);
     }
-
-
 }

@@ -15,73 +15,78 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 /**
  * Created by schroeder on 13/01/17.
  */
-public class StringUtilTest {
+@DisplayName("String Util Test")
+class StringUtilTest {
 
     @Test
-    public void test() {
+    @DisplayName("Test")
+    void test() {
         int stringLength = 4;
         int seedIndex = 4;
         int noActivities = 10;
         List<Integer> bounds = StringUtil.getLowerBoundsOfAllStrings(stringLength, seedIndex, noActivities);
-        Assert.assertEquals(4, bounds.size());
-        Assert.assertEquals(1, (int) bounds.get(0));
-        Assert.assertEquals(2, (int) bounds.get(1));
-        Assert.assertEquals(3, (int) bounds.get(2));
-        Assert.assertEquals(4, (int) bounds.get(3));
-
+        Assertions.assertEquals(4, bounds.size());
+        Assertions.assertEquals(1, (int) bounds.get(0));
+        Assertions.assertEquals(2, (int) bounds.get(1));
+        Assertions.assertEquals(3, (int) bounds.get(2));
+        Assertions.assertEquals(4, (int) bounds.get(3));
     }
 
     @Test
-    public void test2() {
+    @DisplayName("Test 2")
+    void test2() {
         int stringLength = 4;
         int seedIndex = 2;
         int noActivities = 10;
         List<Integer> bounds = StringUtil.getLowerBoundsOfAllStrings(stringLength, seedIndex, noActivities);
-        Assert.assertEquals(3, bounds.size());
-        Assert.assertEquals(0, (int) bounds.get(0));
-        Assert.assertEquals(1, (int) bounds.get(1));
-        Assert.assertEquals(2, (int) bounds.get(2));
+        Assertions.assertEquals(3, bounds.size());
+        Assertions.assertEquals(0, (int) bounds.get(0));
+        Assertions.assertEquals(1, (int) bounds.get(1));
+        Assertions.assertEquals(2, (int) bounds.get(2));
     }
 
     @Test
-    public void test3() {
+    @DisplayName("Test 3")
+    void test3() {
         int stringLength = 4;
         int seedIndex = 0;
         int noActivities = 10;
         List<Integer> bounds = StringUtil.getLowerBoundsOfAllStrings(stringLength, seedIndex, noActivities);
-        Assert.assertEquals(1, bounds.size());
-        Assert.assertEquals(0, (int) bounds.get(0));
+        Assertions.assertEquals(1, bounds.size());
+        Assertions.assertEquals(0, (int) bounds.get(0));
     }
 
     @Test
-    public void test4() {
+    @DisplayName("Test 4")
+    void test4() {
         int stringLength = 4;
         int seedIndex = 9;
         int noActivities = 10;
         List<Integer> bounds = StringUtil.getLowerBoundsOfAllStrings(stringLength, seedIndex, noActivities);
-        Assert.assertEquals(1, bounds.size());
-        Assert.assertEquals(6, (int) bounds.get(0));
+        Assertions.assertEquals(1, bounds.size());
+        Assertions.assertEquals(6, (int) bounds.get(0));
     }
 
     @Test
-    public void test5() {
+    @DisplayName("Test 5")
+    void test5() {
         int stringLength = 4;
         int seedIndex = 8;
         int noActivities = 10;
         List<Integer> bounds = StringUtil.getLowerBoundsOfAllStrings(stringLength, seedIndex, noActivities);
-        Assert.assertEquals(2, bounds.size());
-        Assert.assertEquals(5, (int) bounds.get(0));
-        Assert.assertEquals(6, (int) bounds.get(1));
+        Assertions.assertEquals(2, bounds.size());
+        Assertions.assertEquals(5, (int) bounds.get(0));
+        Assertions.assertEquals(6, (int) bounds.get(1));
     }
 }

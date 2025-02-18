@@ -15,44 +15,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.graphhopper.jsprit.core.problem;
 
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by schroeder on 01.07.14.
  */
-public class SkillsTest {
+@DisplayName("Skills Test")
+class SkillsTest {
 
     @Test
-    public void whenSkillsAdded_theyShouldBeinSkillSet() {
+    @DisplayName("When Skills Added _ they Should Bein Skill Set")
+    void whenSkillsAdded_theyShouldBeinSkillSet() {
         Skills skills = Skills.Builder.newInstance().addSkill("skill1").addSkill("skill2").build();
         assertTrue(skills.containsSkill("skill1"));
         assertTrue(skills.containsSkill("skill2"));
     }
 
     @Test
-    public void whenSkillsAddedCaseInsensitive_theyShouldBeinSkillSet() {
+    @DisplayName("When Skills Added Case Insensitive _ they Should Bein Skill Set")
+    void whenSkillsAddedCaseInsensitive_theyShouldBeinSkillSet() {
         Skills skills = Skills.Builder.newInstance().addSkill("skill1").addSkill("skill2").build();
         assertTrue(skills.containsSkill("skilL1"));
         assertTrue(skills.containsSkill("skIll2"));
     }
 
     @Test
-    public void whenSkillsAddedCaseInsensitive2_theyShouldBeinSkillSet() {
+    @DisplayName("When Skills Added Case Insensitive 2 _ they Should Bein Skill Set")
+    void whenSkillsAddedCaseInsensitive2_theyShouldBeinSkillSet() {
         Skills skills = Skills.Builder.newInstance().addSkill("Skill1").addSkill("skill2").build();
         assertTrue(skills.containsSkill("skilL1"));
         assertTrue(skills.containsSkill("skIll2"));
     }
 
     @Test
-    public void whenSkillsAddedThroughAddAll_theyShouldBeinSkillSet() {
+    @DisplayName("When Skills Added Through Add All _ they Should Bein Skill Set")
+    void whenSkillsAddedThroughAddAll_theyShouldBeinSkillSet() {
         Set<String> skillSet = new HashSet<String>();
         skillSet.add("skill1");
         skillSet.add("skill2");
@@ -62,7 +67,8 @@ public class SkillsTest {
     }
 
     @Test
-    public void whenSkillsAddedThroughAddAllCaseInsensitive_theyShouldBeinSkillSet() {
+    @DisplayName("When Skills Added Through Add All Case Insensitive _ they Should Bein Skill Set")
+    void whenSkillsAddedThroughAddAllCaseInsensitive_theyShouldBeinSkillSet() {
         Set<String> skillSet = new HashSet<String>();
         skillSet.add("skill1");
         skillSet.add("skill2");
@@ -72,7 +78,8 @@ public class SkillsTest {
     }
 
     @Test
-    public void whenSkillsAddedThroughAddAllCaseInsensitive2_theyShouldBeinSkillSet() {
+    @DisplayName("When Skills Added Through Add All Case Insensitive 2 _ they Should Bein Skill Set")
+    void whenSkillsAddedThroughAddAllCaseInsensitive2_theyShouldBeinSkillSet() {
         Set<String> skillSet = new HashSet<String>();
         skillSet.add("skill1");
         skillSet.add("Skill2");
@@ -82,7 +89,8 @@ public class SkillsTest {
     }
 
     @Test
-    public void whenSkillsAddedPrecedingWhitespaceShouldNotMatter() {
+    @DisplayName("When Skills Added Preceding Whitespace Should Not Matter")
+    void whenSkillsAddedPrecedingWhitespaceShouldNotMatter() {
         Set<String> skillSet = new HashSet<String>();
         skillSet.add(" skill1");
         skillSet.add("Skill2");
@@ -92,7 +100,8 @@ public class SkillsTest {
     }
 
     @Test
-    public void whenSkillsAddedTrailingWhitespaceShouldNotMatter() {
+    @DisplayName("When Skills Added Trailing Whitespace Should Not Matter")
+    void whenSkillsAddedTrailingWhitespaceShouldNotMatter() {
         Set<String> skillSet = new HashSet<String>();
         skillSet.add("skill1 ");
         skillSet.add("Skill2");
@@ -102,9 +111,9 @@ public class SkillsTest {
     }
 
     @Test
-    public void whenSkillsAddedTrailingWhitespaceShouldNotMatter2() {
+    @DisplayName("When Skills Added Trailing Whitespace Should Not Matter 2")
+    void whenSkillsAddedTrailingWhitespaceShouldNotMatter2() {
         Skills skills = Skills.Builder.newInstance().addSkill("skill1 ").build();
         assertTrue(skills.containsSkill("skill1"));
     }
-
 }

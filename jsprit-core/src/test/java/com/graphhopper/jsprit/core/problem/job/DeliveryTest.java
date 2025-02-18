@@ -18,118 +18,115 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 import com.graphhopper.jsprit.core.problem.Location;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class DeliveryTest {
+@DisplayName("Delivery Test")
+class DeliveryTest {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void whenNeitherLocationIdNorCoordIsSet_itThrowsException() {
-        Delivery.Builder.newInstance("p").build();
+    @Test
+    @DisplayName("When Neither Location Id Nor Coord Is Set _ it Throws Exception")
+    void whenNeitherLocationIdNorCoordIsSet_itThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Delivery.Builder.newInstance("p").build();
+        });
     }
 
     @Test
-    public void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo() {
-        Delivery one = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
-            .addSizeDimension(0, 2)
-            .addSizeDimension(1, 4)
-            .build();
+    @DisplayName("When Adding Two Cap Dimension _ nu Of Dims Should Be Two")
+    void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo() {
+        Delivery one = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("foofoo")).addSizeDimension(0, 2).addSizeDimension(1, 4).build();
         assertEquals(2, one.getSize().getNuOfDimensions());
         assertEquals(2, one.getSize().get(0));
         assertEquals(4, one.getSize().get(1));
-
     }
 
     @Test
-    public void whenPickupIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero() {
-        Delivery one = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("foofoo"))
-            .build();
+    @DisplayName("When Pickup Is Built Without Specifying Capacity _ it Should Hv Cap With One Dim And Dim Val Of Zero")
+    void whenPickupIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDimAndDimValOfZero() {
+        Delivery one = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("foofoo")).build();
         assertEquals(1, one.getSize().getNuOfDimensions());
         assertEquals(0, one.getSize().get(0));
     }
 
     @Test
-    public void whenPickupIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly() {
-        Delivery one = Delivery.Builder.newInstance("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo"))
-            .build();
+    @DisplayName("When Pickup Is Built With Constructor Where Size Is Specified _ capacity Should Be Set Correctly")
+    void whenPickupIsBuiltWithConstructorWhereSizeIsSpecified_capacityShouldBeSetCorrectly() {
+        Delivery one = Delivery.Builder.newInstance("s").addSizeDimension(0, 1).setLocation(Location.newInstance("foofoo")).build();
         assertEquals(1, one.getSize().getNuOfDimensions());
         assertEquals(1, one.getSize().get(0));
     }
 
     @Test
-    public void whenAddingSkills_theyShouldBeAddedCorrectly() {
-        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-            .addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
+    @DisplayName("When Adding Skills _ they Should Be Added Correctly")
+    void whenAddingSkills_theyShouldBeAddedCorrectly() {
+        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc")).addRequiredSkill("drill").addRequiredSkill("screwdriver").build();
         assertTrue(s.getRequiredSkills().containsSkill("drill"));
         assertTrue(s.getRequiredSkills().containsSkill("ScrewDriver"));
     }
 
     @Test
-    public void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly() {
-        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-            .addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
+    @DisplayName("When Adding Skills Case Sens _ they Should Be Added Correctly")
+    void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly() {
+        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc")).addRequiredSkill("DriLl").addRequiredSkill("screwDriver").build();
         assertTrue(s.getRequiredSkills().containsSkill("drill"));
         assertTrue(s.getRequiredSkills().containsSkill("drilL"));
     }
 
     @Test
-    public void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly() {
-        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-            .addRequiredSkill("screwDriver").build();
+    @DisplayName("When Adding Skills Case Sens V 2 _ they Should Be Added Correctly")
+    void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly() {
+        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc")).addRequiredSkill("screwDriver").build();
         assertFalse(s.getRequiredSkills().containsSkill("drill"));
         assertFalse(s.getRequiredSkills().containsSkill("drilL"));
     }
 
     @Test
-    public void nameShouldBeAssigned() {
-        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-            .setName("name").build();
-        assertEquals("name", s.getName());
+    @DisplayName("Name Should Be Assigned")
+    void nameShouldBeAssigned() {
+        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setName("name").build();
+        assertEquals(s.getName(), "name");
     }
 
     @Test
-    public void whenSettingPriorities_itShouldBeSetCorrectly(){
-        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-            .setPriority(3).build();
-        Assert.assertEquals(3, s.getPriority());
+    @DisplayName("When Setting Priorities _ it Should Be Set Correctly")
+    void whenSettingPriorities_itShouldBeSetCorrectly() {
+        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setPriority(3).build();
+        assertEquals(3, s.getPriority());
     }
 
     @Test
-    public void whenNotSettingPriorities_defaultShouldBe(){
-        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-            .build();
-        Assert.assertEquals(2, s.getPriority());
+    @DisplayName("When Not Setting Priorities _ default Should Be")
+    void whenNotSettingPriorities_defaultShouldBe() {
+        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
+        assertEquals(2, s.getPriority());
     }
 
     @Test
-    public void whenAddingMaxTimeInVehicle_itShouldBeSet(){
-        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-            .setMaxTimeInVehicle(10)
-            .build();
-        Assert.assertEquals(10, s.getMaxTimeInVehicle(),0.001);
+    @DisplayName("When Adding Max Time In Vehicle _ it Should Be Set")
+    void whenAddingMaxTimeInVehicle_itShouldBeSet() {
+        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setMaxTimeInVehicle(10).build();
+        assertEquals(10, s.getMaxTimeInVehicle(), 0.001);
     }
 
     @Test
-    public void whenNotAddingMaxTimeInVehicle_itShouldBeDefault(){
-        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-            .build();
-        Assert.assertEquals(Double.MAX_VALUE, s.getMaxTimeInVehicle(),0.001);
+    @DisplayName("When Not Adding Max Time In Vehicle _ it Should Be Default")
+    void whenNotAddingMaxTimeInVehicle_itShouldBeDefault() {
+        Delivery s = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
+        assertEquals(Double.MAX_VALUE, s.getMaxTimeInVehicle(), 0.001);
     }
 
-
     @Test
-    public void whenSettingUserData_itIsAssociatedWithTheJob() {
-        Delivery one = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc"))
-            .setUserData(new HashMap<String, Object>()).build();
-        Delivery two = Delivery.Builder.newInstance("s2").setLocation(Location.newInstance("loc")).setUserData(42)
-            .build();
+    @DisplayName("When Setting User Data _ it Is Associated With The Job")
+    void whenSettingUserData_itIsAssociatedWithTheJob() {
+        Delivery one = Delivery.Builder.newInstance("s").setLocation(Location.newInstance("loc")).setUserData(new HashMap<String, Object>()).build();
+        Delivery two = Delivery.Builder.newInstance("s2").setLocation(Location.newInstance("loc")).setUserData(42).build();
         Delivery three = Delivery.Builder.newInstance("s3").setLocation(Location.newInstance("loc")).build();
-
         assertTrue(one.getUserData() instanceof Map);
         assertEquals(42, two.getUserData());
         assertNull(three.getUserData());

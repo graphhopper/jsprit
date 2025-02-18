@@ -27,35 +27,32 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.*;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
-public class CVRPwithMatrix_IT {
+class CVRPwithMatrix_IT {
 
     private int index = 0;
 
 
     @Test
-    public void whenReturnToDepot_itShouldWorkWithMatrix() {
+    void whenReturnToDepot_itShouldWorkWithMatrix() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new ChristofidesReader(vrpBuilder).setJobType(JobType.DELIVERY).read(getClass().getResourceAsStream("vrpnc1.txt"));
         VehicleRoutingProblem vrp_ = vrpBuilder.build();
         VehicleRoutingProblem vrp = createVrpWithLocationIndecesAndMatrix(vrp_, true);
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.FAST_REGRET,"true").buildAlgorithm();
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        Assert.assertEquals(530.0, Solutions.bestOf(solutions).getCost(), 50.0);
-        assertEquals(5, Solutions.bestOf(solutions).getRoutes().size());
+        Assertions.assertEquals(530.0, Solutions.bestOf(solutions).getCost(), 50.0);
+        Assertions.assertEquals(5, Solutions.bestOf(solutions).getRoutes().size());
     }
 
     @Test
-    public void whenNotReturnToDepot_itShouldWorkWithMatrix() {
+    void whenNotReturnToDepot_itShouldWorkWithMatrix() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new ChristofidesReader(vrpBuilder).setJobType(JobType.DELIVERY).read(getClass().getResourceAsStream("vrpnc1.txt"));
         VehicleRoutingProblem vrp_ = vrpBuilder.build();
@@ -63,14 +60,14 @@ public class CVRPwithMatrix_IT {
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.FAST_REGRET,"true").buildAlgorithm();
         try {
             Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-            assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            assertFalse(true);
+            Assertions.assertFalse(true);
         }
     }
 
     @Test
-    public void whenCalcTimeWithSolutionAnalyser_itShouldWork() {
+    void whenCalcTimeWithSolutionAnalyser_itShouldWork() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         new ChristofidesReader(vrpBuilder).setJobType(JobType.DELIVERY).read(getClass().getResourceAsStream("vrpnc1.txt"));
         VehicleRoutingProblem vrp_ = vrpBuilder.build();

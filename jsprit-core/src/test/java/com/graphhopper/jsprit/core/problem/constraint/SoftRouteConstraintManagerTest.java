@@ -18,16 +18,19 @@
 package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class SoftRouteConstraintManagerTest {
+@DisplayName("Soft Route Constraint Manager Test")
+class SoftRouteConstraintManagerTest {
 
     @Test
-    public void whenAddingSoftRouteConstraint_managerShouldHaveIt() {
+    @DisplayName("When Adding Soft Route Constraint _ manager Should Have It")
+    void whenAddingSoftRouteConstraint_managerShouldHaveIt() {
         SoftRouteConstraint c = mock(SoftRouteConstraint.class);
         SoftRouteConstraintManager man = new SoftRouteConstraintManager();
         assertEquals(0, man.getConstraints().size());
@@ -36,7 +39,8 @@ public class SoftRouteConstraintManagerTest {
     }
 
     @Test
-    public void whenAddingTwoSoftRouteConstraint_managerShouldHaveIt() {
+    @DisplayName("When Adding Two Soft Route Constraint _ manager Should Have It")
+    void whenAddingTwoSoftRouteConstraint_managerShouldHaveIt() {
         SoftRouteConstraint c1 = mock(SoftRouteConstraint.class);
         SoftRouteConstraint c2 = mock(SoftRouteConstraint.class);
         SoftRouteConstraintManager man = new SoftRouteConstraintManager();
@@ -47,14 +51,14 @@ public class SoftRouteConstraintManagerTest {
     }
 
     @Test
-    public void whenAddingTwoSoftRouteConstraint_managerShouldSumCostsCorrectly() {
+    @DisplayName("When Adding Two Soft Route Constraint _ manager Should Sum Costs Correctly")
+    void whenAddingTwoSoftRouteConstraint_managerShouldSumCostsCorrectly() {
         SoftRouteConstraint c1 = mock(SoftRouteConstraint.class);
         JobInsertionContext iContext = mock(JobInsertionContext.class);
         when(c1.getCosts(iContext)).thenReturn(1.0);
         SoftRouteConstraint c2 = mock(SoftRouteConstraint.class);
         when(c2.getCosts(iContext)).thenReturn(2.0);
         SoftRouteConstraintManager man = new SoftRouteConstraintManager();
-
         man.addConstraint(c1);
         man.addConstraint(c2);
         assertEquals(3.0, man.getCosts(iContext), 0.01);

@@ -15,95 +15,105 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.graphhopper.jsprit.core.problem;
 
 import com.graphhopper.jsprit.core.util.Coordinate;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by schroeder on 16.12.14.
  */
-public class LocationTest {
+@DisplayName("Location Test")
+class LocationTest {
 
     @Test
-    public void whenIndexSet_buildLocation() {
+    @DisplayName("When Index Set _ build Location")
+    void whenIndexSet_buildLocation() {
         Location l = Location.Builder.newInstance().setIndex(1).build();
-        Assert.assertEquals(1, l.getIndex());
-        Assert.assertTrue(true);
+        assertEquals(1, l.getIndex());
+        assertTrue(true);
     }
 
     @Test
-    public void whenNameSet_buildLocation() {
+    @DisplayName("When Name Set _ build Location")
+    void whenNameSet_buildLocation() {
         Location l = Location.Builder.newInstance().setName("mystreet 6a").setIndex(1).build();
-        Assert.assertEquals("mystreet 6a", l.getName());
+        assertEquals(l.getName(), "mystreet 6a");
     }
 
     @Test
-    public void whenIndexSetWitFactory_returnCorrectLocation() {
+    @DisplayName("When Index Set Wit Factory _ return Correct Location")
+    void whenIndexSetWitFactory_returnCorrectLocation() {
         Location l = Location.newInstance(1);
-        Assert.assertEquals(1, l.getIndex());
-        Assert.assertTrue(true);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void whenIndexSmallerZero_throwException() {
-        Location l = Location.Builder.newInstance().setIndex(-1).build();
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void whenCoordinateAndIdAndIndexNotSet_throwException() {
-        Location l = Location.Builder.newInstance().build();
+        assertEquals(1, l.getIndex());
+        assertTrue(true);
     }
 
     @Test
-    public void whenIdSet_build() {
+    @DisplayName("When Index Smaller Zero _ throw Exception")
+    void whenIndexSmallerZero_throwException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Location l = Location.Builder.newInstance().setIndex(-1).build();
+        });
+    }
+
+    @Test
+    @DisplayName("When Coordinate And Id And Index Not Set _ throw Exception")
+    void whenCoordinateAndIdAndIndexNotSet_throwException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Location l = Location.Builder.newInstance().build();
+        });
+    }
+
+    @Test
+    @DisplayName("When Id Set _ build")
+    void whenIdSet_build() {
         Location l = Location.Builder.newInstance().setId("id").build();
-        Assert.assertEquals("id", l.getId());
-        Assert.assertTrue(true);
+        assertEquals(l.getId(), "id");
+        assertTrue(true);
     }
 
     @Test
-    public void whenIdSetWithFactory_returnCorrectLocation() {
+    @DisplayName("When Id Set With Factory _ return Correct Location")
+    void whenIdSetWithFactory_returnCorrectLocation() {
         Location l = Location.newInstance("id");
-        Assert.assertEquals("id", l.getId());
-        Assert.assertTrue(true);
+        assertEquals(l.getId(), "id");
+        assertTrue(true);
     }
 
     @Test
-    public void whenCoordinateSet_build() {
+    @DisplayName("When Coordinate Set _ build")
+    void whenCoordinateSet_build() {
         Location l = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 20)).build();
-        Assert.assertEquals(10., l.getCoordinate().getX(), 0.001);
-        Assert.assertEquals(20., l.getCoordinate().getY(), 0.001);
-        Assert.assertTrue(true);
+        assertEquals(10., l.getCoordinate().getX(), 0.001);
+        assertEquals(20., l.getCoordinate().getY(), 0.001);
+        assertTrue(true);
     }
 
     @Test
-    public void whenCoordinateSetWithFactory_returnCorrectLocation() {
-        //        Location l = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10,20)).build();
+    @DisplayName("When Coordinate Set With Factory _ return Correct Location")
+    void whenCoordinateSetWithFactory_returnCorrectLocation() {
+        // Location l = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10,20)).build();
         Location l = Location.newInstance(10, 20);
-        Assert.assertEquals(10., l.getCoordinate().getX(), 0.001);
-        Assert.assertEquals(20., l.getCoordinate().getY(), 0.001);
-        Assert.assertTrue(true);
+        assertEquals(10., l.getCoordinate().getX(), 0.001);
+        assertEquals(20., l.getCoordinate().getY(), 0.001);
+        assertTrue(true);
     }
 
-
     @Test
-    public void whenSettingUserData_itIsAssociatedWithTheLocation() {
-        Location one = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 20))
-            .setUserData(new HashMap<String, Object>()).build();
+    @DisplayName("When Setting User Data _ it Is Associated With The Location")
+    void whenSettingUserData_itIsAssociatedWithTheLocation() {
+        Location one = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 20)).setUserData(new HashMap<String, Object>()).build();
         Location two = Location.Builder.newInstance().setIndex(1).setUserData(42).build();
         Location three = Location.Builder.newInstance().setIndex(2).build();
-
         assertTrue(one.getUserData() instanceof Map);
         assertEquals(42, two.getUserData());
         assertNull(three.getUserData());
     }
-
 }

@@ -17,64 +17,70 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EndTest {
+@DisplayName("End Test")
+class EndTest {
 
     @Test
-    public void whenCallingCapacity_itShouldReturnEmptyCapacity() {
+    @DisplayName("When Calling Capacity _ it Should Return Empty Capacity")
+    void whenCallingCapacity_itShouldReturnEmptyCapacity() {
         End end = End.newInstance("loc", 0., 0.);
         assertEquals(0, end.getSize().get(0));
     }
 
     @Test
-    public void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly() {
+    @DisplayName("When Start Is Ini With Earliest Start _ it Should Be Set Correctly")
+    void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly() {
         End end = End.newInstance("loc", 1., 2.);
         assertEquals(1., end.getTheoreticalEarliestOperationStartTime(), 0.01);
     }
 
     @Test
-    public void whenStartIsIniWithLatestStart_itShouldBeSetCorrectly() {
+    @DisplayName("When Start Is Ini With Latest Start _ it Should Be Set Correctly")
+    void whenStartIsIniWithLatestStart_itShouldBeSetCorrectly() {
         End end = End.newInstance("loc", 1., 2.);
         assertEquals(2., end.getTheoreticalLatestOperationStartTime(), 0.01);
     }
 
     @Test
-    public void whenSettingEndTime_itShouldBeSetCorrectly() {
+    @DisplayName("When Setting End Time _ it Should Be Set Correctly")
+    void whenSettingEndTime_itShouldBeSetCorrectly() {
         End end = End.newInstance("loc", 1., 2.);
         end.setEndTime(4.0);
         assertEquals(4., end.getEndTime(), 0.01);
     }
 
-
     @Test
-    public void whenSettingEarliestStart_itShouldBeSetCorrectly() {
+    @DisplayName("When Setting Earliest Start _ it Should Be Set Correctly")
+    void whenSettingEarliestStart_itShouldBeSetCorrectly() {
         End end = End.newInstance("loc", 1., 2.);
         end.setTheoreticalEarliestOperationStartTime(5.);
         assertEquals(5., end.getTheoreticalEarliestOperationStartTime(), 0.01);
     }
 
     @Test
-    public void whenSettingLatestStart_itShouldBeSetCorrectly() {
+    @DisplayName("When Setting Latest Start _ it Should Be Set Correctly")
+    void whenSettingLatestStart_itShouldBeSetCorrectly() {
         End end = End.newInstance("loc", 1., 2.);
         end.setTheoreticalLatestOperationStartTime(5.);
         assertEquals(5., end.getTheoreticalLatestOperationStartTime(), 0.01);
     }
 
     @Test
-    public void whenCopyingEnd_itShouldBeDoneCorrectly() {
+    @DisplayName("When Copying End _ it Should Be Done Correctly")
+    void whenCopyingEnd_itShouldBeDoneCorrectly() {
         End end = End.newInstance("loc", 1., 2.);
         end.setTheoreticalEarliestOperationStartTime(3.);
         end.setTheoreticalLatestOperationStartTime(5.);
-
         End copy = End.copyOf(end);
         assertEquals(3., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
         assertEquals(5., copy.getTheoreticalLatestOperationStartTime(), 0.01);
-        assertEquals("loc", copy.getLocation().getId());
+        assertEquals(copy.getLocation().getId(), "loc");
         assertTrue(copy != end);
     }
-
 }

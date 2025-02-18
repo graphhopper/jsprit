@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-public class TimeWindowTest {
+import org.junit.jupiter.api.DisplayName;
 
+@DisplayName("Time Window Test")
+class TimeWindowTest {
 }

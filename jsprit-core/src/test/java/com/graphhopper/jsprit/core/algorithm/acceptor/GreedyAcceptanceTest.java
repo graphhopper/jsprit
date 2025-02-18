@@ -18,38 +18,34 @@
 package com.graphhopper.jsprit.core.algorithm.acceptor;
 
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
-public class GreedyAcceptanceTest {
+@DisplayName("Greedy Acceptance Test")
+class GreedyAcceptanceTest {
 
     @Test
-    public void whenHavingNewSolAndLimitedMemory_removeWorstAndAddNew() {
-
+    @DisplayName("When Having New Sol And Limited Memory _ remove Worst And Add New")
+    void whenHavingNewSolAndLimitedMemory_removeWorstAndAddNew() {
         VehicleRoutingProblemSolution sol1 = mock(VehicleRoutingProblemSolution.class);
         VehicleRoutingProblemSolution sol2 = mock(VehicleRoutingProblemSolution.class);
         when(sol1.getCost()).thenReturn(1.0);
         when(sol2.getCost()).thenReturn(2.0);
-
         List<VehicleRoutingProblemSolution> solList = new ArrayList<VehicleRoutingProblemSolution>();
         solList.add(sol1);
         solList.add(sol2);
-
         VehicleRoutingProblemSolution sol3 = mock(VehicleRoutingProblemSolution.class);
-
         new GreedyAcceptance(2).acceptSolution(solList, sol3);
-
         assertEquals(2, solList.size());
         assertThat(sol3, is(solList.get(1)));
     }
-
 }

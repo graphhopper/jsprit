@@ -15,33 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.graphhopper.jsprit.core.problem.vehicle;
 
-
 import com.graphhopper.jsprit.core.problem.Location;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class VehicleTypeKeyTest {
+@DisplayName("Vehicle Type Key Test")
+class VehicleTypeKeyTest {
 
     @Test
-    public void typeIdentifierShouldBeEqual() {
-        Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("start")).addSkill("skill1").addSkill("skill2")
-            .addSkill("skill3").build();
-        Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("start")).addSkill("skill2").addSkill("skill1")
-            .addSkill("skill3").build();
+    @DisplayName("Type Identifier Should Be Equal")
+    void typeIdentifierShouldBeEqual() {
+        Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("start")).addSkill("skill1").addSkill("skill2").addSkill("skill3").build();
+        Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("start")).addSkill("skill2").addSkill("skill1").addSkill("skill3").build();
         assertTrue(v1.getVehicleTypeIdentifier().equals(v2.getVehicleTypeIdentifier()));
     }
 
     @Test
-    public void typeIdentifierShouldNotBeEqual() {
-        Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("start")).addSkill("skill1").addSkill("skill2")
-            .build();
-        Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("start")).addSkill("skill2").addSkill("skill1")
-            .addSkill("skill3").build();
+    @DisplayName("Type Identifier Should Not Be Equal")
+    void typeIdentifierShouldNotBeEqual() {
+        Vehicle v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("start")).addSkill("skill1").addSkill("skill2").build();
+        Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("start")).addSkill("skill2").addSkill("skill1").addSkill("skill3").build();
         assertFalse(v1.getVehicleTypeIdentifier().equals(v2.getVehicleTypeIdentifier()));
     }
 }

@@ -19,73 +19,78 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Service;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PickupServiceTest {
+@DisplayName("Pickup Service Test")
+class PickupServiceTest {
 
     private Service service;
 
     private PickupService pickup;
 
-    @Before
-    public void doBefore() {
-        service = Service.Builder.newInstance("service").setLocation(Location.newInstance("loc")).
-            setTimeWindow(TimeWindow.newInstance(1., 2.)).
-            addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
+    @BeforeEach
+    void doBefore() {
+        service = Service.Builder.newInstance("service").setLocation(Location.newInstance("loc")).setTimeWindow(TimeWindow.newInstance(1., 2.)).addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
         pickup = new PickupService(service);
         pickup.setTheoreticalEarliestOperationStartTime(service.getTimeWindow().getStart());
         pickup.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getEnd());
     }
 
     @Test
-    public void whenCallingCapacity_itShouldReturnCorrectCapacity() {
+    @DisplayName("When Calling Capacity _ it Should Return Correct Capacity")
+    void whenCallingCapacity_itShouldReturnCorrectCapacity() {
         assertEquals(10, pickup.getSize().get(0));
         assertEquals(100, pickup.getSize().get(1));
         assertEquals(1000, pickup.getSize().get(2));
     }
 
-
     @Test
-    public void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly() {
+    @DisplayName("When Start Is Ini With Earliest Start _ it Should Be Set Correctly")
+    void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly() {
         assertEquals(1., pickup.getTheoreticalEarliestOperationStartTime(), 0.01);
     }
 
     @Test
-    public void whenStartIsIniWithLatestStart_itShouldBeSetCorrectly() {
+    @DisplayName("When Start Is Ini With Latest Start _ it Should Be Set Correctly")
+    void whenStartIsIniWithLatestStart_itShouldBeSetCorrectly() {
         assertEquals(2., pickup.getTheoreticalLatestOperationStartTime(), 0.01);
     }
 
     @Test
-    public void whenSettingArrTime_itShouldBeSetCorrectly() {
+    @DisplayName("When Setting Arr Time _ it Should Be Set Correctly")
+    void whenSettingArrTime_itShouldBeSetCorrectly() {
         pickup.setArrTime(4.0);
         assertEquals(4., pickup.getArrTime(), 0.01);
     }
 
     @Test
-    public void whenSettingEndTime_itShouldBeSetCorrectly() {
+    @DisplayName("When Setting End Time _ it Should Be Set Correctly")
+    void whenSettingEndTime_itShouldBeSetCorrectly() {
         pickup.setEndTime(5.0);
         assertEquals(5., pickup.getEndTime(), 0.01);
     }
 
     @Test
-    public void whenIniLocationId_itShouldBeSetCorrectly() {
-        assertEquals("loc", pickup.getLocation().getId());
+    @DisplayName("When Ini Location Id _ it Should Be Set Correctly")
+    void whenIniLocationId_itShouldBeSetCorrectly() {
+        assertEquals(pickup.getLocation().getId(), "loc");
     }
 
     @Test
-    public void whenCopyingStart_itShouldBeDoneCorrectly() {
+    @DisplayName("When Copying Start _ it Should Be Done Correctly")
+    void whenCopyingStart_itShouldBeDoneCorrectly() {
         PickupService copy = (PickupService) pickup.duplicate();
         assertEquals(1., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
         assertEquals(2., copy.getTheoreticalLatestOperationStartTime(), 0.01);
-        assertEquals("loc", copy.getLocation().getId());
+        assertEquals(copy.getLocation().getId(), "loc");
         assertEquals(10, copy.getSize().get(0));
         assertEquals(100, copy.getSize().get(1));
         assertEquals(1000, copy.getSize().get(2));
         assertTrue(copy != pickup);
     }
-
 }

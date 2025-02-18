@@ -24,8 +24,9 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,17 +36,21 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
-public class CalcVehicleTypeDependentServiceInsertionTest {
+@DisplayName("Calc Vehicle Type Dependent Service Insertion Test")
+class CalcVehicleTypeDependentServiceInsertionTest {
 
     Vehicle veh1;
+
     Vehicle veh2;
+
     VehicleFleetManager fleetManager;
+
     Service service;
+
     VehicleRoute vehicleRoute;
 
-    @Before
-    public void doBefore() {
+    @BeforeEach
+    void doBefore() {
         veh1 = mock(Vehicle.class);
         veh2 = mock(Vehicle.class);
         when(veh1.getType()).thenReturn(VehicleTypeImpl.Builder.newInstance("type1").build());
@@ -55,24 +60,20 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
         fleetManager = mock(VehicleFleetManager.class);
         service = mock(Service.class);
         vehicleRoute = mock(VehicleRoute.class);
-
         when(fleetManager.getAvailableVehicles()).thenReturn(Arrays.asList(veh1, veh2));
-
         VehicleType type = mock(VehicleType.class);
         when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10).build());
         when(veh1.getType()).thenReturn(type);
-
         when(veh2.getType()).thenReturn(type);
-
         when(service.getSize()).thenReturn(Capacity.Builder.newInstance().build());
         when(service.getTimeWindow()).thenReturn(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
-
         when(vehicleRoute.getDriver()).thenReturn(null);
         when(vehicleRoute.getVehicle()).thenReturn(VehicleImpl.createNoVehicle());
     }
 
     @Test
-    public void whenHaving2Vehicle_calcInsertionOfCheapest() {
+    @DisplayName("When Having 2 Vehicle _ calc Insertion Of Cheapest")
+    void whenHaving2Vehicle_calcInsertionOfCheapest() {
         JobInsertionCostsCalculator calc = mock(JobInsertionCostsCalculator.class);
         InsertionData iDataVeh1 = new InsertionData(10.0, InsertionData.NO_INDEX, 1, veh1, null);
         InsertionData iDataVeh2 = new InsertionData(20.0, InsertionData.NO_INDEX, 1, veh2, null);
@@ -84,11 +85,11 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
         VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(vrp, fleetManager, calc);
         InsertionData iData = insertion.getInsertionData(vehicleRoute, service, null, 0.0, null, Double.MAX_VALUE);
         assertThat(iData.getSelectedVehicle(), is(veh1));
-
     }
 
     @Test
-    public void whenHaving2Vehicle_calcInsertionOfCheapest2() {
+    @DisplayName("When Having 2 Vehicle _ calc Insertion Of Cheapest 2")
+    void whenHaving2Vehicle_calcInsertionOfCheapest2() {
         JobInsertionCostsCalculator calc = mock(JobInsertionCostsCalculator.class);
         InsertionData iDataVeh1 = new InsertionData(20.0, InsertionData.NO_INDEX, 1, veh1, null);
         InsertionData iDataVeh2 = new InsertionData(10.0, InsertionData.NO_INDEX, 1, veh2, null);
@@ -100,6 +101,5 @@ public class CalcVehicleTypeDependentServiceInsertionTest {
         VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(vrp, fleetManager, calc);
         InsertionData iData = insertion.getInsertionData(vehicleRoute, service, null, 0.0, null, Double.MAX_VALUE);
         assertThat(iData.getSelectedVehicle(), is(veh2));
-
     }
 }

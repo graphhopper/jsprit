@@ -25,7 +25,6 @@ import com.graphhopper.jsprit.core.util.SolomonReader;
 import com.graphhopper.jsprit.core.util.Solutions;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.util.Collection;
 

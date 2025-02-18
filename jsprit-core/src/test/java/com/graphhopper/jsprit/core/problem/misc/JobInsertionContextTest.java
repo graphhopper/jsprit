@@ -15,23 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.graphhopper.jsprit.core.problem.misc;
-
 
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
-public class JobInsertionContextTest {
+@DisplayName("Job Insertion Context Test")
+class JobInsertionContextTest {
 
     VehicleRoute route;
 
@@ -45,8 +45,8 @@ public class JobInsertionContextTest {
 
     JobInsertionContext context;
 
-    @Before
-    public void doBefore() {
+    @BeforeEach
+    void doBefore() {
         route = mock(VehicleRoute.class);
         job = mock(Job.class);
         vehicle = mock(Vehicle.class);
@@ -56,41 +56,47 @@ public class JobInsertionContextTest {
     }
 
     @Test
-    public void routeShouldBeAssigned() {
+    @DisplayName("Route Should Be Assigned")
+    void routeShouldBeAssigned() {
         assertEquals(route, context.getRoute());
     }
 
     @Test
-    public void jobShouldBeAssigned() {
+    @DisplayName("Job Should Be Assigned")
+    void jobShouldBeAssigned() {
         assertEquals(job, context.getJob());
     }
 
     @Test
-    public void vehicleShouldBeAssigned() {
+    @DisplayName("Vehicle Should Be Assigned")
+    void vehicleShouldBeAssigned() {
         assertEquals(vehicle, context.getNewVehicle());
     }
 
     @Test
-    public void driverShouldBeAssigned() {
+    @DisplayName("Driver Should Be Assigned")
+    void driverShouldBeAssigned() {
         assertEquals(driver, context.getNewDriver());
     }
 
     @Test
-    public void depTimeShouldBeAssigned() {
+    @DisplayName("Dep Time Should Be Assigned")
+    void depTimeShouldBeAssigned() {
         assertEquals(0., context.getNewDepTime(), 0.001);
     }
 
     @Test
-    public void relatedActivitiesShouldBeAssigned() {
+    @DisplayName("Related Activities Should Be Assigned")
+    void relatedActivitiesShouldBeAssigned() {
         context.getAssociatedActivities().add(mock(TourActivity.class));
         context.getAssociatedActivities().add(mock(TourActivity.class));
         assertEquals(2, context.getAssociatedActivities().size());
     }
 
     @Test
-    public void relatedActivityContextShouldBeAssigned() {
+    @DisplayName("Related Activity Context Should Be Assigned")
+    void relatedActivityContextShouldBeAssigned() {
         context.setRelatedActivityContext(mock(ActivityContext.class));
         assertNotNull(context.getRelatedActivityContext());
     }
-
 }

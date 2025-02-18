@@ -37,22 +37,20 @@ import com.graphhopper.jsprit.core.problem.vehicle.InfiniteFleetManagerFactory;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.util.ChristofidesReader;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
 
-
-public class BuildCVRPAlgoFromScratch_IT {
+class BuildCVRPAlgoFromScratch_IT {
 
     VehicleRoutingProblem vrp;
 
     VehicleRoutingAlgorithm vra;
 
-    @Before
+    @BeforeEach
     public void setup() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         new ChristofidesReader(builder).read(getClass().getResourceAsStream("vrpnc1.txt"));
@@ -97,10 +95,10 @@ public class BuildCVRPAlgoFromScratch_IT {
     }
 
     @Test
-    public void testVRA() {
+    void testVRA() {
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        assertEquals(530.0, Solutions.bestOf(solutions).getCost(), 50.0);
-        assertEquals(5, Solutions.bestOf(solutions).getRoutes().size());
+        Assertions.assertEquals(530.0, Solutions.bestOf(solutions).getCost(), 50.0);
+        Assertions.assertEquals(5, Solutions.bestOf(solutions).getRoutes().size());
     }
 
 }

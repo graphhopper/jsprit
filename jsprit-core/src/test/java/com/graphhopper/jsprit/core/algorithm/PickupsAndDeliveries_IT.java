@@ -23,7 +23,6 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.util.LiLimReader;
 import com.graphhopper.jsprit.core.util.Solutions;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.util.Collection;
 

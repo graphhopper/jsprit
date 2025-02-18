@@ -21,15 +21,18 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DefaultTourActivityFactoryTest {
+@DisplayName("Default Tour Activity Factory Test")
+class DefaultTourActivityFactoryTest {
 
     @Test
-    public void whenCreatingActivityWithService_itShouldReturnPickupService() {
+    @DisplayName("When Creating Activity With Service _ it Should Return Pickup Service")
+    void whenCreatingActivityWithService_itShouldReturnPickupService() {
         DefaultTourActivityFactory factory = new DefaultTourActivityFactory();
         Service service = Service.Builder.newInstance("service").setLocation(Location.newInstance("loc")).build();
         TourActivity act = factory.createActivity(service);
@@ -38,7 +41,8 @@ public class DefaultTourActivityFactoryTest {
     }
 
     @Test
-    public void whenCreatingActivityWithPickup_itShouldReturnPickupService() {
+    @DisplayName("When Creating Activity With Pickup _ it Should Return Pickup Service")
+    void whenCreatingActivityWithPickup_itShouldReturnPickupService() {
         DefaultTourActivityFactory factory = new DefaultTourActivityFactory();
         Pickup service = (Pickup) Pickup.Builder.newInstance("service").setLocation(Location.newInstance("loc")).build();
         TourActivity act = factory.createActivity(service);
@@ -47,12 +51,12 @@ public class DefaultTourActivityFactoryTest {
     }
 
     @Test
-    public void whenCreatingActivityWithDelivery_itShouldReturnDeliverService() {
+    @DisplayName("When Creating Activity With Delivery _ it Should Return Deliver Service")
+    void whenCreatingActivityWithDelivery_itShouldReturnDeliverService() {
         DefaultTourActivityFactory factory = new DefaultTourActivityFactory();
         Delivery service = (Delivery) Delivery.Builder.newInstance("service").setLocation(Location.newInstance("loc")).build();
         TourActivity act = factory.createActivity(service);
         assertNotNull(act);
         assertTrue(act instanceof DeliverService);
     }
-
 }
