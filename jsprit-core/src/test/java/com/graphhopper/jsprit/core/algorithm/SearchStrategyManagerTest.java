@@ -31,7 +31,8 @@ import java.util.Random;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class SearchStrategyManagerTest {
@@ -76,7 +77,7 @@ public class SearchStrategyManagerTest {
 
         Random mockedRandom = mock(Random.class);
         manager.setRandom(mockedRandom);
-        stub(mockedRandom.nextDouble()).toReturn(0.25);
+        when(mockedRandom.nextDouble()).thenReturn(0.25);
 
         assertThat(manager.getRandomStrategy(), is(mockedStrat2));
     }
@@ -95,7 +96,7 @@ public class SearchStrategyManagerTest {
 
         Random mockedRandom = mock(Random.class);
         manager.setRandom(mockedRandom);
-        stub(mockedRandom.nextDouble()).toReturn(0.25);
+        when(mockedRandom.nextDouble()).thenReturn(0.25);
 
         assertThat(manager.getRandomStrategy(), is(mockedStrat2));
 
@@ -118,7 +119,7 @@ public class SearchStrategyManagerTest {
 
         Random mockedRandom = mock(Random.class);
         manager.setRandom(mockedRandom);
-        stub(mockedRandom.nextDouble()).toReturn(0.24);
+        when(mockedRandom.nextDouble()).thenReturn(0.24);
 
         assertThat(manager.getRandomStrategy(), is(mockedStrat1));
     }
@@ -137,7 +138,7 @@ public class SearchStrategyManagerTest {
 
         Random mockedRandom = mock(Random.class);
         managerUnderTest.setRandom(mockedRandom);
-        stub(mockedRandom.nextDouble()).toReturn(0.1);
+        when(mockedRandom.nextDouble()).thenReturn(0.1);
 
         assertThat(managerUnderTest.getRandomStrategy(), is(mockedStrategy1));
 
