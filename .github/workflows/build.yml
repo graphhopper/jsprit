@@ -1,11 +1,11 @@
-name: GitHub CI
+name: Build and test
+on: push
 
-on:
-    push:
-        branches:
-            - master
-        tags:
-            - '*'
+env:
+    # we use these in .ci.maven.settings.xml, which is needed to authenticate for core (!) GitHub packages
+    MAVEN_SETTINGS_USERNAME_FOR_GITHUB: ${{ secrets.MAVEN_SETTINGS_USERNAME_FOR_GITHUB }}
+    MAVEN_SETTINGS_PASSWORD_FOR_GITHUB: ${{ secrets.MAVEN_SETTINGS_PASSWORD_FOR_GITHUB }}
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
     build:
@@ -18,11 +18,15 @@ jobs:
                 with:
                     java-version: '21'
                     distribution: 'temurin'
+                    server-id: github
             -   name: Build with Maven
                 run: mvn --batch-mode --update-snapshots verify
+            -   name: Set jsprit version (tagged only)
+                run: mvn versions:set -DnewVersion=${{  github.ref_name }} -DgenerateBackupPoms=false --no-transfer-progress
+                if: startsWith(github.ref, 'refs/tags/')
             -   name: Publish to GitHub Packages
                 if: startsWith(github.ref, 'refs/tags/')
-                run: mvn --batch-mode deploy
+                run: mvn --batch-mode deploy -B --no-transfer-progress -DskipTests -P release
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
