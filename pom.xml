@@ -107,15 +107,10 @@
                 <version>3.11.0</version>
                 <configuration>
                     <compilerArgument>-XDignore.symbol.file</compilerArgument>
-                    <compilerArgs>
-                        <arg>--add-opens</arg>
-                        <arg>java.base/java.util=ALL-UNNAMED</arg>
-                    </compilerArgs>
                     <fork>true</fork>
                     <source>${jdkVersion}</source>
                     <target>${jdkVersion}</target>
                 </configuration>
-
             </plugin>
 
             <plugin>
@@ -191,80 +186,84 @@
     </dependencies>
 
     <distributionManagement>
-
+        <repository>
+            <id>github</id>
+            <name>GitHub GraphHopper Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/graphhopper/jsprit</url>
+        </repository>
     </distributionManagement>
 
     <!-- mvn clean deploy -P release -->
-    <profiles>
-        <profile>
-            <id>selected-build</id>
-            <modules>
-                <module>jsprit-core</module>
-                <module>jsprit-analysis</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>release</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.8</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
+    <!--    <profiles>-->
+    <!--        <profile>-->
+    <!--            <id>selected-build</id>-->
+    <!--            <modules>-->
+    <!--                <module>jsprit-core</module>-->
+    <!--                <module>jsprit-analysis</module>-->
+    <!--            </modules>-->
+    <!--        </profile>-->
+    <!--        <profile>-->
+    <!--            <id>release</id>-->
+    <!--            <activation>-->
+    <!--                <activeByDefault>false</activeByDefault>-->
+    <!--            </activation>-->
+    <!--            <build>-->
+    <!--                <plugins>-->
+    <!--                    <plugin>-->
+    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                        <artifactId>maven-gpg-plugin</artifactId>-->
+    <!--                        <version>1.6</version>-->
+    <!--                        <executions>-->
+    <!--                            <execution>-->
+    <!--                                <id>sign-artifacts</id>-->
+    <!--                                <phase>verify</phase>-->
+    <!--                                <goals>-->
+    <!--                                    <goal>sign</goal>-->
+    <!--                                </goals>-->
+    <!--                            </execution>-->
+    <!--                        </executions>-->
+    <!--                    </plugin>-->
+    <!--                    <plugin>-->
+    <!--                        <groupId>org.sonatype.plugins</groupId>-->
+    <!--                        <artifactId>nexus-staging-maven-plugin</artifactId>-->
+    <!--                        <version>1.6.7</version>-->
+    <!--                        <extensions>true</extensions>-->
+    <!--                        <configuration>-->
+    <!--                            <serverId>ossrh</serverId>-->
+    <!--                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
+    <!--                            <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
+    <!--                        </configuration>-->
+    <!--                    </plugin>-->
 
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.3</version>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>3.0.0</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+    <!--                    <plugin>-->
+    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                        <artifactId>maven-javadoc-plugin</artifactId>-->
+    <!--                        <version>2.10.3</version>-->
+    <!--                        <executions>-->
+    <!--                            <execution>-->
+    <!--                                <id>attach-javadocs</id>-->
+    <!--                                <goals>-->
+    <!--                                    <goal>jar</goal>-->
+    <!--                                </goals>-->
+    <!--                            </execution>-->
+    <!--                        </executions>-->
+    <!--                    </plugin>-->
+    <!--                    <plugin>-->
+    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                        <artifactId>maven-source-plugin</artifactId>-->
+    <!--                        <version>3.0.0</version>-->
+    <!--                        <executions>-->
+    <!--                            <execution>-->
+    <!--                                <id>attach-sources</id>-->
+    <!--                                <goals>-->
+    <!--                                    <goal>jar-no-fork</goal>-->
+    <!--                                </goals>-->
+    <!--                            </execution>-->
+    <!--                        </executions>-->
+    <!--                    </plugin>-->
+    <!--                </plugins>-->
+    <!--            </build>-->
+    <!--        </profile>-->
+    <!--    </profiles>-->
 
 </project>
