@@ -4,6 +4,8 @@ on:
     push:
         branches:
             - master
+        tags:
+            - '*'
 
 jobs:
     build:
@@ -18,3 +20,9 @@ jobs:
                     distribution: 'temurin'
             -   name: Build with Maven
                 run: mvn --batch-mode --update-snapshots verify
+            -   name: Publish to GitHub Packages
+                if: startsWith(github.ref, 'refs/tags/')
+                run: mvn --batch-mode deploy
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
