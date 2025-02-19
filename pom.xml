@@ -186,7 +186,11 @@
     </dependencies>
 
     <distributionManagement>
-
+        <repository>
+            <id>github</id>
+            <name>GitHub GraphHopper Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/graphhopper/jsprit</url>
+        </repository>
     </distributionManagement>
 
     <!-- mvn clean deploy -P release -->
