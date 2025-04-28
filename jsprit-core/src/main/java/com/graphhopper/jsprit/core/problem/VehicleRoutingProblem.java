@@ -578,7 +578,7 @@ public class VehicleRoutingProblem {
         this.activityMap = builder.activityMap;
         this.nuActivities = builder.activityIndexCounter;
         this.allLocations = builder.allLocations;
-        this.allJobs = new HashMap<>(jobs);
+        this.allJobs = new LinkedHashMap<>(jobs);
         this.allJobs.putAll(builder.jobsInInitialRoutes);
         logger.info("setup problem: {}", this);
     }
