@@ -128,11 +128,12 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         boolean tourEnd = false;
         //pickupShipmentLoop
         List<TourActivity> activities = currentRoute.getTourActivities().getActivities();
+        int activitiesSize = activities.size();
 
         List<HardConstraint> failedActivityConstraints = new ArrayList<>();
         while (!tourEnd) {
             TourActivity nextAct;
-            if (i < activities.size()) {
+            if (i < activitiesSize) {
                 nextAct = activities.get(i);
             } else {
                 nextAct = end;
@@ -182,7 +183,7 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                 boolean tourEnd_deliveryLoop = false;
                 while (!tourEnd_deliveryLoop) {
                     TourActivity nextAct_deliveryLoop;
-                    if (j < activities.size()) {
+                    if (j < activitiesSize) {
                         nextAct_deliveryLoop = activities.get(j);
                     } else {
                         nextAct_deliveryLoop = end;

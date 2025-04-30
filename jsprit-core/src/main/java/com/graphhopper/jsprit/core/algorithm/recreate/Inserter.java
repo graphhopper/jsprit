@@ -70,7 +70,7 @@ class Inserter {
             if (job instanceof Service) {
                 route.setVehicleAndDepartureTime(iData.getSelectedVehicle(), iData.getVehicleDepartureTime());
                 if (!iData.getSelectedVehicle().isReturnToDepot()) {
-                    if (iData.getDeliveryInsertionIndex() >= route.getTourActivities().getActivities().size()) {
+                    if (iData.getDeliveryInsertionIndex() >= route.getTourActivities().size()) {
                         setEndLocation(route, (Service) job);
                     }
                 }
