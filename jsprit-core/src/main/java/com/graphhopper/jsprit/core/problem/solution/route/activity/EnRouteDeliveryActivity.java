@@ -20,11 +20,11 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.EnRouteDelivery;
 
-public final class DeliverService extends AbstractActivity implements DeliveryActivity {
+public final class EnRouteDeliveryActivity extends AbstractActivity implements DeliveryActivity {
 
-    private final Delivery delivery;
+    private final EnRouteDelivery delivery;
 
     private final Capacity capacity;
 
@@ -36,13 +36,13 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
     private double theoreticalLatest = Double.MAX_VALUE;
 
-    public DeliverService(Delivery delivery) {
+    public EnRouteDeliveryActivity(EnRouteDelivery delivery) {
         super();
         this.delivery = delivery;
         capacity = Capacity.invert(delivery.getSize());
     }
 
-    private DeliverService(DeliverService deliveryActivity) {
+    private EnRouteDeliveryActivity(EnRouteDeliveryActivity deliveryActivity) {
         this.delivery = deliveryActivity.getJob();
         this.arrTime = deliveryActivity.getArrTime();
         this.endTime = deliveryActivity.getEndTime();
@@ -110,11 +110,11 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
     @Override
     public TourActivity duplicate() {
-        return new DeliverService(this);
+        return new EnRouteDeliveryActivity(this);
     }
 
     @Override
-    public Delivery getJob() {
+    public EnRouteDelivery getJob() {
         return delivery;
     }
 

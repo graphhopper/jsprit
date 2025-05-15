@@ -20,58 +20,43 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
+import com.graphhopper.jsprit.core.problem.job.EnRoutePickup;
 
-public final class DeliverService extends AbstractActivity implements DeliveryActivity {
+public final class EnRoutePickupActivity extends AbstractActivity implements PickupActivity {
 
-    private final Delivery delivery;
-
-    private final Capacity capacity;
+    private final EnRoutePickup pickup;
 
     private double arrTime;
 
-    private double endTime;
+    private double depTime;
 
     private double theoreticalEarliest = 0;
 
     private double theoreticalLatest = Double.MAX_VALUE;
 
-    public DeliverService(Delivery delivery) {
+    public EnRoutePickupActivity(EnRoutePickup pickup) {
         super();
-        this.delivery = delivery;
-        capacity = Capacity.invert(delivery.getSize());
+        this.pickup = pickup;
     }
 
-    private DeliverService(DeliverService deliveryActivity) {
-        this.delivery = deliveryActivity.getJob();
-        this.arrTime = deliveryActivity.getArrTime();
-        this.endTime = deliveryActivity.getEndTime();
-        capacity = deliveryActivity.getSize();
-        setIndex(deliveryActivity.getIndex());
-        this.theoreticalEarliest = deliveryActivity.getTheoreticalEarliestOperationStartTime();
-        this.theoreticalLatest = deliveryActivity.getTheoreticalLatestOperationStartTime();
+    private EnRoutePickupActivity(EnRoutePickupActivity pickupActivity) {
+        this.pickup = pickupActivity.getJob();
+        this.arrTime = pickupActivity.getArrTime();
+        this.depTime = pickupActivity.getEndTime();
+        setIndex(pickupActivity.getIndex());
+        this.theoreticalEarliest = pickupActivity.getTheoreticalEarliestOperationStartTime();
+        this.theoreticalLatest = pickupActivity.getTheoreticalLatestOperationStartTime();
     }
 
     @Override
     public String getName() {
-        return delivery.getType();
+        return pickup.getType();
     }
 
     @Override
     public Location getLocation() {
-        return delivery.getLocation();
+        return pickup.getLocation();
     }
-
-    @Override
-    public void setTheoreticalEarliestOperationStartTime(double earliest) {
-        theoreticalEarliest = earliest;
-    }
-
-    @Override
-    public void setTheoreticalLatestOperationStartTime(double latest) {
-        theoreticalLatest = latest;
-    }
-
 
     @Override
     public double getTheoreticalEarliestOperationStartTime() {
@@ -84,8 +69,18 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     }
 
     @Override
+    public void setTheoreticalEarliestOperationStartTime(double earliest) {
+        this.theoreticalEarliest = earliest;
+    }
+
+    @Override
+    public void setTheoreticalLatestOperationStartTime(double latest) {
+        this.theoreticalLatest = latest;
+    }
+
+    @Override
     public double getOperationTime() {
-        return delivery.getServiceDuration();
+        return pickup.getServiceDuration();
     }
 
     @Override
@@ -95,7 +90,7 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
     @Override
     public double getEndTime() {
-        return endTime;
+        return depTime;
     }
 
     @Override
@@ -105,17 +100,17 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
     @Override
     public void setEndTime(double endTime) {
-        this.endTime = endTime;
+        this.depTime = endTime;
     }
 
     @Override
     public TourActivity duplicate() {
-        return new DeliverService(this);
+        return new EnRoutePickupActivity(this);
     }
 
     @Override
-    public Delivery getJob() {
-        return delivery;
+    public EnRoutePickup getJob() {
+        return pickup;
     }
 
     public String toString() {
@@ -127,6 +122,7 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
 
     @Override
     public Capacity getSize() {
-        return capacity;
+        return pickup.getSize();
     }
+
 }

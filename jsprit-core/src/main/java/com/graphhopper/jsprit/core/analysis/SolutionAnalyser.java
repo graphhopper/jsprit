@@ -277,9 +277,10 @@ public class SolutionAnalyser {
             Capacity loadAtDepot = Capacity.Builder.newInstance().build();
             Capacity loadAtEnd = Capacity.Builder.newInstance().build();
             for (Job j : route.getTourActivities().getJobs()) {
-                if (j.getJobType().isDelivery()) {
+                if (j.isPickedUpAtVehicleStart()) {
                     loadAtDepot = Capacity.addup(loadAtDepot, j.getSize());
-                } else if (j.getJobType().isPickup() || j.getJobType().isService()) {
+                }
+                if (j.isDeliveredToVehicleEnd()) {
                     loadAtEnd = Capacity.addup(loadAtEnd, j.getSize());
                 }
             }

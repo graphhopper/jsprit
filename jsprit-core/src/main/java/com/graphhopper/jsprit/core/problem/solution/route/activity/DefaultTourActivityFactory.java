@@ -18,13 +18,19 @@
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
 import com.graphhopper.jsprit.core.problem.AbstractActivity;
-import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Pickup;
-import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.*;
 
 public class DefaultTourActivityFactory implements TourActivityFactory {
     @Override
     public AbstractActivity createActivity(Service service) {
+        if (service.getJobType().equals(Job.Type.EN_ROUTE_DELIVERY)) {
+            return new EnRouteDeliveryActivity((EnRouteDelivery) service);
+        }
+
+        if (service.getJobType().equals(Job.Type.EN_ROUTE_PICKUP)) {
+            return new EnRoutePickupActivity((EnRoutePickup) service);
+        }
+
         if (service.getJobType().isPickup()) {
             return new PickupService((Pickup) service);
         }

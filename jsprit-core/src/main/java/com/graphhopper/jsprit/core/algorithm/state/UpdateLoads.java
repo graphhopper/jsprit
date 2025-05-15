@@ -41,7 +41,7 @@ import java.util.Collection;
  */
 class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListener, JobInsertedListener {
 
-    private StateManager stateManager;
+    private final StateManager stateManager;
 
     /*
      * default has one dimension with a value of zero
@@ -77,9 +77,10 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
         Capacity loadAtDepot = Capacity.Builder.newInstance().build();
         Capacity loadAtEnd = Capacity.Builder.newInstance().build();
         for (Job j : route.getTourActivities().getJobs()) {
-            if (j.getJobType().isDelivery()) {
+            if (j.isPickedUpAtVehicleStart()) {
                 loadAtDepot = Capacity.addup(loadAtDepot, j.getSize());
-            } else if (j.getJobType().isPickup() || j.getJobType().isService()) {
+            }
+            if (j.isDeliveredToVehicleEnd()) {
                 loadAtEnd = Capacity.addup(loadAtEnd, j.getSize());
             }
         }
@@ -96,11 +97,12 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
 
     @Override
     public void informJobInserted(Job job2insert, VehicleRoute inRoute, InsertionData insertionData) {
-        if (job2insert.getJobType().isDelivery()) {
+        if (job2insert.isPickedUpAtVehicleStart()) {
             Capacity loadAtDepot = stateManager.getRouteState(inRoute, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
             if (loadAtDepot == null) loadAtDepot = defaultValue;
             stateManager.putTypedInternalRouteState(inRoute, InternalStates.LOAD_AT_BEGINNING, Capacity.addup(loadAtDepot, job2insert.getSize()));
-        } else if (job2insert.getJobType().isPickup() || job2insert.getJobType().isService()) {
+        }
+        if (job2insert.isDeliveredToVehicleEnd()) {
             Capacity loadAtEnd = stateManager.getRouteState(inRoute, InternalStates.LOAD_AT_END, Capacity.class);
             if (loadAtEnd == null) loadAtEnd = defaultValue;
             stateManager.putTypedInternalRouteState(inRoute, InternalStates.LOAD_AT_END, Capacity.addup(loadAtEnd, job2insert.getSize()));

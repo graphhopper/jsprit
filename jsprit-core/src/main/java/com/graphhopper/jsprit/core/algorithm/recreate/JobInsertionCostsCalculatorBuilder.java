@@ -321,6 +321,8 @@ public class JobInsertionCostsCalculatorBuilder {
         switcher.put(Service.class, serviceInsertion);
         switcher.put(Pickup.class, serviceInsertion);
         switcher.put(Delivery.class, serviceInsertion);
+        switcher.put(EnRoutePickup.class, serviceInsertion);
+        switcher.put(EnRouteDelivery.class, serviceInsertion);
         switcher.put(Break.class, breakInsertion);
 
         CalculatorPlusListeners calculatorPlusListeners = new CalculatorPlusListeners(switcher);

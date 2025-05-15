@@ -519,6 +519,14 @@ public class Plotter {
             activities.add(dataItem);
             addLabel(job, dataItem);
             switch (act.getActivityType()) {
+                case EN_ROUTE_DELIVERY:
+                    markItem(dataItem, Activity.DELIVERY);
+                    containsDeliveryAct = true;
+                    break;
+                case EN_ROUTE_PICKUP:
+                    markItem(dataItem, Activity.PICKUP);
+                    containsPickupAct = true;
+                    break;
                 case PICKUP:
                     markItem(dataItem, Activity.PICKUP);
                     containsPickupAct = true;

@@ -19,8 +19,10 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.Capacity;
+import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 
 
@@ -57,16 +59,18 @@ public class ServiceLoadActivityLevelConstraint implements HardActivityConstrain
             if (futureMaxLoad == null) futureMaxLoad = defaultValue;
             prevMaxLoad = stateManager.getActivityState(prevAct, InternalStates.PAST_MAXLOAD, Capacity.class);
             if (prevMaxLoad == null) prevMaxLoad = defaultValue;
-
         }
-        if (newAct instanceof PickupService || newAct instanceof ServiceActivity) {
-            if (!Capacity.addup(newAct.getSize(), futureMaxLoad).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
-                return ConstraintsStatus.NOT_FULFILLED;
+        if (newAct instanceof TourActivity.JobActivity) {
+            Job j = ((TourActivity.JobActivity) newAct).getJob();
+            if (j.isDeliveredToVehicleEnd()) {
+                if (!Capacity.addup(newAct.getSize(), futureMaxLoad).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+                    return ConstraintsStatus.NOT_FULFILLED;
+                }
             }
-        }
-        if (newAct instanceof DeliverService) {
-            if (!Capacity.addup(Capacity.invert(newAct.getSize()), prevMaxLoad).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
-                return ConstraintsStatus.NOT_FULFILLED_BREAK;
+            if (j.isPickedUpAtVehicleStart()) {
+                if (!Capacity.addup(Capacity.invert(newAct.getSize()), prevMaxLoad).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+                    return ConstraintsStatus.NOT_FULFILLED_BREAK;
+                }
             }
         }
         return ConstraintsStatus.FULFILLED;

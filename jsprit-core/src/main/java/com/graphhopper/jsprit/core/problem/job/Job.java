@@ -37,7 +37,9 @@ public interface Job extends HasId, HasIndex {
         SERVICE,
         PICKUP_SERVICE,
         DELIVERY_SERVICE,
-        BREAK_SERVICE;
+        BREAK_SERVICE,
+        EN_ROUTE_DELIVERY,
+        EN_ROUTE_PICKUP;
 
         public boolean isShipment() {
             return this == SHIPMENT;
@@ -70,6 +72,27 @@ public interface Job extends HasId, HasIndex {
         if (this instanceof Service) return Type.SERVICE;
         throw new IllegalStateException("Unknown job type: " + this.getClass());
     }
+
+    /**
+     * Indicates whether this job is picked up at the vehicle's start location.
+     * By default, only Delivery jobs are picked up at the vehicle's start location.
+     *
+     * @return true if job is picked up at vehicle start, false otherwise
+     */
+    default boolean isPickedUpAtVehicleStart() {
+        return this instanceof Delivery;
+    }
+
+    /**
+     * Indicates whether this job is delivered to the vehicle's end location.
+     * By default, only Pickup and Service jobs are delivered to the vehicle's end location.
+     *
+     * @return true if job is delivered to vehicle end, false otherwise
+     */
+    default boolean isDeliveredToVehicleEnd() {
+        return this instanceof Pickup || (this instanceof Service && !(this instanceof Delivery));
+    }
+
 
     /**
      * Returns the unique identifier (id) of a job.

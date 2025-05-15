@@ -60,7 +60,7 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
      */
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        if (!(newAct instanceof PickupShipment) && !(newAct instanceof DeliverShipment)) {
+        if (!isShipmentPickup(newAct) && !isShipmentDelivery(newAct)) {
             return ConstraintsStatus.FULFILLED;
         }
         Capacity loadAtPrevAct;
@@ -71,16 +71,27 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
             loadAtPrevAct = stateManager.getActivityState(prevAct, InternalStates.LOAD, Capacity.class);
             if (loadAtPrevAct == null) loadAtPrevAct = defaultValue;
         }
-        if (newAct instanceof PickupShipment) {
-            if (!Capacity.addup(loadAtPrevAct, newAct.getSize()).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+        if (isShipmentPickup(newAct)) {
+            Capacity addUp = Capacity.addup(loadAtPrevAct, newAct.getSize());
+            if (!addUp.isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
                 return ConstraintsStatus.NOT_FULFILLED;
             }
         }
-        if (newAct instanceof DeliverShipment) {
-            if (!Capacity.addup(loadAtPrevAct, Capacity.invert(newAct.getSize())).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions()))
+        if (isShipmentDelivery(newAct)) {
+            Capacity invert = Capacity.invert(newAct.getSize());
+            Capacity addUp = Capacity.addup(loadAtPrevAct, invert);
+            if (!addUp.isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions()))
                 return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
         return ConstraintsStatus.FULFILLED;
+    }
+
+    private static boolean isShipmentDelivery(TourActivity newAct) {
+        return newAct instanceof DeliverShipment;
+    }
+
+    private static boolean isShipmentPickup(TourActivity newAct) {
+        return newAct instanceof PickupShipment;
     }
 
 
