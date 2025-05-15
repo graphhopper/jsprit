@@ -122,6 +122,8 @@ class LoadConstraintTest {
         Service mock = mock(Service.class);
         when(mock.getJobType()).thenReturn(Job.Type.SERVICE);
         when(mock.getSize()).thenReturn(size);
+        when(mock.isDeliveredToVehicleEnd()).thenReturn(true);
+        when(mock.isPickedUpAtVehicleStart()).thenReturn(false);
         return mock;
     }
 
@@ -129,6 +131,8 @@ class LoadConstraintTest {
         Delivery mock = mock(Delivery.class);
         when(mock.getJobType()).thenReturn(Job.Type.DELIVERY_SERVICE);
         when(mock.getSize()).thenReturn(size);
+        when(mock.isDeliveredToVehicleEnd()).thenReturn(false);
+        when(mock.isPickedUpAtVehicleStart()).thenReturn(true);
         return mock;
     }
 
@@ -136,6 +140,8 @@ class LoadConstraintTest {
         Pickup mock = mock(Pickup.class);
         when(mock.getJobType()).thenReturn(Job.Type.PICKUP_SERVICE);
         when(mock.getSize()).thenReturn(size);
+        when(mock.isDeliveredToVehicleEnd()).thenReturn(true);
+        when(mock.isPickedUpAtVehicleStart()).thenReturn(false);
         return mock;
     }
 
@@ -143,6 +149,8 @@ class LoadConstraintTest {
         Shipment shipment = mock(Shipment.class);
         when(shipment.getJobType()).thenReturn(Job.Type.SHIPMENT);
         when(shipment.getSize()).thenReturn(size);
+        when(shipment.isDeliveredToVehicleEnd()).thenReturn(false);
+        when(shipment.isPickedUpAtVehicleStart()).thenReturn(false);
         return shipment;
     }
 
@@ -156,6 +164,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
         ServiceActivity newAct = mock(ServiceActivity.class);
         when(newAct.getSize()).thenReturn(size);
+        when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getStart(), newAct, serviceRoute.getActivities().get(0), 0.);
         assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
@@ -170,6 +179,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
         ServiceActivity newAct = mock(ServiceActivity.class);
         when(newAct.getSize()).thenReturn(size);
+        when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(0), newAct, serviceRoute.getActivities().get(1), 0.);
         assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
@@ -184,6 +194,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
         ServiceActivity newAct = mock(ServiceActivity.class);
         when(newAct.getSize()).thenReturn(size);
+        when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(1), newAct, serviceRoute.getEnd(), 0.);
         assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
@@ -201,6 +212,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
         ServiceActivity newAct = mock(ServiceActivity.class);
         when(newAct.getSize()).thenReturn(size);
+        when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getStart(), newAct, serviceRoute.getActivities().get(0), 0.);
         assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
@@ -215,6 +227,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
         ServiceActivity newAct = mock(ServiceActivity.class);
         when(newAct.getSize()).thenReturn(size);
+        when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(0), newAct, serviceRoute.getActivities().get(1), 0.);
         assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
@@ -229,6 +242,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
         ServiceActivity newAct = mock(ServiceActivity.class);
         when(newAct.getSize()).thenReturn(size);
+        when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(1), newAct, serviceRoute.getEnd(), 0.);
         assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
@@ -451,6 +465,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
         ServiceActivity newAct = mock(ServiceActivity.class);
         when(newAct.getSize()).thenReturn(size);
+        when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(0), newAct, serviceRoute.getActivities().get(1), 0.);
         assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
@@ -465,6 +480,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
         ServiceActivity newAct = mock(ServiceActivity.class);
         when(newAct.getSize()).thenReturn(size);
+        when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(1), newAct, serviceRoute.getEnd(), 0.);
         assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
@@ -482,6 +498,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
         ServiceActivity newAct = mock(ServiceActivity.class);
         when(newAct.getSize()).thenReturn(size);
+        when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getStart(), newAct, serviceRoute.getActivities().get(0), 0.);
         assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
@@ -496,6 +513,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
         ServiceActivity newAct = mock(ServiceActivity.class);
         when(newAct.getSize()).thenReturn(size);
+        when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(0), newAct, serviceRoute.getActivities().get(1), 0.);
         assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
@@ -510,6 +528,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
         ServiceActivity newAct = mock(ServiceActivity.class);
         when(newAct.getSize()).thenReturn(size);
+        when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(1), newAct, serviceRoute.getEnd(), 0.);
         assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }

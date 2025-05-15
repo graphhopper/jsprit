@@ -61,6 +61,8 @@ class ServiceLoadRouteLevelConstraintTest {
         Delivery d = mock(Delivery.class);
         when(d.getSize()).thenReturn(size);
         when(d.getJobType()).thenReturn(Job.Type.DELIVERY_SERVICE);
+        when(d.isDeliveredToVehicleEnd()).thenReturn(false);
+        when(d.isPickedUpAtVehicleStart()).thenReturn(true);
         return d;
     }
 
@@ -68,6 +70,8 @@ class ServiceLoadRouteLevelConstraintTest {
         Service d = mock(Service.class);
         when(d.getSize()).thenReturn(size);
         when(d.getJobType()).thenReturn(Job.Type.SERVICE);
+        when(d.isDeliveredToVehicleEnd()).thenReturn(true);
+        when(d.isPickedUpAtVehicleStart()).thenReturn(false);
         return d;
     }
 
@@ -75,6 +79,8 @@ class ServiceLoadRouteLevelConstraintTest {
         Pickup d = mock(Pickup.class);
         when(d.getSize()).thenReturn(size);
         when(d.getJobType()).thenReturn(Job.Type.PICKUP_SERVICE);
+        when(d.isDeliveredToVehicleEnd()).thenReturn(true);
+        when(d.isPickedUpAtVehicleStart()).thenReturn(false);
         return d;
     }
 
