@@ -95,7 +95,8 @@ public final class RuinString extends AbstractRuinStrategy {
         noStrings = Math.min(noStrings, vehicleRoutes.size());
         Set<Job> unassignedJobs = new HashSet<>();
         Set<VehicleRoute> ruinedRoutes = new HashSet<>();
-        Job prevJob = RandomUtils.nextJob(vrp.getJobs().values(), random);
+        Collection<Job> filteredJobs = filterJobs(vrp.getJobs().values());
+        Job prevJob = RandomUtils.nextJob(filteredJobs, random);
         Iterator<Job> neighborhoodIterator = jobNeighborhoods.getNearestNeighborsIterator(kMax * lMax, prevJob);
         while (neighborhoodIterator.hasNext() && ruinedRoutes.size() <= noStrings) {
             if (!unassignedJobs.contains(prevJob)) {
