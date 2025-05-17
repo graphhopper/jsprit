@@ -72,10 +72,12 @@ public final class RuinRandom extends AbstractRuinStrategy {
     }
 
     private void ruin(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved, List<Job> unassignedJobs) {
-        ArrayList<Job> availableJobs = new ArrayList<>(vrp.getJobs().values());
-        Collections.shuffle(availableJobs, random);
+        Collection<Job> availableJobs = vrp.getJobs().values();
+        Collection<Job> filteredJobs = filterJobs(availableJobs);
+        List<Job> shuffledJobs = new ArrayList<>(filteredJobs);
+        Collections.shuffle(shuffledJobs, random);
         int removed = 0;
-        for (Job job : availableJobs) {
+        for (Job job : shuffledJobs) {
             if (removed == nOfJobs2BeRemoved) break;
             if (removeJob(job, vehicleRoutes)) {
                 unassignedJobs.add(job);

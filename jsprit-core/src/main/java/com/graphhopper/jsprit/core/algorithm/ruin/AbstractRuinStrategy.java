@@ -28,7 +28,9 @@ import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 public abstract class AbstractRuinStrategy implements RuinStrategy {
@@ -40,6 +42,10 @@ public abstract class AbstractRuinStrategy implements RuinStrategy {
     protected Random random = RandomNumberGeneration.getRandom();
 
     protected VehicleRoutingProblem vrp;
+
+    protected JobFilter jobFilter = job -> true;
+
+    private boolean usingDefaultFilter = true;
 
     public void setRandom(Random random) {
         this.random = random;
@@ -109,5 +115,31 @@ public abstract class AbstractRuinStrategy implements RuinStrategy {
             return true;
         }
         return false;
+    }
+
+    public void setJobFilter(JobFilter filter) {
+        if (filter == null) {
+            this.jobFilter = job -> true;
+            this.usingDefaultFilter = true;
+        } else {
+            this.jobFilter = filter;
+            this.usingDefaultFilter = false;
+        }
+    }
+
+    protected Collection<Job> filterJobs(Collection<Job> jobs) {
+        if (usingDefaultFilter) {
+            return jobs; // Return original collection without copying
+        }
+
+        List<Job> filteredJobs = new ArrayList<>();
+        for (Job job : jobs) {
+            if (jobFilter.accept(job)) {
+                filteredJobs.add(job);
+            }
+        }
+
+        // If no jobs match the filter, fall back to all jobs
+        return filteredJobs.isEmpty() ? jobs : filteredJobs;
     }
 }

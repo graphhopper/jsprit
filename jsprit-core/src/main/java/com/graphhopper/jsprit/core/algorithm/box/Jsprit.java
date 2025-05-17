@@ -54,6 +54,7 @@ import java.util.concurrent.Executors;
 public class Jsprit {
 
     private final ActivityInsertionCostsCalculator activityInsertion;
+    private final JobFilter jobFilter;
 
     public enum Construction {
 
@@ -180,6 +181,8 @@ public class Jsprit {
         private Map<SearchStrategy, Double> customStrategies = new HashMap<>();
 
         private VehicleFleetManager fleetManager = null;
+
+        private JobFilter jobFilter = null;
 
         public static Builder newInstance(VehicleRoutingProblem vrp) {
             return new Builder(vrp);
@@ -325,6 +328,11 @@ public class Jsprit {
             return this;
         }
 
+        public Builder setJobFilter(JobFilter jobFilter) {
+            this.jobFilter = jobFilter;
+            return this;
+        }
+
         public VehicleRoutingAlgorithm buildAlgorithm() {
             return new Jsprit(this).create(vrp);
         }
@@ -406,6 +414,7 @@ public class Jsprit {
         this.random = builder.random;
         this.activityInsertion = builder.activityInsertionCalculator;
         this.acceptor = builder.solutionAcceptor;
+        this.jobFilter = builder.jobFilter;
         regretScorer = builder.regretScorer;
         regretScoringFunction = builder.regretScoringFunction;
         customStrategies.putAll(builder.customStrategies);
@@ -488,23 +497,26 @@ public class Jsprit {
 
         RuinRadial radial = new RuinRadial(vrp, vrp.getJobs().size(), jobNeighborhoods);
         radial.setRandom(random);
+        radial.setJobFilter(jobFilter);
         RuinShareFactoryImpl radialRuinFactory = new RuinShareFactoryImpl(
             toInteger(properties.getProperty(Parameter.RADIAL_MIN_SHARE.toString())),
             toInteger(properties.getProperty(Parameter.RADIAL_MAX_SHARE.toString())),
             random);
         radial.setRuinShareFactory(radialRuinFactory);
 
-        final RuinRandom random_for_regret = new RuinRandom(vrp, 0.5);
-        random_for_regret.setRandom(random);
-        random_for_regret.setRuinShareFactory(new RuinShareFactoryImpl(
+        final RuinRandom randomForRegret = new RuinRandom(vrp, 0.5);
+        randomForRegret.setJobFilter(jobFilter);
+        randomForRegret.setRandom(random);
+        randomForRegret.setRuinShareFactory(new RuinShareFactoryImpl(
             toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MIN_SHARE.toString())),
             toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MAX_SHARE.toString())),
             random)
         );
 
-        final RuinRandom random_for_best = new RuinRandom(vrp, 0.5);
-        random_for_best.setRandom(random);
-        random_for_best.setRuinShareFactory(new RuinShareFactoryImpl(
+        final RuinRandom randomForBest = new RuinRandom(vrp, 0.5);
+        randomForBest.setRandom(random);
+        randomForBest.setJobFilter(jobFilter);
+        randomForBest.setRuinShareFactory(new RuinShareFactoryImpl(
                 toInteger(properties.getProperty(Parameter.RANDOM_BEST_MIN_SHARE.toString())),
                 toInteger(properties.getProperty(Parameter.RANDOM_BEST_MAX_SHARE.toString())),
             random)
@@ -512,6 +524,7 @@ public class Jsprit {
 
         final RuinWorst worst = new RuinWorst(vrp, (int) (vrp.getJobs().values().size() * 0.5));
         worst.setRandom(random);
+        worst.setJobFilter(jobFilter);
         worst.setRuinShareFactory(new RuinShareFactoryImpl(
             toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
             toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())),
@@ -527,6 +540,7 @@ public class Jsprit {
 
         final RuinClusters clusters = new RuinClusters(vrp, (int) (vrp.getJobs().values().size() * 0.5), jobNeighborhoods);
         clusters.setRandom(random);
+        clusters.setJobFilter(jobFilter);
         clusters.setRuinShareFactory(new RuinShareFactoryImpl(
             toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
                 toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())),
@@ -542,10 +556,12 @@ public class Jsprit {
         stringRuin.setNoRoutes(kMin, kMax);
         stringRuin.setStringLength(lMin, lMax);
         stringRuin.setRandom(random);
+        stringRuin.setJobFilter(jobFilter);
 
         final RuinTimeRelated ruinTimeRelated = new RuinTimeRelated(vrp);
         ruinTimeRelated.setRuinShareFactory(radialRuinFactory);
         ruinTimeRelated.setRandom(random);
+        ruinTimeRelated.setJobFilter(jobFilter);
 
         AbstractInsertionStrategy regret;
 
@@ -652,10 +668,10 @@ public class Jsprit {
         timeRelatedBest.addModule(configureModule(new RuinAndRecreateModule(Strategy.TIME_RELATED_BEST.toString(), best, ruinTimeRelated)));
 
         SearchStrategy randomBest = new SearchStrategy(Strategy.RANDOM_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
-        randomBest.addModule(configureModule(new RuinAndRecreateModule(Strategy.RANDOM_BEST.toString(), best, random_for_best)));
+        randomBest.addModule(configureModule(new RuinAndRecreateModule(Strategy.RANDOM_BEST.toString(), best, randomForBest)));
 
         SearchStrategy randomRegret = new SearchStrategy(Strategy.RANDOM_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
-        randomRegret.addModule(configureModule(new RuinAndRecreateModule(Strategy.RANDOM_REGRET.toString(), regret, random_for_regret)));
+        randomRegret.addModule(configureModule(new RuinAndRecreateModule(Strategy.RANDOM_REGRET.toString(), regret, randomForRegret)));
 
         SearchStrategy worstRegret = new SearchStrategy(Strategy.WORST_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
         worstRegret.addModule(configureModule(new RuinAndRecreateModule(Strategy.WORST_REGRET.toString(), regret, worst)));

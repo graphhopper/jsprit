@@ -81,55 +81,76 @@ public final class RuinWorst extends AbstractRuinStrategy {
         }
     }
 
-    private Job getWorst(Collection<VehicleRoute> copied) {
+    private Job getWorst(Collection<VehicleRoute> routes) {
+        if (routes.isEmpty()) return null;
+
         Job worst = null;
         double bestSavings = Double.MIN_VALUE;
+        Map<Job, Double> savingsMap = new HashMap<>();
 
-        for (VehicleRoute route : copied) {
+        // Calculate savings for all jobs across all routes
+        for (VehicleRoute route : routes) {
             if (route.isEmpty()) continue;
-            Map<Job, Double> savingsMap = new HashMap<>();
-            TourActivity actBefore = route.getStart();
-            TourActivity actToEval = null;
-            for (TourActivity act : route.getActivities()) {
-                if (!(act instanceof TourActivity.JobActivity)) {
-                    continue;
-                }
 
-                if (actToEval == null) {
-                    actToEval = act;
-                    continue;
-                }
-                double savings = savings(route, actBefore, actToEval, act);
-                Job job = ((TourActivity.JobActivity) actToEval).getJob();
-                if (!savingsMap.containsKey(job)) {
-                    savingsMap.put(job, savings);
-                } else {
-                    double s = savingsMap.get(job);
-                    savingsMap.put(job, s + savings);
-                }
-                actBefore = actToEval;
-                actToEval = act;
-            }
-            if (actToEval == null) {
+            calculateSavingsForRoute(route, savingsMap);
+        }
+
+        // If no jobs have been evaluated, return null
+        if (savingsMap.isEmpty()) return null;
+
+        // Find the job with highest savings (worst job to keep)
+        for (Map.Entry<Job, Double> entry : savingsMap.entrySet()) {
+            Job job = entry.getKey();
+            double savings = entry.getValue();
+
+            // Skip jobs that don't pass the filter
+            if (!jobFilter.accept(job)) {
                 continue;
             }
-            double savings = savings(route, actBefore, actToEval, route.getEnd());
-            Job job = ((TourActivity.JobActivity) actToEval).getJob();
-            if (!savingsMap.containsKey(job)) {
-                savingsMap.put(job, savings);
-            } else {
-                double s = savingsMap.get(job);
-                savingsMap.put(job, s + savings);
-            }
-            //getCounts best
-            for (Job j : savingsMap.keySet()) {
-                if (savingsMap.get(j) > bestSavings) {
-                    bestSavings = savingsMap.get(j);
-                    worst = j;
-                }
+
+            if (savings > bestSavings) {
+                bestSavings = savings;
+                worst = job;
             }
         }
+
         return worst;
+    }
+
+    private void calculateSavingsForRoute(VehicleRoute route, Map<Job, Double> savingsMap) {
+        if (route.isEmpty()) return;
+
+        TourActivity actBefore = route.getStart();
+        TourActivity actToEval = null;
+
+        for (TourActivity act : route.getActivities()) {
+            if (!(act instanceof TourActivity.JobActivity)) {
+                continue;
+            }
+
+            if (actToEval == null) {
+                actToEval = act;
+                continue;
+            }
+
+            double savings = savings(route, actBefore, actToEval, act);
+            Job job = ((TourActivity.JobActivity) actToEval).getJob();
+
+            // Add to savings map
+            savingsMap.merge(job, savings, Double::sum);
+
+            actBefore = actToEval;
+            actToEval = act;
+        }
+
+        // Process the last activity
+        if (actToEval != null) {
+            double savings = savings(route, actBefore, actToEval, route.getEnd());
+            Job job = ((TourActivity.JobActivity) actToEval).getJob();
+
+            // Add to savings map
+            savingsMap.merge(job, savings, Double::sum);
+        }
     }
 
     private double savings(VehicleRoute route, TourActivity actBefore, TourActivity actToEval, TourActivity act) {

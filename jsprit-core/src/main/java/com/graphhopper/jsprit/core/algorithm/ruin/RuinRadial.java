@@ -102,7 +102,8 @@ public final class RuinRadial extends AbstractRuinStrategy {
         if (nOfJobs2BeRemoved == 0 || jobs.isEmpty()) {
             return Collections.emptyList();
         }
-        Job randomJob = RandomUtils.nextJob(jobs, random);
+        Collection<Job> filteredJobs = filterJobs(jobs);
+        Job randomJob = RandomUtils.nextJob(filteredJobs, random);
         return ruinRoutes(vehicleRoutes, randomJob, nOfJobs2BeRemoved);
     }
 
