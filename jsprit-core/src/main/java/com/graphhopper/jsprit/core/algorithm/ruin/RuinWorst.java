@@ -71,17 +71,20 @@ public final class RuinWorst extends AbstractRuinStrategy {
 
     private void ruin(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved, List<Job> unassignedJobs) {
         int toRemove = nOfJobs2BeRemoved;
+        Set<Job> tabu = new HashSet<>();
         while (toRemove > 0) {
-            Job worst = getWorst(vehicleRoutes);
+            Job worst = getWorst(vehicleRoutes, tabu);
             if (worst == null) break;
             if (removeJob(worst, vehicleRoutes)) {
                 unassignedJobs.add(worst);
+            } else {
+                tabu.add(worst);
             }
             toRemove--;
         }
     }
 
-    private Job getWorst(Collection<VehicleRoute> routes) {
+    private Job getWorst(Collection<VehicleRoute> routes, Set<Job> tabu) {
         if (routes.isEmpty()) return null;
 
         Job worst = null;
@@ -102,6 +105,10 @@ public final class RuinWorst extends AbstractRuinStrategy {
         for (Map.Entry<Job, Double> entry : savingsMap.entrySet()) {
             Job job = entry.getKey();
             double savings = entry.getValue();
+
+            if (tabu.contains(job) || !vrp.getJobs().containsKey(job.getId())) {
+                continue;
+            }
 
             // Skip jobs that don't pass the filter
             if (!jobFilter.accept(job)) {

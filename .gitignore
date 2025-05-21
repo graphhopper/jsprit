@@ -12,4 +12,6 @@
 # Eclipse
 .project
 .classpath
-/.settings/
+/.settings/s
+
+.editorconfig
