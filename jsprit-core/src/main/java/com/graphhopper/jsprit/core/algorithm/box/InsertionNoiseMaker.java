@@ -60,7 +60,7 @@ class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsList
     @Override
     public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
         if (random.nextDouble() < noiseProbability) {
-            return noiseLevel * maxCosts * random.nextGaussian();
+            return noiseLevel * maxCosts * random.nextDouble();
         }
         return 0;
     }
