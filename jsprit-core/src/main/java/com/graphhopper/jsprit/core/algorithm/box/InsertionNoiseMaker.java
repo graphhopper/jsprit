@@ -50,25 +50,17 @@ class InsertionNoiseMaker implements SoftActivityConstraint, IterationStartsList
         this.noiseLevel = noiseLevel;
         this.noiseProbability = noiseProbability;
         this.maxCosts = maxCosts;
-//        randomArray = new Random[vrp.getNuActivities() + 2];
-//        for (int i = 0; i < randomArray.length; i++) {
-//            Random r = new Random();
-//            r.setSeed(random.nextLong());
-//            randomArray[i] = r;
-//        }
     }
 
     @Override
     public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-        if (random.nextDouble() < noiseProbability) {
-            makeNoise = true;
-        } else makeNoise = false;
+
     }
 
     @Override
     public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        if (makeNoise) {
-            return noiseLevel * maxCosts * random.nextDouble();
+        if (random.nextDouble() < noiseProbability) {
+            return noiseLevel * maxCosts * random.nextGaussian();
         }
         return 0;
     }
