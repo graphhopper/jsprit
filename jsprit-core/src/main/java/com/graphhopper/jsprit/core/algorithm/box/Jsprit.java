@@ -341,7 +341,7 @@ public class Jsprit {
         /**
          * Set a custom service insertion calculator factory
          */
-        public Builder setServiceInsertionCalculatorFactory(ServiceInsertionCalculatorFactory factory) {
+        public Builder setServiceInsertionCalculatorFactory(JobInsertionCostsCalculatorFactory factory) {
             this.serviceCalculatorFactory = factory;
             return this;
         }
@@ -349,7 +349,7 @@ public class Jsprit {
         /**
          * Set a custom shipment insertion calculator factory
          */
-        public Builder setShipmentInsertionCalculatorFactory(ShipmentInsertionCalculatorFactory factory) {
+        public Builder setShipmentInsertionCalculatorFactory(JobInsertionCostsCalculatorFactory factory) {
             this.shipmentCalculatorFactory = factory;
             return this;
         }
