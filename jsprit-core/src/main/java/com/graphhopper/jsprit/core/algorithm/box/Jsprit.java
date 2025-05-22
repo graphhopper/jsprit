@@ -184,8 +184,9 @@ public class Jsprit {
 
         private JobFilter jobFilter = null;
 
-        private ServiceInsertionCalculatorFactory serviceCalculatorFactory = null;
-        private ShipmentInsertionCalculatorFactory shipmentCalculatorFactory = null;
+        private JobInsertionCostsCalculatorFactory serviceCalculatorFactory = null;
+
+        private JobInsertionCostsCalculatorFactory shipmentCalculatorFactory = null;
 
 
         public static Builder newInstance(VehicleRoutingProblem vrp) {
@@ -421,9 +422,9 @@ public class Jsprit {
 
     private final Map<SearchStrategy, Double> customStrategies = new HashMap<>();
 
-    private final ServiceInsertionCalculatorFactory serviceCalculatorFactory;
+    private final JobInsertionCostsCalculatorFactory serviceCalculatorFactory;
 
-    private final ShipmentInsertionCalculatorFactory shipmentCalculatorFactory;
+    private final JobInsertionCostsCalculatorFactory shipmentCalculatorFactory;
 
     private VehicleFleetManager vehicleFleetManager;
 
