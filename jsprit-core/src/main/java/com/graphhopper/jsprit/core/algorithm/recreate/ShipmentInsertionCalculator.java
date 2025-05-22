@@ -115,10 +115,9 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         TimeWindow bestPickupTimeWindow = null;
         TimeWindow bestDeliveryTimeWindow = null;
 
-        Start start = new Start(newVehicle.getStartLocation(), newVehicle.getEarliestDeparture(), newVehicle.getLatestArrival());
-        start.setEndTime(newVehicleDepartureTime);
+        Start start = createStartActivity(newVehicle, newVehicleDepartureTime);
 
-        End end = new End(newVehicle.getEndLocation(), 0.0, newVehicle.getLatestArrival());
+        End end = createEndActivity(newVehicle);
 
         ActivityContext pickupContext = new ActivityContext();
 
@@ -244,11 +243,7 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         }
         if (pickupInsertionIndex == InsertionData.NO_INDEX) {
             LOGGER.trace("Position cost: {}, feasible: {}", -1, false);
-            InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
-            for (HardConstraint failed : failedActivityConstraints) {
-                emptyInsertionData.addFailedConstrainName(failed.getClass().getSimpleName());
-            }
-            return emptyInsertionData;
+            return createNoInsertionFoundResult(failedActivityConstraints);
         }
         InsertionData insertionData = new InsertionData(bestCost, pickupInsertionIndex, deliveryInsertionIndex, newVehicle, newDriver);
         pickupShipment.setTheoreticalEarliestOperationStartTime(bestPickupTimeWindow.getStart());
@@ -256,9 +251,7 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         deliverShipment.setTheoreticalEarliestOperationStartTime(bestDeliveryTimeWindow.getStart());
         deliverShipment.setTheoreticalLatestOperationStartTime(bestDeliveryTimeWindow.getEnd());
         insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
-        insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, deliverShipment, deliveryInsertionIndex));
-        insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, pickupShipment, pickupInsertionIndex));
-        insertionData.getEvents().add(new SwitchVehicle(currentRoute, newVehicle, newVehicleDepartureTime));
+        addActivitiesAndVehicleSwitch(insertionData, currentRoute, newVehicle, pickupShipment, pickupInsertionIndex, deliverShipment, deliveryInsertionIndex, newVehicleDepartureTime);
         return insertionData;
     }
 

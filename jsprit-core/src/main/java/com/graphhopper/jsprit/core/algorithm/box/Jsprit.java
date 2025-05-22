@@ -184,6 +184,10 @@ public class Jsprit {
 
         private JobFilter jobFilter = null;
 
+        private ServiceInsertionCalculatorFactory serviceCalculatorFactory = null;
+        private ShipmentInsertionCalculatorFactory shipmentCalculatorFactory = null;
+
+
         public static Builder newInstance(VehicleRoutingProblem vrp) {
             return new Builder(vrp);
         }
@@ -333,6 +337,22 @@ public class Jsprit {
             return this;
         }
 
+        /**
+         * Set a custom service insertion calculator factory
+         */
+        public Builder setServiceInsertionCalculatorFactory(ServiceInsertionCalculatorFactory factory) {
+            this.serviceCalculatorFactory = factory;
+            return this;
+        }
+
+        /**
+         * Set a custom shipment insertion calculator factory
+         */
+        public Builder setShipmentInsertionCalculatorFactory(ShipmentInsertionCalculatorFactory factory) {
+            this.shipmentCalculatorFactory = factory;
+            return this;
+        }
+
         public VehicleRoutingAlgorithm buildAlgorithm() {
             return new Jsprit(this).create(vrp);
         }
@@ -401,6 +421,10 @@ public class Jsprit {
 
     private final Map<SearchStrategy, Double> customStrategies = new HashMap<>();
 
+    private final ServiceInsertionCalculatorFactory serviceCalculatorFactory;
+
+    private final ShipmentInsertionCalculatorFactory shipmentCalculatorFactory;
+
     private VehicleFleetManager vehicleFleetManager;
 
     private Jsprit(Builder builder) {
@@ -415,6 +439,8 @@ public class Jsprit {
         this.activityInsertion = builder.activityInsertionCalculator;
         this.acceptor = builder.solutionAcceptor;
         this.jobFilter = builder.jobFilter;
+        this.shipmentCalculatorFactory = builder.shipmentCalculatorFactory;
+        this.serviceCalculatorFactory = builder.serviceCalculatorFactory;
         regretScorer = builder.regretScorer;
         regretScoringFunction = builder.regretScoringFunction;
         customStrategies.putAll(builder.customStrategies);
@@ -575,6 +601,8 @@ public class Jsprit {
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
+                        .setServiceInsertionCalculator(this.serviceCalculatorFactory)
+                        .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
                     .build();
                 regretInsertion.setRegretScoringFunction(regretScoringFunction);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
@@ -587,6 +615,8 @@ public class Jsprit {
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
+                        .setServiceInsertionCalculator(this.serviceCalculatorFactory)
+                        .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
                     .build();
                 regretInsertion.setRegretScoringFunction(regretScoringFunction);
                 regret = regretInsertion;
@@ -599,6 +629,8 @@ public class Jsprit {
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
+                        .setServiceInsertionCalculator(this.serviceCalculatorFactory)
+                        .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
                     .build();
                 regretInsertion.setRegretScoringFunction(regretScoringFunction);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
@@ -610,7 +642,9 @@ public class Jsprit {
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
-                    .build();
+                        .setServiceInsertionCalculator(this.serviceCalculatorFactory)
+                        .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
+                        .build();
                 regretInsertion.setRegretScoringFunction(regretScoringFunction);
                 regret = regretInsertion;
             }
@@ -624,6 +658,8 @@ public class Jsprit {
                 .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                 .setActivityInsertionCostCalculator(activityInsertion)
+                    .setServiceInsertionCalculator(this.serviceCalculatorFactory)
+                    .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
                 .build();
             best = bestInsertion;
         } else {
@@ -633,6 +669,8 @@ public class Jsprit {
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                 .setConcurrentMode(es, noThreads)
                 .setActivityInsertionCostCalculator(activityInsertion)
+                    .setServiceInsertionCalculator(this.serviceCalculatorFactory)
+                    .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
                 .build();
             best = bestInsertion;
         }
@@ -736,7 +774,7 @@ public class Jsprit {
             vra.addListener(new BreakScheduling(vrp, stateManager, constraintManager));
         }
         handleExecutorShutdown(vra);
-        vra.setMaxIterations(Integer.valueOf(properties.getProperty(Parameter.ITERATIONS.toString())));
+        vra.setMaxIterations(Integer.parseInt(properties.getProperty(Parameter.ITERATIONS.toString())));
 
         return vra;
 

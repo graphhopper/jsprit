@@ -316,16 +316,16 @@ public class JobInsertionCostsCalculatorBuilder {
         JobInsertionCostsCalculator serviceInsertion = serviceCalculatorFactory.create(vrp, actInsertionCalc, activityFactory, constraintManager);
         JobInsertionCostsCalculator breakInsertion = breakCalculatorFactory.create(vrp, actInsertionCalc, activityFactory, constraintManager);
 
-        JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
-        switcher.put(Shipment.class, shipmentInsertion);
-        switcher.put(Service.class, serviceInsertion);
-        switcher.put(Pickup.class, serviceInsertion);
-        switcher.put(Delivery.class, serviceInsertion);
-        switcher.put(EnRoutePickup.class, serviceInsertion);
-        switcher.put(EnRouteDelivery.class, serviceInsertion);
-        switcher.put(Break.class, breakInsertion);
+        JobCalculatorSelector jobCalculatorSelector = new JobCalculatorSelector();
+        jobCalculatorSelector.put(Shipment.class, shipmentInsertion);
+        jobCalculatorSelector.put(Service.class, serviceInsertion);
+        jobCalculatorSelector.put(Pickup.class, serviceInsertion);
+        jobCalculatorSelector.put(Delivery.class, serviceInsertion);
+        jobCalculatorSelector.put(EnRoutePickup.class, serviceInsertion);
+        jobCalculatorSelector.put(EnRouteDelivery.class, serviceInsertion);
+        jobCalculatorSelector.put(Break.class, breakInsertion);
 
-        CalculatorPlusListeners calculatorPlusListeners = new CalculatorPlusListeners(switcher);
+        CalculatorPlusListeners calculatorPlusListeners = new CalculatorPlusListeners(jobCalculatorSelector);
         if (configLocal != null) {
             calculatorPlusListeners.insertionListener.add(configLocal);
         }

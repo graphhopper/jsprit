@@ -54,7 +54,7 @@ public class InsertionData {
         return noInsertion;
     }
 
-    static int NO_INDEX = -1;
+    public static int NO_INDEX = -1;
 
     private final double insertionCost;
 

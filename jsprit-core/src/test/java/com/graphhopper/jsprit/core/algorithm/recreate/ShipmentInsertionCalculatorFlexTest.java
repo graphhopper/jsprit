@@ -311,7 +311,7 @@ class ShipmentInsertionCalculatorFlexTest {
         List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
         activities.add(new PickupService(service));
         when(activityFactory.createActivities(service)).thenReturn(activities);
-        JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
+        JobCalculatorSelector switcher = new JobCalculatorSelector();
         ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
         ShipmentInsertionCalculatorFlex insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
         insertionCalculator.setJobActivityFactory(activityFactory);

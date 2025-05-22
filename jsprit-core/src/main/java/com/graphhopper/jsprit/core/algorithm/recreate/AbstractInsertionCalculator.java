@@ -1,21 +1,3 @@
-/*
- * Licensed to GraphHopper GmbH under one or more contributor
- * license agreements. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership.
- *
- * GraphHopper GmbH licenses this file to you under the Apache License,
- * Version 2.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
@@ -24,18 +6,26 @@ import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.Con
 import com.graphhopper.jsprit.core.problem.constraint.HardConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by schroeder on 06/02/17.
+ * Enhanced AbstractInsertionCalculator with more common functionality moved up
+ * to simplify implementation of concrete calculators.
  */
-abstract class AbstractInsertionCalculator implements JobInsertionCostsCalculator {
+public abstract class AbstractInsertionCalculator implements JobInsertionCostsCalculator {
 
-    InsertionData checkRouteConstraints(JobInsertionContext insertionContext, ConstraintManager constraintManager) {
+    /**
+     * Check if route constraints are fulfilled
+     */
+    protected InsertionData checkRouteConstraints(JobInsertionContext insertionContext, ConstraintManager constraintManager) {
         for (HardRouteConstraint hardRouteConstraint : constraintManager.getHardRouteConstraints()) {
             if (!hardRouteConstraint.fulfilled(insertionContext)) {
                 InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
@@ -46,7 +36,10 @@ abstract class AbstractInsertionCalculator implements JobInsertionCostsCalculato
         return null;
     }
 
-    ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime, Collection<HardConstraint> failedActivityConstraints, ConstraintManager constraintManager) {
+    /**
+     * Check if activity constraints are fulfilled
+     */
+    protected ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime, Collection<HardConstraint> failedActivityConstraints, ConstraintManager constraintManager) {
         if (!constraintManager.hasHardActivityConstraints()) return ConstraintsStatus.FULFILLED;
         ConstraintsStatus notFulfilled = null;
         List<HardConstraint> failed = new ArrayList<>();
@@ -94,4 +87,53 @@ abstract class AbstractInsertionCalculator implements JobInsertionCostsCalculato
         return ConstraintsStatus.FULFILLED;
     }
 
+    /**
+     * Creates a Start activity for a vehicle at a given departure time
+     */
+    protected Start createStartActivity(Vehicle vehicle, double departureTime) {
+        Start start = new Start(vehicle.getStartLocation(), vehicle.getEarliestDeparture(), vehicle.getLatestArrival());
+        start.setEndTime(departureTime);
+        return start;
+    }
+
+    /**
+     * Creates an End activity for a vehicle
+     */
+    protected End createEndActivity(Vehicle vehicle) {
+        return new End(vehicle.getEndLocation(), 0.0, vehicle.getLatestArrival());
+    }
+
+    /**
+     * Creates a NoInsertionFound result with failed constraint information
+     */
+    protected InsertionData createNoInsertionFoundResult(Collection<HardConstraint> failedConstraints) {
+        InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
+        for (HardConstraint failed : failedConstraints) {
+            emptyInsertionData.addFailedConstrainName(failed.getClass().getSimpleName());
+        }
+        return emptyInsertionData;
+    }
+
+    /**
+     * Adds events to insertion data for a job that requires two activities (like Shipment)
+     */
+    protected void addActivitiesAndVehicleSwitch(InsertionData insertionData, VehicleRoute route,
+                                                 Vehicle vehicle, TourActivity firstActivity, int firstActivityIndex,
+                                                 TourActivity secondActivity, int secondActivityIndex,
+                                                 double departureTime) {
+        // Order matters here - we need to insert second activity before first to maintain indices
+        insertionData.getEvents().add(new InsertActivity(route, vehicle, secondActivity, secondActivityIndex));
+        insertionData.getEvents().add(new InsertActivity(route, vehicle, firstActivity, firstActivityIndex));
+        insertionData.getEvents().add(new SwitchVehicle(route, vehicle, departureTime));
+    }
+
+    /**
+     * Adds events to insertion data for a job that requires a single activity (like Service)
+     */
+    protected void addActivityAndVehicleSwitch(InsertionData insertionData, VehicleRoute route,
+                                               Vehicle vehicle, TourActivity activity, int activityIndex,
+                                               double departureTime) {
+        insertionData.getEvents().add(new InsertActivity(route, vehicle, activity, activityIndex));
+        insertionData.getEvents().add(new SwitchVehicle(route, vehicle, departureTime));
+    }
 }
