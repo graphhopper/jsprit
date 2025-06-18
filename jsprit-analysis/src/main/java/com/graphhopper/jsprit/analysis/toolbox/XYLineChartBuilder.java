@@ -18,7 +18,7 @@
 package com.graphhopper.jsprit.analysis.toolbox;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -43,7 +43,7 @@ public class XYLineChartBuilder {
      */
     public static void saveChartAsPNG(JFreeChart chart, String pngFilename) {
         try {
-            ChartUtilities.saveChartAsPNG(new File(pngFilename), chart, 1000, 600);
+            ChartUtils.saveChartAsPNG(new File(pngFilename), chart, 1000, 600);
         } catch (IOException e) {
             e.printStackTrace();
         }
