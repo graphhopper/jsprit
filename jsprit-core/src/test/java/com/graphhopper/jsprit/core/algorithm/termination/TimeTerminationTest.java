@@ -24,6 +24,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Assertions;
+
 /**
  * Created by schroeder on 16.12.14.
  */
@@ -43,7 +45,7 @@ class TimeTerminationTest {
             }
         });
         tt.start(0);
-        assertFalse(tt.isPrematureBreak(null));
+        Assertions.assertFalse(tt.isPrematureBreak(null));
     }
 
     @Test
@@ -59,6 +61,6 @@ class TimeTerminationTest {
             }
         });
         tt.start(0);
-        assertTrue(tt.isPrematureBreak(null));
+        Assertions.assertTrue(tt.isPrematureBreak(null));
     }
 }

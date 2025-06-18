@@ -92,7 +92,8 @@ public class ExperimentalSchrimpfAcceptance implements SolutionAcceptor, Iterati
 
     private double getThreshold(int iteration) {
         double scheduleVariable = (double) iteration / (double) nOfTotalIterations;
-//		logger.debug("iter={} totalIter={} scheduling={}", iteration, nOfTotalIterations, scheduleVariable);
+		// logger.debug("iter={} totalIter={} scheduling={}", iteration,
+		// nOfTotalIterations, scheduleVariable);
         double currentThreshold = initialThreshold * Math.exp(-Math.log(2) * scheduleVariable / alpha);
         return currentThreshold;
     }
@@ -108,7 +109,7 @@ public class ExperimentalSchrimpfAcceptance implements SolutionAcceptor, Iterati
         this.nOfTotalIterations = algorithm.getMaxIterations();
 
 		/*
-         * randomWalk to determine standardDev
+		 * randomWalk to determine standardDev
 		 */
         final double[] results = new double[nOfRandomWalks];
 
@@ -121,7 +122,7 @@ public class ExperimentalSchrimpfAcceptance implements SolutionAcceptor, Iterati
             @Override
             public void informIterationEnds(int iteration, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
                 double result = Solutions.bestOf(solutions).getCost();
-//				logger.info("result={}", result);
+				// logger.info("result={}", result);
                 results[iteration - 1] = result;
             }
 

@@ -41,12 +41,13 @@ import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.EuclideanDistanceCalculator;
 import com.graphhopper.jsprit.core.util.Locations;
 import com.graphhopper.jsprit.core.util.ManhattanDistanceCalculator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.mockito.Mockito.mock;
 
 
@@ -72,7 +73,7 @@ public class TestCalculatesServiceInsertion {
 
     private VehicleRoutingProblem vrp;
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         VehicleType t1 = VehicleTypeImpl.Builder.newInstance("t1").addCapacityDimension(0, 1000).setCostPerDistance(1.0).build();
@@ -151,8 +152,8 @@ public class TestCalculatesServiceInsertion {
         states.informInsertionStarts(Arrays.asList(route), null);
 
         InsertionData iData = serviceInsertion.getInsertionData(route, first, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
-        assertEquals(20.0, iData.getInsertionCost(), 0.2);
-        assertEquals(0, iData.getDeliveryInsertionIndex());
+		Assertions.assertEquals(20.0, iData.getInsertionCost(), 0.2);
+		Assertions.assertEquals(0, iData.getDeliveryInsertionIndex());
     }
 
     @Test
@@ -161,8 +162,8 @@ public class TestCalculatesServiceInsertion {
         states.informInsertionStarts(Arrays.asList(route), null);
 
         InsertionData iData = serviceInsertion.getInsertionData(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
-        assertEquals(20.0, iData.getInsertionCost(), 0.2);
-        assertEquals(0, iData.getDeliveryInsertionIndex());
+		Assertions.assertEquals(20.0, iData.getInsertionCost(), 0.2);
+		Assertions.assertEquals(0, iData.getDeliveryInsertionIndex());
     }
 
     @Test
@@ -171,8 +172,8 @@ public class TestCalculatesServiceInsertion {
         states.informInsertionStarts(Arrays.asList(route), null);
 
         InsertionData iData = serviceInsertion.getInsertionData(route, second, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
-        assertEquals(0.0, iData.getInsertionCost(), 0.2);
-        assertEquals(1, iData.getDeliveryInsertionIndex());
+		Assertions.assertEquals(0.0, iData.getInsertionCost(), 0.2);
+		Assertions.assertEquals(1, iData.getDeliveryInsertionIndex());
     }
 
     @Test
@@ -181,8 +182,8 @@ public class TestCalculatesServiceInsertion {
         states.informInsertionStarts(Arrays.asList(route), null);
 
         InsertionData iData = serviceInsertion.getInsertionData(route, second, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
-        assertEquals(40.0, iData.getInsertionCost(), 0.2);
-        assertEquals(1, iData.getDeliveryInsertionIndex());
+		Assertions.assertEquals(40.0, iData.getInsertionCost(), 0.2);
+		Assertions.assertEquals(1, iData.getDeliveryInsertionIndex());
     }
 
     @Test
@@ -191,8 +192,8 @@ public class TestCalculatesServiceInsertion {
         states.informInsertionStarts(Arrays.asList(route), null);
 
         InsertionData iData = serviceInsertion.getInsertionData(route, third, vehicle, vehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
-        assertEquals(0.0, iData.getInsertionCost(), 0.2);
-        assertEquals(2, iData.getDeliveryInsertionIndex());
+		Assertions.assertEquals(0.0, iData.getInsertionCost(), 0.2);
+		Assertions.assertEquals(2, iData.getDeliveryInsertionIndex());
     }
 
     @Test
@@ -203,8 +204,8 @@ public class TestCalculatesServiceInsertion {
         states.informInsertionStarts(Arrays.asList(route), null);
 
         InsertionData iData = serviceInsertion.getInsertionData(route, third, newVehicle, newVehicle.getEarliestDeparture(), null, Double.MAX_VALUE);
-        assertEquals(50.0, iData.getInsertionCost(), 0.2);
-        assertEquals(2, iData.getDeliveryInsertionIndex());
+		Assertions.assertEquals(50.0, iData.getInsertionCost(), 0.2);
+		Assertions.assertEquals(2, iData.getDeliveryInsertionIndex());
     }
 
     @Test
@@ -213,7 +214,7 @@ public class TestCalculatesServiceInsertion {
         AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(costs);
         Job job = Service.Builder.newInstance("1").addSizeDimension(0, 0).setLocation(Location.newInstance("1")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
         JobInsertionContext iContex = new JobInsertionContext(route, job, newVehicle, mock(Driver.class), 0.0);
-        assertEquals(0.0, accessEgressCalc.getCosts(iContex), 0.01);
+		Assertions.assertEquals(0.0, accessEgressCalc.getCosts(iContex), 0.01);
     }
 
     @Test
@@ -224,7 +225,7 @@ public class TestCalculatesServiceInsertion {
 
         AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(costs);
         JobInsertionContext iContex = new JobInsertionContext(route, first, newVehicle, mock(Driver.class), 0.0);
-        assertEquals(0.0, accessEgressCalc.getCosts(iContex), 0.01);
+		Assertions.assertEquals(0.0, accessEgressCalc.getCosts(iContex), 0.01);
     }
 
     @Test
@@ -262,6 +263,6 @@ public class TestCalculatesServiceInsertion {
         AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(routingCosts);
         Job job = Service.Builder.newInstance("service2").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build();
         JobInsertionContext iContex = new JobInsertionContext(route, job, newVehicle, mock(Driver.class), 0.0);
-        assertEquals(8.0, accessEgressCalc.getCosts(iContex), 0.01);
+		Assertions.assertEquals(8.0, accessEgressCalc.getCosts(iContex), 0.01);
     }
 }

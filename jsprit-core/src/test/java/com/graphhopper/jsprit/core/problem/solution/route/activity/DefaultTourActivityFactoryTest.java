@@ -27,6 +27,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Assertions;
+
 @DisplayName("Default Tour Activity Factory Test")
 class DefaultTourActivityFactoryTest {
 
@@ -37,7 +39,7 @@ class DefaultTourActivityFactoryTest {
         Service service = Service.Builder.newInstance("service").setLocation(Location.newInstance("loc")).build();
         TourActivity act = factory.createActivity(service);
         assertNotNull(act);
-        assertTrue(act instanceof PickupService);
+        Assertions.assertTrue(act instanceof PickupService);
     }
 
     @Test
@@ -47,7 +49,7 @@ class DefaultTourActivityFactoryTest {
         Pickup service = (Pickup) Pickup.Builder.newInstance("service").setLocation(Location.newInstance("loc")).build();
         TourActivity act = factory.createActivity(service);
         assertNotNull(act);
-        assertTrue(act instanceof PickupService);
+        Assertions.assertTrue(act instanceof PickupService);
     }
 
     @Test
@@ -57,6 +59,6 @@ class DefaultTourActivityFactoryTest {
         Delivery service = (Delivery) Delivery.Builder.newInstance("service").setLocation(Location.newInstance("loc")).build();
         TourActivity act = factory.createActivity(service);
         assertNotNull(act);
-        assertTrue(act instanceof DeliverService);
+        Assertions.assertTrue(act instanceof DeliverService);
     }
 }

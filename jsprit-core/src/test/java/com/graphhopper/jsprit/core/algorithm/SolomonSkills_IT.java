@@ -31,11 +31,11 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.util.SolomonReader;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.TestUtils;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
-
-import static org.junit.Assert.*;
 
 /**
  * to test skills with penalty vehicles
@@ -80,17 +80,17 @@ public class SolomonSkills_IT {
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-        assertEquals(828.94, solution.getCost(), 0.01);
+        Assertions.assertEquals(828.94, solution.getCost(), 0.01);
         for (VehicleRoute route : solution.getRoutes()) {
             Skills vehicleSkill = route.getVehicle().getSkills();
             for (Job job : route.getTourActivities().getJobs()) {
                 for (String skill : job.getRequiredSkills().values()) {
                     if (!vehicleSkill.containsSkill(skill)) {
-                        assertFalse(true);
+                        Assertions.assertFalse(true);
                     }
                 }
             }
         }
-        assertTrue(true);
+        Assertions.assertTrue(true);
     }
 }

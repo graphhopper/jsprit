@@ -25,6 +25,8 @@ import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -117,7 +119,7 @@ class VehicleRouteBuilderTest {
         Shipment shipment2 = createMockShipment(null);
         builder.addPickup(shipment1).addPickup(shipment2).addDelivery(shipment1).addDelivery(shipment2);
         VehicleRoute route = builder.build();
-        assertEquals(4, route.getTourActivities().getActivities().size());
+        Assertions.assertEquals(4, route.getTourActivities().getActivities().size());
     }
 
     @Test
@@ -127,7 +129,7 @@ class VehicleRouteBuilderTest {
         Shipment s2 = createMockShipment(null);
         Vehicle vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("vehLoc")).setEndLocation(Location.newInstance("vehLoc")).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, driver).addPickup(s).addPickup(s2).addDelivery(s).addDelivery(s2).build();
-        assertEquals(route.getEnd().getLocation().getId(), "vehLoc");
+        Assertions.assertEquals(route.getEnd().getLocation().getId(), "vehLoc");
     }
 
     @Test
@@ -139,7 +141,7 @@ class VehicleRouteBuilderTest {
         when(vehicle.isReturnToDepot()).thenReturn(false);
         when(vehicle.getStartLocation()).thenReturn(loc("vehLoc"));
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(s).addPickup(s2).addDelivery(s).addDelivery(s2).build();
-        assertEquals(route.getEnd().getLocation().getId(), s2.getDeliveryLocation().getId());
+        Assertions.assertEquals(route.getEnd().getLocation().getId(), s2.getDeliveryLocation().getId());
     }
 
     private Location loc(String delLoc) {
@@ -155,7 +157,7 @@ class VehicleRouteBuilderTest {
         when(vehicle.isReturnToDepot()).thenReturn(false);
         when(vehicle.getStartLocation()).thenReturn(Location.Builder.newInstance().setId("vehLoc").build());
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(s).addPickup(s2).addDelivery(s).addDelivery(s2).setDepartureTime(100).build();
-        assertEquals(100.0, route.getDepartureTime(), 0.01);
-        assertEquals(100.0, route.getStart().getEndTime(), 0.01);
+        Assertions.assertEquals(100.0, route.getDepartureTime(), 0.01);
+        Assertions.assertEquals(100.0, route.getStart().getEndTime(), 0.01);
     }
 }

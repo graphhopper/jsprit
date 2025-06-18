@@ -51,7 +51,7 @@ class InfiniteVehicles implements VehicleFleetManager {
         for (Vehicle v : vehicles) {
 //            VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocation().getId(), v.getEndLocation().getId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills(), v.isReturnToDepot());
             types.put(v.getVehicleTypeIdentifier(), v);
-//			sortedTypes.add(typeKey);
+			// sortedTypes.add(typeKey);
         }
     }
 

@@ -19,6 +19,8 @@ package com.graphhopper.jsprit.core.algorithm.acceptor;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -52,25 +52,29 @@ class SchrimpfAcceptanceTest {
         // create empty memory with an initial capacity of 1
         memory = new ArrayList<VehicleRoutingProblemSolution>(1);
         // insert the initial (worst) solution, will be accepted anyway since its the first in the memory
-        assertTrue(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.0)), "Solution (initial cost = 2.0) should be accepted since the memory is empty");
+        Assertions.assertTrue(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.0)),
+                "Solution (initial cost = 2.0) should be accepted since the memory is empty");
     }
 
     @Test
     @DisplayName("Respects The Zero Threshold _ using Worst Cost Solution")
     void respectsTheZeroThreshold_usingWorstCostSolution() {
-        assertFalse(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.1)), "Worst cost solution (2.1 > 2.0) should not be accepted");
+        Assertions.assertFalse(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.1)),
+                "Worst cost solution (2.1 > 2.0) should not be accepted");
     }
 
     @Test
     @DisplayName("Respects The Zero Threshold _ using Better Cost Solution")
     void respectsTheZeroThreshold_usingBetterCostSolution() {
-        assertTrue(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(1.9)), "Better cost solution (1.9 < 2.0) should be accepted");
+        Assertions.assertTrue(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(1.9)),
+                "Better cost solution (1.9 < 2.0) should be accepted");
     }
 
     @Test
     @DisplayName("Respects The Zero Threshold _ using Same Cost Solution")
     void respectsTheZeroThreshold_usingSameCostSolution() {
-        assertFalse(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.0)), "Same cost solution (2.0 == 2.0) should not be accepted");
+        Assertions.assertFalse(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.0)),
+                "Same cost solution (2.0 == 2.0) should not be accepted");
     }
 
     @Test
@@ -78,17 +82,21 @@ class SchrimpfAcceptanceTest {
     void respectsTheNonZeroThreshold_usingWorstCostSolution() {
         schrimpfAcceptance.setInitialThreshold(0.5);
         /*
-         * it should be accepted since 2.1 < 2.0 + 0.5 (2.0 is the best solution found so far and 0.5 the ini threshold
-		 * since the threshold of 0.5 allows new solutions to be <0.5 worse than the current best solution
-		 */
-        assertTrue(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.1)), "Worst cost solution (2.1 > 2.0) should be accepted");
+         * it should be accepted since 2.1 < 2.0 + 0.5 (2.0 is the best solution found
+         * so far and 0.5 the ini threshold
+         * since the threshold of 0.5 allows new solutions to be <0.5 worse than the
+         * current best solution
+         */
+        Assertions.assertTrue(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.1)),
+                "Worst cost solution (2.1 > 2.0) should be accepted");
     }
 
     @Test
     @DisplayName("Respects The Non Zero Threshold _ using Better Cost Solution")
     void respectsTheNonZeroThreshold_usingBetterCostSolution() {
         schrimpfAcceptance.setInitialThreshold(0.5);
-        assertTrue(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(1.0)), "Better cost solution (1.0 < 2.0) should be accepted since the better cost bust the threshold");
+        Assertions.assertTrue(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(1.0)),
+                "Better cost solution (1.0 < 2.0) should be accepted since the better cost bust the threshold");
     }
 
     @Test
@@ -96,14 +104,16 @@ class SchrimpfAcceptanceTest {
     void respectsTheNonZeroThreshold_usingBetterButBelowTheThresholdCostSolution() {
         schrimpfAcceptance.setInitialThreshold(0.5);
         // new solution can also be in between 2.0 and 2.5, but it is even better than 2.0 --> thus true
-        assertTrue(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(1.9)), "Better cost solution (1.9 < 2.0) should not be accepted since the better cost is still below the threshold");
+        Assertions.assertTrue(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(1.9)),
+                "Better cost solution (1.9 < 2.0) should not be accepted since the better cost is still below the threshold");
     }
 
     @Test
     @DisplayName("Respects The Non Zero Threshold _ using Same Cost Solution")
     void respectsTheNonZeroThreshold_usingSameCostSolution() {
         schrimpfAcceptance.setInitialThreshold(0.5);
-        assertTrue(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.0)), "Same cost solution (2.0 == 2.0) should not be accepted");
+        Assertions.assertTrue(schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.0)),
+                "Same cost solution (2.0 == 2.0) should not be accepted");
     }
 
     @Test
@@ -112,7 +122,7 @@ class SchrimpfAcceptanceTest {
         schrimpfAcceptance.setInitialThreshold(0.5);
         schrimpfAcceptance.informIterationStarts(0, mock(VehicleRoutingProblem.class), Collections.<VehicleRoutingProblemSolution>emptyList());
         boolean accepted = schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.499999));
-        assertTrue(accepted);
+        Assertions.assertTrue(accepted);
     }
 
     @Test
@@ -124,7 +134,7 @@ class SchrimpfAcceptanceTest {
         // according to the acceptance-function, it should just accept every solution less than 2.0 + 0.15749013123
         // threshold(500) = 0.15749013123
         boolean accepted = schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.15748));
-        assertTrue(accepted);
+        Assertions.assertTrue(accepted);
     }
 
     @Test
@@ -136,7 +146,7 @@ class SchrimpfAcceptanceTest {
         // according to the acceptance-function, it should just accept every solution less than 2.0 + 0.15749013123
         // threshold(500) = 0.15749013123
         boolean accepted = schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.1575));
-        assertFalse(accepted);
+        Assertions.assertFalse(accepted);
     }
 
     @Test
@@ -148,7 +158,7 @@ class SchrimpfAcceptanceTest {
         // according to the acceptance-function, it should just accept every solution less than 2.0 + 0.04960628287
         // threshold(1000)= 0.04960628287
         boolean accepted = schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.0496));
-        assertTrue(accepted);
+        Assertions.assertTrue(accepted);
     }
 
     @Test
@@ -160,6 +170,6 @@ class SchrimpfAcceptanceTest {
         // according to the acceptance-function, it should just accept every solution less than 2.0 + 0.04960628287
         // threshold(1000)=0.04960628287
         boolean accepted = schrimpfAcceptance.acceptSolution(memory, createSolutionWithCost(2.0497));
-        assertFalse(accepted);
+        Assertions.assertFalse(accepted);
     }
 }

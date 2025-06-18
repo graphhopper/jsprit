@@ -24,6 +24,8 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -67,8 +69,8 @@ class RuinRadialTest {
         try {
             ruinRadial.ruinRoutes(Arrays.asList(route));
         } catch (Exception e) {
-            assertFalse(true, "error when ruining routes with radial ruin");
+            Assertions.assertFalse(true, "error when ruining routes with radial ruin");
         }
-        assertTrue(true);
+        Assertions.assertTrue(true);
     }
 }

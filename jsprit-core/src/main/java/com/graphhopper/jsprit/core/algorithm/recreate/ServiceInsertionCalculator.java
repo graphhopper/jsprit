@@ -136,7 +136,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
                 tourEnd = true;
             }
             boolean not_fulfilled_break = true;
-			for(TimeWindow timeWindow : service.getTimeWindows()) {
+			for (TimeWindow timeWindow : service.getTimeWindows()) {
                 deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
                 deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
                 ActivityContext activityContext = new ActivityContext();

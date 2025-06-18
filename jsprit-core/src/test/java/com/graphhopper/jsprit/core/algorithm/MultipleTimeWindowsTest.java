@@ -29,6 +29,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Assertions;
+
 /**
  * Created by schroeder on 26/05/15.
  */
@@ -45,7 +47,7 @@ class MultipleTimeWindowsTest {
         VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(vrp);
         algorithm.setMaxIterations(100);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(algorithm.searchSolutions());
-        assertEquals(1, solution.getUnassignedJobs().size());
+        Assertions.assertEquals(1, solution.getUnassignedJobs().size());
     }
 
     @Test
@@ -59,8 +61,8 @@ class MultipleTimeWindowsTest {
         VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(vrp);
         algorithm.setMaxIterations(100);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(algorithm.searchSolutions());
-        assertEquals(0, solution.getUnassignedJobs().size());
-        assertEquals(2, solution.getRoutes().size());
+        Assertions.assertEquals(0, solution.getUnassignedJobs().size());
+        Assertions.assertEquals(2, solution.getRoutes().size());
     }
 
     @Test
@@ -73,6 +75,6 @@ class MultipleTimeWindowsTest {
         VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(vrp);
         algorithm.setMaxIterations(100);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(algorithm.searchSolutions());
-        assertEquals(0, solution.getUnassignedJobs().size());
+        Assertions.assertEquals(0, solution.getUnassignedJobs().size());
     }
 }

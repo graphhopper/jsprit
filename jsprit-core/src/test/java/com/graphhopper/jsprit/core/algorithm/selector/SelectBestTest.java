@@ -18,15 +18,14 @@
 package com.graphhopper.jsprit.core.algorithm.selector;
 
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +39,7 @@ class SelectBestTest {
         VehicleRoutingProblemSolution sol2 = mock(VehicleRoutingProblemSolution.class);
         when(sol1.getCost()).thenReturn(1.0);
         when(sol2.getCost()).thenReturn(2.0);
-        assertThat(new SelectBest().selectSolution(Arrays.asList(sol1, sol2)), is(sol1));
+        Assertions.assertSame(new SelectBest().selectSolution(Arrays.asList(sol1, sol2)), sol1);
     }
 
     @Test
@@ -48,12 +47,12 @@ class SelectBestTest {
     void whenHavingOnly1Solutions_selectThisOne() {
         VehicleRoutingProblemSolution sol1 = mock(VehicleRoutingProblemSolution.class);
         when(sol1.getCost()).thenReturn(1.0);
-        assertThat(new SelectBest().selectSolution(Arrays.asList(sol1)), is(sol1));
+        Assertions.assertSame(new SelectBest().selectSolution(Arrays.asList(sol1)), sol1);
     }
 
     @Test
     @DisplayName("When Having No Solutions _ return Null")
     void whenHavingNoSolutions_returnNull() {
-        assertNull(new SelectBest().selectSolution(Collections.<VehicleRoutingProblemSolution>emptyList()));
+        Assertions.assertNull(new SelectBest().selectSolution(Collections.<VehicleRoutingProblemSolution>emptyList()));
     }
 }

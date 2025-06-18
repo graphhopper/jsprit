@@ -31,6 +31,8 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.TestUtils;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -38,9 +40,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -71,7 +70,7 @@ class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         builder.setFleetSize(FleetSize.INFINITE);
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(FleetSize.INFINITE, vrp.getFleetSize());
+        Assertions.assertEquals(FleetSize.INFINITE, vrp.getFleetSize());
     }
 
     @Test
@@ -80,7 +79,7 @@ class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
         builder.setFleetSize(FleetSize.FINITE);
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(FleetSize.FINITE, vrp.getFleetSize());
+        Assertions.assertEquals(FleetSize.FINITE, vrp.getFleetSize());
     }
 
     @Test
@@ -93,8 +92,8 @@ class VehicleRoutingProblemTest {
         VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setStartLocation(Location.newInstance("start")).build();
         builder.addVehicle(v1).addVehicle(v2).addVehicle(v3).addVehicle(v4);
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(4, vrp.getVehicles().size());
-        assertEquals(1, vrp.getAllLocations().size());
+        Assertions.assertEquals(4, vrp.getVehicles().size());
+        Assertions.assertEquals(1, vrp.getAllLocations().size());
     }
 
     @Test
@@ -107,7 +106,7 @@ class VehicleRoutingProblemTest {
         VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setStartLocation(Location.newInstance("start")).build();
         builder.addAllVehicles(Arrays.asList(v1, v2, v3, v4));
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(4, vrp.getVehicles().size());
+        Assertions.assertEquals(4, vrp.getVehicles().size());
     }
 
     @Test
@@ -122,7 +121,7 @@ class VehicleRoutingProblemTest {
         VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setStartLocation(Location.newInstance("yo")).setType(type2).build();
         builder.addVehicle(v1).addVehicle(v2).addVehicle(v3).addVehicle(v4);
         VehicleRoutingProblem vrp = builder.build();
-        assertEquals(2, vrp.getTypes().size());
+        Assertions.assertEquals(2, vrp.getTypes().size());
     }
 
     @Test
@@ -134,10 +133,10 @@ class VehicleRoutingProblemTest {
         vrpBuilder.addJob(s);
         vrpBuilder.addJob(s2);
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertEquals(2, vrp.getJobs().size());
-        assertEquals(s, vrp.getJobs().get("s"));
-        assertEquals(s2, vrp.getJobs().get("s2"));
-        assertEquals(2, vrp.getAllLocations().size());
+        Assertions.assertEquals(2, vrp.getJobs().size());
+        Assertions.assertEquals(s, vrp.getJobs().get("s"));
+        Assertions.assertEquals(s2, vrp.getJobs().get("s2"));
+        Assertions.assertEquals(2, vrp.getAllLocations().size());
     }
 
     @Test
@@ -148,11 +147,11 @@ class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(s1).addJob(s2);
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertEquals(2, vrp.getJobs().size());
-        assertEquals(s1, vrp.getJobs().get("s1"));
-        assertEquals(s2, vrp.getJobs().get("s2"));
-        assertEquals(1, vrp.getAllLocations().size());
-        assertEquals(1, vrp.getJobsWithLocation().size());
+        Assertions.assertEquals(2, vrp.getJobs().size());
+        Assertions.assertEquals(s1, vrp.getJobs().get("s1"));
+        Assertions.assertEquals(s2, vrp.getJobs().get("s2"));
+        Assertions.assertEquals(1, vrp.getAllLocations().size());
+        Assertions.assertEquals(1, vrp.getJobsWithLocation().size());
     }
 
     @Test
@@ -163,10 +162,10 @@ class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(s1).addJob(s2);
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertEquals(2, vrp.getJobs().size());
-        assertEquals(s1, vrp.getJobs().get("s1"));
-        assertEquals(s2, vrp.getJobs().get("s2"));
-        assertEquals(1, vrp.getAllLocations().size());
+        Assertions.assertEquals(2, vrp.getJobs().size());
+        Assertions.assertEquals(s1, vrp.getJobs().get("s1"));
+        Assertions.assertEquals(s2, vrp.getJobs().get("s2"));
+        Assertions.assertEquals(1, vrp.getAllLocations().size());
     }
 
     @Test
@@ -181,9 +180,9 @@ class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(s1).addJob(s2);
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertEquals(2, vrp.getJobs().size());
-        assertEquals(s1, vrp.getJobs().get("s1"));
-        assertEquals(s2, vrp.getJobs().get("s2"));
+        Assertions.assertEquals(2, vrp.getJobs().size());
+        Assertions.assertEquals(s1, vrp.getJobs().get("s1"));
+        Assertions.assertEquals(s2, vrp.getJobs().get("s2"));
     }
 
     @Test
@@ -198,9 +197,9 @@ class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addAllJobs(Arrays.asList(s1, s2));
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertEquals(2, vrp.getJobs().size());
-        assertEquals(s1, vrp.getJobs().get("s1"));
-        assertEquals(s2, vrp.getJobs().get("s2"));
+        Assertions.assertEquals(2, vrp.getJobs().size());
+        Assertions.assertEquals(s1, vrp.getJobs().get("s1"));
+        Assertions.assertEquals(s2, vrp.getJobs().get("s2"));
     }
 
     @Test
@@ -217,9 +216,9 @@ class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(s1).addJob(s2);
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertEquals(2, vrp.getJobs().size());
-        assertEquals(s1, vrp.getJobs().get("s1"));
-        assertEquals(s2, vrp.getJobs().get("s2"));
+        Assertions.assertEquals(2, vrp.getJobs().size());
+        Assertions.assertEquals(s1, vrp.getJobs().get("s1"));
+        Assertions.assertEquals(s2, vrp.getJobs().get("s2"));
     }
 
     @Test
@@ -236,9 +235,9 @@ class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addAllJobs(Arrays.asList(s1, s2));
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertEquals(2, vrp.getJobs().size());
-        assertEquals(s1, vrp.getJobs().get("s1"));
-        assertEquals(s2, vrp.getJobs().get("s2"));
+        Assertions.assertEquals(2, vrp.getJobs().size());
+        Assertions.assertEquals(s1, vrp.getJobs().get("s1"));
+        Assertions.assertEquals(s2, vrp.getJobs().get("s2"));
     }
 
     @Test
@@ -256,9 +255,9 @@ class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addAllJobs(services);
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertEquals(2, vrp.getJobs().size());
-        assertEquals(s1, vrp.getJobs().get("s1"));
-        assertEquals(s2, vrp.getJobs().get("s2"));
+        Assertions.assertEquals(2, vrp.getJobs().size());
+        Assertions.assertEquals(s1, vrp.getJobs().get("s1"));
+        Assertions.assertEquals(s2, vrp.getJobs().get("s2"));
     }
 
     @Test
@@ -278,7 +277,7 @@ class VehicleRoutingProblemTest {
             }
         });
         VehicleRoutingProblem problem = builder.build();
-        assertEquals(4.0, problem.getActivityCosts().getActivityCost(null, 0.0, null, null), 0.01);
+        Assertions.assertEquals(4.0, problem.getActivityCosts().getActivityCost(null, 0.0, null, null), 0.01);
     }
 
     @Test
@@ -303,7 +302,8 @@ class VehicleRoutingProblemTest {
             }
         });
         VehicleRoutingProblem problem = builder.build();
-        assertEquals(4.0, problem.getTransportCosts().getTransportCost(loc(""), loc(""), 0.0, null, null), 0.01);
+        Assertions.assertEquals(4.0, problem.getTransportCosts().getTransportCost(loc(""), loc(""), 0.0, null, null),
+                0.01);
     }
 
     private Location loc(String i) {
@@ -313,7 +313,7 @@ class VehicleRoutingProblemTest {
     @Test
     @DisplayName("When Adding Vehicles With Same Id _ it Should Throw Exception")
     void whenAddingVehiclesWithSameId_itShouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
             VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
             VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
             VehicleImpl vehicle1 = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setType(type).build();
@@ -326,7 +326,7 @@ class VehicleRoutingProblemTest {
     @Test
     @DisplayName("When Adding Vehicle Types With Same Id But Different Costs _ it Should Throw Exception")
     void whenAddingVehicleTypesWithSameIdButDifferentCosts_itShouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
             VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
             VehicleType type1 = VehicleTypeImpl.Builder.newInstance("type").build();
             VehicleType type2 = VehicleTypeImpl.Builder.newInstance("type").setCostPerServiceTime(2d).build();
@@ -340,7 +340,7 @@ class VehicleRoutingProblemTest {
     @Test
     @DisplayName("When Building Problem With Same Break Id _ it Should Throw Exception")
     void whenBuildingProblemWithSameBreakId_itShouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
             VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
             VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
             VehicleImpl vehicle1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("loc")).setType(type).setBreak(Break.Builder.newInstance("break").build()).build();
@@ -359,8 +359,8 @@ class VehicleRoutingProblemTest {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).setType(type).build();
         builder.addVehicle(vehicle);
-        assertEquals(1, builder.getAddedVehicleTypes().size());
-        assertEquals(type, builder.getAddedVehicleTypes().iterator().next());
+        Assertions.assertEquals(1, builder.getAddedVehicleTypes().size());
+        Assertions.assertEquals(type, builder.getAddedVehicleTypes().iterator().next());
     }
 
     @Test
@@ -372,8 +372,8 @@ class VehicleRoutingProblemTest {
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("loc")).setType(type).build();
         builder.addVehicle(vehicle);
         builder.addVehicle(vehicle2);
-        assertEquals(1, builder.getAddedVehicleTypes().size());
-        assertEquals(type, builder.getAddedVehicleTypes().iterator().next());
+        Assertions.assertEquals(1, builder.getAddedVehicleTypes().size());
+        Assertions.assertEquals(type, builder.getAddedVehicleTypes().iterator().next());
     }
 
     @Test
@@ -386,7 +386,7 @@ class VehicleRoutingProblemTest {
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("loc")).setType(type2).build();
         builder.addVehicle(vehicle);
         builder.addVehicle(vehicle2);
-        assertEquals(2, builder.getAddedVehicleTypes().size());
+        Assertions.assertEquals(2, builder.getAddedVehicleTypes().size());
     }
 
     @Test
@@ -395,7 +395,7 @@ class VehicleRoutingProblemTest {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setEndLocation(Location.newInstance("end")).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addVehicle(vehicle);
-        assertTrue(vrpBuilder.getLocationMap().containsKey("start"));
+        Assertions.assertTrue(vrpBuilder.getLocationMap().containsKey("start"));
     }
 
     @Test
@@ -404,7 +404,7 @@ class VehicleRoutingProblemTest {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setEndLocation(Location.newInstance("end")).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addVehicle(vehicle);
-        assertTrue(vrpBuilder.getLocationMap().containsKey("end"));
+        Assertions.assertTrue(vrpBuilder.getLocationMap().containsKey("end"));
     }
 
     @Test
@@ -415,7 +415,7 @@ class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addInitialVehicleRoute(route);
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertTrue(!vrp.getInitialVehicleRoutes().isEmpty());
+        Assertions.assertTrue(!vrp.getInitialVehicleRoutes().isEmpty());
     }
 
     @Test
@@ -428,8 +428,8 @@ class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addInitialVehicleRoutes(Arrays.asList(route1, route2));
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertEquals(2, vrp.getInitialVehicleRoutes().size());
-        assertEquals(2, vrp.getAllLocations().size());
+        Assertions.assertEquals(2, vrp.getInitialVehicleRoutes().size());
+        Assertions.assertEquals(2, vrp.getAllLocations().size());
     }
 
     @Test
@@ -442,8 +442,8 @@ class VehicleRoutingProblemTest {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addInitialVehicleRoute(route);
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertThat(vrp.getAllLocations(), hasItem(start));
-        assertThat(vrp.getAllLocations(), hasItem(end));
+        Assertions.assertTrue(vrp.getAllLocations().contains(start));
+        Assertions.assertTrue(vrp.getAllLocations().contains(end));
     }
 
     @Test
@@ -456,8 +456,8 @@ class VehicleRoutingProblemTest {
         VehicleRoute initialRoute = VehicleRoute.Builder.newInstance(vehicle).addService(service).build();
         vrpBuilder.addInitialVehicleRoute(initialRoute);
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertFalse(vrp.getJobs().containsKey("myService"));
-        assertEquals(3, vrp.getAllLocations().size());
+        Assertions.assertFalse(vrp.getJobs().containsKey("myService"));
+        Assertions.assertEquals(3, vrp.getAllLocations().size());
     }
 
     @Test
@@ -469,15 +469,15 @@ class VehicleRoutingProblemTest {
         vrpBuilder.addJob(service);
         vrpBuilder.addJob(shipment);
         VehicleRoutingProblem vrp = vrpBuilder.build();
-        assertEquals(1, service.getIndex());
-        assertEquals(2, shipment.getIndex());
-        assertEquals(3, vrp.getAllLocations().size());
+        Assertions.assertEquals(1, service.getIndex());
+        Assertions.assertEquals(2, shipment.getIndex());
+        Assertions.assertEquals(3, vrp.getAllLocations().size());
     }
 
     @Test
     @DisplayName("When Adding Two Services With The Same Id _ it Should Throw Exception")
     void whenAddingTwoServicesWithTheSameId_itShouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
             Service service1 = Service.Builder.newInstance("myService").setLocation(Location.newInstance("loc")).build();
             Service service2 = Service.Builder.newInstance("myService").setLocation(Location.newInstance("loc")).build();
             VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
@@ -491,7 +491,7 @@ class VehicleRoutingProblemTest {
     @Test
     @DisplayName("When Adding Two Shipments With The Same Id _ it Should Throw Exception")
     void whenAddingTwoShipmentsWithTheSameId_itShouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
             Shipment shipment1 = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
             Shipment shipment2 = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
             VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
@@ -511,8 +511,8 @@ class VehicleRoutingProblemTest {
         vrpBuilder.addVehicle(veh1);
         vrpBuilder.addVehicle(veh2);
         vrpBuilder.build();
-        assertEquals(1, veh1.getIndex());
-        assertEquals(2, veh2.getIndex());
+        Assertions.assertEquals(1, veh1.getIndex());
+        Assertions.assertEquals(2, veh2.getIndex());
     }
 
     @Test
@@ -524,8 +524,8 @@ class VehicleRoutingProblemTest {
         vrpBuilder.addVehicle(veh1);
         vrpBuilder.addVehicle(veh2);
         vrpBuilder.build();
-        assertEquals(1, veh1.getVehicleTypeIdentifier().getIndex());
-        assertEquals(1, veh2.getVehicleTypeIdentifier().getIndex());
+        Assertions.assertEquals(1, veh1.getVehicleTypeIdentifier().getIndex());
+        Assertions.assertEquals(1, veh2.getVehicleTypeIdentifier().getIndex());
     }
 
     @Test
@@ -537,7 +537,7 @@ class VehicleRoutingProblemTest {
         vrpBuilder.addVehicle(veh1);
         vrpBuilder.addVehicle(veh2);
         vrpBuilder.build();
-        assertEquals(1, veh1.getVehicleTypeIdentifier().getIndex());
-        assertEquals(2, veh2.getVehicleTypeIdentifier().getIndex());
+        Assertions.assertEquals(1, veh1.getVehicleTypeIdentifier().getIndex());
+        Assertions.assertEquals(2, veh2.getVehicleTypeIdentifier().getIndex());
     }
 }

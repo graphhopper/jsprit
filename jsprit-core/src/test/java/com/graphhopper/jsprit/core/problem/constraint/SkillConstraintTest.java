@@ -26,6 +26,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -69,34 +71,34 @@ class SkillConstraintTest {
     @DisplayName("When Job To Be Inserted Requires Skills That New Vehicle Does Not Have _ it Should Return False")
     void whenJobToBeInsertedRequiresSkillsThatNewVehicleDoesNotHave_itShouldReturnFalse() {
         JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s3"), vehicle, route.getDriver(), 0.);
-        assertFalse(skillConstraint.fulfilled(insertionContext));
+        Assertions.assertFalse(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
     @DisplayName("When Job To Be Inserted Requires Skills That Vehicle Have _ it Should Return True")
     void whenJobToBeInsertedRequiresSkillsThatVehicleHave_itShouldReturnTrue() {
         JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s4"), vehicle, route.getDriver(), 0.);
-        assertTrue(skillConstraint.fulfilled(insertionContext));
+        Assertions.assertTrue(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
     @DisplayName("When Route To Be Overtaken Requires Skills That Vehicle Does Not Have _ it Should Return False")
     void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesNotHave_itShouldReturnFalse() {
         JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s3"), vehicle2, route.getDriver(), 0.);
-        assertFalse(skillConstraint.fulfilled(insertionContext));
+        Assertions.assertFalse(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
     @DisplayName("When Route To Be Overtaken Requires Skills That Vehicle Does Not Have 2 _ it Should Return False")
     void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesNotHave2_itShouldReturnFalse() {
         JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s4"), vehicle2, route.getDriver(), 0.);
-        assertFalse(skillConstraint.fulfilled(insertionContext));
+        Assertions.assertFalse(skillConstraint.fulfilled(insertionContext));
     }
 
     @Test
     @DisplayName("When Route To Be Overtaken Requires Skills That Vehicle Does Have _ it Should Return True")
     void whenRouteToBeOvertakenRequiresSkillsThatVehicleDoesHave_itShouldReturnTrue() {
         JobInsertionContext insertionContext = new JobInsertionContext(route, vrp.getJobs().get("s4"), vehicle, route.getDriver(), 0.);
-        assertTrue(skillConstraint.fulfilled(insertionContext));
+        Assertions.assertTrue(skillConstraint.fulfilled(insertionContext));
     }
 }

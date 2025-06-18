@@ -40,14 +40,14 @@ class VehicleRoutingProblemSolutionTest {
         VehicleRoute r1 = mock(VehicleRoute.class);
         VehicleRoute r2 = mock(VehicleRoute.class);
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Arrays.asList(r1, r2), 0.0);
-        assertEquals(2, sol.getRoutes().size());
+		Assertions.assertEquals(2, sol.getRoutes().size());
     }
 
     @Test
     @DisplayName("When Setting Solution Costs To 10 _ solution Costs Should Be 10")
     void whenSettingSolutionCostsTo10_solutionCostsShouldBe10() {
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), 10.0);
-        assertEquals(10.0, sol.getCost(), 0.01);
+		Assertions.assertEquals(10.0, sol.getCost(), 0.01);
     }
 
     @Test
@@ -55,7 +55,7 @@ class VehicleRoutingProblemSolutionTest {
     void whenCreatingSolWithCostsOf10AndSettingCostsAfterwardsTo20_solutionCostsShouldBe20() {
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), 10.0);
         sol.setCost(20.0);
-        assertEquals(20.0, sol.getCost(), 0.01);
+		Assertions.assertEquals(20.0, sol.getCost(), 0.01);
     }
 
     @Test
@@ -65,7 +65,7 @@ class VehicleRoutingProblemSolutionTest {
         List<Job> badJobs = new ArrayList<Job>();
         badJobs.add(badJob);
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), badJobs, 10.0);
-        assertEquals(1, sol.getUnassignedJobs().size());
+		Assertions.assertEquals(1, sol.getUnassignedJobs().size());
     }
 
     @Test
@@ -76,7 +76,7 @@ class VehicleRoutingProblemSolutionTest {
         badJobs.add(badJob);
         VehicleRoutingProblemSolution sol = new VehicleRoutingProblemSolution(Collections.<VehicleRoute>emptyList(), 10.0);
         sol.getUnassignedJobs().addAll(badJobs);
-        assertEquals(1, sol.getUnassignedJobs().size());
+		Assertions.assertEquals(1, sol.getUnassignedJobs().size());
     }
 
     @Test

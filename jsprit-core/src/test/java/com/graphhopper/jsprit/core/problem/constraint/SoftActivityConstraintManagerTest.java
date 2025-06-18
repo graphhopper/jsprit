@@ -19,6 +19,8 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,9 +36,9 @@ class SoftActivityConstraintManagerTest {
     void whenAddingSoftConstraint_managerShouldHaveIt() {
         SoftActivityConstraint c = mock(SoftActivityConstraint.class);
         SoftActivityConstraintManager man = new SoftActivityConstraintManager();
-        assertEquals(0, man.getConstraints().size());
+        Assertions.assertEquals(0, man.getConstraints().size());
         man.addConstraint(c);
-        assertEquals(1, man.getConstraints().size());
+        Assertions.assertEquals(1, man.getConstraints().size());
     }
 
     @Test
@@ -45,10 +47,10 @@ class SoftActivityConstraintManagerTest {
         SoftActivityConstraint c1 = mock(SoftActivityConstraint.class);
         SoftActivityConstraint c2 = mock(SoftActivityConstraint.class);
         SoftActivityConstraintManager man = new SoftActivityConstraintManager();
-        assertEquals(0, man.getConstraints().size());
+        Assertions.assertEquals(0, man.getConstraints().size());
         man.addConstraint(c1);
         man.addConstraint(c2);
-        assertEquals(2, man.getConstraints().size());
+        Assertions.assertEquals(2, man.getConstraints().size());
     }
 
     @Test
@@ -65,6 +67,6 @@ class SoftActivityConstraintManagerTest {
         SoftActivityConstraintManager man = new SoftActivityConstraintManager();
         man.addConstraint(c1);
         man.addConstraint(c2);
-        assertEquals(3.0, man.getCosts(iContext, act_i, act_k, act_j, 0.0), 0.01);
+        Assertions.assertEquals(3.0, man.getCosts(iContext, act_i, act_k, act_j, 0.0), 0.01);
     }
 }

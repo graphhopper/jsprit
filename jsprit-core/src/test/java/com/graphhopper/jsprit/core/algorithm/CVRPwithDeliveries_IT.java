@@ -23,11 +23,10 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.util.ChristofidesReader;
 import com.graphhopper.jsprit.core.util.JobType;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
 
 public class CVRPwithDeliveries_IT {
 
@@ -38,8 +37,8 @@ public class CVRPwithDeliveries_IT {
         VehicleRoutingProblem vrp = vrpBuilder.build();
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        assertEquals(530.0, Solutions.bestOf(solutions).getCost(), 50.0);
-        assertEquals(5, Solutions.bestOf(solutions).getRoutes().size());
+        Assertions.assertEquals(530.0, Solutions.bestOf(solutions).getCost(), 50.0);
+        Assertions.assertEquals(5, Solutions.bestOf(solutions).getRoutes().size());
     }
 
 }

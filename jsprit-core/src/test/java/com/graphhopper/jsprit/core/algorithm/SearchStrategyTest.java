@@ -23,6 +23,8 @@ import com.graphhopper.jsprit.core.algorithm.selector.SolutionSelector;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -80,7 +82,7 @@ class SearchStrategyTest {
         };
         strat.addModule(mod);
         strat.run(vrp, null);
-        assertEquals(runs.size(), 1);
+        Assertions.assertEquals(runs.size(), 1);
     }
 
     @Test
@@ -131,7 +133,7 @@ class SearchStrategyTest {
         strat.addModule(mod);
         strat.addModule(mod2);
         strat.run(vrp, null);
-        assertEquals(runs.size(), 2);
+        Assertions.assertEquals(runs.size(), 2);
     }
 
     @Test
@@ -167,7 +169,7 @@ class SearchStrategyTest {
             strat.addModule(mod);
         }
         strat.run(vrp, null);
-        assertEquals(runs.size(), N);
+        Assertions.assertEquals(runs.size(), N);
     }
 
     @Test
@@ -203,7 +205,7 @@ class SearchStrategyTest {
                 strat.addModule(mod);
             }
             strat.run(vrp, null);
-            assertEquals(runs.size(), N);
+            Assertions.assertEquals(runs.size(), N);
         });
     }
 }

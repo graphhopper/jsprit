@@ -26,6 +26,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.UnassignedJobReasonTracker;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -53,9 +55,9 @@ class UnassignedJobListTest {
         algorithm.addListener(reasonTracker);
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-        assertTrue(!solution.getUnassignedJobs().contains(job1));
-        assertTrue(solution.getUnassignedJobs().contains(job2));
-        assertEquals(2, reasonTracker.getMostLikelyReasonCode("job2"));
+        Assertions.assertTrue(!solution.getUnassignedJobs().contains(job1));
+        Assertions.assertTrue(solution.getUnassignedJobs().contains(job2));
+        Assertions.assertEquals(2, reasonTracker.getMostLikelyReasonCode("job2"));
     }
 
     @Test
@@ -74,8 +76,8 @@ class UnassignedJobListTest {
         algorithm.addListener(reasonTracker);
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-        assertTrue(!solution.getUnassignedJobs().contains(job1));
-        assertTrue(solution.getUnassignedJobs().contains(job2));
-        assertEquals(3, reasonTracker.getMostLikelyReasonCode("job2"));
+        Assertions.assertTrue(!solution.getUnassignedJobs().contains(job1));
+        Assertions.assertTrue(solution.getUnassignedJobs().contains(job2));
+        Assertions.assertEquals(3, reasonTracker.getMostLikelyReasonCode("job2"));
     }
 }

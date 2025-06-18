@@ -24,6 +24,8 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -83,7 +85,7 @@ class JobNeighborhoodsOptimizedTest {
         while (iter.hasNext()) {
             services.add((Service) iter.next());
         }
-        assertEquals(2, services.size());
+        Assertions.assertEquals(2, services.size());
     }
 
     @Test
@@ -96,7 +98,7 @@ class JobNeighborhoodsOptimizedTest {
         while (iter.hasNext()) {
             services.add((Service) iter.next());
         }
-        assertTrue(services.contains(s2));
+        Assertions.assertTrue(services.contains(s2));
     }
 
     @Test
@@ -109,7 +111,7 @@ class JobNeighborhoodsOptimizedTest {
         while (iter.hasNext()) {
             services.add((Service) iter.next());
         }
-        assertTrue(services.contains(s5));
+        Assertions.assertTrue(services.contains(s5));
     }
 
     @Test
@@ -122,7 +124,7 @@ class JobNeighborhoodsOptimizedTest {
         while (iter.hasNext()) {
             services.add((Service) iter.next());
         }
-        assertEquals(4, services.size());
+        Assertions.assertEquals(4, services.size());
     }
 
     @Test
@@ -135,10 +137,10 @@ class JobNeighborhoodsOptimizedTest {
         while (iter.hasNext()) {
             services.add((Service) iter.next());
         }
-        assertEquals(s6, services.get(0));
-        assertEquals(s5, services.get(1));
-        assertEquals(target, services.get(2));
-        assertEquals(s2, services.get(3));
+        Assertions.assertEquals(s6, services.get(0));
+        Assertions.assertEquals(s5, services.get(1));
+        Assertions.assertEquals(target, services.get(2));
+        Assertions.assertEquals(s2, services.get(3));
     }
 
     @Test
@@ -151,7 +153,7 @@ class JobNeighborhoodsOptimizedTest {
         while (iter.hasNext()) {
             services.add((Service) iter.next());
         }
-        assertEquals(2, services.size());
+        Assertions.assertEquals(2, services.size());
     }
 
     @Test
@@ -164,6 +166,6 @@ class JobNeighborhoodsOptimizedTest {
         while (iter.hasNext()) {
             services.add((Service) iter.next());
         }
-        assertEquals(0, services.size());
+        Assertions.assertEquals(0, services.size());
     }
 }

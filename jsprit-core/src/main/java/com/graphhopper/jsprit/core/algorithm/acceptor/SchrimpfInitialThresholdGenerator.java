@@ -51,7 +51,7 @@ public class SchrimpfInitialThresholdGenerator implements AlgorithmStartsListene
         double now = System.currentTimeMillis();
 
 		/*
-         * randomWalk to determine standardDev
+		 * randomWalk to determine standardDev
 		 */
         final double[] results = new double[nOfRandomWalks];
 
@@ -64,7 +64,7 @@ public class SchrimpfInitialThresholdGenerator implements AlgorithmStartsListene
             @Override
             public void informIterationEnds(int iteration, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
                 double result = Solutions.bestOf(solutions).getCost();
-//				logger.info("result={}", result);
+				// logger.info("result={}", result);
                 results[iteration - 1] = result;
             }
 

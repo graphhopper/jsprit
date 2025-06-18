@@ -39,14 +39,14 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * unit tests to test route level insertion
@@ -61,7 +61,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
 
     private StateManager stateManager;
 
-    @Before
+    @BeforeEach
     public void doBefore() {
         routingCosts = CostFactory.createEuclideanCosts();
 
@@ -118,7 +118,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
         estimator.setForwardLooking(0);
         double iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
-        assertEquals(0., iCosts, 0.01);
+		Assertions.assertEquals(0., iCosts, 0.01);
     }
 
     @Test
@@ -129,7 +129,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
         estimator.setForwardLooking(0);
         double iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
-        assertEquals(0., iCosts, 0.01);
+		Assertions.assertEquals(0., iCosts, 0.01);
     }
 
     @Test
@@ -145,7 +145,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         double iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
         double expectedTransportCosts = 0.;
         double expectedActivityCosts = 10.;
-        assertEquals(expectedActivityCosts + expectedTransportCosts, iCosts, 0.01);
+		Assertions.assertEquals(expectedActivityCosts + expectedTransportCosts, iCosts, 0.01);
     }
 
     @Test
@@ -158,7 +158,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         double iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
         double expectedTransportCosts = 0.;
         double expectedActivityCosts = 30.;
-        assertEquals(expectedActivityCosts + expectedTransportCosts, iCosts, 0.01);
+		Assertions.assertEquals(expectedActivityCosts + expectedTransportCosts, iCosts, 0.01);
     }
 
     @Test
@@ -172,7 +172,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
             estimator.getCosts(context, route.getActivities().get(0), route.getActivities().get(1), pickupService, 10.);
         double expectedTransportCosts = 10.;
         double expectedActivityCosts = 10.;
-        assertEquals(expectedTransportCosts + expectedActivityCosts, iCosts, 0.01);
+		Assertions.assertEquals(expectedTransportCosts + expectedActivityCosts, iCosts, 0.01);
     }
 
     @Test
@@ -186,7 +186,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
             estimator.getCosts(context, route.getActivities().get(0), route.getActivities().get(1), pickupService, 10.);
         double expectedTransportCosts = 10.;
         double expectedActivityCosts = 10. + 10.;
-        assertEquals(expectedTransportCosts + expectedActivityCosts, iCosts, 0.01);
+		Assertions.assertEquals(expectedTransportCosts + expectedActivityCosts, iCosts, 0.01);
     }
 
     @Test
@@ -202,7 +202,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
             estimator.getCosts(context, route.getActivities().get(0), route.getActivities().get(1), pickupService, 10.);
         double expectedTransportCosts = 10.;
         double expectedActivityCosts = 10. + 10. + 10.;
-        assertEquals(expectedTransportCosts + expectedActivityCosts, iCosts, 0.01);
+		Assertions.assertEquals(expectedTransportCosts + expectedActivityCosts, iCosts, 0.01);
     }
 
 }

@@ -19,12 +19,12 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
 import static org.mockito.Mockito.mock;
 
 public class TestConstraintManager {
@@ -35,7 +35,7 @@ public class TestConstraintManager {
         constraints.add(new ServiceDeliveriesFirstConstraint());
         constraints.add(mock(HardRouteConstraint.class));
         ConstraintManager cManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class), constraints);
-        assertEquals(2, cManager.getConstraints().size());
+		Assertions.assertEquals(2, cManager.getConstraints().size());
     }
 
     @Test
@@ -44,16 +44,16 @@ public class TestConstraintManager {
         constraints.add(new ServiceDeliveriesFirstConstraint());
         constraints.add(mock(Constraint.class));
         ConstraintManager cManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class), constraints);
-        assertEquals(1, cManager.getConstraints().size());
+		Assertions.assertEquals(1, cManager.getConstraints().size());
     }
 
     @Test
     public void whenAddingSoftRouteConstraint_managerShouldHaveIt() {
         SoftRouteConstraint c = mock(SoftRouteConstraint.class);
         ConstraintManager man = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
-        assertEquals(0, man.getConstraints().size());
+		Assertions.assertEquals(0, man.getConstraints().size());
         man.addConstraint(c);
-        assertEquals(1, man.getConstraints().size());
+		Assertions.assertEquals(1, man.getConstraints().size());
     }
 
     @Test
@@ -61,19 +61,19 @@ public class TestConstraintManager {
         SoftRouteConstraint c1 = mock(SoftRouteConstraint.class);
         SoftRouteConstraint c2 = mock(SoftRouteConstraint.class);
         ConstraintManager man = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
-        assertEquals(0, man.getConstraints().size());
+		Assertions.assertEquals(0, man.getConstraints().size());
         man.addConstraint(c1);
         man.addConstraint(c2);
-        assertEquals(2, man.getConstraints().size());
+		Assertions.assertEquals(2, man.getConstraints().size());
     }
 
     @Test
     public void whenAddingSoftActivityConstraint_managerShouldHaveIt() {
         SoftActivityConstraint c = mock(SoftActivityConstraint.class);
         ConstraintManager man = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
-        assertEquals(0, man.getConstraints().size());
+		Assertions.assertEquals(0, man.getConstraints().size());
         man.addConstraint(c);
-        assertEquals(1, man.getConstraints().size());
+		Assertions.assertEquals(1, man.getConstraints().size());
     }
 
     @Test
@@ -81,10 +81,10 @@ public class TestConstraintManager {
         SoftActivityConstraint c1 = mock(SoftActivityConstraint.class);
         SoftActivityConstraint c2 = mock(SoftActivityConstraint.class);
         ConstraintManager man = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
-        assertEquals(0, man.getConstraints().size());
+		Assertions.assertEquals(0, man.getConstraints().size());
         man.addConstraint(c1);
         man.addConstraint(c2);
-        assertEquals(2, man.getConstraints().size());
+		Assertions.assertEquals(2, man.getConstraints().size());
     }
 
 }

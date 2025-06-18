@@ -23,8 +23,8 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.util.SolomonReader;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
@@ -42,7 +42,7 @@ public class Solomon_IT {
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.FAST_REGRET,"true").buildAlgorithm();
         vra.setMaxIterations(2000);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        Assert.assertEquals(828.94, Solutions.bestOf(solutions).getCost(), 0.01);
+        Assertions.assertEquals(828.94, Solutions.bestOf(solutions).getCost(), 0.01);
     }
 
 }

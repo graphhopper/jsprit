@@ -18,6 +18,8 @@
 package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,9 +35,9 @@ class SoftRouteConstraintManagerTest {
     void whenAddingSoftRouteConstraint_managerShouldHaveIt() {
         SoftRouteConstraint c = mock(SoftRouteConstraint.class);
         SoftRouteConstraintManager man = new SoftRouteConstraintManager();
-        assertEquals(0, man.getConstraints().size());
+        Assertions.assertEquals(0, man.getConstraints().size());
         man.addConstraint(c);
-        assertEquals(1, man.getConstraints().size());
+        Assertions.assertEquals(1, man.getConstraints().size());
     }
 
     @Test
@@ -44,10 +46,10 @@ class SoftRouteConstraintManagerTest {
         SoftRouteConstraint c1 = mock(SoftRouteConstraint.class);
         SoftRouteConstraint c2 = mock(SoftRouteConstraint.class);
         SoftRouteConstraintManager man = new SoftRouteConstraintManager();
-        assertEquals(0, man.getConstraints().size());
+        Assertions.assertEquals(0, man.getConstraints().size());
         man.addConstraint(c1);
         man.addConstraint(c2);
-        assertEquals(2, man.getConstraints().size());
+        Assertions.assertEquals(2, man.getConstraints().size());
     }
 
     @Test
@@ -61,6 +63,6 @@ class SoftRouteConstraintManagerTest {
         SoftRouteConstraintManager man = new SoftRouteConstraintManager();
         man.addConstraint(c1);
         man.addConstraint(c2);
-        assertEquals(3.0, man.getCosts(iContext), 0.01);
+        Assertions.assertEquals(3.0, man.getCosts(iContext), 0.01);
     }
 }

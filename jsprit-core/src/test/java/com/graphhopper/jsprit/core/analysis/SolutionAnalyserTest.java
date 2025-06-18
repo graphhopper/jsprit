@@ -35,6 +35,8 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.ManhattanCosts;
 import com.graphhopper.jsprit.core.util.TestUtils;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -139,7 +141,7 @@ class SolutionAnalyserTest {
         VehicleRoute route1 = solution.getRoutes().iterator().next();
         // get route 1 activities
         List<TourActivity> activities = route1.getActivities();
-        assertEquals(activities.size(), 4);
+        Assertions.assertEquals(activities.size(), 4);
         // utility class to calculate manhattan distance
         @DisplayName("Manhattan Distance")
         class ManhattanDistance {
@@ -160,12 +162,12 @@ class SolutionAnalyserTest {
             // test last distance
             if (type == TransportCostsTestType.LAST_DISTANCE) {
                 double savedDist = analyser.getLastTransportDistanceAtActivity(activity, route1);
-                assertEquals(dist, savedDist, 1E-10);
+                Assertions.assertEquals(dist, savedDist, 1E-10);
             }
             // test last time
             if (type == TransportCostsTestType.LAST_TIME) {
                 double savedTime = analyser.getLastTransportTimeAtActivity(activity, route1);
-                assertEquals(dist, savedTime, 1E-10);
+                Assertions.assertEquals(dist, savedTime, 1E-10);
             }
             // test last cost
             if (type == TransportCostsTestType.LAST_COST) {
@@ -178,13 +180,13 @@ class SolutionAnalyserTest {
                 }
                 double cost = dist * perDistanceUnit;
                 double savedCost = analyser.getLastTransportCostAtActivity(activity, route1);
-                assertEquals(cost, savedCost, 1E-10);
+                Assertions.assertEquals(cost, savedCost, 1E-10);
             }
             // test total transport time at activity
             if (type == TransportCostsTestType.TRANSPORT_TIME_AT_ACTIVITY) {
                 totalTime += dist;
                 double savedTransportTime = analyser.getTransportTimeAtActivity(activity, route1);
-                assertEquals(totalTime, savedTransportTime, 1E-10);
+                Assertions.assertEquals(totalTime, savedTransportTime, 1E-10);
             }
         }
     }
@@ -193,7 +195,7 @@ class SolutionAnalyserTest {
     @DisplayName("Construction Should Work")
     void constructionShouldWork() {
         new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertTrue(true);
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -201,7 +203,7 @@ class SolutionAnalyserTest {
     void loadAtBeginningOfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0, analyser.getLoadAtBeginning(route).get(0));
+        Assertions.assertEquals(0, analyser.getLoadAtBeginning(route).get(0));
     }
 
     @Test
@@ -211,7 +213,7 @@ class SolutionAnalyserTest {
         Iterator<VehicleRoute> iterator = solution.getRoutes().iterator();
         iterator.next();
         VehicleRoute route = iterator.next();
-        assertEquals(0, analyser.getLoadAtBeginning(route).get(0));
+        Assertions.assertEquals(0, analyser.getLoadAtBeginning(route).get(0));
     }
 
     @Test
@@ -219,7 +221,7 @@ class SolutionAnalyserTest {
     void loadAtEnd_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(5, analyser.getLoadAtEnd(route).get(0));
+        Assertions.assertEquals(5, analyser.getLoadAtEnd(route).get(0));
     }
 
     @Test
@@ -229,7 +231,7 @@ class SolutionAnalyserTest {
         Iterator<VehicleRoute> iterator = solution.getRoutes().iterator();
         iterator.next();
         VehicleRoute route = iterator.next();
-        assertEquals(5, analyser.getLoadAtEnd(route).get(0));
+        Assertions.assertEquals(5, analyser.getLoadAtEnd(route).get(0));
     }
 
     @Test
@@ -237,7 +239,7 @@ class SolutionAnalyserTest {
     void loadAfterActivity_ofStartActOfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0, analyser.getLoadRightAfterActivity(route.getStart(), route).get(0));
+        Assertions.assertEquals(0, analyser.getLoadRightAfterActivity(route.getStart(), route).get(0));
     }
 
     @Test
@@ -245,7 +247,7 @@ class SolutionAnalyserTest {
     void loadAfterActivity_ofAct1ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(2, analyser.getLoadRightAfterActivity(route.getActivities().get(0), route).get(0));
+        Assertions.assertEquals(2, analyser.getLoadRightAfterActivity(route.getActivities().get(0), route).get(0));
     }
 
     @Test
@@ -253,7 +255,7 @@ class SolutionAnalyserTest {
     void loadAfterActivity_ofAct2ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(12, analyser.getLoadRightAfterActivity(route.getActivities().get(1), route).get(0));
+        Assertions.assertEquals(12, analyser.getLoadRightAfterActivity(route.getActivities().get(1), route).get(0));
     }
 
     @Test
@@ -261,7 +263,7 @@ class SolutionAnalyserTest {
     void loadAfterActivity_ofAct3ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(2, analyser.getLoadRightAfterActivity(route.getActivities().get(2), route).get(0));
+        Assertions.assertEquals(2, analyser.getLoadRightAfterActivity(route.getActivities().get(2), route).get(0));
     }
 
     @Test
@@ -269,7 +271,7 @@ class SolutionAnalyserTest {
     void loadAfterActivity_ofAct4ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(5, analyser.getLoadRightAfterActivity(route.getActivities().get(3), route).get(0));
+        Assertions.assertEquals(5, analyser.getLoadRightAfterActivity(route.getActivities().get(3), route).get(0));
     }
 
     @Test
@@ -277,7 +279,7 @@ class SolutionAnalyserTest {
     void loadAfterActivity_ofEndActOfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(5, analyser.getLoadRightAfterActivity(route.getEnd(), route).get(0));
+        Assertions.assertEquals(5, analyser.getLoadRightAfterActivity(route.getEnd(), route).get(0));
     }
 
     @Test
@@ -285,7 +287,7 @@ class SolutionAnalyserTest {
     void loadBeforeActivity_ofStartActOfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0, analyser.getLoadJustBeforeActivity(route.getStart(), route).get(0));
+        Assertions.assertEquals(0, analyser.getLoadJustBeforeActivity(route.getStart(), route).get(0));
     }
 
     @Test
@@ -293,7 +295,7 @@ class SolutionAnalyserTest {
     void loadBeforeActivity_ofAct1ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0, analyser.getLoadJustBeforeActivity(route.getActivities().get(0), route).get(0));
+        Assertions.assertEquals(0, analyser.getLoadJustBeforeActivity(route.getActivities().get(0), route).get(0));
     }
 
     @Test
@@ -301,7 +303,7 @@ class SolutionAnalyserTest {
     void loadBeforeActivity_ofAct2ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(2, analyser.getLoadJustBeforeActivity(route.getActivities().get(1), route).get(0));
+        Assertions.assertEquals(2, analyser.getLoadJustBeforeActivity(route.getActivities().get(1), route).get(0));
     }
 
     @Test
@@ -309,7 +311,7 @@ class SolutionAnalyserTest {
     void loadBeforeActivity_ofAct3ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(12, analyser.getLoadJustBeforeActivity(route.getActivities().get(2), route).get(0));
+        Assertions.assertEquals(12, analyser.getLoadJustBeforeActivity(route.getActivities().get(2), route).get(0));
     }
 
     @Test
@@ -317,7 +319,7 @@ class SolutionAnalyserTest {
     void loadBeforeActivity_ofAct4ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(2, analyser.getLoadJustBeforeActivity(route.getActivities().get(3), route).get(0));
+        Assertions.assertEquals(2, analyser.getLoadJustBeforeActivity(route.getActivities().get(3), route).get(0));
     }
 
     @Test
@@ -325,7 +327,7 @@ class SolutionAnalyserTest {
     void loadBeforeActivity_ofEndActOfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(5, analyser.getLoadJustBeforeActivity(route.getEnd(), route).get(0));
+        Assertions.assertEquals(5, analyser.getLoadJustBeforeActivity(route.getEnd(), route).get(0));
     }
 
     @Test
@@ -333,7 +335,7 @@ class SolutionAnalyserTest {
     void maxLoad_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(12, analyser.getMaxLoad(route).get(0));
+        Assertions.assertEquals(12, analyser.getMaxLoad(route).get(0));
     }
 
     @Test
@@ -341,7 +343,7 @@ class SolutionAnalyserTest {
     void pickupCount_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(3, analyser.getNumberOfPickups(route), 0.01);
+        Assertions.assertEquals(3, analyser.getNumberOfPickups(route), 0.01);
     }
 
     @Test
@@ -349,7 +351,7 @@ class SolutionAnalyserTest {
     void pickupCountAtBeginning_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0, analyser.getNumberOfPickupsAtBeginning(route), 0.01);
+        Assertions.assertEquals(0, analyser.getNumberOfPickupsAtBeginning(route), 0.01);
     }
 
     @Test
@@ -358,7 +360,7 @@ class SolutionAnalyserTest {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(4, analyser.getNumberOfPickups(route), 0.01);
+        Assertions.assertEquals(4, analyser.getNumberOfPickups(route), 0.01);
     }
 
     @Test
@@ -367,21 +369,21 @@ class SolutionAnalyserTest {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(2, analyser.getNumberOfPickupsAtBeginning(route), 0.01);
+        Assertions.assertEquals(2, analyser.getNumberOfPickupsAtBeginning(route), 0.01);
     }
 
     @Test
     @DisplayName("Pickup Count _ on Solution Should Work")
     void pickupCount_onSolutionShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(6, analyser.getNumberOfPickups(), 0.01);
+        Assertions.assertEquals(6, analyser.getNumberOfPickups(), 0.01);
     }
 
     @Test
     @DisplayName("Pickup Count At Beginning _ on Solution Should Work")
     void pickupCountAtBeginning_onSolutionShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(0, analyser.getNumberOfPickupsAtBeginning(), 0.01);
+        Assertions.assertEquals(0, analyser.getNumberOfPickupsAtBeginning(), 0.01);
     }
 
     @Test
@@ -389,7 +391,7 @@ class SolutionAnalyserTest {
     void pickupCount_onAnotherSolutionShouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(4, analyser.getNumberOfPickups(), 0.01);
+        Assertions.assertEquals(4, analyser.getNumberOfPickups(), 0.01);
     }
 
     @Test
@@ -397,7 +399,7 @@ class SolutionAnalyserTest {
     void pickupCountAtBeginning_onAnotherSolutionShouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(2, analyser.getNumberOfPickupsAtBeginning(), 0.01);
+        Assertions.assertEquals(2, analyser.getNumberOfPickupsAtBeginning(), 0.01);
     }
 
     @Test
@@ -405,7 +407,7 @@ class SolutionAnalyserTest {
     void pickupLoad_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(15, analyser.getLoadPickedUp(route).get(0), 0.01);
+        Assertions.assertEquals(15, analyser.getLoadPickedUp(route).get(0), 0.01);
     }
 
     @Test
@@ -413,7 +415,7 @@ class SolutionAnalyserTest {
     void pickupLoadAtBeginning_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0, analyser.getLoadAtBeginning(route).get(0), 0.01);
+        Assertions.assertEquals(0, analyser.getLoadAtBeginning(route).get(0), 0.01);
     }
 
     @Test
@@ -422,7 +424,7 @@ class SolutionAnalyserTest {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(50, analyser.getLoadPickedUp(route).get(0), 0.01);
+        Assertions.assertEquals(50, analyser.getLoadPickedUp(route).get(0), 0.01);
     }
 
     @Test
@@ -431,21 +433,21 @@ class SolutionAnalyserTest {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(40, analyser.getLoadAtBeginning(route).get(0), 0.01);
+        Assertions.assertEquals(40, analyser.getLoadAtBeginning(route).get(0), 0.01);
     }
 
     @Test
     @DisplayName("Pickup Load _ on Solution Should Work")
     void pickupLoad_onSolutionShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(30, analyser.getLoadPickedUp().get(0), 0.01);
+        Assertions.assertEquals(30, analyser.getLoadPickedUp().get(0), 0.01);
     }
 
     @Test
     @DisplayName("Pickup Load At Beginning _ on Solution Should Work")
     void pickupLoadAtBeginning_onSolutionShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(0, analyser.getLoadAtBeginning().get(0), 0.01);
+        Assertions.assertEquals(0, analyser.getLoadAtBeginning().get(0), 0.01);
     }
 
     @Test
@@ -453,7 +455,7 @@ class SolutionAnalyserTest {
     void pickupLoad_onAnotherSolutionShouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(50, analyser.getLoadPickedUp().get(0), 0.01);
+        Assertions.assertEquals(50, analyser.getLoadPickedUp().get(0), 0.01);
     }
 
     @Test
@@ -461,7 +463,7 @@ class SolutionAnalyserTest {
     void pickupLoadAtBeginning_onAnotherSolutionShouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(40, analyser.getLoadAtBeginning().get(0), 0.01);
+        Assertions.assertEquals(40, analyser.getLoadAtBeginning().get(0), 0.01);
     }
 
     @Test
@@ -469,7 +471,7 @@ class SolutionAnalyserTest {
     void deliveryCount_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(1, analyser.getNumberOfDeliveries(route), 0.01);
+        Assertions.assertEquals(1, analyser.getNumberOfDeliveries(route), 0.01);
     }
 
     @Test
@@ -477,7 +479,7 @@ class SolutionAnalyserTest {
     void deliveryCountAtEnd_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(2, analyser.getNumberOfDeliveriesAtEnd(route), 0.01);
+        Assertions.assertEquals(2, analyser.getNumberOfDeliveriesAtEnd(route), 0.01);
     }
 
     @Test
@@ -486,7 +488,7 @@ class SolutionAnalyserTest {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(4, analyser.getNumberOfDeliveries(route), 0.01);
+        Assertions.assertEquals(4, analyser.getNumberOfDeliveries(route), 0.01);
     }
 
     @Test
@@ -495,21 +497,21 @@ class SolutionAnalyserTest {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(2, analyser.getNumberOfDeliveriesAtEnd(route), 0.01);
+        Assertions.assertEquals(2, analyser.getNumberOfDeliveriesAtEnd(route), 0.01);
     }
 
     @Test
     @DisplayName("Delivery Count _ on Solution Should Work")
     void deliveryCount_onSolutionShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(2, analyser.getNumberOfDeliveries(), 0.01);
+        Assertions.assertEquals(2, analyser.getNumberOfDeliveries(), 0.01);
     }
 
     @Test
     @DisplayName("Delivery Count At End _ on Solution Should Work")
     void deliveryCountAtEnd_onSolutionShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(4, analyser.getNumberOfDeliveriesAtEnd(), 0.01);
+        Assertions.assertEquals(4, analyser.getNumberOfDeliveriesAtEnd(), 0.01);
     }
 
     @Test
@@ -517,7 +519,7 @@ class SolutionAnalyserTest {
     void deliveryCount_onAnotherSolutionShouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(4, analyser.getNumberOfDeliveries(), 0.01);
+        Assertions.assertEquals(4, analyser.getNumberOfDeliveries(), 0.01);
     }
 
     @Test
@@ -525,7 +527,7 @@ class SolutionAnalyserTest {
     void deliveryCountAtEnd_onAnotherSolutionShouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(2, analyser.getNumberOfDeliveriesAtEnd(), 0.01);
+        Assertions.assertEquals(2, analyser.getNumberOfDeliveriesAtEnd(), 0.01);
     }
 
     @Test
@@ -533,7 +535,7 @@ class SolutionAnalyserTest {
     void deliveryLoad_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(10, analyser.getLoadDelivered(route).get(0), 0.01);
+        Assertions.assertEquals(10, analyser.getLoadDelivered(route).get(0), 0.01);
     }
 
     @Test
@@ -541,7 +543,7 @@ class SolutionAnalyserTest {
     void deliveryLoadAtEnd_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(5, analyser.getLoadAtEnd(route).get(0), 0.01);
+        Assertions.assertEquals(5, analyser.getLoadAtEnd(route).get(0), 0.01);
     }
 
     @Test
@@ -550,7 +552,7 @@ class SolutionAnalyserTest {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(70, analyser.getLoadDelivered(route).get(0), 0.01);
+        Assertions.assertEquals(70, analyser.getLoadDelivered(route).get(0), 0.01);
     }
 
     @Test
@@ -559,21 +561,21 @@ class SolutionAnalyserTest {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(20, analyser.getLoadAtEnd(route).get(0), 0.01);
+        Assertions.assertEquals(20, analyser.getLoadAtEnd(route).get(0), 0.01);
     }
 
     @Test
     @DisplayName("Delivery Load _ on Solution Should Work")
     void deliveryLoad_onSolutionShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(20, analyser.getLoadDelivered().get(0), 0.01);
+        Assertions.assertEquals(20, analyser.getLoadDelivered().get(0), 0.01);
     }
 
     @Test
     @DisplayName("Delivery Load At End _ on Solution Should Work")
     void deliveryLoadAtEnd_onSolutionShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(10, analyser.getLoadAtEnd().get(0), 0.01);
+        Assertions.assertEquals(10, analyser.getLoadAtEnd().get(0), 0.01);
     }
 
     @Test
@@ -581,7 +583,7 @@ class SolutionAnalyserTest {
     void deliveryLoad_onAnotherSolutionShouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(70, analyser.getLoadDelivered().get(0), 0.01);
+        Assertions.assertEquals(70, analyser.getLoadDelivered().get(0), 0.01);
     }
 
     @Test
@@ -589,7 +591,7 @@ class SolutionAnalyserTest {
     void deliveryLoadAtEnd_onAnotherSolutionShouldWork() {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
-        assertEquals(20, analyser.getLoadAtEnd().get(0), 0.01);
+        Assertions.assertEquals(20, analyser.getLoadAtEnd().get(0), 0.01);
     }
 
     @Test
@@ -597,7 +599,7 @@ class SolutionAnalyserTest {
     void operationTime_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(46. + 40., analyser.getOperationTime(route), 0.01);
+        Assertions.assertEquals(46. + 40., analyser.getOperationTime(route), 0.01);
     }
 
     @Test
@@ -609,8 +611,8 @@ class SolutionAnalyserTest {
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addJob(service).setRoutingCost(new ManhattanCosts()).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(service).build();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, new VehicleRoutingProblemSolution(Collections.singletonList(route), 300), vrp.getTransportCosts());
-        assertEquals(30, analyser.getOperationTime(), 0.01);
-        assertEquals(30, analyser.getOperationTime(route), 0.01);
+        Assertions.assertEquals(30, analyser.getOperationTime(), 0.01);
+        Assertions.assertEquals(30, analyser.getOperationTime(route), 0.01);
     }
 
     @Test
@@ -618,7 +620,7 @@ class SolutionAnalyserTest {
     void waitingTime_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(4., analyser.getWaitingTime(route), 0.01);
+        Assertions.assertEquals(4., analyser.getWaitingTime(route), 0.01);
     }
 
     @Test
@@ -626,7 +628,7 @@ class SolutionAnalyserTest {
     void transportTime_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(42., analyser.getTransportTime(route), 0.01);
+        Assertions.assertEquals(42., analyser.getTransportTime(route), 0.01);
     }
 
     @Test
@@ -634,7 +636,7 @@ class SolutionAnalyserTest {
     void serviceTime_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(40., analyser.getServiceTime(route), 0.01);
+        Assertions.assertEquals(40., analyser.getServiceTime(route), 0.01);
     }
 
     @Test
@@ -642,7 +644,7 @@ class SolutionAnalyserTest {
     void distance_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(42., analyser.getDistance(route), 0.01);
+        Assertions.assertEquals(42., analyser.getDistance(route), 0.01);
     }
 
     @Test
@@ -650,7 +652,7 @@ class SolutionAnalyserTest {
     void waitingTime_atStartActOfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0, analyser.getWaitingTimeAtActivity(route.getStart(), route), 0.01);
+        Assertions.assertEquals(0, analyser.getWaitingTimeAtActivity(route.getStart(), route), 0.01);
     }
 
     @Test
@@ -658,7 +660,7 @@ class SolutionAnalyserTest {
     void waitingTime_ofAct1ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(4., analyser.getWaitingTimeAtActivity(route.getActivities().get(0), route), 0.01);
+        Assertions.assertEquals(4., analyser.getWaitingTimeAtActivity(route.getActivities().get(0), route), 0.01);
     }
 
     @Test
@@ -666,7 +668,7 @@ class SolutionAnalyserTest {
     void waitingTime_ofAct2ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0., analyser.getWaitingTimeAtActivity(route.getActivities().get(1), route), 0.01);
+        Assertions.assertEquals(0., analyser.getWaitingTimeAtActivity(route.getActivities().get(1), route), 0.01);
     }
 
     @Test
@@ -674,7 +676,7 @@ class SolutionAnalyserTest {
     void waitingTime_ofAct3ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0., analyser.getWaitingTimeAtActivity(route.getActivities().get(2), route), 0.01);
+        Assertions.assertEquals(0., analyser.getWaitingTimeAtActivity(route.getActivities().get(2), route), 0.01);
     }
 
     @Test
@@ -682,7 +684,7 @@ class SolutionAnalyserTest {
     void waitingTime_ofAct4ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0., analyser.getWaitingTimeAtActivity(route.getActivities().get(3), route), 0.01);
+        Assertions.assertEquals(0., analyser.getWaitingTimeAtActivity(route.getActivities().get(3), route), 0.01);
     }
 
     @Test
@@ -690,7 +692,7 @@ class SolutionAnalyserTest {
     void waitingTime_ofEndActOfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0., analyser.getWaitingTimeAtActivity(route.getEnd(), route), 0.01);
+        Assertions.assertEquals(0., analyser.getWaitingTimeAtActivity(route.getEnd(), route), 0.01);
     }
 
     @Test
@@ -698,7 +700,7 @@ class SolutionAnalyserTest {
     void distance_atStartActOfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0, analyser.getDistanceAtActivity(route.getStart(), route), 0.01);
+        Assertions.assertEquals(0, analyser.getDistanceAtActivity(route.getStart(), route), 0.01);
     }
 
     @Test
@@ -706,7 +708,7 @@ class SolutionAnalyserTest {
     void distance_ofAct1ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(6., analyser.getDistanceAtActivity(route.getActivities().get(0), route), 0.01);
+        Assertions.assertEquals(6., analyser.getDistanceAtActivity(route.getActivities().get(0), route), 0.01);
     }
 
     @Test
@@ -714,7 +716,7 @@ class SolutionAnalyserTest {
     void distance_ofAct2ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(12., analyser.getDistanceAtActivity(route.getActivities().get(1), route), 0.01);
+        Assertions.assertEquals(12., analyser.getDistanceAtActivity(route.getActivities().get(1), route), 0.01);
     }
 
     @Test
@@ -722,7 +724,7 @@ class SolutionAnalyserTest {
     void distance_ofAct3ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(16., analyser.getDistanceAtActivity(route.getActivities().get(2), route), 0.01);
+        Assertions.assertEquals(16., analyser.getDistanceAtActivity(route.getActivities().get(2), route), 0.01);
     }
 
     @Test
@@ -730,7 +732,7 @@ class SolutionAnalyserTest {
     void distance_ofAct4ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(27., analyser.getDistanceAtActivity(route.getActivities().get(3), route), 0.01);
+        Assertions.assertEquals(27., analyser.getDistanceAtActivity(route.getActivities().get(3), route), 0.01);
     }
 
     @Test
@@ -738,7 +740,7 @@ class SolutionAnalyserTest {
     void distance_ofEndActOfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(42., analyser.getDistanceAtActivity(route.getEnd(), route), 0.01);
+        Assertions.assertEquals(42., analyser.getDistanceAtActivity(route.getEnd(), route), 0.01);
     }
 
     @Test
@@ -746,7 +748,7 @@ class SolutionAnalyserTest {
     void lateArrivalTimes_atStartActOfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0, analyser.getTimeWindowViolationAtActivity(route.getStart(), route), 0.01);
+        Assertions.assertEquals(0, analyser.getTimeWindowViolationAtActivity(route.getStart(), route), 0.01);
     }
 
     @Test
@@ -754,7 +756,8 @@ class SolutionAnalyserTest {
     void lateArrivalTimes_ofAct1ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(0), route), 0.01);
+        Assertions.assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(0), route),
+                0.01);
     }
 
     @Test
@@ -762,7 +765,8 @@ class SolutionAnalyserTest {
     void lateArrivalTimes_ofAct2ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(1), route), 0.01);
+        Assertions.assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(1), route),
+                0.01);
     }
 
     @Test
@@ -770,7 +774,8 @@ class SolutionAnalyserTest {
     void lateArrivalTimes_ofAct3ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(2), route), 0.01);
+        Assertions.assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(2), route),
+                0.01);
     }
 
     @Test
@@ -778,7 +783,8 @@ class SolutionAnalyserTest {
     void lateArrivalTimes_ofAct4ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(3), route), 0.01);
+        Assertions.assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getActivities().get(3), route),
+                0.01);
     }
 
     @Test
@@ -786,7 +792,7 @@ class SolutionAnalyserTest {
     void lateArrivalTimes_ofEndActOfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getEnd(), route), 0.01);
+        Assertions.assertEquals(0., analyser.getTimeWindowViolationAtActivity(route.getEnd(), route), 0.01);
     }
 
     @Test
@@ -794,7 +800,7 @@ class SolutionAnalyserTest {
     void lateArrTimes_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0., analyser.getTimeWindowViolation(route), 0.01);
+        Assertions.assertEquals(0., analyser.getTimeWindowViolation(route), 0.01);
     }
 
     @Test
@@ -802,7 +808,7 @@ class SolutionAnalyserTest {
     void variableTransportCosts_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(84., analyser.getVariableTransportCosts(route), 0.01);
+        Assertions.assertEquals(84., analyser.getVariableTransportCosts(route), 0.01);
     }
 
     @Test
@@ -810,7 +816,7 @@ class SolutionAnalyserTest {
     void fixedCosts_OfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(100., analyser.getFixedCosts(route), 0.01);
+        Assertions.assertEquals(100., analyser.getFixedCosts(route), 0.01);
     }
 
     @Test
@@ -818,7 +824,7 @@ class SolutionAnalyserTest {
     void transportCosts_atStartActOfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(0, analyser.getVariableTransportCostsAtActivity(route.getStart(), route), 0.01);
+        Assertions.assertEquals(0, analyser.getVariableTransportCostsAtActivity(route.getStart(), route), 0.01);
     }
 
     @Test
@@ -826,7 +832,8 @@ class SolutionAnalyserTest {
     void transportCosts_ofAct1ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(6. * 2., analyser.getVariableTransportCostsAtActivity(route.getActivities().get(0), route), 0.01);
+        Assertions.assertEquals(6. * 2.,
+                analyser.getVariableTransportCostsAtActivity(route.getActivities().get(0), route), 0.01);
     }
 
     @Test
@@ -834,7 +841,8 @@ class SolutionAnalyserTest {
     void transportCosts_ofAct2ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(12. * 2., analyser.getVariableTransportCostsAtActivity(route.getActivities().get(1), route), 0.01);
+        Assertions.assertEquals(12. * 2.,
+                analyser.getVariableTransportCostsAtActivity(route.getActivities().get(1), route), 0.01);
     }
 
     @Test
@@ -842,7 +850,8 @@ class SolutionAnalyserTest {
     void transportCosts_ofAct3ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(16. * 2., analyser.getVariableTransportCostsAtActivity(route.getActivities().get(2), route), 0.01);
+        Assertions.assertEquals(16. * 2.,
+                analyser.getVariableTransportCostsAtActivity(route.getActivities().get(2), route), 0.01);
     }
 
     @Test
@@ -850,7 +859,8 @@ class SolutionAnalyserTest {
     void transportCosts_ofAct4ofRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(27. * 2., analyser.getVariableTransportCostsAtActivity(route.getActivities().get(3), route), 0.01);
+        Assertions.assertEquals(27. * 2.,
+                analyser.getVariableTransportCostsAtActivity(route.getActivities().get(3), route), 0.01);
     }
 
     @Test
@@ -858,7 +868,7 @@ class SolutionAnalyserTest {
     void transportCosts_ofEndActOfRoute1ShouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
-        assertEquals(42. * 2., analyser.getVariableTransportCostsAtActivity(route.getEnd(), route), 0.01);
+        Assertions.assertEquals(42. * 2., analyser.getVariableTransportCostsAtActivity(route.getEnd(), route), 0.01);
     }
 
     @Test
@@ -868,7 +878,7 @@ class SolutionAnalyserTest {
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity atBeginning = analyser.getCapacityViolationAtBeginning(route);
         for (int i = 0; i < atBeginning.getNuOfDimensions(); i++) {
-            assertEquals(0, atBeginning.get(i));
+            Assertions.assertEquals(0, atBeginning.get(i));
         }
     }
 
@@ -879,7 +889,7 @@ class SolutionAnalyserTest {
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity atEnd = analyser.getCapacityViolationAtEnd(route);
         for (int i = 0; i < atEnd.getNuOfDimensions(); i++) {
-            assertEquals(0, atEnd.get(i));
+            Assertions.assertEquals(0, atEnd.get(i));
         }
     }
 
@@ -890,7 +900,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolation(route);
-        assertEquals(50, cap.get(0));
+        Assertions.assertEquals(50, cap.get(0));
     }
 
     @Test
@@ -900,7 +910,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity atEnd = analyser.getCapacityViolationAtEnd(route);
-        assertEquals(5, atEnd.get(0));
+        Assertions.assertEquals(5, atEnd.get(0));
     }
 
     @Test
@@ -911,7 +921,7 @@ class SolutionAnalyserTest {
         TourActivity act = route.getStart();
         Capacity cap = analyser.getCapacityViolationAfterActivity(act, route);
         for (int i = 0; i < cap.getNuOfDimensions(); i++) {
-            assertEquals(0, cap.get(i));
+            Assertions.assertEquals(0, cap.get(i));
         }
     }
 
@@ -922,7 +932,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAtBeginning(route);
-        assertEquals(25, cap.get(0));
+        Assertions.assertEquals(25, cap.get(0));
     }
 
     @Test
@@ -932,7 +942,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getStart(), route);
-        assertEquals(25, cap.get(0));
+        Assertions.assertEquals(25, cap.get(0));
     }
 
     @Test
@@ -942,7 +952,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(0), route);
-        assertEquals(35, cap.get(0));
+        Assertions.assertEquals(35, cap.get(0));
     }
 
     @Test
@@ -952,7 +962,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(1), route);
-        assertEquals(50, cap.get(0));
+        Assertions.assertEquals(50, cap.get(0));
     }
 
     @Test
@@ -962,7 +972,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(2), route);
-        assertEquals(35, cap.get(0));
+        Assertions.assertEquals(35, cap.get(0));
     }
 
     @Test
@@ -972,7 +982,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(3), route);
-        assertEquals(15, cap.get(0));
+        Assertions.assertEquals(15, cap.get(0));
     }
 
     @Test
@@ -982,7 +992,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(4), route);
-        assertEquals(0, cap.get(0));
+        Assertions.assertEquals(0, cap.get(0));
     }
 
     @Test
@@ -992,7 +1002,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(5), route);
-        assertEquals(10, cap.get(0));
+        Assertions.assertEquals(10, cap.get(0));
     }
 
     @Test
@@ -1002,7 +1012,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(6), route);
-        assertEquals(0, cap.get(0));
+        Assertions.assertEquals(0, cap.get(0));
     }
 
     @Test
@@ -1012,7 +1022,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(7), route);
-        assertEquals(5, cap.get(0));
+        Assertions.assertEquals(5, cap.get(0));
     }
 
     @Test
@@ -1022,7 +1032,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getEnd(), route);
-        assertEquals(5, cap.get(0));
+        Assertions.assertEquals(5, cap.get(0));
     }
 
     @Test
@@ -1033,7 +1043,7 @@ class SolutionAnalyserTest {
         TourActivity act = route.getActivities().get(0);
         Capacity cap = analyser.getCapacityViolationAfterActivity(act, route);
         for (int i = 0; i < cap.getNuOfDimensions(); i++) {
-            assertEquals(0, cap.get(i));
+            Assertions.assertEquals(0, cap.get(i));
         }
     }
 
@@ -1045,7 +1055,7 @@ class SolutionAnalyserTest {
         TourActivity act = route.getActivities().get(1);
         Capacity cap = analyser.getCapacityViolationAfterActivity(act, route);
         for (int i = 0; i < cap.getNuOfDimensions(); i++) {
-            assertEquals(0, cap.get(i));
+            Assertions.assertEquals(0, cap.get(i));
         }
     }
 
@@ -1057,7 +1067,7 @@ class SolutionAnalyserTest {
         TourActivity act = route.getActivities().get(2);
         Capacity cap = analyser.getCapacityViolationAfterActivity(act, route);
         for (int i = 0; i < cap.getNuOfDimensions(); i++) {
-            assertEquals(0, cap.get(i));
+            Assertions.assertEquals(0, cap.get(i));
         }
     }
 
@@ -1069,7 +1079,7 @@ class SolutionAnalyserTest {
         TourActivity act = route.getActivities().get(3);
         Capacity cap = analyser.getCapacityViolationAfterActivity(act, route);
         for (int i = 0; i < cap.getNuOfDimensions(); i++) {
-            assertEquals(0, cap.get(i));
+            Assertions.assertEquals(0, cap.get(i));
         }
     }
 
@@ -1081,7 +1091,7 @@ class SolutionAnalyserTest {
         TourActivity act = route.getEnd();
         Capacity cap = analyser.getCapacityViolationAfterActivity(act, route);
         for (int i = 0; i < cap.getNuOfDimensions(); i++) {
-            assertEquals(0, cap.get(i));
+            Assertions.assertEquals(0, cap.get(i));
         }
     }
 
@@ -1091,7 +1101,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Double violation = analyser.getTimeWindowViolation(route);
-        assertEquals(0., violation, 0.01);
+        Assertions.assertEquals(0., violation, 0.01);
     }
 
     @Test
@@ -1101,7 +1111,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Double violation = analyser.getTimeWindowViolation(route);
-        assertEquals((2 + 26 + 57 + 77 + 90 + 114 + 144 + 20), violation, 0.01);
+        Assertions.assertEquals((2 + 26 + 57 + 77 + 90 + 114 + 144 + 20), violation, 0.01);
     }
 
     @Test
@@ -1111,7 +1121,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Double violation = analyser.getTimeWindowViolationAtActivity(route.getStart(), route);
-        assertEquals(0., violation, 0.01);
+        Assertions.assertEquals(0., violation, 0.01);
     }
 
     @Test
@@ -1121,7 +1131,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Double violation = analyser.getTimeWindowViolationAtActivity(route.getActivities().get(0), route);
-        assertEquals(0., violation, 0.01);
+        Assertions.assertEquals(0., violation, 0.01);
     }
 
     @Test
@@ -1131,7 +1141,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Double violation = analyser.getTimeWindowViolationAtActivity(route.getActivities().get(1), route);
-        assertEquals(2., violation, 0.01);
+        Assertions.assertEquals(2., violation, 0.01);
     }
 
     @Test
@@ -1141,7 +1151,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Double violation = analyser.getTimeWindowViolationAtActivity(route.getActivities().get(2), route);
-        assertEquals(26., violation, 0.01);
+        Assertions.assertEquals(26., violation, 0.01);
     }
 
     @Test
@@ -1151,7 +1161,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Double violation = analyser.getTimeWindowViolationAtActivity(route.getActivities().get(3), route);
-        assertEquals(57., violation, 0.01);
+        Assertions.assertEquals(57., violation, 0.01);
     }
 
     @Test
@@ -1161,7 +1171,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Double violation = analyser.getTimeWindowViolationAtActivity(route.getActivities().get(4), route);
-        assertEquals(77., violation, 0.01);
+        Assertions.assertEquals(77., violation, 0.01);
     }
 
     @Test
@@ -1171,7 +1181,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Double violation = analyser.getTimeWindowViolationAtActivity(route.getActivities().get(5), route);
-        assertEquals(90., violation, 0.01);
+        Assertions.assertEquals(90., violation, 0.01);
     }
 
     @Test
@@ -1181,7 +1191,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Double violation = analyser.getTimeWindowViolationAtActivity(route.getActivities().get(6), route);
-        assertEquals(114., violation, 0.01);
+        Assertions.assertEquals(114., violation, 0.01);
     }
 
     @Test
@@ -1191,7 +1201,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Double violation = analyser.getTimeWindowViolationAtActivity(route.getActivities().get(7), route);
-        assertEquals(144., violation, 0.01);
+        Assertions.assertEquals(144., violation, 0.01);
     }
 
     @Test
@@ -1201,7 +1211,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Double violation = analyser.getTimeWindowViolationAtActivity(route.getEnd(), route);
-        assertEquals(20., violation, 0.01);
+        Assertions.assertEquals(20., violation, 0.01);
     }
 
     @Test
@@ -1211,7 +1221,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Boolean violation = analyser.hasBackhaulConstraintViolation(route);
-        assertTrue(violation);
+        Assertions.assertTrue(violation);
     }
 
     @Test
@@ -1261,7 +1271,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(3), route);
-        assertTrue(violation);
+        Assertions.assertTrue(violation);
     }
 
     @Test
@@ -1271,7 +1281,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(4), route);
-        assertTrue(violation);
+        Assertions.assertTrue(violation);
     }
 
     @Test
@@ -1361,7 +1371,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(3), route);
-        assertTrue(violation);
+        Assertions.assertTrue(violation);
     }
 
     @Test
@@ -1371,7 +1381,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Boolean violation = analyser.hasBackhaulConstraintViolationAtActivity(route.getActivities().get(4), route);
-        assertTrue(violation);
+        Assertions.assertTrue(violation);
     }
 
     @Test
@@ -1433,7 +1443,7 @@ class SolutionAnalyserTest {
         route.getTourActivities().removeActivity(deliverShipment);
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         Boolean violation = analyser.hasShipmentConstraintViolation(route);
-        assertTrue(violation);
+        Assertions.assertTrue(violation);
     }
 
     @Test
@@ -1445,7 +1455,7 @@ class SolutionAnalyserTest {
         route.getTourActivities().removeActivity(deliverShipment);
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         Boolean violation = analyser.hasShipmentConstraintViolationAtActivity(route.getActivities().get(1), route);
-        assertTrue(violation);
+        Assertions.assertTrue(violation);
     }
 
     @Test
@@ -1458,7 +1468,7 @@ class SolutionAnalyserTest {
         assertFalse(route.getActivities().contains(deliverShipment));
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         Boolean violation = analyser.hasShipmentConstraintViolation(route);
-        assertTrue(violation);
+        Assertions.assertTrue(violation);
     }
 
     @Test
@@ -1471,7 +1481,7 @@ class SolutionAnalyserTest {
         assertFalse(route.getActivities().contains(pickupShipment));
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         Boolean violation = analyser.hasShipmentConstraintViolationAtActivity(route.getActivities().get(1), route);
-        assertTrue(violation);
+        Assertions.assertTrue(violation);
     }
 
     @Test
@@ -1484,7 +1494,7 @@ class SolutionAnalyserTest {
         assertFalse(route.getActivities().contains(pickupShipment));
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         Boolean violation = analyser.hasShipmentConstraintViolation(route);
-        assertTrue(violation);
+        Assertions.assertTrue(violation);
     }
 
     @Test
@@ -1497,7 +1507,7 @@ class SolutionAnalyserTest {
         assertFalse(route.getActivities().contains(pickupShipment));
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         Boolean violation = analyser.hasShipmentConstraintViolation();
-        assertTrue(violation);
+        Assertions.assertTrue(violation);
     }
 
     @Test
@@ -1506,7 +1516,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Boolean violated = analyser.hasSkillConstraintViolation(route);
-        assertTrue(violated);
+        Assertions.assertTrue(violated);
     }
 
     @Test
@@ -1533,7 +1543,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Boolean violated = analyser.hasSkillConstraintViolationAtActivity(route.getActivities().get(1), route);
-        assertTrue(violated);
+        Assertions.assertTrue(violated);
     }
 
     @Test
@@ -1542,7 +1552,7 @@ class SolutionAnalyserTest {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         VehicleRoute route = solution.getRoutes().iterator().next();
         Boolean violated = analyser.hasSkillConstraintViolationAtActivity(route.getActivities().get(2), route);
-        assertTrue(violated);
+        Assertions.assertTrue(violated);
     }
 
     @Test
@@ -1579,7 +1589,7 @@ class SolutionAnalyserTest {
     void skillViolationOnSolution_shouldWork() {
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         Boolean violated = analyser.hasSkillConstraintViolation();
-        assertTrue(violated);
+        Assertions.assertTrue(violated);
     }
 
     @Test
@@ -1596,7 +1606,7 @@ class SolutionAnalyserTest {
         buildAnotherScenarioWithOnlyOneVehicleAndWithoutAnyConstraintsBefore();
         SolutionAnalyser analyser = new SolutionAnalyser(vrp, solution, vrp.getTransportCosts());
         Boolean violated = analyser.hasBackhaulConstraintViolation();
-        assertTrue(violated);
+        Assertions.assertTrue(violated);
     }
 
     @Test
@@ -1626,7 +1636,7 @@ class SolutionAnalyserTest {
             VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
             VehicleRoutingProblemSolution solution = new VehicleRoutingProblemSolution(Collections.singletonList(vehicleRoute), 0);
             new SolutionAnalyser(vrp, solution, (from, to, departureTime, vehicle1) -> 100);
-            assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
             fail();
         }

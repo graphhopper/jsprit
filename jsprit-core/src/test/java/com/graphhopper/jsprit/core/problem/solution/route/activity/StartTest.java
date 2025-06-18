@@ -23,6 +23,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Assertions;
+
 @DisplayName("Start Test")
 class StartTest {
 
@@ -30,21 +32,21 @@ class StartTest {
     @DisplayName("When Calling Capacity _ it Should Return Empty Capacity")
     void whenCallingCapacity_itShouldReturnEmptyCapacity() {
         Start start = Start.newInstance("loc", 0., 0.);
-        assertEquals(0, start.getSize().get(0));
+        Assertions.assertEquals(0, start.getSize().get(0));
     }
 
     @Test
     @DisplayName("When Start Is Ini With Earliest Start _ it Should Be Set Correctly")
     void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly() {
         Start start = Start.newInstance("loc", 1., 2.);
-        assertEquals(1., start.getTheoreticalEarliestOperationStartTime(), 0.01);
+        Assertions.assertEquals(1., start.getTheoreticalEarliestOperationStartTime(), 0.01);
     }
 
     @Test
     @DisplayName("When Start Is Ini With Latest Start _ it Should Be Set Correctly")
     void whenStartIsIniWithLatestStart_itShouldBeSetCorrectly() {
         Start start = Start.newInstance("loc", 1., 2.);
-        assertEquals(2., start.getTheoreticalLatestOperationStartTime(), 0.01);
+        Assertions.assertEquals(2., start.getTheoreticalLatestOperationStartTime(), 0.01);
     }
 
     @Test
@@ -52,7 +54,7 @@ class StartTest {
     void whenSettingStartEndTime_itShouldBeSetCorrectly() {
         Start start = Start.newInstance("loc", 1., 2.);
         start.setEndTime(4.0);
-        assertEquals(4., start.getEndTime(), 0.01);
+        Assertions.assertEquals(4., start.getEndTime(), 0.01);
     }
 
     @Test
@@ -60,7 +62,7 @@ class StartTest {
     void whenSettingEarliestStart_itShouldBeSetCorrectly() {
         Start start = Start.newInstance("loc", 1., 2.);
         start.setTheoreticalEarliestOperationStartTime(5.);
-        assertEquals(5., start.getTheoreticalEarliestOperationStartTime(), 0.01);
+        Assertions.assertEquals(5., start.getTheoreticalEarliestOperationStartTime(), 0.01);
     }
 
     @Test
@@ -68,7 +70,7 @@ class StartTest {
     void whenSettingLatestStart_itShouldBeSetCorrectly() {
         Start start = Start.newInstance("loc", 1., 2.);
         start.setTheoreticalLatestOperationStartTime(5.);
-        assertEquals(5., start.getTheoreticalLatestOperationStartTime(), 0.01);
+        Assertions.assertEquals(5., start.getTheoreticalLatestOperationStartTime(), 0.01);
     }
 
     @Test
@@ -78,9 +80,9 @@ class StartTest {
         start.setTheoreticalEarliestOperationStartTime(3.);
         start.setTheoreticalLatestOperationStartTime(5.);
         Start copy = Start.copyOf(start);
-        assertEquals(3., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
-        assertEquals(5., copy.getTheoreticalLatestOperationStartTime(), 0.01);
-        assertEquals(copy.getLocation().getId(), "loc");
-        assertTrue(copy != start);
+        Assertions.assertEquals(3., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
+        Assertions.assertEquals(5., copy.getTheoreticalLatestOperationStartTime(), 0.01);
+        Assertions.assertEquals(copy.getLocation().getId(), "loc");
+        Assertions.assertTrue(copy != start);
     }
 }
