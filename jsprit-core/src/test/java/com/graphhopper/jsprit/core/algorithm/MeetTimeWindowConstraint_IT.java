@@ -35,9 +35,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.FastVehicleRoutingTransportCostsMatrix;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,14 +44,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 public class MeetTimeWindowConstraint_IT {
 
     VehicleRoutingProblem vrp;
 
-    @Before
+    @BeforeEach
     public void doBefore(){
         VehicleType type1 = VehicleTypeImpl.Builder.newInstance("5").build();
         VehicleType type2 = VehicleTypeImpl.Builder.newInstance("3.5").build();
@@ -74,7 +72,7 @@ public class MeetTimeWindowConstraint_IT {
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(100);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        Assert.assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
+        Assertions.assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
     }
 
     @Test
@@ -101,7 +99,7 @@ public class MeetTimeWindowConstraint_IT {
         });
         @SuppressWarnings("unused")
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        assertTrue(testFailed.isEmpty());
+        Assertions.assertTrue(testFailed.isEmpty());
     }
 
     @Test
@@ -135,7 +133,7 @@ public class MeetTimeWindowConstraint_IT {
 
         @SuppressWarnings("unused")
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        assertTrue(testFailed.isEmpty());
+        Assertions.assertTrue(testFailed.isEmpty());
     }
 
     @Test
@@ -144,7 +142,7 @@ public class MeetTimeWindowConstraint_IT {
         vra.setMaxIterations(100);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
-        assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
+        Assertions.assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
     }
 
     @Test
@@ -152,7 +150,7 @@ public class MeetTimeWindowConstraint_IT {
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(100);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        assertTrue(containsJob(vrp.getJobs().get("1"), getRoute("21", Solutions.bestOf(solutions))));
+        Assertions.assertTrue(containsJob(vrp.getJobs().get("1"), getRoute("21", Solutions.bestOf(solutions))));
     }
 
     @Test
@@ -160,7 +158,7 @@ public class MeetTimeWindowConstraint_IT {
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(100);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        assertTrue(containsJob(vrp.getJobs().get("2"), getRoute("19", Solutions.bestOf(solutions))));
+        Assertions.assertTrue(containsJob(vrp.getJobs().get("2"), getRoute("19", Solutions.bestOf(solutions))));
     }
 
 
@@ -170,7 +168,7 @@ public class MeetTimeWindowConstraint_IT {
         vra.setMaxIterations(100);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
-        assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
+        Assertions.assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
     }
 
     @Test
@@ -198,7 +196,7 @@ public class MeetTimeWindowConstraint_IT {
         @SuppressWarnings("unused")
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
-        assertTrue(testFailed.isEmpty());
+        Assertions.assertTrue(testFailed.isEmpty());
     }
 
     @Test
@@ -232,7 +230,7 @@ public class MeetTimeWindowConstraint_IT {
 
         @SuppressWarnings("unused")
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        assertTrue(testFailed.isEmpty());
+        Assertions.assertTrue(testFailed.isEmpty());
     }
 
     @Test
@@ -241,7 +239,7 @@ public class MeetTimeWindowConstraint_IT {
         vra.setMaxIterations(100);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
-        assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
+        Assertions.assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
     }
 
     @Test
@@ -250,8 +248,8 @@ public class MeetTimeWindowConstraint_IT {
         vra.setMaxIterations(100);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
-        assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
-        assertTrue(containsJob(vrp.getJobs().get("1"), getRoute("21", Solutions.bestOf(solutions))));
+        Assertions.assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
+        Assertions.assertTrue(containsJob(vrp.getJobs().get("1"), getRoute("21", Solutions.bestOf(solutions))));
     }
 
     @Test
@@ -260,8 +258,8 @@ public class MeetTimeWindowConstraint_IT {
         vra.setMaxIterations(100);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
-        assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
-        assertTrue(containsJob(vrp.getJobs().get("2"), getRoute("19", Solutions.bestOf(solutions))));
+        Assertions.assertEquals(2, Solutions.bestOf(solutions).getRoutes().size());
+        Assertions.assertTrue(containsJob(vrp.getJobs().get("2"), getRoute("19", Solutions.bestOf(solutions))));
     }
 
     @Test
@@ -271,8 +269,8 @@ public class MeetTimeWindowConstraint_IT {
         algorithm.setMaxIterations(1000);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(algorithm.searchSolutions());
         for (VehicleRoute r : solution.getRoutes()) {
-            assertTrue(r.getVehicle().getEarliestDeparture() <= r.getDepartureTime());
-            assertTrue(r.getVehicle().getLatestArrival() >= r.getEnd().getArrTime());
+        	Assertions.assertTrue(r.getVehicle().getEarliestDeparture() <= r.getDepartureTime());
+        	Assertions.assertTrue(r.getVehicle().getLatestArrival() >= r.getEnd().getArrTime());
         }
     }
 

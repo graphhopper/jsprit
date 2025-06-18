@@ -21,6 +21,8 @@ import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
 import com.graphhopper.jsprit.core.algorithm.termination.PrematureAlgorithmTermination;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +41,7 @@ class VehicleRoutingAlgorithmTest {
     void whenSettingIterations_itIsSetCorrectly() {
         VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class), mock(SearchStrategyManager.class));
         algorithm.setMaxIterations(50);
-        assertEquals(50, algorithm.getMaxIterations());
+        Assertions.assertEquals(50, algorithm.getMaxIterations());
     }
 
     @Test
@@ -47,7 +49,7 @@ class VehicleRoutingAlgorithmTest {
     void whenSettingIterationsWithMaxIterations_itIsSetCorrectly() {
         VehicleRoutingAlgorithm algorithm = new VehicleRoutingAlgorithm(mock(VehicleRoutingProblem.class), mock(SearchStrategyManager.class));
         algorithm.setMaxIterations(50);
-        assertEquals(50, algorithm.getMaxIterations());
+        Assertions.assertEquals(50, algorithm.getMaxIterations());
     }
 
     @DisplayName("Count Iterations")
@@ -76,7 +78,7 @@ class VehicleRoutingAlgorithmTest {
         CountIterations counter = new CountIterations();
         algorithm.addListener(counter);
         algorithm.searchSolutions();
-        assertEquals(1000, counter.getCountIterations());
+        Assertions.assertEquals(1000, counter.getCountIterations());
     }
 
     @Test
@@ -90,7 +92,7 @@ class VehicleRoutingAlgorithmTest {
         CountIterations counter = new CountIterations();
         algorithm.addListener(counter);
         algorithm.searchSolutions();
-        assertEquals(1000, counter.getCountIterations());
+        Assertions.assertEquals(1000, counter.getCountIterations());
     }
 
     @Test
@@ -117,7 +119,7 @@ class VehicleRoutingAlgorithmTest {
         algorithm.addListener(counter);
         algorithm.setPrematureAlgorithmTermination(termination);
         algorithm.searchSolutions();
-        assertEquals(50, counter.getCountIterations());
+        Assertions.assertEquals(50, counter.getCountIterations());
     }
 
     @Test
@@ -144,7 +146,7 @@ class VehicleRoutingAlgorithmTest {
         algorithm.addListener(counter);
         algorithm.addTerminationCriterion(termination);
         algorithm.searchSolutions();
-        assertEquals(50, counter.getCountIterations());
+        Assertions.assertEquals(50, counter.getCountIterations());
     }
 
     @Test
@@ -184,6 +186,6 @@ class VehicleRoutingAlgorithmTest {
         algorithm.addTerminationCriterion(termination);
         algorithm.addTerminationCriterion(termination2);
         algorithm.searchSolutions();
-        assertEquals(25, counter.getCountIterations());
+        Assertions.assertEquals(25, counter.getCountIterations());
     }
 }

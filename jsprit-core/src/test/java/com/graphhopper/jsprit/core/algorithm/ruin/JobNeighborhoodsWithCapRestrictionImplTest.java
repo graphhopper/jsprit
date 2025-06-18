@@ -23,6 +23,8 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -79,7 +81,7 @@ class JobNeighborhoodsWithCapRestrictionImplTest {
         while (iter.hasNext()) {
             services.add((Service) iter.next());
         }
-        assertEquals(2, services.size());
+        Assertions.assertEquals(2, services.size());
     }
 
     @Test
@@ -92,7 +94,7 @@ class JobNeighborhoodsWithCapRestrictionImplTest {
         while (iter.hasNext()) {
             services.add((Service) iter.next());
         }
-        assertTrue(services.contains(s2));
+        Assertions.assertTrue(services.contains(s2));
     }
 
     @Test
@@ -105,7 +107,7 @@ class JobNeighborhoodsWithCapRestrictionImplTest {
         while (iter.hasNext()) {
             services.add((Service) iter.next());
         }
-        assertTrue(services.contains(s5));
+        Assertions.assertTrue(services.contains(s5));
     }
 
     @Test
@@ -118,7 +120,7 @@ class JobNeighborhoodsWithCapRestrictionImplTest {
         while (iter.hasNext()) {
             services.add((Service) iter.next());
         }
-        assertEquals(4, services.size());
+        Assertions.assertEquals(4, services.size());
     }
 
     @Test
@@ -131,6 +133,6 @@ class JobNeighborhoodsWithCapRestrictionImplTest {
         while (iter.hasNext()) {
             services.add((Service) iter.next());
         }
-        assertEquals(2, services.size());
+        Assertions.assertEquals(2, services.size());
     }
 }

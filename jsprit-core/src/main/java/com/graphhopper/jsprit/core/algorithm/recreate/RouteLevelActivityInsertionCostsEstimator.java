@@ -63,7 +63,7 @@ class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCost
         }
 
 		/*
-         * calculates the path costs with new vehicle, c(forwardPath,newVehicle).
+		 * calculates the path costs with new vehicle, c(forwardPath,newVehicle).
 		 */
         double forwardPathCost_newVehicle = auxilliaryPathCostCalculator.costOfPath(path, depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
         return forwardPathCost_newVehicle - (actCostsOld(iFacts.getRoute(), path.get(path.size() - 1)) - actCostsOld(iFacts.getRoute(), prevAct));

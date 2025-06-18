@@ -20,6 +20,8 @@ package com.graphhopper.jsprit.core.problem.vehicle;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -47,9 +49,9 @@ class VehicleImplTest {
         Break aBreak = Break.Builder.newInstance("break").setTimeWindow(TimeWindow.newInstance(100, 200)).setServiceTime(30).build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start")).setBreak(aBreak).build();
         assertNotNull(v.getBreak());
-        assertEquals(100., v.getBreak().getTimeWindow().getStart(), 0.1);
-        assertEquals(200., v.getBreak().getTimeWindow().getEnd(), 0.1);
-        assertEquals(30., v.getBreak().getServiceDuration(), 0.1);
+        Assertions.assertEquals(100., v.getBreak().getTimeWindow().getStart(), 0.1);
+        Assertions.assertEquals(200., v.getBreak().getTimeWindow().getEnd(), 0.1);
+        Assertions.assertEquals(30., v.getBreak().getServiceDuration(), 0.1);
     }
 
     @Test
@@ -60,11 +62,11 @@ class VehicleImplTest {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start")).setBreak(aBreak).build();
         Vehicle newVehicle = VehicleImpl.Builder.newInstance(v).setStartLocation(Location.newInstance("newStartLocation")).build();
         assertNotNull(newVehicle.getBreak());
-        assertEquals(100., newVehicle.getBreak().getTimeWindow().getStart(), 0.1);
-        assertEquals(200., newVehicle.getBreak().getTimeWindow().getEnd(), 0.1);
-        assertEquals(30., newVehicle.getBreak().getServiceDuration(), 0.1);
-        assertEquals(newVehicle.getStartLocation().getId(), "newStartLocation");
-        assertEquals(type1, newVehicle.getType());
+        Assertions.assertEquals(100., newVehicle.getBreak().getTimeWindow().getStart(), 0.1);
+        Assertions.assertEquals(200., newVehicle.getBreak().getTimeWindow().getEnd(), 0.1);
+        Assertions.assertEquals(30., newVehicle.getBreak().getServiceDuration(), 0.1);
+        Assertions.assertEquals(newVehicle.getStartLocation().getId(), "newStartLocation");
+        Assertions.assertEquals(type1, newVehicle.getType());
     }
 
     @Test
@@ -72,9 +74,9 @@ class VehicleImplTest {
     void whenAddingSkills_theyShouldBeAddedCorrectly() {
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start")).addSkill("drill").addSkill("screwdriver").build();
-        assertTrue(v.getSkills().containsSkill("drill"));
-        assertTrue(v.getSkills().containsSkill("drill"));
-        assertTrue(v.getSkills().containsSkill("screwdriver"));
+        Assertions.assertTrue(v.getSkills().containsSkill("drill"));
+        Assertions.assertTrue(v.getSkills().containsSkill("drill"));
+        Assertions.assertTrue(v.getSkills().containsSkill("screwdriver"));
     }
 
     @Test
@@ -82,80 +84,80 @@ class VehicleImplTest {
     void whenAddingSkillsCaseSens_theyShouldBeAddedCorrectly() {
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start")).addSkill("drill").addSkill("screwdriver").build();
-        assertTrue(v.getSkills().containsSkill("drill"));
-        assertTrue(v.getSkills().containsSkill("dRill"));
-        assertTrue(v.getSkills().containsSkill("ScrewDriver"));
+        Assertions.assertTrue(v.getSkills().containsSkill("drill"));
+        Assertions.assertTrue(v.getSkills().containsSkill("dRill"));
+        Assertions.assertTrue(v.getSkills().containsSkill("ScrewDriver"));
     }
 
     @Test
     @DisplayName("When Vehicle Is Built To Return To Depot _ it Should Return To Depot")
     void whenVehicleIsBuiltToReturnToDepot_itShouldReturnToDepot() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setReturnToDepot(true).setStartLocation(Location.newInstance("loc")).build();
-        assertTrue(v.isReturnToDepot());
+        Assertions.assertTrue(v.isReturnToDepot());
     }
 
     @Test
     @DisplayName("When Vehicle Is Built To Not Return To Depot _ it Should Not Return To Depot")
     void whenVehicleIsBuiltToNotReturnToDepot_itShouldNotReturnToDepot() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setReturnToDepot(false).setStartLocation(Location.newInstance("loc")).build();
-        assertFalse(v.isReturnToDepot());
+        Assertions.assertFalse(v.isReturnToDepot());
     }
 
     @Test
     @DisplayName("When Vehicle Is Built With Location _ it Should Hv The Correct Location")
     void whenVehicleIsBuiltWithLocation_itShouldHvTheCorrectLocation() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
-        assertEquals(v.getStartLocation().getId(), "loc");
+        Assertions.assertEquals(v.getStartLocation().getId(), "loc");
     }
 
     @Test
     @DisplayName("When Vehicle Is Built With Coord _ it Should Hv The Correct Coord")
     void whenVehicleIsBuiltWithCoord_itShouldHvTheCorrectCoord() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(1, 2)).build();
-        assertEquals(1.0, v.getStartLocation().getCoordinate().getX(), 0.01);
-        assertEquals(2.0, v.getStartLocation().getCoordinate().getY(), 0.01);
+        Assertions.assertEquals(1.0, v.getStartLocation().getCoordinate().getX(), 0.01);
+        Assertions.assertEquals(2.0, v.getStartLocation().getCoordinate().getY(), 0.01);
     }
 
     @Test
     @DisplayName("When Vehicle Is Built And Earliest Start Is Not Set _ it Should Set The Default Of Zero")
     void whenVehicleIsBuiltAndEarliestStartIsNotSet_itShouldSetTheDefaultOfZero() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(1, 2)).build();
-        assertEquals(0.0, v.getEarliestDeparture(), 0.01);
+        Assertions.assertEquals(0.0, v.getEarliestDeparture(), 0.01);
     }
 
     @Test
     @DisplayName("When Vehicle Is Built And Earliest Start Set _ it Should Be Set Correctly")
     void whenVehicleIsBuiltAndEarliestStartSet_itShouldBeSetCorrectly() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setEarliestStart(10.0).setStartLocation(Location.newInstance(1, 2)).build();
-        assertEquals(10.0, v.getEarliestDeparture(), 0.01);
+        Assertions.assertEquals(10.0, v.getEarliestDeparture(), 0.01);
     }
 
     @Test
     @DisplayName("When Vehicle Is Built And Latest Arrival Is Not Set _ it Should Set Default Of Double Max Value")
     void whenVehicleIsBuiltAndLatestArrivalIsNotSet_itShouldSetDefaultOfDoubleMaxValue() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(1, 2)).build();
-        assertEquals(Double.MAX_VALUE, v.getLatestArrival(), 0.01);
+        Assertions.assertEquals(Double.MAX_VALUE, v.getLatestArrival(), 0.01);
     }
 
     @Test
     @DisplayName("When Vehicle Is Built And Latest Arrival Is Set _ it Should Be Set Correctly")
     void whenVehicleIsBuiltAndLatestArrivalIsSet_itShouldBeSetCorrectly() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setLatestArrival(30.0).setStartLocation(Location.newInstance(1, 2)).build();
-        assertEquals(30.0, v.getLatestArrival(), 0.01);
+        Assertions.assertEquals(30.0, v.getLatestArrival(), 0.01);
     }
 
     @Test
     @DisplayName("When No Vehicle Is Create _ it Should Hv The Correct Id")
     void whenNoVehicleIsCreate_itShouldHvTheCorrectId() {
         Vehicle v = VehicleImpl.createNoVehicle();
-        assertEquals(v.getId(), "noVehicle");
+        Assertions.assertEquals(v.getId(), "noVehicle");
     }
 
     @Test
     @DisplayName("When Start Location Is Set _ it Is Done Correctly")
     void whenStartLocationIsSet_itIsDoneCorrectly() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("startLoc")).build();
-        assertEquals(v.getStartLocation().getId(), "startLoc");
+        Assertions.assertEquals(v.getStartLocation().getId(), "startLoc");
     }
 
     @Test
@@ -171,52 +173,52 @@ class VehicleImplTest {
     @DisplayName("When Start Location Coord Is Set _ it Is Done Correctly")
     void whenStartLocationCoordIsSet_itIsDoneCorrectly() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(1, 2)).build();
-        assertEquals(1.0, v.getStartLocation().getCoordinate().getX(), 0.01);
-        assertEquals(2.0, v.getStartLocation().getCoordinate().getY(), 0.01);
+        Assertions.assertEquals(1.0, v.getStartLocation().getCoordinate().getX(), 0.01);
+        Assertions.assertEquals(2.0, v.getStartLocation().getCoordinate().getY(), 0.01);
     }
 
     @Test
     @DisplayName("When End Location Is Set _ it Is Done Correctly")
     void whenEndLocationIsSet_itIsDoneCorrectly() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("startLoc")).setEndLocation(Location.newInstance("endLoc")).build();
-        assertEquals(v.getStartLocation().getId(), "startLoc");
-        assertEquals(v.getEndLocation().getId(), "endLoc");
+        Assertions.assertEquals(v.getStartLocation().getId(), "startLoc");
+        Assertions.assertEquals(v.getEndLocation().getId(), "endLoc");
     }
 
     @Test
     @DisplayName("When End Location Coord Is Set _ it Is Done Correctly")
     void whenEndLocationCoordIsSet_itIsDoneCorrectly() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("startLoc")).setEndLocation(Location.newInstance(1, 2)).build();
-        assertEquals(1.0, v.getEndLocation().getCoordinate().getX(), 0.01);
-        assertEquals(2.0, v.getEndLocation().getCoordinate().getY(), 0.01);
+        Assertions.assertEquals(1.0, v.getEndLocation().getCoordinate().getX(), 0.01);
+        Assertions.assertEquals(2.0, v.getEndLocation().getCoordinate().getY(), 0.01);
     }
 
     @Test
     @DisplayName("When Neither End Location Id Nor End Location Coord Are Set _ end Location Id Must Be Equal To Start Location Id")
     void whenNeitherEndLocationIdNorEndLocationCoordAreSet_endLocationIdMustBeEqualToStartLocationId() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("startLoc")).build();
-        assertEquals(v.getEndLocation().getId(), "startLoc");
+        Assertions.assertEquals(v.getEndLocation().getId(), "startLoc");
     }
 
     @Test
     @DisplayName("When Neither End Location Id Nor End Location Coord Are Set _ end Location Coord Must Be Equal To Start Location Coord")
     void whenNeitherEndLocationIdNorEndLocationCoordAreSet_endLocationCoordMustBeEqualToStartLocationCoord() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("startLoc")).build();
-        assertEquals(v.getEndLocation().getCoordinate(), v.getStartLocation().getCoordinate());
+        Assertions.assertEquals(v.getEndLocation().getCoordinate(), v.getStartLocation().getCoordinate());
     }
 
     @Test
     @DisplayName("When Neither End Location Id Nor End Location Coord Are Set _ end Location Coord Must Be Equal To Start Location Coord V 2")
     void whenNeitherEndLocationIdNorEndLocationCoordAreSet_endLocationCoordMustBeEqualToStartLocationCoordV2() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(1.0, 2.0)).build();
-        assertEquals(v.getEndLocation().getCoordinate(), v.getStartLocation().getCoordinate());
+        Assertions.assertEquals(v.getEndLocation().getCoordinate(), v.getStartLocation().getCoordinate());
     }
 
     @Test
     @DisplayName("When End Location Coordinate Is Set But No Id _ id Must Be Coord To String")
     void whenEndLocationCoordinateIsSetButNoId_idMustBeCoordToString() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(1.0, 2.0)).setEndLocation(Location.newInstance(3.0, 4.0)).build();
-        assertEquals(v.getEndLocation().getCoordinate().toString(), v.getEndLocation().getId());
+        Assertions.assertEquals(v.getEndLocation().getCoordinate().toString(), v.getEndLocation().getId());
     }
 
     @Test
@@ -241,14 +243,14 @@ class VehicleImplTest {
     @DisplayName("When End Location Coord Is Not Specified AND Return To Depot Is False _ end Location Coord Must Be Start Location Coord")
     void whenEndLocationCoordIsNotSpecifiedANDReturnToDepotIsFalse_endLocationCoordMustBeStartLocationCoord() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(1.0, 2.0)).setReturnToDepot(false).build();
-        assertEquals(v.getStartLocation().getCoordinate(), v.getEndLocation().getCoordinate());
+        Assertions.assertEquals(v.getStartLocation().getCoordinate(), v.getEndLocation().getCoordinate());
     }
 
     @Test
     @DisplayName("When End Location Id Is Not Specified AND Return To Depot Is False _ end Location Id Must Be Start Location Id")
     void whenEndLocationIdIsNotSpecifiedANDReturnToDepotIsFalse_endLocationIdMustBeStartLocationId() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(1.0, 2.0)).setReturnToDepot(false).build();
-        assertEquals(v.getStartLocation().getCoordinate().toString(), v.getEndLocation().getId());
+        Assertions.assertEquals(v.getStartLocation().getCoordinate().toString(), v.getEndLocation().getId());
     }
 
     @Test
@@ -265,7 +267,7 @@ class VehicleImplTest {
     void whenStartAndEndAreEqualANDReturnToDepotIsFalse_itShouldThrowException() {
         @SuppressWarnings("unused")
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setEndLocation(Location.newInstance("start")).setReturnToDepot(false).build();
-        assertTrue(true);
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -273,7 +275,7 @@ class VehicleImplTest {
     void whenTwoVehiclesHaveTheSameId_theyShouldBeEqual() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setEndLocation(Location.newInstance("start")).setReturnToDepot(false).build();
         Vehicle v2 = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setEndLocation(Location.newInstance("start")).setReturnToDepot(false).build();
-        assertTrue(v.equals(v2));
+        Assertions.assertTrue(v.equals(v2));
     }
 
     @Test
@@ -281,7 +283,7 @@ class VehicleImplTest {
     void whenAddingSkillsCaseSensV2_theyShouldBeAddedCorrectly() {
         VehicleTypeImpl type1 = VehicleTypeImpl.Builder.newInstance("type").build();
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("start")).setType(type1).setEndLocation(Location.newInstance("start")).addSkill("drill").build();
-        assertFalse(v.getSkills().containsSkill("ScrewDriver"));
+        Assertions.assertFalse(v.getSkills().containsSkill("ScrewDriver"));
     }
 
     @Test
@@ -291,8 +293,8 @@ class VehicleImplTest {
         Vehicle one = VehicleImpl.Builder.newInstance("v").setType(type1).setStartLocation(Location.newInstance("start")).setUserData(new HashMap<String, Object>()).build();
         Vehicle two = VehicleImpl.Builder.newInstance("v").setType(type1).setStartLocation(Location.newInstance("start")).setUserData(42).build();
         Vehicle three = VehicleImpl.Builder.newInstance("v").setType(type1).setStartLocation(Location.newInstance("start")).build();
-        assertTrue(one.getUserData() instanceof Map);
-        assertEquals(42, two.getUserData());
+        Assertions.assertTrue(one.getUserData() instanceof Map);
+        Assertions.assertEquals(42, two.getUserData());
         assertNull(three.getUserData());
     }
 }

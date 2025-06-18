@@ -61,18 +61,18 @@ class CalculatesServiceInsertionWithTimeSchedulingInSlices implements JobInserti
         } else currentStart = currentRoute.getStart().getEndTime();
 
         vehicleDepartureTimes.add(currentStart);
-//		double earliestDeparture = newVehicle.getEarliestDeparture();
-//		double latestEnd = newVehicle.getLatestArrival();
+		// double earliestDeparture = newVehicle.getEarliestDeparture();
+		// double latestEnd = newVehicle.getLatestArrival();
 
         for (int i = 0; i < nOfDepartureTimes; i++) {
             double neighborStartTime_earlier = currentStart - (i + 1) * timeSlice;
-//			if(neighborStartTime_earlier > earliestDeparture) {
+			// if(neighborStartTime_earlier > earliestDeparture) {
             vehicleDepartureTimes.add(neighborStartTime_earlier);
-//			}
+			// }
             double neighborStartTime_later = currentStart + (i + 1) * timeSlice;
-//			if(neighborStartTime_later < latestEnd) {
+			// if(neighborStartTime_later < latestEnd) {
             vehicleDepartureTimes.add(neighborStartTime_later);
-//			}
+			// }
         }
 
         InsertionData bestIData = null;
@@ -84,7 +84,7 @@ class CalculatesServiceInsertionWithTimeSchedulingInSlices implements JobInserti
                 bestIData = iData;
             }
         }
-//		log.info(bestIData);
+		// log.info(bestIData);
         return bestIData;
     }
 

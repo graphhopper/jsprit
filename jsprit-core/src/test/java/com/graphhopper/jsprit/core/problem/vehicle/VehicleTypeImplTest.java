@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -41,29 +42,29 @@ class VehicleTypeImplTest {
     @DisplayName("When Adding Two Cap Dimension _ nu Of Dims Should Be Two")
     void whenAddingTwoCapDimension_nuOfDimsShouldBeTwo() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 2).addCapacityDimension(1, 4).build();
-        assertEquals(2, type.getCapacityDimensions().getNuOfDimensions());
+        Assertions.assertEquals(2, type.getCapacityDimensions().getNuOfDimensions());
     }
 
     @Test
     @DisplayName("When Adding Two Cap Dimension _ dim Values Must Be Correct")
     void whenAddingTwoCapDimension_dimValuesMustBeCorrect() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 2).addCapacityDimension(1, 4).build();
-        assertEquals(2, type.getCapacityDimensions().get(0));
-        assertEquals(4, type.getCapacityDimensions().get(1));
+        Assertions.assertEquals(2, type.getCapacityDimensions().get(0));
+        Assertions.assertEquals(4, type.getCapacityDimensions().get(1));
     }
 
     @Test
     @DisplayName("When Type Is Built Without Specifying Capacity _ it Should Hv Cap With One Dim")
     void whenTypeIsBuiltWithoutSpecifyingCapacity_itShouldHvCapWithOneDim() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").build();
-        assertEquals(1, type.getCapacityDimensions().getNuOfDimensions());
+        Assertions.assertEquals(1, type.getCapacityDimensions().getNuOfDimensions());
     }
 
     @Test
     @DisplayName("When Type Is Built Without Specifying Capacity _ it Should Hv Cap Dim Val Of Zero")
     void whenTypeIsBuiltWithoutSpecifyingCapacity_itShouldHvCapDimValOfZero() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").build();
-        assertEquals(0, type.getCapacityDimensions().get(0));
+        Assertions.assertEquals(0, type.getCapacityDimensions().get(0));
     }
 
     @Test
@@ -77,14 +78,14 @@ class VehicleTypeImplTest {
     @DisplayName("When Building Type Just By Calling New Instance _ type Id Must Be Correct")
     void whenBuildingTypeJustByCallingNewInstance_typeIdMustBeCorrect() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("foo").build();
-        assertEquals(type.getTypeId(), "foo");
+        Assertions.assertEquals(type.getTypeId(), "foo");
     }
 
     @Test
     @DisplayName("When Building Type Just By Calling New Instance _ cap Must Be Correct")
     void whenBuildingTypeJustByCallingNewInstance_capMustBeCorrect() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("foo").build();
-        assertEquals(0, type.getCapacityDimensions().get(0));
+        Assertions.assertEquals(0, type.getCapacityDimensions().get(0));
     }
 
     @Test
@@ -109,7 +110,7 @@ class VehicleTypeImplTest {
     @DisplayName("When Setting Max Velocity _ it Should Be Set Correctly")
     void whenSettingMaxVelocity_itShouldBeSetCorrectly() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setMaxVelocity(10).build();
-        assertEquals(10, type.getMaxVelocity(), 0.0);
+        Assertions.assertEquals(10, type.getMaxVelocity(), 0.0);
     }
 
     @Test
@@ -132,7 +133,7 @@ class VehicleTypeImplTest {
 
     public void whenSettingFixedCosts_itShouldBeSetCorrectly() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(10).build();
-        assertEquals(10.0, type.getVehicleCostParams().fix, 0.0);
+        Assertions.assertEquals(10.0, type.getVehicleCostParams().fix, 0.0);
     }
 
     @Test
@@ -148,7 +149,7 @@ class VehicleTypeImplTest {
     @DisplayName("When Setting Per Distance Costs _ it Should Be Set Correctly")
     void whenSettingPerDistanceCosts_itShouldBeSetCorrectly() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerDistance(10).build();
-        assertEquals(10.0, type.getVehicleCostParams().perDistanceUnit, 0.0);
+        Assertions.assertEquals(10.0, type.getVehicleCostParams().perDistanceUnit, 0.0);
     }
 
     @Test
@@ -165,14 +166,14 @@ class VehicleTypeImplTest {
     void whenHavingTwoTypesWithTheSameId_theyShouldBeEqual() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setCostPerTime(10).build();
         VehicleTypeImpl type2 = VehicleTypeImpl.Builder.newInstance("type").setCostPerTime(10).build();
-        assertTrue(type.equals(type2));
+        Assertions.assertTrue(type.equals(type2));
     }
 
     @Test
     @DisplayName("When Adding Profile _ it Should Be Correct")
     void whenAddingProfile_itShouldBeCorrect() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("type").setProfile("car").build();
-        assertEquals(type.getProfile(), "car");
+        Assertions.assertEquals(type.getProfile(), "car");
     }
 
     @Test
@@ -181,8 +182,8 @@ class VehicleTypeImplTest {
         VehicleType one = VehicleTypeImpl.Builder.newInstance("type").setUserData(new HashMap<String, Object>()).build();
         VehicleType two = VehicleTypeImpl.Builder.newInstance("type").setUserData(42).build();
         VehicleType three = VehicleTypeImpl.Builder.newInstance("type").build();
-        assertTrue(one.getUserData() instanceof Map);
-        assertEquals(42, two.getUserData());
+        Assertions.assertTrue(one.getUserData() instanceof Map);
+        Assertions.assertEquals(42, two.getUserData());
         assertNull(three.getUserData());
     }
 
@@ -191,7 +192,7 @@ class VehicleTypeImplTest {
     void typesShouldBeEqual() {
         VehicleType one = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100).build();
         VehicleType two = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100).build();
-        assertTrue(one.equals(two));
+        Assertions.assertTrue(one.equals(two));
     }
 
     @Test
@@ -199,7 +200,7 @@ class VehicleTypeImplTest {
     void typesShouldBeNotEqual() {
         VehicleType one = VehicleTypeImpl.Builder.newInstance("type").build();
         VehicleType two = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100).build();
-        assertFalse(one.equals(two));
+        Assertions.assertFalse(one.equals(two));
     }
 
     @Test
@@ -207,7 +208,7 @@ class VehicleTypeImplTest {
     void typesShouldBeNotEqual2() {
         VehicleType one = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 10).build();
         VehicleType two = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 20).build();
-        assertFalse(one.equals(two));
+        Assertions.assertFalse(one.equals(two));
     }
 
     @Test
@@ -215,6 +216,6 @@ class VehicleTypeImplTest {
     void typesShouldBeEqual2() {
         VehicleType one = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 10).build();
         VehicleType two = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 10).build();
-        assertTrue(one.equals(two));
+        Assertions.assertTrue(one.equals(two));
     }
 }

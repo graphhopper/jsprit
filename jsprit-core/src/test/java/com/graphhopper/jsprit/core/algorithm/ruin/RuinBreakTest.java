@@ -25,6 +25,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -49,11 +51,11 @@ class RuinBreakTest {
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).addVehicle(v).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addService(aBreak).build();
         TourActivity tourActivity = route.getActivities().get(0);
-        assertTrue(tourActivity instanceof BreakActivity);
+        Assertions.assertTrue(tourActivity instanceof BreakActivity);
         RuinBreaks ruinBreaks = new RuinBreaks();
         List<Job> unassigned = new ArrayList<Job>();
         ruinBreaks.ruinEnds(Arrays.asList(route), unassigned);
-        assertEquals(1, unassigned.size());
-        assertEquals(aBreak, unassigned.get(0));
+        Assertions.assertEquals(1, unassigned.size());
+        Assertions.assertEquals(aBreak, unassigned.get(0));
     }
 }

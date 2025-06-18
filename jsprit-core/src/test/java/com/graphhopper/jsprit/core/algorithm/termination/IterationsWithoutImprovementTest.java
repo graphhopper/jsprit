@@ -18,6 +18,8 @@
 package com.graphhopper.jsprit.core.algorithm.termination;
 
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +44,7 @@ class IterationsWithoutImprovementTest {
                 break;
             }
         }
-        assertEquals(100, terminatedAfter);
+        Assertions.assertEquals(100, terminatedAfter);
     }
 
     @Test
@@ -59,7 +61,7 @@ class IterationsWithoutImprovementTest {
                 break;
             }
         }
-        assertEquals(1, terminatedAfter);
+        Assertions.assertEquals(1, terminatedAfter);
     }
 
     @Test
@@ -78,6 +80,6 @@ class IterationsWithoutImprovementTest {
                 break;
             }
         }
-        assertEquals(150, terminatedAfter);
+        Assertions.assertEquals(150, terminatedAfter);
     }
 }

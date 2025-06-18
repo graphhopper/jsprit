@@ -39,13 +39,14 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -63,7 +64,7 @@ public class TestLocalActivityInsertionCostsCalculator {
 
     JobInsertionContext jic;
 
-    @Before
+    @BeforeEach
     public void doBefore() {
 
         vehicle = mock(Vehicle.class);
@@ -119,7 +120,7 @@ public class TestLocalActivityInsertionCostsCalculator {
             new End(v.getEndLocation(), 0, Double.MAX_VALUE),
             vrp.getActivities(s).get(0),
             0);
-        assertEquals(20., cost, Math.ulp(20.));
+		Assertions.assertEquals(20., cost, Math.ulp(20.));
     }
 
     @Test
@@ -150,14 +151,14 @@ public class TestLocalActivityInsertionCostsCalculator {
             new End(v.getEndLocation(), 0, Double.MAX_VALUE),
             vrp.getActivities(s).get(0),
             0);
-        assertEquals(20., cost, Math.ulp(20.));
+		Assertions.assertEquals(20., cost, Math.ulp(20.));
         cost = localActivityInsertionCostsCalculator.getCosts(
             jobInsertionContext,
             vrp.getActivities(s).get(0),
             new End(v.getEndLocation(), 0, Double.MAX_VALUE),
             vrp.getActivities(s).get(1),
             0);
-        assertEquals(10, cost, Math.ulp(10.));
+		Assertions.assertEquals(10, cost, Math.ulp(10.));
     }
 
     @Test
@@ -175,7 +176,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         when(vehicle.isReturnToDepot()).thenReturn(true);
 
         double costs = calc.getCosts(jic, prevAct, nextAct, newAct, 0.0);
-        assertEquals(4.0, costs, 0.01);
+		Assertions.assertEquals(4.0, costs, 0.01);
     }
 
     @Test
@@ -191,7 +192,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         when(vehicle.isReturnToDepot()).thenReturn(true);
 
         double costs = calc.getCosts(jic, prevAct, nextAct, newAct, 0.0);
-        assertEquals(4.0, costs, 0.01);
+		Assertions.assertEquals(4.0, costs, 0.01);
     }
 
     @Test
@@ -209,7 +210,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         when(vehicle.isReturnToDepot()).thenReturn(false);
 
         double costs = calc.getCosts(jic, prevAct, nextAct, newAct, 0.0);
-        assertEquals(4.0, costs, 0.01);
+		Assertions.assertEquals(4.0, costs, 0.01);
     }
 
     @Test
@@ -225,7 +226,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         when(vehicle.isReturnToDepot()).thenReturn(false);
 
         double costs = calc.getCosts(jic, prevAct, nextAct, newAct, 0.0);
-        assertEquals(3.0, costs, 0.01);
+		Assertions.assertEquals(3.0, costs, 0.01);
     }
 
     @Test
@@ -252,12 +253,12 @@ public class TestLocalActivityInsertionCostsCalculator {
         calc.setSolutionCompletenessRatio(1.);
 
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
-        assertEquals(50., c, 0.01);
+		Assertions.assertEquals(50., c, 0.01);
 
 		/*
-        new: dist = 90 & wait = 0
-		old: dist = 30 & wait = 10
-		c = new - old = 90 - 40 = 50
+		 * new: dist = 90 & wait = 0
+		 * old: dist = 30 & wait = 10
+		 * c = new - old = 90 - 40 = 50
 		 */
     }
 
@@ -285,7 +286,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(vrp));
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 0);
-        assertEquals(-10., c, 0.01);
+		Assertions.assertEquals(-10., c, 0.01);
     }
 
     @Test
@@ -312,7 +313,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(vrp));
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 0);
-        assertEquals(-10., c, 0.01);
+		Assertions.assertEquals(-10., c, 0.01);
     }
 
     @Test
@@ -336,7 +337,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(vrp));
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 0);
-        assertEquals(110., c, 0.01);
+		Assertions.assertEquals(110., c, 0.01);
     }
 
     @Test
@@ -363,7 +364,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(vrp));
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
-        assertEquals(-10., c, 0.01);
+		Assertions.assertEquals(-10., c, 0.01);
     }
 
     @Test
@@ -393,7 +394,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), new StateManager(vrp));
         calc.setSolutionCompletenessRatio(0.5);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
-        assertEquals(35., c, 0.01);
+		Assertions.assertEquals(35., c, 0.01);
     }
 
     @Test
@@ -401,7 +402,8 @@ public class TestLocalActivityInsertionCostsCalculator {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").setCostPerWaitingTime(1.).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
-//		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
+		// VehicleImpl v2 =
+		// VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
 
         Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10, 0)).build();
         Service newS = Service.Builder.newInstance("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
@@ -429,7 +431,7 @@ public class TestLocalActivityInsertionCostsCalculator {
         LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), stateManager);
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
-        assertEquals(-10., c, 0.01);
+		Assertions.assertEquals(-10., c, 0.01);
         //
         //old: dist: 0, waiting: 10 + 350 = 360
         //new: dist: 0, waiting: 80 + 270 = 350
@@ -440,7 +442,8 @@ public class TestLocalActivityInsertionCostsCalculator {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").setCostPerWaitingTime(1.).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
-//		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
+		// VehicleImpl v2 =
+		// VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
 
         Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10, 0)).build();
         Service newS = Service.Builder.newInstance("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
@@ -478,12 +481,12 @@ public class TestLocalActivityInsertionCostsCalculator {
         LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), stateManager);
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
-        assertEquals(20., c, 0.01);
+		Assertions.assertEquals(20., c, 0.01);
         //start-delay = new - old = 120 - 40 = 80 > future waiting time savings = 30 + 20 + 10
         //ref: 10 + 50 + 20 = 80
         //new: 80 - 10 - 30 - 20 = 20
         /*
-        w(new) + w(next) - w_old(next) - min{start_delay(next),future_waiting}
+		 * w(new) + w(next) - w_old(next) - min{start_delay(next),future_waiting}
 		 */
     }
 
@@ -492,7 +495,8 @@ public class TestLocalActivityInsertionCostsCalculator {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").setCostPerWaitingTime(1.).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
-//		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
+		// VehicleImpl v2 =
+		// VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
 
         Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10, 0)).build();
         Service newS = Service.Builder.newInstance("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
@@ -529,16 +533,17 @@ public class TestLocalActivityInsertionCostsCalculator {
         LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), stateManager);
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
-        assertEquals(30., c, 0.01);
+		Assertions.assertEquals(30., c, 0.01);
         //ref: 10 + 30 + 10 = 50
         //new: 50 - 50 = 0
 
 		/*
-        activity start time delay at next act = start-time-old - start-time-new is always bigger than subsequent waiting time savings
+		 * activity start time delay at next act = start-time-old - start-time-new is
+		 * always bigger than subsequent waiting time savings
 		 */
         /*
-		old = 10 + 30 + 10 = 50
-		new = 80 + 0 - 10 - min{80,40} = 30
+		 * old = 10 + 30 + 10 = 50
+		 * new = 80 + 0 - 10 - min{80,40} = 30
 		 */
     }
 
@@ -547,7 +552,8 @@ public class TestLocalActivityInsertionCostsCalculator {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").setCostPerWaitingTime(1.).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
-//		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
+		// VehicleImpl v2 =
+		// VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
 
         Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10, 0)).build();
         Service newS = Service.Builder.newInstance("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(100, 120)).setLocation(Location.newInstance(20, 0)).build();
@@ -585,15 +591,16 @@ public class TestLocalActivityInsertionCostsCalculator {
         LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), stateManager);
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
-        assertEquals(30., c, 0.01);
+		Assertions.assertEquals(30., c, 0.01);
 		/*
-		activity start time delay at next act = start-time-old - start-time-new is always bigger than subsequent waiting time savings
+		 * activity start time delay at next act = start-time-old - start-time-new is
+		 * always bigger than subsequent waiting time savings
 		 */
 		/*
-		old = 10 + 30 + 10 = 50
-		new = 80
-		new - old = 80 - 40 = 40
-
+		 * old = 10 + 30 + 10 = 50
+		 * new = 80
+		 * new - old = 80 - 40 = 40
+		 * 
 		 */
     }
 
@@ -602,7 +609,8 @@ public class TestLocalActivityInsertionCostsCalculator {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").setCostPerWaitingTime(1.).build();
 
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
-//		VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
+		// VehicleImpl v2 =
+		// VehicleImpl.Builder.newInstance("v2").setHasVariableDepartureTime(true).setType(type).setStartLocation(Location.newInstance(0,0)).build();
 
         Service prevS = Service.Builder.newInstance("prev").setLocation(Location.newInstance(10, 0)).build();
         Service newS = Service.Builder.newInstance("new").setServiceTime(10).setTimeWindow(TimeWindow.newInstance(50, 70)).setLocation(Location.newInstance(20, 0)).build();
@@ -642,13 +650,14 @@ public class TestLocalActivityInsertionCostsCalculator {
         LocalActivityInsertionCostsCalculator calc = new LocalActivityInsertionCostsCalculator(CostFactory.createEuclideanCosts(), new WaitingTimeCosts(), stateManager);
         calc.setSolutionCompletenessRatio(1.);
         double c = calc.getCosts(context, prevAct, nextAct, newAct, 10);
-        assertEquals(-10., c, 0.01);
+		Assertions.assertEquals(-10., c, 0.01);
 		/*
-		activity start time delay at next act = start-time-old - start-time-new is always bigger than subsequent waiting time savings
+		 * activity start time delay at next act = start-time-old - start-time-new is
+		 * always bigger than subsequent waiting time savings
 		 */
 		/*
-		old = 10 + 40 = 50
-		new = 30 + 10 = 40
+		 * old = 10 + 40 = 50
+		 * new = 30 + 10 = 40
 		 */
     }
 

@@ -18,15 +18,14 @@
 package com.graphhopper.jsprit.core.algorithm.acceptor;
 
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +44,7 @@ class GreedyAcceptanceTest {
         solList.add(sol2);
         VehicleRoutingProblemSolution sol3 = mock(VehicleRoutingProblemSolution.class);
         new GreedyAcceptance(2).acceptSolution(solList, sol3);
-        assertEquals(2, solList.size());
-        assertThat(sol3, is(solList.get(1)));
+        Assertions.assertEquals(2, solList.size());
+        Assertions.assertSame(sol3, solList.get(1));
     }
 }

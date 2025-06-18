@@ -582,7 +582,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     @Override
     public void ruinEnds(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
-//		log.debug("ruin ends");
+		// log.debug("ruin ends");
         ruinListeners.ruinEnds(routes, unassignedJobs);
     }
 

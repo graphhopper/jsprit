@@ -105,24 +105,24 @@ class UpdateMaxTimeInVehicleTest {
     // String jobId = ((TourActivity.JobActivity)act).getJob().getId();
     // if(jobId.equals("s4")){
     // Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
-    // Assert.assertEquals(40, slackTime, 0.001);
+	// Assertions.assertEquals(40, slackTime, 0.001);
     // }
     // if(jobId.equals("s3")){
     // Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
-    // Assert.assertEquals(30, slackTime, 0.001);
+	// Assertions.assertEquals(30, slackTime, 0.001);
     // }
     // if(jobId.equals("s2")){
     // Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
-    // Assert.assertEquals(20, slackTime, 0.001);
+	// Assertions.assertEquals(20, slackTime, 0.001);
     // }
     // if(jobId.equals("s")){
     // Double slackTime = stateManager.getActivityState(act,route.getVehicle(), minSlackId,Double.class);
-    // Assert.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
+	// Assertions.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
     // }
     // }
     // Double slackTime = stateManager.getRouteState(route,route.getVehicle(), minSlackId,Double.class);
-    // Assert.assertNotNull(slackTime);
-    // Assert.assertEquals(50,slackTime,0.001);
+	// Assertions.assertNotNull(slackTime);
+	// Assertions.assertEquals(50,slackTime,0.001);
     // }
     //
     // @Test
@@ -132,24 +132,24 @@ class UpdateMaxTimeInVehicleTest {
     // String jobId = ((TourActivity.JobActivity)act).getJob().getId();
     // if(jobId.equals("s4")){
     // Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
-    // Assert.assertEquals(40, slackTime, 0.001);
+	// Assertions.assertEquals(40, slackTime, 0.001);
     // }
     // if(jobId.equals("s3")){
     // Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
-    // Assert.assertEquals(30, slackTime, 0.001);
+	// Assertions.assertEquals(30, slackTime, 0.001);
     // }
     // if(jobId.equals("s2")){
     // Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
-    // Assert.assertEquals(20, slackTime, 0.001);
+	// Assertions.assertEquals(20, slackTime, 0.001);
     // }
     // if(jobId.equals("s")){
     // Double slackTime = stateManager.getActivityState(act,vehicle2, minSlackId,Double.class);
-    // Assert.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
+	// Assertions.assertEquals(Double.MAX_VALUE, slackTime, 0.001);
     // }
     // }
     // Double slackTime = stateManager.getRouteState(route,vehicle2, minSlackId,Double.class);
-    // Assert.assertNotNull(slackTime);
-    // Assert.assertEquals(40,slackTime,0.001);
+	// Assertions.assertNotNull(slackTime);
+	// Assertions.assertEquals(40,slackTime,0.001);
     // }
     @Test
     @DisplayName("Test With Shipment")

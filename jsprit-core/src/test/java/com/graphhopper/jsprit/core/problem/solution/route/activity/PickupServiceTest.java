@@ -26,6 +26,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Assertions;
+
 @DisplayName("Pickup Service Test")
 class PickupServiceTest {
 
@@ -44,53 +46,53 @@ class PickupServiceTest {
     @Test
     @DisplayName("When Calling Capacity _ it Should Return Correct Capacity")
     void whenCallingCapacity_itShouldReturnCorrectCapacity() {
-        assertEquals(10, pickup.getSize().get(0));
-        assertEquals(100, pickup.getSize().get(1));
-        assertEquals(1000, pickup.getSize().get(2));
+        Assertions.assertEquals(10, pickup.getSize().get(0));
+        Assertions.assertEquals(100, pickup.getSize().get(1));
+        Assertions.assertEquals(1000, pickup.getSize().get(2));
     }
 
     @Test
     @DisplayName("When Start Is Ini With Earliest Start _ it Should Be Set Correctly")
     void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly() {
-        assertEquals(1., pickup.getTheoreticalEarliestOperationStartTime(), 0.01);
+        Assertions.assertEquals(1., pickup.getTheoreticalEarliestOperationStartTime(), 0.01);
     }
 
     @Test
     @DisplayName("When Start Is Ini With Latest Start _ it Should Be Set Correctly")
     void whenStartIsIniWithLatestStart_itShouldBeSetCorrectly() {
-        assertEquals(2., pickup.getTheoreticalLatestOperationStartTime(), 0.01);
+        Assertions.assertEquals(2., pickup.getTheoreticalLatestOperationStartTime(), 0.01);
     }
 
     @Test
     @DisplayName("When Setting Arr Time _ it Should Be Set Correctly")
     void whenSettingArrTime_itShouldBeSetCorrectly() {
         pickup.setArrTime(4.0);
-        assertEquals(4., pickup.getArrTime(), 0.01);
+        Assertions.assertEquals(4., pickup.getArrTime(), 0.01);
     }
 
     @Test
     @DisplayName("When Setting End Time _ it Should Be Set Correctly")
     void whenSettingEndTime_itShouldBeSetCorrectly() {
         pickup.setEndTime(5.0);
-        assertEquals(5., pickup.getEndTime(), 0.01);
+        Assertions.assertEquals(5., pickup.getEndTime(), 0.01);
     }
 
     @Test
     @DisplayName("When Ini Location Id _ it Should Be Set Correctly")
     void whenIniLocationId_itShouldBeSetCorrectly() {
-        assertEquals(pickup.getLocation().getId(), "loc");
+        Assertions.assertEquals(pickup.getLocation().getId(), "loc");
     }
 
     @Test
     @DisplayName("When Copying Start _ it Should Be Done Correctly")
     void whenCopyingStart_itShouldBeDoneCorrectly() {
         PickupService copy = (PickupService) pickup.duplicate();
-        assertEquals(1., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
-        assertEquals(2., copy.getTheoreticalLatestOperationStartTime(), 0.01);
-        assertEquals(copy.getLocation().getId(), "loc");
-        assertEquals(10, copy.getSize().get(0));
-        assertEquals(100, copy.getSize().get(1));
-        assertEquals(1000, copy.getSize().get(2));
-        assertTrue(copy != pickup);
+        Assertions.assertEquals(1., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
+        Assertions.assertEquals(2., copy.getTheoreticalLatestOperationStartTime(), 0.01);
+        Assertions.assertEquals(copy.getLocation().getId(), "loc");
+        Assertions.assertEquals(10, copy.getSize().get(0));
+        Assertions.assertEquals(100, copy.getSize().get(1));
+        Assertions.assertEquals(1000, copy.getSize().get(2));
+        Assertions.assertTrue(copy != pickup);
     }
 }

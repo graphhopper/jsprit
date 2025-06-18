@@ -35,12 +35,12 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -86,9 +86,10 @@ public class TestInserter {
         Inserter inserter = new Inserter(mock(InsertionListeners.class), vehicleRoutingProblem);
         inserter.insertJob(serviceToInsert, iData, route);
 
-        assertEquals(2, route.getTourActivities().getActivities().size());
-        assertEquals(route.getTourActivities().getActivities().get(1).getLocation().getId(), serviceToInsert.getLocation().getId());
-        assertEquals(route.getEnd().getLocation().getId(), vehicle.getEndLocation().getId());
+		Assertions.assertEquals(2, route.getTourActivities().getActivities().size());
+		Assertions.assertEquals(route.getTourActivities().getActivities().get(1).getLocation().getId(),
+				serviceToInsert.getLocation().getId());
+		Assertions.assertEquals(route.getEnd().getLocation().getId(), vehicle.getEndLocation().getId());
     }
 
     private Location loc(String vehLoc) {
@@ -120,9 +121,10 @@ public class TestInserter {
         Inserter inserter = new Inserter(mock(InsertionListeners.class), vehicleRoutingProblem);
         inserter.insertJob(serviceToInsert, iData, route);
 
-        assertEquals(2, route.getTourActivities().getActivities().size());
-        assertEquals(route.getTourActivities().getActivities().get(1).getLocation().getId(), serviceToInsert.getLocation().getId());
-        assertEquals(route.getEnd().getLocation().getId(), serviceToInsert.getLocation().getId());
+		Assertions.assertEquals(2, route.getTourActivities().getActivities().size());
+		Assertions.assertEquals(route.getTourActivities().getActivities().get(1).getLocation().getId(),
+				serviceToInsert.getLocation().getId());
+		Assertions.assertEquals(route.getEnd().getLocation().getId(), serviceToInsert.getLocation().getId());
     }
 
     private List<AbstractActivity> getTourActivities(Service serviceToInsert) {
@@ -160,10 +162,12 @@ public class TestInserter {
         Inserter inserter = new Inserter(mock(InsertionListeners.class), vehicleRoutingProblem);
         inserter.insertJob(shipmentToInsert, iData, route);
 
-        assertEquals(4, route.getTourActivities().getActivities().size());
-        assertEquals(route.getTourActivities().getActivities().get(2).getLocation().getId(), shipmentToInsert.getPickupLocation().getId());
-        assertEquals(route.getTourActivities().getActivities().get(3).getLocation().getId(), shipmentToInsert.getDeliveryLocation().getId());
-        assertEquals(route.getEnd().getLocation().getId(), vehicle.getEndLocation().getId());
+		Assertions.assertEquals(4, route.getTourActivities().getActivities().size());
+		Assertions.assertEquals(route.getTourActivities().getActivities().get(2).getLocation().getId(),
+				shipmentToInsert.getPickupLocation().getId());
+		Assertions.assertEquals(route.getTourActivities().getActivities().get(3).getLocation().getId(),
+				shipmentToInsert.getDeliveryLocation().getId());
+		Assertions.assertEquals(route.getEnd().getLocation().getId(), vehicle.getEndLocation().getId());
     }
 
     private List<AbstractActivity> getTourActivities(Shipment shipmentToInsert) {
@@ -198,10 +202,12 @@ public class TestInserter {
         Inserter inserter = new Inserter(mock(InsertionListeners.class), vehicleRoutingProblem);
         inserter.insertJob(shipmentToInsert, iData, route);
 
-        assertEquals(4, route.getTourActivities().getActivities().size());
-        assertEquals(route.getTourActivities().getActivities().get(2).getLocation().getId(), shipmentToInsert.getPickupLocation().getId());
-        assertEquals(route.getTourActivities().getActivities().get(3).getLocation().getId(), shipmentToInsert.getDeliveryLocation().getId());
-        assertEquals(route.getEnd().getLocation().getId(), shipmentToInsert.getDeliveryLocation().getId());
+		Assertions.assertEquals(4, route.getTourActivities().getActivities().size());
+		Assertions.assertEquals(route.getTourActivities().getActivities().get(2).getLocation().getId(),
+				shipmentToInsert.getPickupLocation().getId());
+		Assertions.assertEquals(route.getTourActivities().getActivities().get(3).getLocation().getId(),
+				shipmentToInsert.getDeliveryLocation().getId());
+		Assertions.assertEquals(route.getEnd().getLocation().getId(), shipmentToInsert.getDeliveryLocation().getId());
     }
 
     @Test
@@ -229,7 +235,7 @@ public class TestInserter {
         Inserter inserter = new Inserter(mock(InsertionListeners.class), vehicleRoutingProblem);
         inserter.insertJob(shipmentToInsert, iData, route);
 
-        assertEquals(route.getEnd().getLocation().getId(), newVehicle.getEndLocation().getId());
+		Assertions.assertEquals(route.getEnd().getLocation().getId(), newVehicle.getEndLocation().getId());
     }
 
     @Test
@@ -257,7 +263,7 @@ public class TestInserter {
         Inserter inserter = new Inserter(mock(InsertionListeners.class), vehicleRoutingProblem);
         inserter.insertJob(shipmentToInsert, iData, route);
 
-        assertEquals("delLoc", route.getEnd().getLocation().getId());
+		Assertions.assertEquals("delLoc", route.getEnd().getLocation().getId());
     }
 
     @Test
@@ -289,7 +295,7 @@ public class TestInserter {
         UpdateEndLocationIfRouteIsOpen updateEnd = new UpdateEndLocationIfRouteIsOpen();
         updateEnd.visit(route);
 
-        assertEquals("oldShipmentDelLoc", route.getEnd().getLocation().getId());
+		Assertions.assertEquals("oldShipmentDelLoc", route.getEnd().getLocation().getId());
     }
 
 }

@@ -22,6 +22,8 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,31 +60,31 @@ class JobInsertionContextTest {
     @Test
     @DisplayName("Route Should Be Assigned")
     void routeShouldBeAssigned() {
-        assertEquals(route, context.getRoute());
+        Assertions.assertEquals(route, context.getRoute());
     }
 
     @Test
     @DisplayName("Job Should Be Assigned")
     void jobShouldBeAssigned() {
-        assertEquals(job, context.getJob());
+        Assertions.assertEquals(job, context.getJob());
     }
 
     @Test
     @DisplayName("Vehicle Should Be Assigned")
     void vehicleShouldBeAssigned() {
-        assertEquals(vehicle, context.getNewVehicle());
+        Assertions.assertEquals(vehicle, context.getNewVehicle());
     }
 
     @Test
     @DisplayName("Driver Should Be Assigned")
     void driverShouldBeAssigned() {
-        assertEquals(driver, context.getNewDriver());
+        Assertions.assertEquals(driver, context.getNewDriver());
     }
 
     @Test
     @DisplayName("Dep Time Should Be Assigned")
     void depTimeShouldBeAssigned() {
-        assertEquals(0., context.getNewDepTime(), 0.001);
+        Assertions.assertEquals(0., context.getNewDepTime(), 0.001);
     }
 
     @Test
@@ -90,7 +92,7 @@ class JobInsertionContextTest {
     void relatedActivitiesShouldBeAssigned() {
         context.getAssociatedActivities().add(mock(TourActivity.class));
         context.getAssociatedActivities().add(mock(TourActivity.class));
-        assertEquals(2, context.getAssociatedActivities().size());
+        Assertions.assertEquals(2, context.getAssociatedActivities().size());
     }
 
     @Test

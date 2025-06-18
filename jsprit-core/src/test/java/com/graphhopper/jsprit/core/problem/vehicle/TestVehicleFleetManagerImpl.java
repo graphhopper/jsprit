@@ -19,15 +19,14 @@ package com.graphhopper.jsprit.core.problem.vehicle;
 
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class TestVehicleFleetManagerImpl {
 
@@ -37,7 +36,7 @@ public class TestVehicleFleetManagerImpl {
 
     VehicleImpl v2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
 
@@ -45,7 +44,7 @@ public class TestVehicleFleetManagerImpl {
         v2 = VehicleImpl.Builder.newInstance("foo").setStartLocation(Location.newInstance("fooLoc")).setType(VehicleTypeImpl.Builder.newInstance("foo").build()).build();
 
         VehicleRoutingProblem.Builder.newInstance().addVehicle(v1).addVehicle(v2).build();
-//		v1.
+        // v1.
         vehicles.add(v1);
         vehicles.add(v2);
         fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
@@ -54,14 +53,14 @@ public class TestVehicleFleetManagerImpl {
     @Test
     public void testGetVehicles() {
         Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
-        assertEquals(2, vehicles.size());
+        Assertions.assertEquals(2, vehicles.size());
     }
 
     @Test
     public void testLock() {
         fleetManager.lock(v1);
         Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
-        assertEquals(1, vehicles.size());
+        Assertions.assertEquals(1, vehicles.size());
     }
 
     @Test
@@ -69,27 +68,27 @@ public class TestVehicleFleetManagerImpl {
         fleetManager.lock(v1);
         fleetManager.lock(v2);
         fleetManager.unlock(v2);
-        assertTrue(fleetManager.isLocked(v1));
+        Assertions.assertTrue(fleetManager.isLocked(v1));
     }
 
     @Test
     public void testIsLocked() {
         fleetManager.lock(v1);
-        assertTrue(fleetManager.isLocked(v1));
+        Assertions.assertTrue(fleetManager.isLocked(v1));
     }
 
     @Test
     public void testLockTwice() {
         fleetManager.lock(v1);
         Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
-        assertEquals(1, vehicles.size());
+        Assertions.assertEquals(1, vehicles.size());
         try {
             fleetManager.lock(v1);
             @SuppressWarnings("unused")
             Collection<Vehicle> vehicles_ = fleetManager.getAvailableVehicles();
-            assertFalse(true);
+            Assertions.assertFalse(true);
         } catch (IllegalStateException e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -97,18 +96,18 @@ public class TestVehicleFleetManagerImpl {
     public void testGetVehiclesWithout() {
         Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles(v1);
 
-        assertEquals(v2, vehicles.iterator().next());
-        assertEquals(1, vehicles.size());
+        Assertions.assertEquals(v2, vehicles.iterator().next());
+        Assertions.assertEquals(1, vehicles.size());
     }
 
     @Test
     public void testUnlock() {
         fleetManager.lock(v1);
         Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
-        assertEquals(1, vehicles.size());
+        Assertions.assertEquals(1, vehicles.size());
         fleetManager.unlock(v1);
         Collection<Vehicle> vehicles_ = fleetManager.getAvailableVehicles();
-        assertEquals(2, vehicles_.size());
+        Assertions.assertEquals(2, vehicles_.size());
     }
 
     @Test
@@ -118,7 +117,7 @@ public class TestVehicleFleetManagerImpl {
         Vehicle v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("loc")).setType(type).build();
         VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(Arrays.asList(v1, v2)).createFleetManager();
         Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
-        assertEquals(1, vehicles.size());
+        Assertions.assertEquals(1, vehicles.size());
     }
 
     @Test
@@ -130,7 +129,7 @@ public class TestVehicleFleetManagerImpl {
             .setType(type).setEarliestStart(0.).setLatestArrival(10.).build();
         VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(Arrays.asList(v1, v2)).createFleetManager();
         Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
-        assertEquals(1, vehicles.size());
+        Assertions.assertEquals(1, vehicles.size());
     }
 
     @Test
@@ -144,9 +143,9 @@ public class TestVehicleFleetManagerImpl {
         VehicleRoutingProblem.Builder.newInstance().addVehicle(v1).addVehicle(v2).build();
         VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(Arrays.asList(v1, v2)).createFleetManager();
         Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
-        assertEquals(2, vehicles.size());
-        assertTrue(vehicleInCollection(v1, vehicles));
-        assertTrue(vehicleInCollection(v2, vehicles));
+        Assertions.assertEquals(2, vehicles.size());
+        Assertions.assertTrue(vehicleInCollection(v1, vehicles));
+        Assertions.assertTrue(vehicleInCollection(v2, vehicles));
     }
 
     @Test
@@ -159,9 +158,9 @@ public class TestVehicleFleetManagerImpl {
         VehicleRoutingProblem.Builder.newInstance().addVehicle(v1).addVehicle(v2).build();
         VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(Arrays.asList(v1, v2)).createFleetManager();
         Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
-        assertEquals(2, vehicles.size());
-        assertTrue(vehicleInCollection(v1, vehicles));
-        assertTrue(vehicleInCollection(v2, vehicles));
+        Assertions.assertEquals(2, vehicles.size());
+        Assertions.assertTrue(vehicleInCollection(v1, vehicles));
+        Assertions.assertTrue(vehicleInCollection(v2, vehicles));
     }
 
     @Test
@@ -174,9 +173,9 @@ public class TestVehicleFleetManagerImpl {
         VehicleRoutingProblem.Builder.newInstance().addVehicle(v1).addVehicle(v2).build();
         VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(Arrays.asList(v1, v2)).createFleetManager();
         Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
-        assertEquals(2, vehicles.size());
-        assertTrue(vehicleInCollection(v1, vehicles));
-        assertTrue(vehicleInCollection(v2, vehicles));
+        Assertions.assertEquals(2, vehicles.size());
+        Assertions.assertTrue(vehicleInCollection(v1, vehicles));
+        Assertions.assertTrue(vehicleInCollection(v2, vehicles));
     }
 
     @Test
@@ -189,9 +188,9 @@ public class TestVehicleFleetManagerImpl {
         VehicleRoutingProblem.Builder.newInstance().addVehicle(v1).addVehicle(v2).build();
         VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(Arrays.asList(v1, v2)).createFleetManager();
         Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
-        assertEquals(2, vehicles.size());
-        assertTrue(vehicleInCollection(v1, vehicles));
-        assertTrue(vehicleInCollection(v2, vehicles));
+        Assertions.assertEquals(2, vehicles.size());
+        Assertions.assertTrue(vehicleInCollection(v1, vehicles));
+        Assertions.assertTrue(vehicleInCollection(v2, vehicles));
     }
 
     @Test
@@ -204,9 +203,9 @@ public class TestVehicleFleetManagerImpl {
         VehicleRoutingProblem.Builder.newInstance().addVehicle(v1).addVehicle(v2).build();
         VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(Arrays.asList(v1, v2)).createFleetManager();
         Collection<Vehicle> vehicles = fleetManager.getAvailableVehicles();
-        assertEquals(2, vehicles.size());
-        assertTrue(vehicleInCollection(v1, vehicles));
-        assertTrue(vehicleInCollection(v2, vehicles));
+        Assertions.assertEquals(2, vehicles.size());
+        Assertions.assertTrue(vehicleInCollection(v1, vehicles));
+        Assertions.assertTrue(vehicleInCollection(v2, vehicles));
     }
 
     private boolean vehicleInCollection(Vehicle v, Collection<Vehicle> vehicles) {

@@ -23,6 +23,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.Assertions;
+
 @DisplayName("Time Test")
 class TimeTest {
 
@@ -30,140 +32,140 @@ class TimeTest {
     @DisplayName("Six AM _ should Be Parsed Correctly")
     void sixAM_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6AM");
-        assertEquals(6. * 3600., sec, 0.01);
+        Assertions.assertEquals(6. * 3600., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six AM With White Space _ should Be Parsed Correctly")
     void sixAMWithWhiteSpace_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6 AM");
-        assertEquals(6. * 3600., sec, 0.01);
+        Assertions.assertEquals(6. * 3600., sec, 0.01);
     }
 
     @Test
     @DisplayName("Sixa M With White Space _ should Be Parsed Correctly")
     void sixaMWithWhiteSpace_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6 aM");
-        assertEquals(6. * 3600., sec, 0.01);
+        Assertions.assertEquals(6. * 3600., sec, 0.01);
     }
 
     @Test
     @DisplayName("Sixam With White Space _ should Be Parsed Correctly")
     void sixamWithWhiteSpace_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6 am");
-        assertEquals(6. * 3600., sec, 0.01);
+        Assertions.assertEquals(6. * 3600., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six Am With White Space _ should Be Parsed Correctly")
     void sixAmWithWhiteSpace_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6 Am");
-        assertEquals(6. * 3600., sec, 0.01);
+        Assertions.assertEquals(6. * 3600., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six PM _ should Be Parsed Correctly")
     void sixPM_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6PM");
-        assertEquals(6. * 3600. + 12. * 3600., sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 12. * 3600., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six PM With White Space _ should Be Parsed Correctly")
     void sixPMWithWhiteSpace_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6 PM");
-        assertEquals(6. * 3600. + 12. * 3600., sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 12. * 3600., sec, 0.01);
     }
 
     @Test
     @DisplayName("Sixp M With White Space _ should Be Parsed Correctly")
     void sixpMWithWhiteSpace_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6 pM");
-        assertEquals(6. * 3600. + 12. * 3600., sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 12. * 3600., sec, 0.01);
     }
 
     @Test
     @DisplayName("Sixpm With White Space _ should Be Parsed Correctly")
     void sixpmWithWhiteSpace_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6 pm");
-        assertEquals(6. * 3600. + 12. * 3600., sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 12. * 3600., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six Pm With White Space _ should Be Parsed Correctly")
     void sixPmWithWhiteSpace_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6 Pm");
-        assertEquals(6. * 3600. + 12. * 3600, sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 12. * 3600, sec, 0.01);
     }
 
     @Test
     @DisplayName("Six AM With Leading Zero _ should Be Parsed Correctly")
     void sixAMWithLeadingZero_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("06AM");
-        assertEquals(6. * 3600., sec, 0.01);
+        Assertions.assertEquals(6. * 3600., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six Hour _ twelve Min _ AM _ should Be Parsed Correctly")
     void sixHour_twelveMin_AM_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6:12AM");
-        assertEquals(6. * 3600. + 12. * 60., sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 12. * 60., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six Hour _ six Min _ AM _ should Be Parsed Correctly")
     void sixHour_sixMin_AM_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6:6AM");
-        assertEquals(6. * 3600. + 6. * 60., sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 6. * 60., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six Hour _ six Min With Leading Zero _ AM _ should Be Parsed Correctly")
     void sixHour_sixMinWithLeadingZero_AM_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6:06AM");
-        assertEquals(6. * 3600. + 6. * 60., sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 6. * 60., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six Hour _ twelve Min _ PM _ should Be Parsed Correctly")
     void sixHour_twelveMin_PM_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6:12PM");
-        assertEquals(6. * 3600. + 12. * 60. + 12. * 3600., sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 12. * 60. + 12. * 3600., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six Hour _ six Min _ PM _ should Be Parsed Correctly")
     void sixHour_sixMin_PM_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6:6PM");
-        assertEquals(6. * 3600. + 6. * 60. + 12. * 3600., sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 6. * 60. + 12. * 3600., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six Hour _ six Min With Leading Zero _ PM _ should Be Parsed Correctly")
     void sixHour_sixMinWithLeadingZero_PM_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6:06PM");
-        assertEquals(6. * 3600. + 6. * 60. + 12. * 3600., sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 6. * 60. + 12. * 3600., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six Hour _ six Min With Leading Zero _ twelve Sec _ PM _ should Be Parsed Correctly")
     void sixHour_sixMinWithLeadingZero_twelveSec_PM_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6:06:12PM");
-        assertEquals(6. * 3600. + 6. * 60. + 12. * 3600. + 12., sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 6. * 60. + 12. * 3600. + 12., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six Hour _ six Min With Leading Zero _ twelve Sec _ should Be Parsed Correctly")
     void sixHour_sixMinWithLeadingZero_twelveSec_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6:06:12");
-        assertEquals(6. * 3600. + 6. * 60. + 12., sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 6. * 60. + 12., sec, 0.01);
     }
 
     @Test
     @DisplayName("Six Hour _ six Min With Leading Zero _ six Sec With Leading Zero _ should Be Parsed Correctly")
     void sixHour_sixMinWithLeadingZero_sixSecWithLeadingZero_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("6:06:06");
-        assertEquals(6. * 3600. + 6. * 60. + 6., sec, 0.01);
+        Assertions.assertEquals(6. * 3600. + 6. * 60. + 6., sec, 0.01);
     }
 
     @Test
@@ -186,27 +188,27 @@ class TimeTest {
     @DisplayName("Zero Hour _ zero Min With Leading Zero _ one Sec With Leading Zero _ should Be Parsed Correctly")
     void zeroHour_zeroMinWithLeadingZero_oneSecWithLeadingZero_shouldBeParsedCorrectly() {
         double sec = Time.parseTimeToSeconds("0:00:01");
-        assertEquals(1., sec, 0.01);
+        Assertions.assertEquals(1., sec, 0.01);
     }
 
     @Test
     @DisplayName("When Sec Is 3600 _ should Return Correct Time String")
     void whenSecIs3600_shouldReturnCorrectTimeString() {
         String time = Time.parseSecondsToTime(3600);
-        assertEquals(3600., Time.parseTimeToSeconds(time), 0.01);
+        Assertions.assertEquals(3600., Time.parseTimeToSeconds(time), 0.01);
     }
 
     @Test
     @DisplayName("When Sec Is 4000 _ should Return Correct Time String")
     void whenSecIs4000_shouldReturnCorrectTimeString() {
         String time = Time.parseSecondsToTime(4000);
-        assertEquals(4000., Time.parseTimeToSeconds(time), 0.01);
+        Assertions.assertEquals(4000., Time.parseTimeToSeconds(time), 0.01);
     }
 
     @Test
     @DisplayName("When Sec Is 86399 _ should Return Correct Time String")
     void whenSecIs86399_shouldReturnCorrectTimeString() {
         String time = Time.parseSecondsToTime(86399);
-        assertEquals(86399., Time.parseTimeToSeconds(time), 0.01);
+        Assertions.assertEquals(86399., Time.parseTimeToSeconds(time), 0.01);
     }
 }

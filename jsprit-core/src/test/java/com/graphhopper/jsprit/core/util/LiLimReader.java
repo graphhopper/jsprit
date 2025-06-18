@@ -161,7 +161,7 @@ public class LiLimReader {
                     double startTimeWindow = getDouble(tokens[4]);
                     double endTimeWindow = getDouble(tokens[5]);
                     double serviceTime = getDouble(tokens[6]);
-//					vrpBuilder.addLocation(customerId, coord);
+					// vrpBuilder.addLocation(customerId, coord);
                     customers.put(customerId, new CustomerData(coord, startTimeWindow, endTimeWindow, serviceTime));
                     if (customerId.equals("0")) {
                         depotId = customerId;
