@@ -204,8 +204,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
             for (TourActivity act : acts) {
                 Job job = ((TourActivity.JobActivity) act).getJob();
                 if (act instanceof ServiceActivity || act instanceof PickupActivity) {
-                    String jobId = job.getId();
-                    openDeliveries.remove(jobId);
+                    openDeliveries.remove(job);
                     double minSlackTime = minSlackTime(openDeliveries);
                     double latestStart = actStart(act, v) + minSlackTime;
                     stateManager.putActivityState(act, v, minSlackId, latestStart);
