@@ -17,12 +17,11 @@
  */
 package com.graphhopper.jsprit.core.problem.solution.route.activity;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.assertTrue;
 
 
 public class TestRefs {
@@ -35,8 +34,8 @@ public class TestRefs {
 
         doSmth(starts);
 
-        assertTrue(starts.get(0).getLocation().getId().startsWith("foo"));
-        assertTrue(starts.get(1).getLocation().getId().startsWith("foo"));
+        Assertions.assertTrue(starts.get(0).getLocation().getId().startsWith("foo"));
+        Assertions.assertTrue(starts.get(1).getLocation().getId().startsWith("foo"));
     }
 
     private void doSmth(List<Start> starts) {

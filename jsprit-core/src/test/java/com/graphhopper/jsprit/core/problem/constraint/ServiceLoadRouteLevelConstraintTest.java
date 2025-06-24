@@ -33,6 +33,8 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -111,7 +113,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
-        assertTrue(constraint.fulfilled(iContext));
+        Assertions.assertTrue(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -122,7 +124,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
-        assertFalse(constraint.fulfilled(iContext));
+        Assertions.assertFalse(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -133,7 +135,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
-        assertFalse(constraint.fulfilled(iContext));
+        Assertions.assertFalse(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -144,7 +146,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
-        assertTrue(constraint.fulfilled(iContext));
+        Assertions.assertTrue(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -155,7 +157,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
-        assertTrue(constraint.fulfilled(iContext));
+        Assertions.assertTrue(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -166,7 +168,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
-        assertFalse(constraint.fulfilled(iContext));
+        Assertions.assertFalse(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -177,7 +179,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
-        assertFalse(constraint.fulfilled(iContext));
+        Assertions.assertFalse(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -188,7 +190,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
-        assertTrue(constraint.fulfilled(iContext));
+        Assertions.assertTrue(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -199,7 +201,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
-        assertTrue(constraint.fulfilled(iContext));
+        Assertions.assertTrue(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -210,7 +212,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
-        assertFalse(constraint.fulfilled(iContext));
+        Assertions.assertFalse(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -221,7 +223,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
-        assertFalse(constraint.fulfilled(iContext));
+        Assertions.assertFalse(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -232,7 +234,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(iContext.getJob()).thenReturn(service);
         when(iContext.getRoute()).thenReturn(route);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
-        assertTrue(constraint.fulfilled(iContext));
+        Assertions.assertTrue(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -254,7 +256,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(vehicle.getType()).thenReturn(type);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
         ServiceLoadRouteLevelConstraint constraint = new ServiceLoadRouteLevelConstraint(stateGetter);
-        assertFalse(constraint.fulfilled(iContext));
+        Assertions.assertFalse(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -276,7 +278,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(vehicle.getType()).thenReturn(type);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
         ServiceLoadRouteLevelConstraint constraint = new ServiceLoadRouteLevelConstraint(stateGetter);
-        assertFalse(constraint.fulfilled(iContext));
+        Assertions.assertFalse(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -298,7 +300,7 @@ class ServiceLoadRouteLevelConstraintTest {
         when(vehicle.getType()).thenReturn(type);
         when(iContext.getNewVehicle()).thenReturn(vehicle);
         ServiceLoadRouteLevelConstraint constraint = new ServiceLoadRouteLevelConstraint(stateGetter);
-        assertFalse(constraint.fulfilled(iContext));
+        Assertions.assertFalse(constraint.fulfilled(iContext));
     }
 
     @Test
@@ -312,7 +314,7 @@ class ServiceLoadRouteLevelConstraintTest {
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(pickup2).build();
         stateManager.informInsertionStarts(Collections.singletonList(route), null);
         JobInsertionContext iContext = new JobInsertionContext(route, pickup, vehicle, null, 0.);
-        assertFalse(new ServiceLoadRouteLevelConstraint(stateManager).fulfilled(iContext));
+        Assertions.assertFalse(new ServiceLoadRouteLevelConstraint(stateManager).fulfilled(iContext));
     }
 
     @Test
@@ -326,7 +328,7 @@ class ServiceLoadRouteLevelConstraintTest {
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(serviceInRoute).build();
         stateManager.informInsertionStarts(Collections.singletonList(route), null);
         JobInsertionContext iContext = new JobInsertionContext(route, service, vehicle, null, 0.);
-        assertFalse(new ServiceLoadRouteLevelConstraint(stateManager).fulfilled(iContext));
+        Assertions.assertFalse(new ServiceLoadRouteLevelConstraint(stateManager).fulfilled(iContext));
     }
 
     private Service createPickup(String string, int i) {

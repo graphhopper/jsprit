@@ -121,8 +121,8 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
         additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
 
 		/*
-        generate new start and end for new vehicle
-         */
+		 * generate new start and end for new vehicle
+		 */
         Start start = new Start(newVehicle.getStartLocation(), newVehicle.getEarliestDeparture(), Double.MAX_VALUE);
         start.setEndTime(newVehicleDepartureTime);
         End end = new End(newVehicle.getEndLocation(), 0.0, newVehicle.getLatestArrival());

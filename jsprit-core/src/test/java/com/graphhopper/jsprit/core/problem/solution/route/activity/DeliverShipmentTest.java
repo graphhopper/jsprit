@@ -26,6 +26,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Assertions;
+
 @DisplayName("Deliver Shipment Test")
 class DeliverShipmentTest {
 
@@ -42,54 +44,54 @@ class DeliverShipmentTest {
     @Test
     @DisplayName("When Calling Capacity _ it Should Return Correct Capacity")
     void whenCallingCapacity_itShouldReturnCorrectCapacity() {
-        assertEquals(-10, deliver.getSize().get(0));
-        assertEquals(-100, deliver.getSize().get(1));
-        assertEquals(-1000, deliver.getSize().get(2));
+        Assertions.assertEquals(-10, deliver.getSize().get(0));
+        Assertions.assertEquals(-100, deliver.getSize().get(1));
+        Assertions.assertEquals(-1000, deliver.getSize().get(2));
     }
 
     @Test
     @DisplayName("When Start Is Ini With Earliest Start _ it Should Be Set Correctly")
     void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly() {
-        assertEquals(3., deliver.getTheoreticalEarliestOperationStartTime(), 0.01);
+        Assertions.assertEquals(3., deliver.getTheoreticalEarliestOperationStartTime(), 0.01);
     }
 
     @Test
     @DisplayName("When Start Is Ini With Latest Start _ it Should Be Set Correctly")
     void whenStartIsIniWithLatestStart_itShouldBeSetCorrectly() {
-        assertEquals(4., deliver.getTheoreticalLatestOperationStartTime(), 0.01);
+        Assertions.assertEquals(4., deliver.getTheoreticalLatestOperationStartTime(), 0.01);
     }
 
     @Test
     @DisplayName("When Setting Arr Time _ it Should Be Set Correctly")
     void whenSettingArrTime_itShouldBeSetCorrectly() {
         deliver.setArrTime(4.0);
-        assertEquals(4., deliver.getArrTime(), 0.01);
+        Assertions.assertEquals(4., deliver.getArrTime(), 0.01);
     }
 
     @Test
     @DisplayName("When Setting End Time _ it Should Be Set Correctly")
     void whenSettingEndTime_itShouldBeSetCorrectly() {
         deliver.setEndTime(5.0);
-        assertEquals(5., deliver.getEndTime(), 0.01);
+        Assertions.assertEquals(5., deliver.getEndTime(), 0.01);
     }
 
     @Test
     @DisplayName("When Ini Location Id _ it Should Be Set Correctly")
     void whenIniLocationId_itShouldBeSetCorrectly() {
-        assertEquals(deliver.getLocation().getId(), "deliveryLoc");
+        Assertions.assertEquals(deliver.getLocation().getId(), "deliveryLoc");
     }
 
     @Test
     @DisplayName("When Copying Start _ it Should Be Done Correctly")
     void whenCopyingStart_itShouldBeDoneCorrectly() {
         DeliverShipment copy = (DeliverShipment) deliver.duplicate();
-        assertEquals(3., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
-        assertEquals(4., copy.getTheoreticalLatestOperationStartTime(), 0.01);
-        assertEquals(copy.getLocation().getId(), "deliveryLoc");
-        assertEquals(-10, copy.getSize().get(0));
-        assertEquals(-100, copy.getSize().get(1));
-        assertEquals(-1000, copy.getSize().get(2));
-        assertTrue(copy != deliver);
+        Assertions.assertEquals(3., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
+        Assertions.assertEquals(4., copy.getTheoreticalLatestOperationStartTime(), 0.01);
+        Assertions.assertEquals(copy.getLocation().getId(), "deliveryLoc");
+        Assertions.assertEquals(-10, copy.getSize().get(0));
+        Assertions.assertEquals(-100, copy.getSize().get(1));
+        Assertions.assertEquals(-1000, copy.getSize().get(2));
+        Assertions.assertTrue(copy != deliver);
     }
 
     @Test
@@ -97,7 +99,7 @@ class DeliverShipmentTest {
     void whenGettingCapacity_itShouldReturnItCorrectly() {
         Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).addSizeDimension(0, 10).addSizeDimension(1, 100).build();
         PickupShipment pick = new PickupShipment(shipment);
-        assertEquals(10, pick.getSize().get(0));
-        assertEquals(100, pick.getSize().get(1));
+        Assertions.assertEquals(10, pick.getSize().get(0));
+        Assertions.assertEquals(100, pick.getSize().get(1));
     }
 }

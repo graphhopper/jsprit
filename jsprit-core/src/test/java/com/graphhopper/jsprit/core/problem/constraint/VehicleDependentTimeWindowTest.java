@@ -32,13 +32,13 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
 import com.graphhopper.jsprit.core.problem.vehicle.*;
 import com.graphhopper.jsprit.core.util.CostFactory;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * unit tests to test vehicle dependent time-windows
@@ -120,19 +120,22 @@ class VehicleDependentTimeWindowTest {
     @Test
     @DisplayName("State Manager Should Have Memorized Correct Latest End Of Act 3")
     void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct3() {
-        assertEquals(70., stateManager.getActivityState(route.getActivities().get(2), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+        Assertions.assertEquals(70., stateManager.getActivityState(route.getActivities().get(2), vehicle,
+                InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     @DisplayName("State Manager Should Have Memorized Correct Latest End Of Act 2")
     void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct2() {
-        assertEquals(60., stateManager.getActivityState(route.getActivities().get(1), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+        Assertions.assertEquals(60., stateManager.getActivityState(route.getActivities().get(1), vehicle,
+                InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     @DisplayName("State Manager Should Have Memorized Correct Latest End Of Act 1")
     void stateManagerShouldHaveMemorizedCorrectLatestEndOfAct1() {
-        assertEquals(50., stateManager.getActivityState(route.getActivities().get(0), vehicle, InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+        Assertions.assertEquals(50., stateManager.getActivityState(route.getActivities().get(0), vehicle,
+                InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
@@ -143,7 +146,7 @@ class VehicleDependentTimeWindowTest {
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, vehicle, route.getDriver(), 0.);
         HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 30.);
-        assertTrue(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+        Assertions.assertTrue(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
     }
 
     @Test
@@ -154,7 +157,7 @@ class VehicleDependentTimeWindowTest {
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, vehicle, route.getDriver(), 0.);
         HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 30.);
-        assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+        Assertions.assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
     }
 
     @Test
@@ -169,7 +172,7 @@ class VehicleDependentTimeWindowTest {
          */
         // System.out.println("latest act1 " + stateManager.getActivityState());
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(1), serviceAct, route.getActivities().get(2), 20.);
-        assertTrue(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+        Assertions.assertTrue(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
     }
 
     @Test
@@ -183,90 +186,90 @@ class VehicleDependentTimeWindowTest {
          */
         HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(1), serviceAct, route.getActivities().get(2), 20.);
-        assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+        Assertions.assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
     }
 
     @Test
     @DisplayName("When Job Is Inserted Along With New Vehicle That Needs To Be Home At 60 _ it Should Return False")
     void whenJobIsInsertedAlongWithNewVehicleThatNeedsToBeHomeAt60_itShouldReturnFalse() {
-        assertEquals(60., route.getEnd().getArrTime(), 0.01);
+        Assertions.assertEquals(60., route.getEnd().getArrTime(), 0.01);
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v2, route.getDriver(), 0.);
         HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 30.);
-        assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+        Assertions.assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
     }
 
     @Test
     @DisplayName("When Job Is Inserted Along With New Vehicle That Needs To Be Home At 50 _ it Should Return False")
     void whenJobIsInsertedAlongWithNewVehicleThatNeedsToBeHomeAt50_itShouldReturnFalse() {
-        assertEquals(60., route.getEnd().getArrTime(), 0.01);
+        Assertions.assertEquals(60., route.getEnd().getArrTime(), 0.01);
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v3, route.getDriver(), 0.);
         HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 30.);
-        assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+        Assertions.assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
     }
 
     @Test
     @DisplayName("When Job Is Inserted Along With New Vehicle That Needs To Be Home At 10 _ it Should Return False")
     void whenJobIsInsertedAlongWithNewVehicleThatNeedsToBeHomeAt10_itShouldReturnFalse() {
-        assertEquals(60., route.getEnd().getArrTime(), 0.01);
+        Assertions.assertEquals(60., route.getEnd().getArrTime(), 0.01);
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v4, route.getDriver(), 0.);
         HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 30.);
-        assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+        Assertions.assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
     }
 
     @Test
     @DisplayName("When Job Is Inserted Along With V 6 Between S 2 And S 3 _ it Should Return False")
     void whenJobIsInsertedAlongWithV6BetweenS2AndS3_itShouldReturnFalse() {
-        assertEquals(60., route.getEnd().getArrTime(), 0.01);
+        Assertions.assertEquals(60., route.getEnd().getArrTime(), 0.01);
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v6, route.getDriver(), 0.);
         HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(1), serviceAct, route.getActivities().get(2), 30.);
-        assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+        Assertions.assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
     }
 
     @Test
     @DisplayName("When Job Is Inserted Along With V 6 Between S 1 And S 2 _ it Should Return False")
     void whenJobIsInsertedAlongWithV6BetweenS1AndS2_itShouldReturnFalse() {
-        assertEquals(60., route.getEnd().getArrTime(), 0.01);
+        Assertions.assertEquals(60., route.getEnd().getArrTime(), 0.01);
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v6, route.getDriver(), 0.);
         HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(0), serviceAct, route.getActivities().get(1), 10.);
-        assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+        Assertions.assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
     }
 
     @Test
     @DisplayName("When Job Is Inserted Along With V 6 At The End Of Route _ it Should Return True")
     void whenJobIsInsertedAlongWithV6AtTheEndOfRoute_itShouldReturnTrue() {
-        assertEquals(60., route.getEnd().getArrTime(), 0.01);
+        Assertions.assertEquals(60., route.getEnd().getArrTime(), 0.01);
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v6, route.getDriver(), 0.);
         HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 30.);
-        assertTrue(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+        Assertions.assertTrue(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
     }
 
     @Test
     @DisplayName("When Job Is Inserted Along With New Vehicle That Can Only Start At 60 _ it Should Return False")
     void whenJobIsInsertedAlongWithNewVehicleThatCanOnlyStartAt60_itShouldReturnFalse() {
-        assertEquals(60., route.getEnd().getArrTime(), 0.01);
+        Assertions.assertEquals(60., route.getEnd().getArrTime(), 0.01);
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("40,0")).build();
         PickupService serviceAct = new PickupService(s4);
         JobInsertionContext insertionContext = new JobInsertionContext(route, s4, v5, route.getDriver(), 60.);
         HardActivityConstraint twConstraint = new VehicleDependentTimeWindowConstraints(stateManager, routingCosts, activityCosts);
         HardActivityConstraint.ConstraintsStatus status = twConstraint.fulfilled(insertionContext, route.getActivities().get(2), serviceAct, route.getEnd(), 90.);
-        assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
+        Assertions.assertFalse(status.equals(HardActivityConstraint.ConstraintsStatus.FULFILLED));
     }
 }

@@ -55,9 +55,9 @@ class OpenRoutesTest {
         try {
             @SuppressWarnings("unused")
             Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-            assertTrue(true);
+			Assertions.assertTrue(true);
         } catch (NoSolutionFoundException e) {
-            assertFalse(true);
+			Assertions.assertFalse(true);
         }
     }
 
@@ -73,9 +73,9 @@ class OpenRoutesTest {
         try {
             @SuppressWarnings("unused")
             Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-            assertTrue(true);
+			Assertions.assertTrue(true);
         } catch (NoSolutionFoundException e) {
-            assertFalse(true);
+			Assertions.assertFalse(true);
         }
     }
 
@@ -117,9 +117,9 @@ class OpenRoutesTest {
         try {
             @SuppressWarnings("UnusedDeclaration")
             Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-            assertTrue(true);
+			Assertions.assertTrue(true);
         } catch (Exception e) {
-            assertTrue(false);
+			Assertions.assertTrue(false);
         }
     }
 }

@@ -22,11 +22,11 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.util.LiLimReader;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
 
 public class PickupsAndDeliveries_IT {
 
@@ -37,8 +37,8 @@ public class PickupsAndDeliveries_IT {
         VehicleRoutingProblem vrp = vrpBuilder.build();
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.FAST_REGRET,"true").buildAlgorithm();
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        assertEquals(1650.8, Solutions.bestOf(solutions).getCost(), 80.);
-        assertEquals(19, Solutions.bestOf(solutions).getRoutes().size(), 1);
+		Assertions.assertEquals(1650.8, Solutions.bestOf(solutions).getCost(), 80.);
+		Assertions.assertEquals(19, Solutions.bestOf(solutions).getRoutes().size(), 1);
     }
 
 }

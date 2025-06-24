@@ -31,7 +31,7 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by schroeder on 20/09/16.
@@ -63,7 +63,7 @@ public class MaxTimeInVehicle_IT {
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setStateAndConstraintManager(stateManager,constraintManager).buildAlgorithm();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
 
-//        Assert.assertEquals(400, solution.getCost(), 0.001);
+		// Assertions.assertEquals(400, solution.getCost(), 0.001);
         SolutionPrinter.print(vrp,solution, SolutionPrinter.Print.VERBOSE);
     }
 }

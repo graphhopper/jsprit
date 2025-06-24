@@ -25,6 +25,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +34,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -115,7 +116,7 @@ class LoadConstraintTest {
         when(s.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 5).build());
         ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        assertTrue(loadconstraint.fulfilled(context));
+        Assertions.assertTrue(loadconstraint.fulfilled(context));
     }
 
     private static Service createMock(Capacity size) {
@@ -166,7 +167,7 @@ class LoadConstraintTest {
         when(newAct.getSize()).thenReturn(size);
         when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getStart(), newAct, serviceRoute.getActivities().get(0), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -181,7 +182,7 @@ class LoadConstraintTest {
         when(newAct.getSize()).thenReturn(size);
         when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(0), newAct, serviceRoute.getActivities().get(1), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -196,7 +197,7 @@ class LoadConstraintTest {
         when(newAct.getSize()).thenReturn(size);
         when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(1), newAct, serviceRoute.getEnd(), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     /*
@@ -214,7 +215,7 @@ class LoadConstraintTest {
         when(newAct.getSize()).thenReturn(size);
         when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getStart(), newAct, serviceRoute.getActivities().get(0), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     @Test
@@ -229,7 +230,7 @@ class LoadConstraintTest {
         when(newAct.getSize()).thenReturn(size);
         when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(0), newAct, serviceRoute.getActivities().get(1), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     @Test
@@ -244,7 +245,7 @@ class LoadConstraintTest {
         when(newAct.getSize()).thenReturn(size);
         when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(1), newAct, serviceRoute.getEnd(), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     @Test
@@ -254,7 +255,7 @@ class LoadConstraintTest {
         Service s = createMock(Capacity.Builder.newInstance().addDimension(0, 6).build());
         ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        assertFalse(loadconstraint.fulfilled(context));
+        Assertions.assertFalse(loadconstraint.fulfilled(context));
     }
 
     /*
@@ -269,7 +270,7 @@ class LoadConstraintTest {
         Pickup s = createPickupMock(Capacity.Builder.newInstance().addDimension(0, 10).build());
         ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, serviceRoute.getVehicle(), null, 0.);
-        assertTrue(loadconstraint.fulfilled(context));
+        Assertions.assertTrue(loadconstraint.fulfilled(context));
     }
 
     @Test
@@ -279,7 +280,7 @@ class LoadConstraintTest {
         Delivery s = createDeliveryMock(Capacity.Builder.newInstance().addDimension(0, 15).build());
         ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, serviceRoute.getVehicle(), null, 0.);
-        assertTrue(loadconstraint.fulfilled(context));
+        Assertions.assertTrue(loadconstraint.fulfilled(context));
     }
 
     @Test
@@ -289,7 +290,7 @@ class LoadConstraintTest {
         Pickup s = createPickupMock(Capacity.Builder.newInstance().addDimension(0, 11).build());
         ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, serviceRoute.getVehicle(), null, 0.);
-        assertFalse(loadconstraint.fulfilled(context));
+        Assertions.assertFalse(loadconstraint.fulfilled(context));
     }
 
     @Test
@@ -299,7 +300,7 @@ class LoadConstraintTest {
         Delivery s = createDeliveryMock(Capacity.Builder.newInstance().addDimension(0, 16).build());
         ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, serviceRoute.getVehicle(), null, 0.);
-        assertFalse(loadconstraint.fulfilled(context));
+        Assertions.assertFalse(loadconstraint.fulfilled(context));
     }
 
     /*
@@ -314,7 +315,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
         PickupService newAct = new PickupService(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getStart(), newAct, pickup_delivery_route.getActivities().get(0), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -326,7 +327,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
         PickupService newAct = new PickupService(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(0), newAct, pickup_delivery_route.getActivities().get(1), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -338,7 +339,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
         PickupService newAct = new PickupService(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(1), newAct, pickup_delivery_route.getEnd(), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     /*
@@ -353,7 +354,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
         PickupService newAct = new PickupService(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getStart(), newAct, pickup_delivery_route.getActivities().get(0), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     @Test
@@ -365,7 +366,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
         PickupService newAct = new PickupService(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(0), newAct, pickup_delivery_route.getActivities().get(1), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     @Test
@@ -377,7 +378,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
         PickupService newAct = new PickupService(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(1), newAct, pickup_delivery_route.getEnd(), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     /*
@@ -392,7 +393,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
         DeliverService newAct = new DeliverService(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getStart(), newAct, pickup_delivery_route.getActivities().get(0), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -404,7 +405,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
         DeliverService newAct = new DeliverService(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getStart(), newAct, pickup_delivery_route.getActivities().get(0), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
     }
 
     @Test
@@ -416,7 +417,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
         DeliverService newAct = new DeliverService(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(0), newAct, pickup_delivery_route.getActivities().get(1), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -428,7 +429,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
         DeliverService newAct = new DeliverService(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(0), newAct, pickup_delivery_route.getActivities().get(1), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
     }
 
     @Test
@@ -440,7 +441,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
         DeliverService newAct = new DeliverService(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(1), newAct, pickup_delivery_route.getEnd(), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -452,7 +453,7 @@ class LoadConstraintTest {
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, pickup_delivery_route.getVehicle(), null, 0.);
         DeliverService newAct = new DeliverService(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, pickup_delivery_route.getActivities().get(1), newAct, pickup_delivery_route.getEnd(), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
     }
 
     @Test
@@ -467,7 +468,7 @@ class LoadConstraintTest {
         when(newAct.getSize()).thenReturn(size);
         when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(0), newAct, serviceRoute.getActivities().get(1), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -482,7 +483,7 @@ class LoadConstraintTest {
         when(newAct.getSize()).thenReturn(size);
         when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(1), newAct, serviceRoute.getEnd(), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     /*
@@ -500,7 +501,7 @@ class LoadConstraintTest {
         when(newAct.getSize()).thenReturn(size);
         when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getStart(), newAct, serviceRoute.getActivities().get(0), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     @Test
@@ -515,7 +516,7 @@ class LoadConstraintTest {
         when(newAct.getSize()).thenReturn(size);
         when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(0), newAct, serviceRoute.getActivities().get(1), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     @Test
@@ -530,7 +531,7 @@ class LoadConstraintTest {
         when(newAct.getSize()).thenReturn(size);
         when(newAct.getJob()).thenReturn(s);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, serviceRoute.getActivities().get(1), newAct, serviceRoute.getEnd(), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     @Test
@@ -540,7 +541,7 @@ class LoadConstraintTest {
         Service s = createMock(Capacity.Builder.newInstance().addDimension(0, 6).build());
         ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
-        assertFalse(loadconstraint.fulfilled(context));
+        Assertions.assertFalse(loadconstraint.fulfilled(context));
     }
 
     /*
@@ -560,7 +561,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         PickupShipment newAct = new PickupShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getStart(), newAct, shipment_route.getActivities().get(0), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -573,7 +574,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         PickupShipment newAct = new PickupShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getStart(), newAct, shipment_route.getActivities().get(0), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     @Test
@@ -586,7 +587,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         PickupShipment newAct = new PickupShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(0), newAct, shipment_route.getActivities().get(1), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -599,7 +600,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         PickupShipment newAct = new PickupShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(0), newAct, shipment_route.getActivities().get(1), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     @Test
@@ -612,7 +613,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         PickupShipment newAct = new PickupShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(1), newAct, shipment_route.getActivities().get(2), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -625,7 +626,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         PickupShipment newAct = new PickupShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(1), newAct, shipment_route.getActivities().get(2), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     @Test
@@ -638,7 +639,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         PickupShipment newAct = new PickupShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(2), newAct, shipment_route.getActivities().get(3), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -651,7 +652,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         PickupShipment newAct = new PickupShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(2), newAct, shipment_route.getActivities().get(3), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     @Test
@@ -664,7 +665,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         PickupShipment newAct = new PickupShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(3), newAct, shipment_route.getEnd(), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -677,7 +678,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         PickupShipment newAct = new PickupShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(3), newAct, shipment_route.getEnd(), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
     }
 
     /*
@@ -693,7 +694,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         DeliverShipment newAct = new DeliverShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getStart(), newAct, shipment_route.getActivities().get(0), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -706,7 +707,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         DeliverShipment newAct = new DeliverShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getStart(), newAct, shipment_route.getActivities().get(0), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
     }
 
     @Test
@@ -719,7 +720,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         DeliverShipment newAct = new DeliverShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(0), newAct, shipment_route.getActivities().get(1), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -732,7 +733,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         DeliverShipment newAct = new DeliverShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(0), newAct, shipment_route.getActivities().get(1), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
     }
 
     @Test
@@ -745,7 +746,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         DeliverShipment newAct = new DeliverShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(1), newAct, shipment_route.getActivities().get(2), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -758,7 +759,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         DeliverShipment newAct = new DeliverShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(1), newAct, shipment_route.getActivities().get(2), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
     }
 
     @Test
@@ -771,7 +772,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         DeliverShipment newAct = new DeliverShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(2), newAct, shipment_route.getActivities().get(3), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -784,7 +785,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         DeliverShipment newAct = new DeliverShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(2), newAct, shipment_route.getActivities().get(3), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
     }
 
     @Test
@@ -797,7 +798,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         DeliverShipment newAct = new DeliverShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(3), newAct, shipment_route.getEnd(), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
     }
 
     @Test
@@ -810,6 +811,6 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         DeliverShipment newAct = new DeliverShipment(s);
         PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(3), newAct, shipment_route.getEnd(), 0.);
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
+        Assertions.assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED_BREAK, status);
     }
 }

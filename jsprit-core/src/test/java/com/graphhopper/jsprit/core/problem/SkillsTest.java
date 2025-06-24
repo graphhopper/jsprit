@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,24 +36,24 @@ class SkillsTest {
     @DisplayName("When Skills Added _ they Should Bein Skill Set")
     void whenSkillsAdded_theyShouldBeinSkillSet() {
         Skills skills = Skills.Builder.newInstance().addSkill("skill1").addSkill("skill2").build();
-        assertTrue(skills.containsSkill("skill1"));
-        assertTrue(skills.containsSkill("skill2"));
+        Assertions.assertTrue(skills.containsSkill("skill1"));
+        Assertions.assertTrue(skills.containsSkill("skill2"));
     }
 
     @Test
     @DisplayName("When Skills Added Case Insensitive _ they Should Bein Skill Set")
     void whenSkillsAddedCaseInsensitive_theyShouldBeinSkillSet() {
         Skills skills = Skills.Builder.newInstance().addSkill("skill1").addSkill("skill2").build();
-        assertTrue(skills.containsSkill("skilL1"));
-        assertTrue(skills.containsSkill("skIll2"));
+        Assertions.assertTrue(skills.containsSkill("skilL1"));
+        Assertions.assertTrue(skills.containsSkill("skIll2"));
     }
 
     @Test
     @DisplayName("When Skills Added Case Insensitive 2 _ they Should Bein Skill Set")
     void whenSkillsAddedCaseInsensitive2_theyShouldBeinSkillSet() {
         Skills skills = Skills.Builder.newInstance().addSkill("Skill1").addSkill("skill2").build();
-        assertTrue(skills.containsSkill("skilL1"));
-        assertTrue(skills.containsSkill("skIll2"));
+        Assertions.assertTrue(skills.containsSkill("skilL1"));
+        Assertions.assertTrue(skills.containsSkill("skIll2"));
     }
 
     @Test
@@ -62,8 +63,8 @@ class SkillsTest {
         skillSet.add("skill1");
         skillSet.add("skill2");
         Skills skills = Skills.Builder.newInstance().addAllSkills(skillSet).build();
-        assertTrue(skills.containsSkill("skill1"));
-        assertTrue(skills.containsSkill("skill2"));
+        Assertions.assertTrue(skills.containsSkill("skill1"));
+        Assertions.assertTrue(skills.containsSkill("skill2"));
     }
 
     @Test
@@ -73,8 +74,8 @@ class SkillsTest {
         skillSet.add("skill1");
         skillSet.add("skill2");
         Skills skills = Skills.Builder.newInstance().addAllSkills(skillSet).build();
-        assertTrue(skills.containsSkill("skilL1"));
-        assertTrue(skills.containsSkill("skill2"));
+        Assertions.assertTrue(skills.containsSkill("skilL1"));
+        Assertions.assertTrue(skills.containsSkill("skill2"));
     }
 
     @Test
@@ -84,8 +85,8 @@ class SkillsTest {
         skillSet.add("skill1");
         skillSet.add("Skill2");
         Skills skills = Skills.Builder.newInstance().addAllSkills(skillSet).build();
-        assertTrue(skills.containsSkill("skill1"));
-        assertTrue(skills.containsSkill("skill2"));
+        Assertions.assertTrue(skills.containsSkill("skill1"));
+        Assertions.assertTrue(skills.containsSkill("skill2"));
     }
 
     @Test
@@ -95,8 +96,8 @@ class SkillsTest {
         skillSet.add(" skill1");
         skillSet.add("Skill2");
         Skills skills = Skills.Builder.newInstance().addAllSkills(skillSet).build();
-        assertTrue(skills.containsSkill("skill1"));
-        assertTrue(skills.containsSkill("skill2"));
+        Assertions.assertTrue(skills.containsSkill("skill1"));
+        Assertions.assertTrue(skills.containsSkill("skill2"));
     }
 
     @Test
@@ -106,14 +107,14 @@ class SkillsTest {
         skillSet.add("skill1 ");
         skillSet.add("Skill2");
         Skills skills = Skills.Builder.newInstance().addAllSkills(skillSet).build();
-        assertTrue(skills.containsSkill("skill1"));
-        assertTrue(skills.containsSkill("skill2"));
+        Assertions.assertTrue(skills.containsSkill("skill1"));
+        Assertions.assertTrue(skills.containsSkill("skill2"));
     }
 
     @Test
     @DisplayName("When Skills Added Trailing Whitespace Should Not Matter 2")
     void whenSkillsAddedTrailingWhitespaceShouldNotMatter2() {
         Skills skills = Skills.Builder.newInstance().addSkill("skill1 ").build();
-        assertTrue(skills.containsSkill("skill1"));
+        Assertions.assertTrue(skills.containsSkill("skill1"));
     }
 }

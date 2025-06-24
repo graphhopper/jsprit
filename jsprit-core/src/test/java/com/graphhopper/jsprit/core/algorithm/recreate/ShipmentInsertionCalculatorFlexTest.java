@@ -46,6 +46,8 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -125,7 +127,7 @@ class ShipmentInsertionCalculatorFlexTest {
         insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
         insertionCalculator.setJobActivityFactory(activityFactory);
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment, vehicle, 0.0, null, Double.MAX_VALUE);
-        assertEquals(40.0, iData.getInsertionCost(), 0.05);
+        Assertions.assertEquals(40.0, iData.getInsertionCost(), 0.05);
     }
 
     @Test
@@ -144,9 +146,9 @@ class ShipmentInsertionCalculatorFlexTest {
         insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
         insertionCalculator.setJobActivityFactory(activityFactory);
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
-        assertEquals(0.0, iData.getInsertionCost(), 0.05);
-        assertEquals(1, iData.getPickupInsertionIndex());
-        assertEquals(2, iData.getDeliveryInsertionIndex());
+        Assertions.assertEquals(0.0, iData.getInsertionCost(), 0.05);
+        Assertions.assertEquals(1, iData.getPickupInsertionIndex());
+        Assertions.assertEquals(2, iData.getDeliveryInsertionIndex());
     }
 
     private List<AbstractActivity> getTourActivities(Shipment shipment) {
@@ -182,7 +184,7 @@ class ShipmentInsertionCalculatorFlexTest {
         insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
         insertionCalculator.setJobActivityFactory(activityFactory);
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
-        assertTrue(iData instanceof InsertionData.NoInsertionFound);
+        Assertions.assertTrue(iData instanceof InsertionData.NoInsertionFound);
     }
 
     @Test
@@ -205,9 +207,9 @@ class ShipmentInsertionCalculatorFlexTest {
         insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
         insertionCalculator.setJobActivityFactory(activityFactory);
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
-        assertEquals(0.0, iData.getInsertionCost(), 0.05);
-        assertEquals(0, iData.getPickupInsertionIndex());
-        assertEquals(1, iData.getDeliveryInsertionIndex());
+        Assertions.assertEquals(0.0, iData.getInsertionCost(), 0.05);
+        Assertions.assertEquals(0, iData.getPickupInsertionIndex());
+        Assertions.assertEquals(1, iData.getDeliveryInsertionIndex());
     }
 
     @Test
@@ -230,9 +232,9 @@ class ShipmentInsertionCalculatorFlexTest {
         insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
         insertionCalculator.setJobActivityFactory(activityFactory);
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, null, Double.MAX_VALUE);
-        assertEquals(2.0, iData.getInsertionCost(), 0.05);
-        assertEquals(0, iData.getPickupInsertionIndex());
-        assertEquals(1, iData.getDeliveryInsertionIndex());
+        Assertions.assertEquals(2.0, iData.getInsertionCost(), 0.05);
+        Assertions.assertEquals(0, iData.getPickupInsertionIndex());
+        Assertions.assertEquals(1, iData.getDeliveryInsertionIndex());
     }
 
     @Test
@@ -257,7 +259,7 @@ class ShipmentInsertionCalculatorFlexTest {
         ShipmentInsertionCalculatorFlex insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
         insertionCalculator.setJobActivityFactory(vrp.getJobActivityFactory());
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
-        assertTrue(iData instanceof InsertionData.NoInsertionFound);
+        Assertions.assertTrue(iData instanceof InsertionData.NoInsertionFound);
     }
 
     @Disabled
@@ -285,7 +287,7 @@ class ShipmentInsertionCalculatorFlexTest {
         insertionCalculator.setEvalIndexDelivery(3);
         insertionCalculator.setJobActivityFactory(vrp.getJobActivityFactory());
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
-        assertTrue(iData instanceof InsertionData.NoInsertionFound);
+        Assertions.assertTrue(iData instanceof InsertionData.NoInsertionFound);
     }
 
     @Test
@@ -320,6 +322,6 @@ class ShipmentInsertionCalculatorFlexTest {
         switcher.put(Shipment.class, insertionCalculator);
         InsertionData iData = switcher.getInsertionData(route, service, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
         // routeActVisitor.visit(route);
-        assertEquals(3, iData.getDeliveryInsertionIndex());
+        Assertions.assertEquals(3, iData.getDeliveryInsertionIndex());
     }
 }

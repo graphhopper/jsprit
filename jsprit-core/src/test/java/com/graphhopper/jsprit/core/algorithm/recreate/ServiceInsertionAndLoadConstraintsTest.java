@@ -43,6 +43,8 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -141,6 +143,6 @@ class ServiceInsertionAndLoadConstraintsTest {
         switcher.put(Delivery.class, serviceInsertionCalc);
         switcher.put(Shipment.class, insertionCalculator);
         InsertionData iData = switcher.getInsertionData(route, pickup, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
-        assertEquals(1, iData.getDeliveryInsertionIndex());
+        Assertions.assertEquals(1, iData.getDeliveryInsertionIndex());
     }
 }

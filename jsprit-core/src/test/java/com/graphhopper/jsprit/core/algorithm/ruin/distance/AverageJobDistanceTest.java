@@ -30,6 +30,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Assertions;
+
 @DisplayName("Average Job Distance Test")
 class AverageJobDistanceTest {
 
@@ -60,7 +62,7 @@ class AverageJobDistanceTest {
                 Shipment other1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance(i + "," + j)).build();
                 Shipment other2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
                 double dist2 = new AvgServiceAndShipmentDistance(routingCosts).getDistance(other1, other2);
-                assertTrue(dist <= dist2 + dist2 * 0.001);
+                Assertions.assertTrue(dist <= dist2 + dist2 * 0.001);
             }
         }
     }
@@ -71,6 +73,6 @@ class AverageJobDistanceTest {
         Service s1 = Service.Builder.newInstance("s1").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
         Service s2 = Service.Builder.newInstance("s2").addSizeDimension(0, 1).setLocation(Location.newInstance("10,0")).build();
         double dist = new AvgServiceAndShipmentDistance(routingCosts).getDistance(s1, s2);
-        assertEquals(0.0, dist, 0.01);
+        Assertions.assertEquals(0.0, dist, 0.01);
     }
 }

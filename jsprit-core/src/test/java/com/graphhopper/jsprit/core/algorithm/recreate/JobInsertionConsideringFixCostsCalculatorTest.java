@@ -26,6 +26,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivity
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -86,7 +88,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         relFixedCosts.setWeightOfFixCost(1.0);
         // (1.*absFix + 0.*relFix) * completeness * weight  = (1.*100. + 0.*50.) * 1. * 1. = 100.
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
-        assertEquals(100., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(100., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -98,7 +100,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         relFixedCosts.setWeightOfFixCost(1.0);
         // (0.*absFix + 1.*relFix) * completeness * weight = 0.
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
-        assertEquals(0., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.1);
+        Assertions.assertEquals(0., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.1);
     }
 
     @Test
@@ -110,7 +112,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         relFixedCosts.setWeightOfFixCost(1.0);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.5*absFix + 0.5*relFix) * 0.5 * 1. = (0.5*100+0.5*50)*0.5*1. = 37.5
-        assertEquals(37.5, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(37.5, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -122,7 +124,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         relFixedCosts.setWeightOfFixCost(1.0);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.75*absFix + 0.25*relFix) * 0.75 * 1.= (0.75*100.+0.25*50.)*0.75*1. = 65.625
-        assertEquals(65.625, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(65.625, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -134,7 +136,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         relFixedCosts.setWeightOfFixCost(.5);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (1.*absFix + 0.*relFix) * 1. * 0.5 = (1.*100. + 0.*50.) * 1. * 0.5 = 5.
-        assertEquals(50., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(50., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -146,7 +148,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         relFixedCosts.setWeightOfFixCost(.5);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.*absFix + 1.*relFix) * 0. * .5 = 0.
-        assertEquals(0., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(0., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -158,7 +160,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         relFixedCosts.setWeightOfFixCost(.5);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*100+0.5*50)*0.5*0.5 = 18.75
-        assertEquals(18.75, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(18.75, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -170,7 +172,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         relFixedCosts.setWeightOfFixCost(0.5);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.75*absFix + 0.25*relFix) * 0.75 * 0.5 = (0.75*100.+0.25*50.)*0.75*0.5 = 32.8125
-        assertEquals(32.8125, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(32.8125, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -183,7 +185,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(route.getVehicle()).thenReturn(small);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (1.*absFix + 0.*relFix) * completeness * weight  = (1.*(100.-50.) + 0.*(50.-0.)) * 1. * 1. = 50.
-        assertEquals(50., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(50., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -196,7 +198,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(route.getVehicle()).thenReturn(small);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.*absFix + 1.*relFix) * completeness * weight = 0.
-        assertEquals(0., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(0., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -209,7 +211,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(route.getVehicle()).thenReturn(small);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.5*absFix + 0.5*relFix) * 0.5 * 1. = (0.5*(100-50)+0.5*(50-0))*0.5*1. = 25.
-        assertEquals(25., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(25., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -222,7 +224,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(route.getVehicle()).thenReturn(small);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.75*absFix + 0.25*relFix) * 0.75 * 1.= (0.75*(100.-50.)+0.25*(50.-0.))*0.75*1. = 37.5
-        assertEquals(37.5, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(37.5, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -235,7 +237,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(route.getVehicle()).thenReturn(small);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (1.*absFix + 0.*relFix) * 1. * 0.5 = (1.*(100.-50.) + 0.*(50.-0.)) * 1. * 0.5 = 25.
-        assertEquals(25., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(25., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -248,7 +250,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(route.getVehicle()).thenReturn(small);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.*absFix + 1.*relFix) * 0. * .5 = 0.
-        assertEquals(0., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(0., absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -261,7 +263,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(route.getVehicle()).thenReturn(small);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*(100-50)+0.5*(50-0))*0.5*0.5 = 12.5
-        assertEquals(12.5, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(12.5, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -274,7 +276,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(route.getVehicle()).thenReturn(small);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.75*absFix + 0.25*relFix) * 0.75 * 0.5 = (0.75*(100.-50.)+0.25*(50.-0.))*0.75*0.5 = 18.75
-        assertEquals(18.75, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(18.75, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -288,7 +290,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).build());
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*(100-50)+0.5*(75-25))*0.5*0.5 = 12.5
-        assertEquals(12.5, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(12.5, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -301,7 +303,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(route.getVehicle()).thenReturn(small);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.75*absFix + 0.25*relFix) * 0.75 * 0.5 = (0.75*(100.-50.)+0.25*(75.-25.))*0.75*0.5 = 18.75
-        assertEquals(18.75, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(18.75, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -322,12 +324,13 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         // (0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*(100-50)+0.5*(75-25))*0.5*0.5 = 12.5
         /*
          * (0.5*(100-50)+0.5*(
-		 * relFixNew - relFixOld = (75/100+100/400)/2.*100 - ((25/50+100/100)/2.*50.) =
-		 * )*0.5*0.5
-		 * = (0.5*(100-50)+0.5*((75/100+100/400)/2.*100 - ((25/50+100/100)/2.*50.)))*0.5*0.5
-		 * = (0.5*(100-50)+0.5*12.5)*0.5*0.5 = 7.8125
-		 */
-        assertEquals(7.8125, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+         * relFixNew - relFixOld = (75/100+100/400)/2.*100 - ((25/50+100/100)/2.*50.) =
+         * )*0.5*0.5
+         * = (0.5*(100-50)+0.5*((75/100+100/400)/2.*100 -
+         * ((25/50+100/100)/2.*50.)))*0.5*0.5
+         * = (0.5*(100-50)+0.5*12.5)*0.5*0.5 = 7.8125
+         */
+        Assertions.assertEquals(7.8125, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 
     @Test
@@ -347,14 +350,15 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         // (0.5*absFix + 0.5*relFix) * 0.5 * 0.= (0.5*(100-50)+0.5*(75-25))*0.5*0.5 = 12.5
         /*
          * (0.5*(100-50)+0.5*(
-		 * relFixNew - relFixOld = (75/100+100/400)/2.*100 - ((25/50+100/100)/2.*50.) =
-		 * )*0.5*0.5
-		 * = (0.5*(100-50)+0.5*((75/100+100/400)/2.*100 - ((25/50+100/100)/2.*50.)))*0.5*0.5
-		 * = (0.5*(100-50)+0.5*12.5)*0.5*0.5 = 7.8125
-		 */
+         * relFixNew - relFixOld = (75/100+100/400)/2.*100 - ((25/50+100/100)/2.*50.) =
+         * )*0.5*0.5
+         * = (0.5*(100-50)+0.5*((75/100+100/400)/2.*100 -
+         * ((25/50+100/100)/2.*50.)))*0.5*0.5
+         * = (0.5*(100-50)+0.5*12.5)*0.5*0.5 = 7.8125
+         */
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         double insertionCost = absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context);
-        assertEquals(-50d, insertionCost, 0.01);
+        Assertions.assertEquals(-50d, insertionCost, 0.01);
     }
 
     @Test
@@ -367,7 +371,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(route.getVehicle()).thenReturn(small);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         double insertionCost = absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context);
-        assertEquals(50d, insertionCost, 0.01);
+        Assertions.assertEquals(50d, insertionCost, 0.01);
     }
 
     @Test
@@ -380,7 +384,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(route.getVehicle()).thenReturn(small);
         JobInsertionContext context = new JobInsertionContext(route, job, large, null, 0d);
         double insertionCost = absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context);
-        assertEquals(150d, insertionCost, 0.01);
+        Assertions.assertEquals(150d, insertionCost, 0.01);
     }
 
     @Test
@@ -393,7 +397,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(route.getVehicle()).thenReturn(large);
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         double insertionCost = absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context);
-        assertEquals(-100d, insertionCost, 0.01);
+        Assertions.assertEquals(-100d, insertionCost, 0.01);
     }
 
     @Test
@@ -406,7 +410,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(route.getVehicle()).thenReturn(medium);
         JobInsertionContext context = new JobInsertionContext(route, job, large, null, 0d);
         double insertionCost = absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context);
-        assertEquals(100d, insertionCost, 0.01);
+        Assertions.assertEquals(100d, insertionCost, 0.01);
     }
 
     @Test
@@ -432,7 +436,7 @@ class JobInsertionConsideringFixCostsCalculatorTest {
          */
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         double insertionCost = absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context);
-        assertEquals(2.875, insertionCost, 0.01);
+        Assertions.assertEquals(2.875, insertionCost, 0.01);
     }
 
     @Test
@@ -451,6 +455,6 @@ class JobInsertionConsideringFixCostsCalculatorTest {
         when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(Capacity.Builder.newInstance().addDimension(0, 25).addDimension(1, 100).build());
         JobInsertionContext context = new JobInsertionContext(route, job, medium, null, 0d);
         // (0.75*absFix + 0.25*relFix) * 0.75 * 0.5 = (0.75*(100.-50.)+0.25*12.5)*0.75*0.5 = 15.234375
-        assertEquals(15.234375, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
+        Assertions.assertEquals(15.234375, absFixedCosts.getCosts(context) + relFixedCosts.getCosts(context), 0.01);
     }
 }
