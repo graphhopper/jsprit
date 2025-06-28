@@ -26,6 +26,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -60,10 +61,10 @@ class SolutionAnalyserTest {
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocation(Location.newInstance(5, 0)).build();
         Service s1 = Service.Builder.newInstance("s1").setTimeWindow(TimeWindow.newInstance(10, 20)).setLocation(Location.newInstance(-10, 1)).addSizeDimension(0, 2).addRequiredSkill("skill1").build();
         Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(-10, 10)).addSizeDimension(0, 3).addRequiredSkill("skill2").addRequiredSkill("skill1").build();
-        Shipment shipment1 = Shipment.Builder.newInstance("ship1").setPickupLocation(TestUtils.loc(Coordinate.newInstance(-15, 2))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5))).addSizeDimension(0, 10).setPickupServiceTime(20.).setDeliveryServiceTime(20.).addRequiredSkill("skill3").build();
+        Shipment shipment1 = Shipment.Builder.newInstance("ship1").setPickupLocation(PickupLocation.newInstance(TestUtils.loc(Coordinate.newInstance(-15, 2)))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5))).addSizeDimension(0, 10).setPickupServiceTime(20.).setDeliveryServiceTime(20.).addRequiredSkill("skill3").build();
         Service s3 = Service.Builder.newInstance("s3").setTimeWindow(TimeWindow.newInstance(10, 20)).setLocation(TestUtils.loc(Coordinate.newInstance(10, 1))).addSizeDimension(0, 2).build();
         Service s4 = Service.Builder.newInstance("s4").setLocation(TestUtils.loc(Coordinate.newInstance(10, 10))).addSizeDimension(0, 3).build();
-        Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2))).setPickupServiceTime(20.).setDeliveryServiceTime(20.).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5))).addSizeDimension(0, 10).build();
+        Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupLocation(PickupLocation.newInstance(TestUtils.loc(Coordinate.newInstance(15, 2)))).setPickupServiceTime(20.).setDeliveryServiceTime(20.).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5))).addSizeDimension(0, 10).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addVehicle(vehicle2).addJob(s1).addJob(s2).addJob(shipment1).addJob(s3).addJob(s4).addJob(shipment2).setFleetSize(VehicleRoutingProblem.FleetSize.INFINITE);
         vrpBuilder.setRoutingCost(new ManhattanCosts(vrpBuilder.getLocations()));
         vrp = vrpBuilder.build();
@@ -77,10 +78,31 @@ class SolutionAnalyserTest {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v1").setType(type).setStartLocation(Location.newInstance(-5, 0)).setLatestArrival(150.).build();
         Pickup s1 = Pickup.Builder.newInstance("s1").setTimeWindow(TimeWindow.newInstance(10, 20)).setLocation(Location.newInstance(-10, 1)).addSizeDimension(0, 10).build();
         Delivery s2 = Delivery.Builder.newInstance("s2").setLocation(Location.newInstance(-10, 10)).setTimeWindow(TimeWindow.newInstance(10, 20)).addSizeDimension(0, 20).build();
-        Shipment shipment1 = Shipment.Builder.newInstance("ship1").setPickupLocation(TestUtils.loc(Coordinate.newInstance(-15, 2))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5))).addSizeDimension(0, 15).setPickupServiceTime(20.).setDeliveryServiceTime(20.).setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20)).build();
+        Shipment shipment1 =
+                Shipment.Builder
+                        .newInstance("ship1")
+                        .setPickupLocation(
+                                PickupLocation.Builder.newInstance()
+                                        .setLocation(TestUtils.loc(Coordinate.newInstance(-15, 2)))
+                                        .addTimeWindow(TimeWindow.newInstance(10, 20)).build()
+                        ).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(-16, 5)))
+                        .addSizeDimension(0, 15)
+                        .setPickupServiceTime(20.).setDeliveryServiceTime(20.)
+                        .setDeliveryTimeWindow(TimeWindow.newInstance(10, 20)).build();
         Pickup s3 = Pickup.Builder.newInstance("s3").setTimeWindow(TimeWindow.newInstance(10, 20)).setLocation(TestUtils.loc(Coordinate.newInstance(10, 1))).addSizeDimension(0, 10).build();
         Delivery s4 = Delivery.Builder.newInstance("s4").setLocation(Location.newInstance(10, 10)).addSizeDimension(0, 20).setTimeWindow(TimeWindow.newInstance(10, 20)).build();
-        Shipment shipment2 = Shipment.Builder.newInstance("ship2").setPickupLocation(TestUtils.loc(Coordinate.newInstance(15, 2))).setPickupServiceTime(20.).setDeliveryServiceTime(20.).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5))).setPickupTimeWindow(TimeWindow.newInstance(10, 20)).setDeliveryTimeWindow(TimeWindow.newInstance(10, 20)).addSizeDimension(0, 15).build();
+        Shipment shipment2 =
+                Shipment.Builder
+                        .newInstance("ship2")
+                        .setPickupLocation(
+                                PickupLocation.Builder.newInstance()
+                                        .setLocation(TestUtils.loc(Coordinate.newInstance(15, 2)))
+                                        .addTimeWindow(TimeWindow.newInstance(10, 20)).build()
+                        ).setPickupServiceTime(20.)
+                        .setDeliveryServiceTime(20.)
+                        .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(16, 5)))
+                        .setDeliveryTimeWindow(TimeWindow.newInstance(10, 20))
+                        .addSizeDimension(0, 15).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addJob(s1).addJob(s2).addJob(shipment1).addJob(s3).addJob(s4).addJob(shipment2).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
         vrpBuilder.setRoutingCost(new ManhattanCosts(vrpBuilder.getLocations()));
         vrp = vrpBuilder.build();

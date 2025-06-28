@@ -19,8 +19,11 @@
 package com.graphhopper.jsprit.core.problem.job;
 
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocationsImpl;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Activity {
@@ -35,13 +38,35 @@ public class Activity {
 
         private final Location location;
 
-        Collection<TimeWindow> timeWindows;
+        Collection<PickupLocation> pickupLocations = new ArrayList<>();
+
+        Collection<TimeWindow> timeWindows = new ArrayList<>();;
 
         private double serviceTime;
 
         public Builder(Location location, Type activityType) {
             this.location = location;
             this.activityType = activityType;
+            if (location != null) {
+                this.pickupLocations.add(PickupLocation.newInstance(location));
+            }
+        }
+
+        public Builder(Type activityType) {
+            this.location = null;
+            this.activityType = activityType;
+            this.pickupLocations = null;
+        }
+
+        public Builder(PickupLocationsImpl pickupLocations, Type activityType) {
+            this.location = null;
+            this.activityType = activityType;
+            this.pickupLocations = pickupLocations.getPickupLocations();
+        }
+
+        public Builder setPickupLocations(Collection<PickupLocation> pickupLocations, Type activityType) {
+            this.pickupLocations = pickupLocations;
+            return this;
         }
 
         public Builder setTimeWindows(Collection<TimeWindow> timeWindows) {
@@ -61,6 +86,8 @@ public class Activity {
 
     private final Location location;
 
+    private final Collection<PickupLocation> pickupLocations;
+
     private final Collection<TimeWindow> timeWindows;
 
     private final double serviceTime;
@@ -72,6 +99,7 @@ public class Activity {
         timeWindows = builder.timeWindows;
         serviceTime = builder.serviceTime;
         activityType = builder.activityType;
+        pickupLocations = builder.pickupLocations;
     }
 
     public Type getActivityType() {
@@ -79,12 +107,17 @@ public class Activity {
     }
 
     public Location getLocation() {
+        if (location == null && getPickupLocations().size() >= 1) {
+            return getPickupLocations().stream().findFirst().get().getLocation();
+        }
         return location;
     }
 
     public Collection<TimeWindow> getTimeWindows() {
         return timeWindows;
     }
+
+    public Collection<PickupLocation> getPickupLocations() { return pickupLocations; }
 
     public double getServiceTime() {
         return serviceTime;

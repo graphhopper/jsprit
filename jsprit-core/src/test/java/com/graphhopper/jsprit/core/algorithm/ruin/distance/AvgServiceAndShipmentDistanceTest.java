@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.algorithm.ruin.distance;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
 import com.graphhopper.jsprit.core.util.EuclideanCosts;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +42,11 @@ class AvgServiceAndShipmentDistanceTest {
     @DisplayName("Avg Distance Between Service And Shipment Test")
     void avgDistanceBetweenServiceAndShipmentTest() {
         Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(10, 0)).build();
-        Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.newInstance(20, 0)).setDeliveryLocation(Location.newInstance(30, 0)).build();
+        Shipment shipment =
+                Shipment.Builder
+                        .newInstance("shipment")
+                        .setPickupLocation(PickupLocation.newInstance(Location.newInstance(20, 0)))
+                        .setDeliveryLocation(Location.newInstance(30, 0)).build();
         AvgServiceAndShipmentDistance distance = new AvgServiceAndShipmentDistance(new EuclideanCosts());
         Assertions.assertEquals(15d, distance.getDistance(s1, shipment), 0.01);
     }
@@ -49,8 +54,16 @@ class AvgServiceAndShipmentDistanceTest {
     @Test
     @DisplayName("Avg Distance Between Shipment And Shipment Test")
     void avgDistanceBetweenShipmentAndShipmentTest() {
-        Shipment shipment1 = Shipment.Builder.newInstance("shipment1").setPickupLocation(Location.newInstance(20, 0)).setDeliveryLocation(Location.newInstance(30, 0)).build();
-        Shipment shipment2 = Shipment.Builder.newInstance("shipment2").setPickupLocation(Location.newInstance(40, 0)).setDeliveryLocation(Location.newInstance(50, 0)).build();
+        Shipment shipment1 =
+                Shipment.Builder
+                        .newInstance("shipment1")
+                        .setPickupLocation(PickupLocation.newInstance(Location.newInstance(20, 0)))
+                        .setDeliveryLocation(Location.newInstance(30, 0)).build();
+        Shipment shipment2 =
+                Shipment.Builder
+                        .newInstance("shipment2")
+                        .setPickupLocation( PickupLocation.newInstance(Location.newInstance(40, 0)))
+                        .setDeliveryLocation(Location.newInstance(50, 0)).build();
         AvgServiceAndShipmentDistance distance = new AvgServiceAndShipmentDistance(new EuclideanCosts());
         Assertions.assertEquals(20d, distance.getDistance(shipment1, shipment2), 0.01);
     }

@@ -22,6 +22,8 @@ import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.EnRoutePickup;
 
+import java.util.Collection;
+
 public final class EnRoutePickupActivity extends AbstractActivity implements PickupActivity {
 
     private final EnRoutePickup pickup;
@@ -59,6 +61,16 @@ public final class EnRoutePickupActivity extends AbstractActivity implements Pic
     }
 
     @Override
+    public Boolean isMultipleLocation() {
+        return false;
+    }
+
+    @Override
+    public Collection<PickupLocation> getPickupLocations() {
+        return null;
+    }
+
+    @Override
     public double getTheoreticalEarliestOperationStartTime() {
         return theoreticalEarliest;
     }
@@ -76,6 +88,11 @@ public final class EnRoutePickupActivity extends AbstractActivity implements Pic
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
         this.theoreticalLatest = latest;
+    }
+
+    @Override
+    public void setLocation(Location location) {
+
     }
 
     @Override

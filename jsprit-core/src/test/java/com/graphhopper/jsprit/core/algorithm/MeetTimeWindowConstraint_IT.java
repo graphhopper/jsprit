@@ -28,6 +28,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -339,32 +340,29 @@ public class MeetTimeWindowConstraint_IT {
 
         Shipment shipment1 = Shipment.Builder.newInstance("shipment1")
             .setPickupServiceTime(900)
-            .setPickupLocation(Location.Builder.newInstance().setId("jsp1").setIndex(1).build())
+            .setPickupLocation(PickupLocation.newInstance(Location.Builder.newInstance().setId("jsp1").setIndex(1).build()))
             .setDeliveryLocation(Location.Builder.newInstance().setId("jsd1").setIndex(8).build())
             .setDeliveryServiceTime(900).build();
 
         Shipment shipment2 = Shipment.Builder.newInstance("shipment2")
-            .setPickupLocation(Location.Builder.newInstance().setId("jsp4").setIndex(9).build())
+            .setPickupLocation(PickupLocation.Builder.newInstance().setLocation(Location.Builder.newInstance().setId("jsp4").setIndex(9).build()).addTimeWindow(21600, 23400).build())
             .setPickupServiceTime(1200)
-            .addPickupTimeWindow(21600,23400)
             .setDeliveryLocation(Location.Builder.newInstance().setId("jsd4").setIndex(8).build())
             .setDeliveryServiceTime(900)
             .addDeliveryTimeWindow(25200,27000)
             .build();
 
         Shipment shipment3 = Shipment.Builder.newInstance("shipment3")
-            .setPickupLocation(Location.Builder.newInstance().setId("jsp7").setIndex(9).build())
+            .setPickupLocation(PickupLocation.Builder.newInstance().setLocation(Location.Builder.newInstance().setId("jsp7").setIndex(9).build()).addTimeWindow(37800, 41400).build())
             .setPickupServiceTime(1200)
-            .addPickupTimeWindow(37800,41400)
             .setDeliveryLocation(Location.Builder.newInstance().setId("jsd7").setIndex(8).build())
             .setDeliveryServiceTime(1800)
             .addDeliveryTimeWindow(43200,45900)
             .build();
 
         Shipment shipment4 = Shipment.Builder.newInstance("shipment4")
-            .setPickupLocation(Location.Builder.newInstance().setId("jsp9").setIndex(10).build())
+            .setPickupLocation(PickupLocation.Builder.newInstance().setLocation(Location.Builder.newInstance().setId("jsp9").setIndex(10).build()).addTimeWindow(45000, 48600).build())
             .setPickupServiceTime(300)
-            .addPickupTimeWindow(45000,48600)
             .setDeliveryLocation(Location.Builder.newInstance().setId("jsd9").setIndex(8).build())
             .setDeliveryServiceTime(300)
             .addDeliveryTimeWindow(50400,52200)

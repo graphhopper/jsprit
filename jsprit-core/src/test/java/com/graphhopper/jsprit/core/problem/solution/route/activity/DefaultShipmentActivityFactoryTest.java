@@ -32,7 +32,7 @@ class DefaultShipmentActivityFactoryTest {
     @DisplayName("When Creating Pickup Activity With Shipment _ it Should Return Pickup Shipment")
     void whenCreatingPickupActivityWithShipment_itShouldReturnPickupShipment() {
         DefaultShipmentActivityFactory factory = new DefaultShipmentActivityFactory();
-        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
+        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(PickupLocation.newInstance(Location.Builder.newInstance().setId("pLoc").build())).setDeliveryLocation(Location.newInstance("dLoc")).build();
         TourActivity act = factory.createPickup(shipment);
         assertNotNull(act);
         assertTrue(act instanceof PickupShipment);
@@ -42,7 +42,7 @@ class DefaultShipmentActivityFactoryTest {
     @DisplayName("When Creating Deliver Activity With Shipment _ it Should Return Deliver Shipment")
     void whenCreatingDeliverActivityWithShipment_itShouldReturnDeliverShipment() {
         DefaultShipmentActivityFactory factory = new DefaultShipmentActivityFactory();
-        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
+        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(PickupLocation.newInstance(Location.Builder.newInstance().setId("pLoc").build())).setDeliveryLocation(Location.newInstance("dLoc")).build();
         TourActivity act = factory.createDelivery(shipment);
         assertNotNull(act);
         assertTrue(act instanceof DeliverShipment);

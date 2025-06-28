@@ -23,6 +23,8 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 
+import java.util.Collection;
+
 public final class DeliverShipment extends AbstractActivity implements DeliveryActivity {
 
     private Shipment shipment;
@@ -69,6 +71,12 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
     }
 
     @Override
+    public void setLocation(Location location) {
+        this.shipment.setPickupLocation(location);
+    }
+
+
+    @Override
     public String getName() {
         return "deliverShipment";
     }
@@ -76,6 +84,16 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
     @Override
     public Location getLocation() {
         return shipment.getDeliveryLocation();
+    }
+
+    @Override
+    public Boolean isMultipleLocation() {
+        return false;
+    }
+
+    @Override
+    public Collection<PickupLocation> getPickupLocations() {
+        return null;
     }
 
     @Override
