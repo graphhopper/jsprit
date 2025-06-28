@@ -122,8 +122,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <compilerArgument>-XDignore.symbol.file</compilerArgument>
-                    <fork>true</fork>
+                    <!--compilerArgument>-XDignore.symbol.file</compilerArgument>
+                    <fork>true</fork-->
                     <source>${jdkVersion}</source>
                     <target>${jdkVersion}</target>
                 </configuration>
