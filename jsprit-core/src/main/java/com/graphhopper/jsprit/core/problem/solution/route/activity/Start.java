@@ -21,6 +21,8 @@ import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 
+import java.util.Collection;
+
 public final class Start extends AbstractActivity implements TourActivity {
 
     @Deprecated
@@ -100,6 +102,16 @@ public final class Start extends AbstractActivity implements TourActivity {
     @Override
     public Location getLocation() {
         return location;
+    }
+
+    @Override
+    public Boolean isMultipleLocation() {
+        return false;
+    }
+
+    @Override
+    public Collection<PickupLocation> getPickupLocations() {
+        return null;
     }
 
     @Override

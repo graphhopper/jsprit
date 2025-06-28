@@ -31,6 +31,7 @@ import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.ActivityContext;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -71,8 +72,8 @@ class MaxTimeInVehicleConstraintTest {
 
     private void ini(double maxTimeShipment, double maxTimeDelivery, double maxTimePickup) {
         d1 = Delivery.Builder.newInstance("d1").setLocation(Location.newInstance(10, 0)).build();
-        s1 = Shipment.Builder.newInstance("s1").setPickupLocation(Location.newInstance(20, 0)).setDeliveryLocation(Location.newInstance(40, 0)).setMaxTimeInVehicle(maxTimeShipment).build();
-        s2 = Shipment.Builder.newInstance("s2").setPickupLocation(Location.newInstance(20, 0)).setDeliveryLocation(Location.newInstance(40, 0)).setMaxTimeInVehicle(maxTimeShipment).build();
+        s1 = Shipment.Builder.newInstance("s1").setPickupLocation(PickupLocation.newInstance(Location.newInstance(20, 0))).setDeliveryLocation(Location.newInstance(40, 0)).setMaxTimeInVehicle(maxTimeShipment).build();
+        s2 = Shipment.Builder.newInstance("s2").setPickupLocation(PickupLocation.newInstance(Location.newInstance(20, 0))).setDeliveryLocation(Location.newInstance(40, 0)).setMaxTimeInVehicle(maxTimeShipment).build();
         d2 = Delivery.Builder.newInstance("d2").setMaxTimeInVehicle(maxTimeDelivery).setLocation(Location.newInstance(30, 0)).setServiceTime(10).build();
         p1 = Pickup.Builder.newInstance("p1").setLocation(Location.newInstance(10, 0)).build();
         p2 = Pickup.Builder.newInstance("p2").setLocation(Location.newInstance(20, 0)).build();
@@ -85,8 +86,8 @@ class MaxTimeInVehicleConstraintTest {
     @DisplayName("Shift Of Existing Shipments Should Work")
     void shiftOfExistingShipmentsShouldWork() {
         Vehicle v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
-        Shipment s1 = Shipment.Builder.newInstance("s1").setPickupLocation(Location.newInstance(20, 0)).setDeliveryLocation(Location.newInstance(40, 0)).setMaxTimeInVehicle(20).build();
-        Shipment s2 = Shipment.Builder.newInstance("s2").setPickupLocation(Location.newInstance(20, 0)).setPickupServiceTime(10).setDeliveryLocation(Location.newInstance(40, 0)).setMaxTimeInVehicle(20).build();
+        Shipment s1 = Shipment.Builder.newInstance("s1").setPickupLocation(PickupLocation.newInstance(Location.newInstance(20, 0))).setDeliveryLocation(Location.newInstance(40, 0)).setMaxTimeInVehicle(20).build();
+        Shipment s2 = Shipment.Builder.newInstance("s2").setPickupLocation(PickupLocation.newInstance(Location.newInstance(20, 0))).setPickupServiceTime(10).setDeliveryLocation(Location.newInstance(40, 0)).setMaxTimeInVehicle(20).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addVehicle(v).build();
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).setJobActivityFactory(vrp.getJobActivityFactory()).addPickup(s1).addDelivery(s1).build();
         StateManager stateManager = new StateManager(vrp);

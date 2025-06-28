@@ -23,6 +23,8 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 
+import java.util.Collection;
+
 public final class PickupShipment extends AbstractActivity implements PickupActivity{
 
     private Shipment shipment;
@@ -65,14 +67,30 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     }
 
     @Override
+    public void setLocation(Location location) {
+        this.shipment.setPickupLocation(location);
+    }
+
+    @Override
     public String getName() {
         return "pickupShipment";
     }
 
     @Override
     public Location getLocation() {
-        return shipment.getPickupLocation();
+        return getPickupLocations().stream().findFirst().get().getLocation();
     }
+
+    @Override
+    public Boolean isMultipleLocation() {
+        return true;
+    }
+
+    @Override
+    public Collection<PickupLocation> getPickupLocations() {
+        return shipment.getPickupLocations();
+    }
+
 
     @Override
     public double getTheoreticalEarliestOperationStartTime() {
@@ -115,7 +133,7 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     }
 
     public String toString() {
-        return "[type=" + getName() + "][locationId=" + getLocation().getId()
+        return "[type=" + getName() + "][locationIds=" + getPickupLocations().stream().map(pickupLocation -> pickupLocation.getLocation().getId())
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
             + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";

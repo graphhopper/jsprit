@@ -61,7 +61,7 @@ public class Break extends Service {
             this.setType("break");
             super.capacity = Capacity.Builder.newInstance().build();
             super.skills = Skills.Builder.newInstance().build();
-            super.activity = new Activity.Builder(null, Activity.Type.BREAK).setServiceTime(serviceTime).setTimeWindows(timeWindows.getTimeWindows()).build();
+            super.activity = new Activity.Builder(Activity.Type.BREAK).setServiceTime(serviceTime).setTimeWindows(timeWindows.getTimeWindows()).build();
             return new Break(this);
         }
 

@@ -26,6 +26,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipment;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -60,7 +61,11 @@ class HardPickupAndDeliveryShipmentActivityConstraintTest {
     void doBefore() {
         s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance("loc")).build();
         s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance("loc")).build();
-        shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).addSizeDimension(0, 1).build();
+        shipment =
+                Shipment.Builder
+                        .newInstance("shipment")
+                        .setPickupLocation(PickupLocation.Builder.newInstance().setLocation(Location.Builder.newInstance().setId("pickLoc").build()).build())
+                        .setDeliveryLocation(Location.newInstance("delLoc")).addSizeDimension(0, 1).build();
         // when(vehicle.getCapacity()).thenReturn(2);
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 2).build();
         vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance("start")).build();

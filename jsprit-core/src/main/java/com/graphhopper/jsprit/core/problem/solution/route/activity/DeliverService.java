@@ -22,6 +22,8 @@ import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
 
+import java.util.Collection;
+
 public final class DeliverService extends AbstractActivity implements DeliveryActivity {
 
     private final Delivery delivery;
@@ -63,6 +65,16 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     }
 
     @Override
+    public Boolean isMultipleLocation() {
+        return false;
+    }
+
+    @Override
+    public Collection<PickupLocation> getPickupLocations() {
+        return null;
+    }
+
+    @Override
     public void setTheoreticalEarliestOperationStartTime(double earliest) {
         theoreticalEarliest = earliest;
     }
@@ -70,6 +82,11 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
         theoreticalLatest = latest;
+    }
+
+    @Override
+    public void setLocation(Location location) {
+
     }
 
 

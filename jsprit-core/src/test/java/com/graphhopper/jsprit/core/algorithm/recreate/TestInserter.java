@@ -28,10 +28,7 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipment;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
@@ -143,12 +140,19 @@ public class TestInserter {
         when(vehicle.isReturnToDepot()).thenReturn(true);
         when(vehicle.getId()).thenReturn("vehId");
 
-        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
+        List<PickupLocation> pickupLocations = new ArrayList<>();
+        pickupLocations.add(mock(PickupLocation.class));
+        when(shipment.getPickupLocations()).thenReturn(pickupLocations);
         when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end
-        Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setDeliveryLocation(Location.newInstance("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+        Shipment shipmentToInsert =
+                Shipment.Builder
+                        .newInstance("s")
+                        .setDeliveryLocation(Location.newInstance("delLoc"))
+                        .setPickupLocation(PickupLocation.newInstance(Location.Builder.newInstance().setId("pickLoc").build()))
+                        .build();
 
         InsertionData iData = mock(InsertionData.class);
         when(iData.getPickupInsertionIndex()).thenReturn(2);
@@ -161,7 +165,10 @@ public class TestInserter {
         inserter.insertJob(shipmentToInsert, iData, route);
 
         assertEquals(4, route.getTourActivities().getActivities().size());
-        assertEquals(route.getTourActivities().getActivities().get(2).getLocation().getId(), shipmentToInsert.getPickupLocation().getId());
+        assertEquals(
+                route.getTourActivities().getActivities().get(2).getLocation().getId(),
+                shipmentToInsert.getPickupLocations().stream().findFirst().get().getLocation().getId()
+        );
         assertEquals(route.getTourActivities().getActivities().get(3).getLocation().getId(), shipmentToInsert.getDeliveryLocation().getId());
         assertEquals(route.getEnd().getLocation().getId(), vehicle.getEndLocation().getId());
     }
@@ -182,12 +189,19 @@ public class TestInserter {
         when(vehicle.isReturnToDepot()).thenReturn(false);
         when(vehicle.getId()).thenReturn("vehId");
 
-        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
+        List<PickupLocation> pickupLocations = new ArrayList<>();
+        pickupLocations.add(mock(PickupLocation.class));
+        when(shipment.getPickupLocations()).thenReturn(pickupLocations);
         when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end
-        Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setDeliveryLocation(Location.newInstance("delLoc")).setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).build();
+        Shipment shipmentToInsert =
+                Shipment.Builder
+                        .newInstance("s")
+                        .setDeliveryLocation(Location.newInstance("delLoc"))
+                        .setPickupLocation( PickupLocation.newInstance(Location.Builder.newInstance().setId("pickLoc").build()))
+                        .build();
         InsertionData iData = mock(InsertionData.class);
         when(iData.getPickupInsertionIndex()).thenReturn(2);
         when(iData.getDeliveryInsertionIndex()).thenReturn(2);
@@ -199,7 +213,10 @@ public class TestInserter {
         inserter.insertJob(shipmentToInsert, iData, route);
 
         assertEquals(4, route.getTourActivities().getActivities().size());
-        assertEquals(route.getTourActivities().getActivities().get(2).getLocation().getId(), shipmentToInsert.getPickupLocation().getId());
+        assertEquals(
+                route.getTourActivities().getActivities().get(2).getLocation().getId(),
+                shipmentToInsert.getPickupLocations().stream().findFirst().get().getLocation().getId()
+        );
         assertEquals(route.getTourActivities().getActivities().get(3).getLocation().getId(), shipmentToInsert.getDeliveryLocation().getId());
         assertEquals(route.getEnd().getLocation().getId(), shipmentToInsert.getDeliveryLocation().getId());
     }
@@ -212,12 +229,18 @@ public class TestInserter {
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setStartLocation(Location.newInstance("vehLoc")).setType(mock(VehicleType.class)).build();
         Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setStartLocation(Location.newInstance("newVehLoc")).setType(mock(VehicleType.class)).build();
 
-        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
+        List<PickupLocation> pickupLocations = new ArrayList<>();
+        pickupLocations.add(mock(PickupLocation.class));
+        when(shipment.getPickupLocations()).thenReturn(pickupLocations);
         when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end
-        Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).build();
+        Shipment shipmentToInsert =
+                Shipment.Builder
+                        .newInstance("s")
+                        .setPickupLocation(PickupLocation.newInstance(Location.Builder.newInstance().setId("pickLoc").build()))
+                        .setDeliveryLocation(Location.newInstance("delLoc")).build();
 
         InsertionData iData = mock(InsertionData.class);
         when(iData.getPickupInsertionIndex()).thenReturn(2);
@@ -240,12 +263,18 @@ public class TestInserter {
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setStartLocation(Location.newInstance("vehLoc")).setType(mock(VehicleType.class)).build();
         Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setStartLocation(Location.newInstance("newVehLoc")).setType(mock(VehicleType.class)).build();
 
-        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
+        List<PickupLocation> pickupLocations = new ArrayList<>();
+        pickupLocations.add(mock(PickupLocation.class));
+        when(shipment.getPickupLocations()).thenReturn(pickupLocations);
         when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end
-        Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).build();
+        Shipment shipmentToInsert =
+                Shipment.Builder
+                        .newInstance("s")
+                        .setPickupLocation( PickupLocation.newInstance(Location.Builder.newInstance().setId("pickLoc").build()))
+                        .setDeliveryLocation(Location.newInstance("delLoc")).build();
 
         InsertionData iData = mock(InsertionData.class);
         when(iData.getPickupInsertionIndex()).thenReturn(2);
@@ -269,12 +298,18 @@ public class TestInserter {
         Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setId("vehLoc").build()).setType(mock(VehicleType.class)).build();
         Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setId("newVehLoc").build()).setType(mock(VehicleType.class)).build();
 
-        when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
+        List<PickupLocation> pickupLocations = new ArrayList<>();
+        pickupLocations.add(mock(PickupLocation.class));
+        when(shipment.getPickupLocations()).thenReturn(pickupLocations);
         when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle, mock(Driver.class)).addPickup(shipment).addDelivery(shipment).build();
         //start - pick(shipment) - del(shipment) - end
-        Shipment shipmentToInsert = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).build();
+        Shipment shipmentToInsert =
+                Shipment.Builder
+                        .newInstance("s")
+                        .setPickupLocation(PickupLocation.newInstance(Location.Builder.newInstance().setId("pickLoc").build()))
+                        .setDeliveryLocation(Location.newInstance("delLoc")).build();
 
         InsertionData iData = mock(InsertionData.class);
         when(iData.getPickupInsertionIndex()).thenReturn(0);

@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.algorithm.ruin.distance;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.CrowFlyCosts;
 import com.graphhopper.jsprit.core.util.Locations;
@@ -52,13 +53,33 @@ class AverageJobDistanceTest {
     @Test
     @DisplayName("Distance Of Two Equal Shipments Should Be Smaller Than Any Other Distance")
     void distanceOfTwoEqualShipmentsShouldBeSmallerThanAnyOtherDistance() {
-        Shipment s1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
-        Shipment s2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
+        Shipment s1 =
+                Shipment.Builder
+                        .newInstance("s1")
+                        .addSizeDimension(0, 1)
+                        .setPickupLocation(PickupLocation.newInstance(Location.Builder.newInstance().setId("0,0").build()))
+                        .setDeliveryLocation(Location.newInstance("10,10")).build();
+        Shipment s2 =
+                Shipment.Builder
+                        .newInstance("s2")
+                        .addSizeDimension(0, 1)
+                        .setPickupLocation( PickupLocation.newInstance(Location.Builder.newInstance().setId("0,0").build()))
+                        .setDeliveryLocation(Location.newInstance("10,10")).build();
         double dist = new AvgServiceAndShipmentDistance(routingCosts).getDistance(s1, s2);
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                Shipment other1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance(i + "," + j)).build();
-                Shipment other2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("10,10")).build();
+                Shipment other1 =
+                        Shipment.Builder
+                                .newInstance("s1")
+                                .addSizeDimension(0, 1)
+                                .setPickupLocation( PickupLocation.newInstance(Location.Builder.newInstance().setId("0,0").build()))
+                                .setDeliveryLocation(Location.newInstance(i + "," + j)).build();
+                Shipment other2 =
+                        Shipment.Builder
+                                .newInstance("s2")
+                                .addSizeDimension(0, 1)
+                                .setPickupLocation( PickupLocation.newInstance(Location.Builder.newInstance().setId("0,0").build()))
+                                .setDeliveryLocation(Location.newInstance("10,10")).build();
                 double dist2 = new AvgServiceAndShipmentDistance(routingCosts).getDistance(other1, other2);
                 assertTrue(dist <= dist2 + dist2 * 0.001);
             }

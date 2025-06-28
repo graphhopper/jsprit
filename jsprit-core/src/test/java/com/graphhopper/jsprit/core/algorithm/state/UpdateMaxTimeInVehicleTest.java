@@ -24,6 +24,7 @@ import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -74,7 +75,12 @@ class UpdateMaxTimeInVehicleTest {
         Pickup service3 = Pickup.Builder.newInstance("s3").setLocation(Location.newInstance(0, 30)).build();
         Pickup service4 = Pickup.Builder.newInstance("s4").setLocation(Location.newInstance(0, 40)).build();
         Delivery d1 = Delivery.Builder.newInstance("d1").setLocation(Location.newInstance(10, 0)).build();
-        Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.newInstance(20, 0)).setDeliveryLocation(Location.newInstance(40, 0)).setMaxTimeInVehicle(20d).build();
+        Shipment shipment =
+                Shipment.Builder
+                        .newInstance("shipment")
+                        .setPickupLocation(PickupLocation.Builder.newInstance().setLocation(Location.newInstance(20, 0)).build())
+                        .setDeliveryLocation(Location.newInstance(40, 0))
+                        .setMaxTimeInVehicle(20d).build();
         Delivery d2 = Delivery.Builder.newInstance("d2").setLocation(Location.newInstance(30, 0)).setServiceTime(10).build();
         vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v).addVehicle(vehicle).addVehicle(vehicle2).addJob(service).addJob(service2).addJob(service3).addJob(service4).addJob(d1).addJob(shipment).addJob(d2).build();
         route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(service).addService(service2).addService(service3).addService(service4).build();
