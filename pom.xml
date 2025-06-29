@@ -20,15 +20,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.graphhopper</groupId>
-    <artifactId>jsprit</artifactId>
-    <version>1.9-SNAPSHOT</version>
+    <groupId>com.fleetpanda</groupId>
+    <artifactId>jsprit-fleetpanda</artifactId>
+    <version>1.9.0-fleetpanda</version>
 
     <packaging>pom</packaging>
 
-    <name>jsprit</name>
+    <name>jsprit from fleetpanda</name>
     <description>A toolkit to solve vehicle routing problems.</description>
-    <url>https://github.com/graphhopper/jsprit</url>
+    <url>https://github.com/markd2lp/jsprit</url>
     <inceptionYear>2013</inceptionYear>
 
     <licenses>
@@ -40,15 +40,16 @@
 
     <developers>
         <developer>
-            <name>Stefan Schroeder</name>
-            <email>my.name@graphhopper.com</email>
+            <id>markd2lp</id>
+            <name>Marcos Oliveira</name>
+            <email>marcos@fleetpanda.com</email>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:graphhopper/jsprit.git</connection>
-        <developerConnection>scm:git:https://github.com/graphhopper/jsprit.git</developerConnection>
-        <url>http://github.com/graphhopper/jsprit/tree/master</url>
+        <connection>scm:git:git@github.com:markd2lp/jsprit.git</connection>
+        <developerConnection>scm:git:https://github.com/markd2lp/jsprit.git</developerConnection>
+        <url>http://github.com/markd2lp/jsprit/tree/master</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -163,6 +164,20 @@
                 <version>2.6</version>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                    <id>attach-sources</id>
+                    <goals>
+                        <goal>jar</goal>
+                    </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
 
 
@@ -205,7 +220,7 @@
         <repository>
             <id>github</id>
             <name>GitHub GraphHopper Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/graphhopper/jsprit</url>
+            <url>https://maven.pkg.github.com/markd2lp/jsprit</url>
         </repository>
     </distributionManagement>
 
