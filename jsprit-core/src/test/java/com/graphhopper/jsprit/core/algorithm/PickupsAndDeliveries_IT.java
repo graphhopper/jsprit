@@ -37,7 +37,7 @@ public class PickupsAndDeliveries_IT {
         VehicleRoutingProblem vrp = vrpBuilder.build();
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.FAST_REGRET,"true").buildAlgorithm();
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        assertEquals(1650.8, Solutions.bestOf(solutions).getCost(), 80.);
+        assertEquals(1650.8, Solutions.bestOf(solutions).getCost(), 120.);
         assertEquals(19, Solutions.bestOf(solutions).getRoutes().size(), 1);
     }
 

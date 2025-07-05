@@ -28,6 +28,7 @@ import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.MaxTimeInVehicleConstraint;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.Solutions;
@@ -41,10 +42,12 @@ public class MaxTimeInVehicle_IT {
     @Test
     public void test(){
 
-        Shipment s1 = Shipment.Builder.newInstance("s1").setPickupLocation(Location.newInstance(0,0)).setDeliveryLocation(Location.newInstance(100,0)).setDeliveryServiceTime(10)
+        PickupLocation pl1 = PickupLocation.newInstance(Location.newInstance(0,0));
+        Shipment s1 = Shipment.Builder.newInstance("s1").setPickupLocation(pl1).setDeliveryLocation(Location.newInstance(100,0)).setDeliveryServiceTime(10)
             .setMaxTimeInVehicle(100d)
             .build();
-        Shipment s2 = Shipment.Builder.newInstance("s2").setPickupLocation(Location.newInstance(0,0)).setDeliveryLocation(Location.newInstance(100,0)).setDeliveryServiceTime(10)
+        PickupLocation pl2 = PickupLocation.newInstance(Location.newInstance(0,0));
+        Shipment s2 = Shipment.Builder.newInstance("s2").setPickupLocation(pl2).setDeliveryLocation(Location.newInstance(100,0)).setDeliveryServiceTime(10)
             .setMaxTimeInVehicle(100d)
             .build();
 

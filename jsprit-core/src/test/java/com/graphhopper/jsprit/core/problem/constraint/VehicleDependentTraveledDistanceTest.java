@@ -30,6 +30,7 @@ import com.graphhopper.jsprit.core.problem.misc.ActivityContext;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -81,7 +82,7 @@ class VehicleDependentTraveledDistanceTest {
         d1 = Delivery.Builder.newInstance("d1").setLocation(Location.newInstance(10, 10)).build();
         d2 = Delivery.Builder.newInstance("d2").setLocation(Location.newInstance(20, 15)).build();
         pickup = Pickup.Builder.newInstance("pickup").setLocation(Location.newInstance(50, 50)).build();
-        s1 = Shipment.Builder.newInstance("s1").setPickupLocation(Location.newInstance(35, 30)).setDeliveryLocation(Location.newInstance(20, 25)).build();
+        s1 = Shipment.Builder.newInstance("s1").setPickupLocation(PickupLocation.newInstance(Location.newInstance(35, 30))).setDeliveryLocation(Location.newInstance(20, 25)).build();
         newDelivery = Delivery.Builder.newInstance("new").setLocation(Location.newInstance(-10, 10)).build();
         vrp = VehicleRoutingProblem.Builder.newInstance().setRoutingCost(new ManhattanCosts()).addVehicle(vehicle).addVehicle(vehicle2).addJob(d1).addJob(d2).addJob(s1).addJob(pickup).addJob(newDelivery).build();
         route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addDelivery(d1).addDelivery(d2).addPickup(s1).addPickup(pickup).addDelivery(s1).build();
@@ -229,7 +230,7 @@ vehicle2 (max distance): 180.0
     @Test
     @DisplayName("When Adding Deliver Shipment _ constraint Should Work")
     void whenAddingDeliverShipment_constraintShouldWork() {
-        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance(0, 3)).setDeliveryLocation(Location.newInstance(4, 0)).build();
+        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(PickupLocation.newInstance(Location.newInstance(0, 3))).setDeliveryLocation(Location.newInstance(4, 0)).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
         VehicleRoute route = VehicleRoute.emptyRoute();
@@ -252,7 +253,7 @@ vehicle2 (max distance): 180.0
     @Test
     @DisplayName("When Adding Deliver Shipment With Veh Diff Start End Locs _ constraint Should Work")
     void whenAddingDeliverShipmentWithVehDiffStartEndLocs_constraintShouldWork() {
-        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.newInstance(0, 1)).setDeliveryLocation(Location.newInstance(4, 1)).build();
+        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(PickupLocation.newInstance(Location.newInstance(0, 1))).setDeliveryLocation(Location.newInstance(4, 1)).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).setEndLocation(Location.newInstance(0, 4)).build();
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
         VehicleRoute route = VehicleRoute.emptyRoute();

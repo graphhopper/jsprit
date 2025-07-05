@@ -22,6 +22,8 @@ import com.graphhopper.jsprit.core.problem.HasIndex;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Job;
 
+import java.util.Collection;
+
 /**
  * Basic interface for tour-activities.
  * <p>
@@ -34,6 +36,8 @@ public interface TourActivity extends HasIndex {
     void setTheoreticalEarliestOperationStartTime(double earliest);
 
     void setTheoreticalLatestOperationStartTime(double latest);
+
+    void setLocation(Location location);
 
     /**
      * Basic interface of job-activies.
@@ -66,6 +70,11 @@ public interface TourActivity extends HasIndex {
      * @return location
      */
     Location getLocation();
+
+
+    Boolean isMultipleLocation();
+
+    Collection<PickupLocation> getPickupLocations();
 
     /**
      * Returns the theoretical earliest operation start time, which is the time that is just allowed

@@ -21,6 +21,8 @@ import com.graphhopper.jsprit.core.problem.AbstractJob;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocationsImpl;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindowsImpl;
 
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -72,7 +75,7 @@ public class Shipment extends AbstractJob {
 
         private String name = "no-name";
 
-        private Location pickupLocation_;
+        protected PickupLocationsImpl pickupLocations;
 
         private Location deliveryLocation_;
 
@@ -80,9 +83,7 @@ public class Shipment extends AbstractJob {
 
         private boolean deliveryTimeWindowAdded = false;
 
-        private boolean pickupTimeWindowAdded = false;
-
-        private TimeWindowsImpl pickupTimeWindows;
+        private boolean pickupLocationAdded = false;
 
         private int priority = 2;
 
@@ -107,8 +108,8 @@ public class Shipment extends AbstractJob {
         Builder(String id) {
             if (id == null) throw new IllegalArgumentException("id must not be null");
             this.id = id;
-            pickupTimeWindows = new TimeWindowsImpl();
-            pickupTimeWindows.add(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
+            //pickupTimeWindows = new TimeWindowsImpl();
+            //pickupTimeWindows.add(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
             deliveryTimeWindows = new TimeWindowsImpl();
             deliveryTimeWindows.add(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
         }
@@ -132,16 +133,17 @@ public class Shipment extends AbstractJob {
         }
 
         /**
-         * Sets pickup location.
+         * Sets pickup locations.
          *
          * @param pickupLocation
          *            pickup location
          * @return builder
          */
-        public Builder setPickupLocation(Location pickupLocation) {
-            this.pickupLocation_ = pickupLocation;
+        public Builder setPickupLocations(PickupLocationsImpl pickupLocation) {
+            this.pickupLocations = pickupLocation;
             return this;
         }
+
 
         /**
          * Sets pickupServiceTime.
@@ -159,20 +161,19 @@ public class Shipment extends AbstractJob {
             return this;
         }
 
+
         /**
-         * Sets the timeWindow for the pickup, i.e. the time-period in which a pickup operation is
-         * allowed to START.
+         * Sets the pickupLocation for the pickup
          * <p>
-         * <p>By default timeWindow is [0.0, Double.MAX_VALUE}
          *
-         * @param timeWindow the time window within the pickup operation/activity can START
+         * @param pickupLocation the pickupLocation of pickup
          * @return builder
-         * @throws IllegalArgumentException if timeWindow is null
+         * @throws IllegalArgumentException if pickupLocation is null
          */
-        public Builder setPickupTimeWindow(TimeWindow timeWindow) {
-            if (timeWindow == null) throw new IllegalArgumentException("The delivery time window must not be null.");
-            this.pickupTimeWindows = new TimeWindowsImpl();
-            this.pickupTimeWindows.add(timeWindow);
+        public Builder setPickupLocation(PickupLocation pickupLocation) {
+            if (pickupLocation == null) throw new IllegalArgumentException("The pickup location must not be null.");
+            this.pickupLocations = new PickupLocationsImpl();
+            this.pickupLocations.add(pickupLocation);
             return this;
         }
 
@@ -253,11 +254,13 @@ public class Shipment extends AbstractJob {
          *                               is set
          */
         public Shipment build() {
-            if (pickupLocation_ == null) throw new IllegalArgumentException("The pickup location is missing.");
+            if (pickupLocations == null) throw new IllegalArgumentException("The pickup locations is missing.");
             if (deliveryLocation_ == null) throw new IllegalArgumentException("The delivery location is missing.");
             capacity = capacityBuilder.build();
             skills = skillBuilder.build();
-            pickup = new Activity.Builder(pickupLocation_, Activity.Type.PICKUP).setServiceTime(pickupServiceTime).setTimeWindows(pickupTimeWindows.getTimeWindows()).build();
+            pickup =
+                    new Activity.Builder(pickupLocations, Activity.Type.PICKUP)
+                            .setServiceTime(pickupServiceTime).build();
             delivery = new Activity.Builder(deliveryLocation_, Activity.Type.DELIVERY).setServiceTime(deliveryServiceTime).setTimeWindows(deliveryTimeWindows.getTimeWindows()).build();
             return new Shipment(this);
         }
@@ -303,22 +306,22 @@ public class Shipment extends AbstractJob {
             return this;
         }
 
-        public Builder addPickupTimeWindow(TimeWindow timeWindow) {
-            if (timeWindow == null) throw new IllegalArgumentException("The time window must not be null.");
-            if(!pickupTimeWindowAdded){
-                pickupTimeWindows = new TimeWindowsImpl();
-                pickupTimeWindowAdded = true;
+        public Builder addPickupLocation(PickupLocation pickupLocation) {
+            if (pickupLocation == null) throw new IllegalArgumentException("The pickup location must not be null.");
+            if(!pickupLocationAdded){
+                pickupLocations = new PickupLocationsImpl();
+                pickupLocationAdded = true;
             }
-            pickupTimeWindows.add(timeWindow);
+            pickupLocations.add(pickupLocation);
             return this;
         }
 
-        public Builder addPickupTimeWindow(double earliest, double latest) {
-            return addPickupTimeWindow(TimeWindow.newInstance(earliest, latest));
+        public Builder addPickupLocation(Location location) {
+            return addPickupLocation(PickupLocation.newInstance(location));
         }
 
-        public Builder addAllPickupTimeWindows(Collection<TimeWindow> timeWindow) {
-            for (TimeWindow tw : timeWindow) addPickupTimeWindow(tw);
+        public Builder addAllPickupLocations(Collection<PickupLocation> pickupLocation) {
+            for (PickupLocation pl : pickupLocation) addPickupLocation(pl);
             return this;
         }
 
@@ -363,13 +366,11 @@ public class Shipment extends AbstractJob {
 
     private final String name;
 
-    private final Location pickupLocation_;
+    private final PickupLocationsImpl pickupLocations;
 
     private final Location deliveryLocation_;
 
     private final TimeWindowsImpl deliveryTimeWindows;
-
-    private final TimeWindowsImpl pickupTimeWindows;
 
     private final int priority;
 
@@ -385,10 +386,9 @@ public class Shipment extends AbstractJob {
         this.capacity = builder.capacity;
         this.skills = builder.skills;
         this.name = builder.name;
-        this.pickupLocation_ = builder.pickupLocation_;
+        this.pickupLocations = builder.pickupLocations;
         this.deliveryLocation_ = builder.deliveryLocation_;
         this.deliveryTimeWindows = builder.deliveryTimeWindows;
-        this.pickupTimeWindows = builder.pickupTimeWindows;
         this.priority = builder.priority;
         this.maxTimeInVehicle = builder.maxTimeInVehicle;
         activities.add(builder.pickup);
@@ -401,8 +401,14 @@ public class Shipment extends AbstractJob {
         return id;
     }
 
-    public Location getPickupLocation() {
-        return pickupLocation_;
+    public Collection<PickupLocation> getPickupLocations() {
+        return pickupLocations.getPickupLocations();
+    }
+
+    public void setPickupLocation(Location location)
+    {
+        pickupLocations.clear();
+        pickupLocations.add(PickupLocation.Builder.newInstance().setLocation(location).build());
     }
 
     /**
@@ -442,18 +448,13 @@ public class Shipment extends AbstractJob {
         return deliveryTimeWindows.getTimeWindows();
     }
 
-    /**
-     * Returns the time-window of pickup.
-     *
-     * @return time-window of pickup
-     */
-    public TimeWindow getPickupTimeWindow() {
-        return pickupTimeWindows.getTimeWindows().iterator().next();
-    }
 
+    /**
     public Collection<TimeWindow> getPickupTimeWindows() {
-        return pickupTimeWindows.getTimeWindows();
-    }
+        return pickupLocations.getPickupLocations().stream().flatMap(pickupLocation -> {
+            return pickupLocation.getPickupTimeWindows().stream();
+        }).collect(Collectors.toList());
+    }*/
 
 
     /**
@@ -463,10 +464,10 @@ public class Shipment extends AbstractJob {
      */
     @Override
     public String toString() {
-        return "[id=" + id + "][name=" + name + "][pickupLocation=" + pickupLocation_
+        return "[id=" + id + "][name=" + name + "][pickupLocations=" + pickupLocations
                 + "][deliveryLocation=" + deliveryLocation_ + "][capacity=" + capacity
                 + "][pickupServiceTime=" + pickupServiceTime + "][deliveryServiceTime="
-                + deliveryServiceTime + "][pickupTimeWindows=" + pickupTimeWindows
+                + deliveryServiceTime + "][pickupTimeWindows=" + getPickupLocations().stream().findFirst().get().getPickupTimeWindows()
                 + "][deliveryTimeWindows=" + deliveryTimeWindows + "]";
     }
 

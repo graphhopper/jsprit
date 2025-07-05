@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.algorithm.state;
 import com.graphhopper.jsprit.core.problem.*;
 import com.graphhopper.jsprit.core.problem.job.*;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,8 +66,17 @@ class LoadStateTest {
         pdProblemBuilder.addJob(pickup).addJob(delivery);
         final VehicleRoutingProblem pdProblem = pdProblemBuilder.build();
         final VehicleRoutingProblem.Builder shipmentProblemBuilder = VehicleRoutingProblem.Builder.newInstance();
-        Shipment shipment1 = Shipment.Builder.newInstance("s1").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
-        Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 5).setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
+        Shipment shipment1 =
+                Shipment.Builder
+                        .newInstance("s1")
+                        .addSizeDimension(0, 10)
+                        .setPickupLocation(PickupLocation.Builder.newInstance().setLocation(Location.Builder.newInstance().setId("pick").build()).build())
+                        .setDeliveryLocation(Location.newInstance("del")).build();
+        Shipment shipment2 =
+                Shipment.Builder
+                        .newInstance("s2").addSizeDimension(0, 5)
+                        .setPickupLocation(PickupLocation.Builder.newInstance().setLocation(Location.Builder.newInstance().setId("pick").build()).build())
+                        .setDeliveryLocation(Location.newInstance("del")).build();
         shipmentProblemBuilder.addJob(shipment1).addJob(shipment2).build();
         final VehicleRoutingProblem shipmentProblem = shipmentProblemBuilder.build();
         VehicleRoute.Builder serviceRouteBuilder = VehicleRoute.Builder.newInstance(vehicle);

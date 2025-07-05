@@ -23,6 +23,8 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocations;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import org.junit.jupiter.api.DisplayName;
@@ -97,7 +99,11 @@ class RuinWorstTest {
         Service s1 = Service.Builder.newInstance("s1").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(1, 1)).build()).build();
         Service s2 = Service.Builder.newInstance("s2").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build()).build();
         Service s3 = Service.Builder.newInstance("s3").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10)).build()).build();
-        Shipment shipment = Shipment.Builder.newInstance("ship1").setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(2, 2)).build()).setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(9, 9)).build()).build();
+        Shipment shipment =
+                Shipment.Builder
+                        .newInstance("ship1")
+                        .setPickupLocation(PickupLocation.newInstance(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(2, 2)).build()))
+                        .setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(9, 9)).build()).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addJob(s1).addJob(s2).addJob(s3).addVehicle(v).build();
         RuinWorst worst = new RuinWorst(vrp, 1);
@@ -120,7 +126,11 @@ class RuinWorstTest {
         Service s1 = Service.Builder.newInstance("s1").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(1, 1)).build()).build();
         Service s2 = Service.Builder.newInstance("s2").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build()).build();
         Service s3 = Service.Builder.newInstance("s3").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10)).build()).build();
-        Shipment shipment = Shipment.Builder.newInstance("ship1").setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build()).setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10.1)).build()).build();
+        Shipment shipment =
+                Shipment.Builder
+                        .newInstance("ship1")
+                        .setPickupLocation(PickupLocation.newInstance(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build()))
+                        .setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10.1)).build()).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addJob(s1).addJob(s2).addJob(s3).addVehicle(v).addVehicle(v2).build();
@@ -145,7 +155,11 @@ class RuinWorstTest {
         Service s1 = Service.Builder.newInstance("s1").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(1, 1)).build()).build();
         Service s2 = Service.Builder.newInstance("s2").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build()).build();
         Service s3 = Service.Builder.newInstance("s3").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10)).build()).build();
-        Shipment shipment = Shipment.Builder.newInstance("ship1").setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build()).setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10.1)).build()).build();
+        Shipment shipment =
+                Shipment.Builder
+                        .newInstance("ship1")
+                        .setPickupLocation( PickupLocation.newInstance(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build()))
+                        .setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10.1)).build()).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addJob(s1).addJob(s2).addJob(s3).addVehicle(v).addVehicle(v2).build();

@@ -311,7 +311,10 @@ public class AlgorithmEventsRecorder implements RuinListener, IterationStartsLis
         } else if (job.getJobType().isShipment()) {
             Shipment shipment = (Shipment) job;
             String fromNodeId = getFromNodeId(shipment);
-            addNode(fromNodeId, shipment.getPickupLocation().getCoordinate());
+            shipment.getPickupLocations().stream().forEach(pickupLocation -> {
+                addNode(fromNodeId, pickupLocation.getLocation().getCoordinate());
+            });
+            //addNode(fromNodeId, shipment.getPickupLocation().getCoordinate());
             String toNodeId = getToNodeId(shipment);
             addNode(toNodeId, shipment.getDeliveryLocation().getCoordinate());
             markShipment(shipment);

@@ -33,7 +33,16 @@ class DeliverShipmentTest {
 
     @BeforeEach
     void doBefore() {
-        Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pickupLoc").build()).setDeliveryLocation(Location.newInstance("deliveryLoc")).setPickupTimeWindow(TimeWindow.newInstance(1., 2.)).setDeliveryTimeWindow(TimeWindow.newInstance(3., 4.)).addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
+        Shipment shipment =
+                Shipment.Builder
+                        .newInstance("shipment")
+                        .setPickupLocation(
+                                PickupLocation.Builder.newInstance()
+                                        .setLocation(Location.Builder.newInstance().setId("pickupLoc").build())
+                                        .addTimeWindow(TimeWindow.newInstance(1., 2.)).build()
+                        ).setDeliveryLocation(Location.newInstance("deliveryLoc"))
+                        .setDeliveryTimeWindow(TimeWindow.newInstance(3., 4.))
+                        .addSizeDimension(0, 10).addSizeDimension(1, 100).addSizeDimension(2, 1000).build();
         deliver = new DeliverShipment(shipment);
         deliver.setTheoreticalEarliestOperationStartTime(shipment.getDeliveryTimeWindow().getStart());
         deliver.setTheoreticalLatestOperationStartTime(shipment.getDeliveryTimeWindow().getEnd());
@@ -95,7 +104,7 @@ class DeliverShipmentTest {
     @Test
     @DisplayName("When Getting Capacity _ it Should Return It Correctly")
     void whenGettingCapacity_itShouldReturnItCorrectly() {
-        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pickLoc").build()).setDeliveryLocation(Location.newInstance("delLoc")).addSizeDimension(0, 10).addSizeDimension(1, 100).build();
+        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(PickupLocation.newInstance(Location.Builder.newInstance().setId("pickLoc").build())).setDeliveryLocation(Location.newInstance("delLoc")).addSizeDimension(0, 10).addSizeDimension(1, 100).build();
         PickupShipment pick = new PickupShipment(shipment);
         assertEquals(10, pick.getSize().get(0));
         assertEquals(100, pick.getSize().get(1));

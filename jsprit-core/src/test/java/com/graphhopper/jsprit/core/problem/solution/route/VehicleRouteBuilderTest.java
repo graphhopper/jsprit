@@ -22,12 +22,19 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocations;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocationsImpl;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -45,6 +52,8 @@ class VehicleRouteBuilderTest {
 
     private TimeWindow defaultTimeWindow;
 
+    private List<PickupLocation> defaultPickupLocation;
+
     @BeforeEach
     void setUp() {
         Vehicle vehicle = mock(Vehicle.class);
@@ -52,13 +61,15 @@ class VehicleRouteBuilderTest {
         builder = VehicleRoute.Builder.newInstance(vehicle, driver);
         emptyCapacity = Capacity.Builder.newInstance().build();
         defaultTimeWindow = TimeWindow.newInstance(0., 10.);
+        defaultPickupLocation = new ArrayList<>();
+        defaultPickupLocation.add(PickupLocation.newInstance(Location.newInstance(0, 0)));
     }
 
     private Shipment createMockShipment(String deliveryLocationId) {
         Shipment shipment = mock(Shipment.class);
         when(shipment.getJobType()).thenReturn(Job.Type.SHIPMENT);
         when(shipment.getSize()).thenReturn(emptyCapacity);
-        when(shipment.getPickupTimeWindow()).thenReturn(defaultTimeWindow);
+        when(shipment.getPickupLocations()).thenReturn(defaultPickupLocation);
         when(shipment.getDeliveryTimeWindow()).thenReturn(defaultTimeWindow);
         if (deliveryLocationId != null) {
             when(shipment.getDeliveryLocation()).thenReturn(loc(deliveryLocationId));

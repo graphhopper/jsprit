@@ -24,6 +24,7 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -48,7 +49,11 @@ class OpenRoutesTest {
     void whenDealingWithOpenRouteAndShipments_insertionShouldNotRequireRouteToBeClosed() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(11.).setType(type).setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
-        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(TestUtils.loc(Coordinate.newInstance(5, 0))).setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(10, 0))).build();
+        Shipment shipment =
+                Shipment.Builder
+                        .newInstance("s")
+                        .setPickupLocation(PickupLocation.Builder.newInstance().setLocation(TestUtils.loc(Coordinate.newInstance(5, 0))).build())
+                        .setDeliveryLocation(TestUtils.loc(Coordinate.newInstance(10, 0))).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
         VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
         vra.setMaxIterations(10);
@@ -84,7 +89,12 @@ class OpenRoutesTest {
     void whenDealingWithOpenRouteAndShipments_algorithmShouldCalculateCorrectCosts() {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(20.).setType(type).setReturnToDepot(false).setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
-        Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(5, 0)).build()).setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).build()).build();
+        Shipment shipment =
+                Shipment.Builder
+                        .newInstance("s")
+                        .setPickupLocation( PickupLocation.Builder.newInstance().setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(5, 0)).build()).build())
+                        .setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 0)).build())
+                        .build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(shipment).addVehicle(vehicle).build();
         VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
         vra.setMaxIterations(10);

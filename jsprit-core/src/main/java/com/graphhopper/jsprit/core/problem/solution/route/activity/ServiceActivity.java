@@ -22,6 +22,8 @@ import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Service;
 
+import java.util.Collection;
+
 public class ServiceActivity extends AbstractActivity implements TourActivity.JobActivity {
 
     public double arrTime;
@@ -135,6 +137,12 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     }
 
     @Override
+    public void setLocation(Location location) {
+
+    }
+
+
+    @Override
     public double getOperationTime() {
         return service.getServiceDuration();
     }
@@ -142,6 +150,16 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     @Override
     public Location getLocation() {
         return service.getLocation();
+    }
+
+    @Override
+    public Boolean isMultipleLocation() {
+        return false;
+    }
+
+    @Override
+    public Collection<PickupLocation> getPickupLocations() {
+        return null;
     }
 
 

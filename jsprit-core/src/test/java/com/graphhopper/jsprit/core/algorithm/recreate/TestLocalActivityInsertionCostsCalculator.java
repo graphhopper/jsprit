@@ -31,10 +31,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -129,7 +126,7 @@ public class TestLocalActivityInsertionCostsCalculator {
             .setEndLocation(Location.newInstance(20, 0))
             .build();
         Shipment s = Shipment.Builder.newInstance("p")
-            .setPickupLocation(Location.newInstance(10, 0))
+            .setPickupLocation(PickupLocation.newInstance(Location.newInstance(10, 0)))
             .setDeliveryLocation(Location.newInstance(10, 7.5))
             .build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()

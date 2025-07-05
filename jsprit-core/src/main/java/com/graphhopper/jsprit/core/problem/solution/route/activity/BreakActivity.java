@@ -23,6 +23,8 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.job.Break;
 import com.graphhopper.jsprit.core.problem.job.Service;
 
+import java.util.Collection;
+
 public class BreakActivity extends AbstractActivity implements TourActivity.JobActivity {
 
     public double arrTime;
@@ -112,6 +114,16 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
     @Override
     public Location getLocation() {
         return location;
+    }
+
+    @Override
+    public Boolean isMultipleLocation() {
+        return false;
+    }
+
+    @Override
+    public Collection<PickupLocation> getPickupLocations() {
+        return null;
     }
 
     public void setLocation(Location breakLocation) {

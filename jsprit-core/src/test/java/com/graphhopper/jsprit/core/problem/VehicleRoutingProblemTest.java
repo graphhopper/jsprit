@@ -24,6 +24,7 @@ import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.*;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupLocation;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -128,8 +129,18 @@ class VehicleRoutingProblemTest {
     @Test
     @DisplayName("When Shipments Are Added _ vrp Should Contain Them")
     void whenShipmentsAreAdded_vrpShouldContainThem() {
-        Shipment s = Shipment.Builder.newInstance("s").addSizeDimension(0, 10).setPickupLocation(Location.Builder.newInstance().setId("foofoo").build()).setDeliveryLocation(Location.newInstance("foo")).build();
-        Shipment s2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 100).setPickupLocation(Location.Builder.newInstance().setId("foofoo").build()).setDeliveryLocation(Location.newInstance("foo")).build();
+        Shipment s =
+                Shipment.Builder
+                        .newInstance("s")
+                        .addSizeDimension(0, 10)
+                        .setPickupLocation(PickupLocation.newInstance(Location.Builder.newInstance().setId("foofoo").build()))
+                        .setDeliveryLocation(Location.newInstance("foo")).build();
+        Shipment s2 =
+                Shipment.Builder
+                        .newInstance("s2")
+                        .addSizeDimension(0, 100)
+                        .setPickupLocation( PickupLocation.newInstance(Location.Builder.newInstance().setId("foofoo").build()))
+                        .setDeliveryLocation(Location.newInstance("foo")).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(s);
         vrpBuilder.addJob(s2);
@@ -464,7 +475,11 @@ class VehicleRoutingProblemTest {
     @DisplayName("When Adding Two Jobs _ they Should Have Proper Indeces")
     void whenAddingTwoJobs_theyShouldHaveProperIndeces() {
         Service service = Service.Builder.newInstance("myService").setLocation(Location.newInstance("loc")).build();
-        Shipment shipment = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
+        Shipment shipment =
+                Shipment.Builder
+                        .newInstance("shipment")
+                        .setPickupLocation( PickupLocation.newInstance(Location.Builder.newInstance().setId("pick").build()))
+                        .setDeliveryLocation(Location.newInstance("del")).build();
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
         vrpBuilder.addJob(service);
         vrpBuilder.addJob(shipment);
@@ -492,8 +507,16 @@ class VehicleRoutingProblemTest {
     @DisplayName("When Adding Two Shipments With The Same Id _ it Should Throw Exception")
     void whenAddingTwoShipmentsWithTheSameId_itShouldThrowException() {
         assertThrows(IllegalArgumentException.class, () -> {
-            Shipment shipment1 = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
-            Shipment shipment2 = Shipment.Builder.newInstance("shipment").setPickupLocation(Location.Builder.newInstance().setId("pick").build()).setDeliveryLocation(Location.newInstance("del")).build();
+            Shipment shipment1 =
+                    Shipment.Builder
+                            .newInstance("shipment")
+                            .setPickupLocation(PickupLocation.newInstance(Location.Builder.newInstance().setId("pick").build()))
+                            .setDeliveryLocation(Location.newInstance("del")).build();
+            Shipment shipment2 =
+                    Shipment.Builder
+                            .newInstance("shipment")
+                            .setPickupLocation( PickupLocation.newInstance(Location.Builder.newInstance().setId("pick").build()))
+                            .setDeliveryLocation(Location.newInstance("del")).build();
             VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
             vrpBuilder.addJob(shipment1);
             vrpBuilder.addJob(shipment2);
