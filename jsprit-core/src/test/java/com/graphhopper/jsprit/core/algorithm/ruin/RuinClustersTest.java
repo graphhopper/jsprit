@@ -25,6 +25,8 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -61,6 +63,6 @@ class RuinClustersTest {
         Random r = RandomNumberGeneration.newInstance();
         rc.setRandom(r);
         Collection<Job> ruined = rc.ruinRoutes(Arrays.asList(vr1, vr2));
-        assertEquals(5, ruined.size());
+        Assertions.assertEquals(5, ruined.size());
     }
 }

@@ -18,6 +18,8 @@
 package com.graphhopper.jsprit.core.util;
 
 import com.graphhopper.jsprit.core.problem.job.Job;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +43,7 @@ class RandomUtilsTest {
     void shouldReturnSingleJob() {
         Job job = mock(Job.class);
         Collection<Job> jobs = Arrays.asList(job);
-        assertEquals(job, RandomUtils.nextItem(jobs, RandomNumberGeneration.getRandom()));
+        Assertions.assertEquals(job, RandomUtils.nextItem(jobs, RandomNumberGeneration.getRandom()));
     }
 
     @Test
@@ -49,7 +51,7 @@ class RandomUtilsTest {
     void shouldReturnSingleJob_() {
         Job job = mock(Job.class);
         Collection<Job> jobs = Arrays.asList(job);
-        assertEquals(job, RandomUtils.nextJob(jobs, RandomNumberGeneration.getRandom()));
+        Assertions.assertEquals(job, RandomUtils.nextJob(jobs, RandomNumberGeneration.getRandom()));
     }
 
     @Test
@@ -59,6 +61,6 @@ class RandomUtilsTest {
         List<Job> jobs = Arrays.asList(mock(Job.class), mock(Job.class), job3);
         Random random = mock(Random.class);
         when(random.nextInt(jobs.size())).thenReturn(2);
-        assertEquals(job3, RandomUtils.nextJob(jobs, random));
+        Assertions.assertEquals(job3, RandomUtils.nextJob(jobs, random));
     }
 }

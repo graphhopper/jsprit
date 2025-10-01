@@ -27,6 +27,8 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,7 +75,7 @@ class StateManagerTest {
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = InternalStates.COSTS;
         stateManager.putTypedInternalRouteState(route, id, 10.);
-        assertEquals(10., stateManager.getRouteState(route, id, Double.class), 0.01);
+        Assertions.assertEquals(10., stateManager.getRouteState(route, id, Double.class), 0.01);
     }
 
     @Test
@@ -83,7 +85,7 @@ class StateManagerTest {
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = InternalStates.COSTS;
         Double costs = stateManager.getRouteState(route, id, Double.class);
-        assertTrue(costs == null);
+        Assertions.assertTrue(costs == null);
     }
 
     @Test
@@ -96,7 +98,7 @@ class StateManagerTest {
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = InternalStates.COSTS;
         stateManager.putTypedInternalRouteState(route, vehicle, id, 10.);
-        assertEquals(10., stateManager.getRouteState(route, vehicle, id, Double.class), 0.01);
+        Assertions.assertEquals(10., stateManager.getRouteState(route, vehicle, id, Double.class), 0.01);
     }
 
     @Test
@@ -109,7 +111,7 @@ class StateManagerTest {
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = InternalStates.COSTS;
         Double costs = stateManager.getRouteState(route, vehicle, id, Double.class);
-        assertTrue(costs == null);
+        Assertions.assertTrue(costs == null);
     }
 
     @Test
@@ -119,7 +121,7 @@ class StateManagerTest {
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = stateManager.createStateId("myState");
         stateManager.putRouteState(route, id, true);
-        assertTrue(stateManager.getRouteState(route, id, Boolean.class));
+        Assertions.assertTrue(stateManager.getRouteState(route, id, Boolean.class));
     }
 
     @Test
@@ -131,7 +133,7 @@ class StateManagerTest {
         int load = 3;
         stateManager.putRouteState(route, id, load);
         int getLoad = stateManager.getRouteState(route, id, Integer.class);
-        assertEquals(3, getLoad);
+        Assertions.assertEquals(3, getLoad);
     }
 
     @Test
@@ -143,7 +145,7 @@ class StateManagerTest {
         Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 500).build();
         stateManager.putRouteState(route, id, capacity);
         Capacity getCap = stateManager.getRouteState(route, id, Capacity.class);
-        assertEquals(500, getCap.get(0));
+        Assertions.assertEquals(500, getCap.get(0));
     }
 
     @Test
@@ -154,7 +156,7 @@ class StateManagerTest {
         StateManager stateManager = new StateManager(vrpMock);
         StateId id = stateManager.createStateId("myState");
         stateManager.putActivityState(activity, id, true);
-        assertTrue(stateManager.getActivityState(activity, id, Boolean.class));
+        Assertions.assertTrue(stateManager.getActivityState(activity, id, Boolean.class));
     }
 
     @Test
@@ -167,7 +169,7 @@ class StateManagerTest {
         int load = 3;
         stateManager.putActivityState(activity, id, load);
         int getLoad = stateManager.getActivityState(activity, id, Integer.class);
-        assertEquals(3, getLoad);
+        Assertions.assertEquals(3, getLoad);
     }
 
     @Test
@@ -180,7 +182,7 @@ class StateManagerTest {
         Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 500).build();
         stateManager.putActivityState(activity, id, capacity);
         Capacity getCap = stateManager.getActivityState(activity, id, Capacity.class);
-        assertEquals(500, getCap.get(0));
+        Assertions.assertEquals(500, getCap.get(0));
     }
 
     @Test
@@ -190,7 +192,7 @@ class StateManagerTest {
         StateId id = stateManager.createStateId("problemState");
         stateManager.putProblemState(id, Boolean.class, true);
         boolean problemState = stateManager.getProblemState(id, Boolean.class);
-        assertTrue(problemState);
+        Assertions.assertTrue(problemState);
     }
 
     @Test
@@ -222,7 +224,7 @@ class StateManagerTest {
     void whenCreatingNewState_itShouldHaveAnIndex() {
         StateManager stateManager = new StateManager(vrpMock);
         StateId stateId = stateManager.createStateId("foo-state");
-        assertEquals(21, stateId.getIndex());
+        Assertions.assertEquals(21, stateId.getIndex());
     }
 
     @Test
@@ -231,8 +233,8 @@ class StateManagerTest {
         StateManager stateManager = new StateManager(vrpMock);
         StateId fooState = stateManager.createStateId("foo-state");
         StateId foofooState = stateManager.createStateId("foo-foo-state");
-        assertEquals(21, fooState.getIndex());
-        assertEquals(22, foofooState.getIndex());
+        Assertions.assertEquals(21, fooState.getIndex());
+        Assertions.assertEquals(22, foofooState.getIndex());
     }
 
     @Test
@@ -241,8 +243,8 @@ class StateManagerTest {
         StateManager stateManager = new StateManager(vrpMock);
         StateId fooState = stateManager.createStateId("foo-state");
         StateId foofooState = stateManager.createStateId("foo-state");
-        assertEquals(21, fooState.getIndex());
-        assertEquals(21, foofooState.getIndex());
+        Assertions.assertEquals(21, fooState.getIndex());
+        Assertions.assertEquals(21, foofooState.getIndex());
     }
 
     @Test
@@ -257,7 +259,7 @@ class StateManagerTest {
         Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 500).build();
         stateManager.putRouteState(route, vehicle, id, capacity);
         Capacity getCap = stateManager.getRouteState(route, vehicle, id, Capacity.class);
-        assertEquals(500, getCap.get(0));
+        Assertions.assertEquals(500, getCap.get(0));
     }
 
     @Test
@@ -273,7 +275,7 @@ class StateManagerTest {
         when(act.getIndex()).thenReturn(1);
         stateManager.putActivityState(act, vehicle, id, capacity);
         Capacity getCap = stateManager.getActivityState(act, vehicle, id, Capacity.class);
-        assertEquals(500, getCap.get(0));
+        Assertions.assertEquals(500, getCap.get(0));
     }
 
     @Test
@@ -287,7 +289,7 @@ class StateManagerTest {
         StateId id = stateManager.createStateId("vehicleParam");
         double distanceParam = vehicle.getType().getVehicleCostParams().perDistanceUnit;
         stateManager.putRouteState(route, vehicle, id, distanceParam);
-        assertEquals(1., stateManager.getRouteState(route, vehicle, id, Double.class), 0.01);
+        Assertions.assertEquals(1., stateManager.getRouteState(route, vehicle, id, Double.class), 0.01);
     }
 
     @Test
@@ -305,8 +307,8 @@ class StateManagerTest {
         double distanceParam = vehicle.getType().getVehicleCostParams().perDistanceUnit;
         stateManager.putRouteState(route, vehicle, id, distanceParam);
         stateManager.putRouteState(route, vehicle2, id, vehicle2.getType().getVehicleCostParams().perDistanceUnit);
-        assertEquals(1., stateManager.getRouteState(route, vehicle, id, Double.class), 0.01);
-        assertEquals(4., stateManager.getRouteState(route, vehicle2, id, Double.class), 0.01);
+        Assertions.assertEquals(1., stateManager.getRouteState(route, vehicle, id, Double.class), 0.01);
+        Assertions.assertEquals(4., stateManager.getRouteState(route, vehicle2, id, Double.class), 0.01);
     }
 
     @Test
@@ -325,8 +327,8 @@ class StateManagerTest {
         double distanceParam = vehicle.getType().getVehicleCostParams().perDistanceUnit;
         stateManager.putActivityState(act, vehicle, id, distanceParam);
         stateManager.putActivityState(act, vehicle2, id, vehicle2.getType().getVehicleCostParams().perDistanceUnit);
-        assertEquals(1., stateManager.getActivityState(act, vehicle, id, Double.class), 0.01);
-        assertEquals(4., stateManager.getActivityState(act, vehicle2, id, Double.class), 0.01);
+        Assertions.assertEquals(1., stateManager.getActivityState(act, vehicle, id, Double.class), 0.01);
+        Assertions.assertEquals(4., stateManager.getActivityState(act, vehicle2, id, Double.class), 0.01);
     }
 
     @Test

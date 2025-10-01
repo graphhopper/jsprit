@@ -38,14 +38,15 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -68,7 +69,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
 
     private JobActivityFactory activityFactory;
 
-    @Before
+    @BeforeEach
     public void doBefore() {
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
 
@@ -144,7 +145,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
             }
         });
         InsertionData iData = routeInserter.getInsertionData(route, s4, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
-        assertEquals(0., iData.getInsertionCost(), 0.01);
+		Assertions.assertEquals(0., iData.getInsertionCost(), 0.01);
     }
 
     @Test
@@ -166,7 +167,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
             }
         });
         InsertionData iData = routeInserter.getInsertionData(route, s4, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
-        assertEquals(0, iData.getDeliveryInsertionIndex(), 0.01);
+		Assertions.assertEquals(0, iData.getDeliveryInsertionIndex(), 0.01);
     }
 
     @Test
@@ -191,8 +192,8 @@ public class TestRouteLevelServiceInsertionCostEstimator {
             }
         });
         InsertionData iData = routeInserter.getInsertionData(route, s4, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
-        assertEquals(0, iData.getDeliveryInsertionIndex(), 0.01);
-        assertEquals(30., iData.getInsertionCost(), 0.01);
+		Assertions.assertEquals(0, iData.getDeliveryInsertionIndex(), 0.01);
+		Assertions.assertEquals(30., iData.getInsertionCost(), 0.01);
     }
 
 
@@ -220,8 +221,8 @@ public class TestRouteLevelServiceInsertionCostEstimator {
             }
         });
         InsertionData iData = routeInserter.getInsertionData(emptyroute, s4, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
-        assertEquals(0, iData.getDeliveryInsertionIndex(), 0.01);
-        assertEquals(10., iData.getInsertionCost(), 0.01);
+		Assertions.assertEquals(0, iData.getDeliveryInsertionIndex(), 0.01);
+		Assertions.assertEquals(10., iData.getInsertionCost(), 0.01);
     }
 
     @Test
@@ -248,8 +249,8 @@ public class TestRouteLevelServiceInsertionCostEstimator {
             }
         });
         InsertionData iData = routeInserter.getInsertionData(emptyroute, s4, route.getVehicle(), route.getDepartureTime(), route.getDriver(), Double.MAX_VALUE);
-        assertEquals(0, iData.getDeliveryInsertionIndex(), 0.01);
-        assertEquals(10. + 2., iData.getInsertionCost(), 0.01);
+		Assertions.assertEquals(0, iData.getDeliveryInsertionIndex(), 0.01);
+		Assertions.assertEquals(10. + 2., iData.getInsertionCost(), 0.01);
     }
 
 }

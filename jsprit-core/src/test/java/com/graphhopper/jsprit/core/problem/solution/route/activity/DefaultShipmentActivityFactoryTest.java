@@ -25,6 +25,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Assertions;
+
 @DisplayName("Default Shipment Activity Factory Test")
 class DefaultShipmentActivityFactoryTest {
 
@@ -35,7 +37,7 @@ class DefaultShipmentActivityFactoryTest {
         Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
         TourActivity act = factory.createPickup(shipment);
         assertNotNull(act);
-        assertTrue(act instanceof PickupShipment);
+        Assertions.assertTrue(act instanceof PickupShipment);
     }
 
     @Test
@@ -45,6 +47,6 @@ class DefaultShipmentActivityFactoryTest {
         Shipment shipment = Shipment.Builder.newInstance("s").setPickupLocation(Location.Builder.newInstance().setId("pLoc").build()).setDeliveryLocation(Location.newInstance("dLoc")).build();
         TourActivity act = factory.createDelivery(shipment);
         assertNotNull(act);
-        assertTrue(act instanceof DeliverShipment);
+        Assertions.assertTrue(act instanceof DeliverShipment);
     }
 }

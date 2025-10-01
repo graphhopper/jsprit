@@ -130,7 +130,8 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
         /**
          * map that memorizes the costs with newVehicle, which is a cost-snapshot at tour-activities.
          */
-//		Map<TourActivity,Double> activity2costWithNewVehicle = new HashMap<TourActivity,Double>();
+		// Map<TourActivity,Double> activity2costWithNewVehicle = new
+		// HashMap<TourActivity,Double>();
 
         /**
          * priority queue that stores insertion-data by insertion-costs in ascending order.
@@ -199,7 +200,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
              * memorize transport and activity costs with new vehicle without inserting k
              */
             sumOf_prevCosts_newVehicle += transportCost_prevAct_nextAct_newVehicle + activityCost_nextAct;
-//			activity2costWithNewVehicle.put(nextAct, sumOf_prevCosts_newVehicle);
+			// activity2costWithNewVehicle.put(nextAct, sumOf_prevCosts_newVehicle);
 
             /**
              * departure time at nextAct with new vehicle

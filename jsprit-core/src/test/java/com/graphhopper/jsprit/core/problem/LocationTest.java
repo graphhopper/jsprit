@@ -18,6 +18,8 @@
 package com.graphhopper.jsprit.core.problem;
 
 import com.graphhopper.jsprit.core.util.Coordinate;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -36,23 +38,23 @@ class LocationTest {
     @DisplayName("When Index Set _ build Location")
     void whenIndexSet_buildLocation() {
         Location l = Location.Builder.newInstance().setIndex(1).build();
-        assertEquals(1, l.getIndex());
-        assertTrue(true);
+        Assertions.assertEquals(1, l.getIndex());
+        Assertions.assertTrue(true);
     }
 
     @Test
     @DisplayName("When Name Set _ build Location")
     void whenNameSet_buildLocation() {
         Location l = Location.Builder.newInstance().setName("mystreet 6a").setIndex(1).build();
-        assertEquals(l.getName(), "mystreet 6a");
+        Assertions.assertEquals(l.getName(), "mystreet 6a");
     }
 
     @Test
     @DisplayName("When Index Set Wit Factory _ return Correct Location")
     void whenIndexSetWitFactory_returnCorrectLocation() {
         Location l = Location.newInstance(1);
-        assertEquals(1, l.getIndex());
-        assertTrue(true);
+        Assertions.assertEquals(1, l.getIndex());
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -75,25 +77,25 @@ class LocationTest {
     @DisplayName("When Id Set _ build")
     void whenIdSet_build() {
         Location l = Location.Builder.newInstance().setId("id").build();
-        assertEquals(l.getId(), "id");
-        assertTrue(true);
+        Assertions.assertEquals(l.getId(), "id");
+        Assertions.assertTrue(true);
     }
 
     @Test
     @DisplayName("When Id Set With Factory _ return Correct Location")
     void whenIdSetWithFactory_returnCorrectLocation() {
         Location l = Location.newInstance("id");
-        assertEquals(l.getId(), "id");
-        assertTrue(true);
+        Assertions.assertEquals(l.getId(), "id");
+        Assertions.assertTrue(true);
     }
 
     @Test
     @DisplayName("When Coordinate Set _ build")
     void whenCoordinateSet_build() {
         Location l = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 20)).build();
-        assertEquals(10., l.getCoordinate().getX(), 0.001);
-        assertEquals(20., l.getCoordinate().getY(), 0.001);
-        assertTrue(true);
+        Assertions.assertEquals(10., l.getCoordinate().getX(), 0.001);
+        Assertions.assertEquals(20., l.getCoordinate().getY(), 0.001);
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -101,9 +103,9 @@ class LocationTest {
     void whenCoordinateSetWithFactory_returnCorrectLocation() {
         // Location l = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10,20)).build();
         Location l = Location.newInstance(10, 20);
-        assertEquals(10., l.getCoordinate().getX(), 0.001);
-        assertEquals(20., l.getCoordinate().getY(), 0.001);
-        assertTrue(true);
+        Assertions.assertEquals(10., l.getCoordinate().getX(), 0.001);
+        Assertions.assertEquals(20., l.getCoordinate().getY(), 0.001);
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -112,8 +114,8 @@ class LocationTest {
         Location one = Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 20)).setUserData(new HashMap<String, Object>()).build();
         Location two = Location.Builder.newInstance().setIndex(1).setUserData(42).build();
         Location three = Location.Builder.newInstance().setIndex(2).build();
-        assertTrue(one.getUserData() instanceof Map);
-        assertEquals(42, two.getUserData());
+        Assertions.assertTrue(one.getUserData() instanceof Map);
+        Assertions.assertEquals(42, two.getUserData());
         assertNull(three.getUserData());
     }
 }

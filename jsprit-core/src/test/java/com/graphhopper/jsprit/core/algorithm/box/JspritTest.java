@@ -32,6 +32,8 @@ import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolutio
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -69,7 +71,7 @@ class JspritTest {
         });
         try {
             vra.searchSolutions();
-            assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
             fail();
         }
@@ -100,7 +102,7 @@ class JspritTest {
             }
         });
         vra.searchSolutions();
-        assertTrue(counts.containsKey(Jsprit.Strategy.RADIAL_BEST.toString()));
+        Assertions.assertTrue(counts.containsKey(Jsprit.Strategy.RADIAL_BEST.toString()));
     }
 
     @Test
@@ -128,7 +130,7 @@ class JspritTest {
             }
         });
         vra.searchSolutions();
-        assertTrue(!counts.containsKey(Jsprit.Strategy.RADIAL_BEST));
+        Assertions.assertTrue(!counts.containsKey(Jsprit.Strategy.RADIAL_BEST));
     }
 
     @Test
@@ -157,7 +159,7 @@ class JspritTest {
             }
         });
         vra.searchSolutions();
-        assertTrue(!counts.containsKey(Jsprit.Strategy.RADIAL_BEST));
+        Assertions.assertTrue(!counts.containsKey(Jsprit.Strategy.RADIAL_BEST));
     }
 
     @Test
@@ -194,10 +196,10 @@ class JspritTest {
         second.searchSolutions();
         for (int i = 0; i < 100; i++) {
             if (!firstRecord.get(i).equals(secondRecord.get(i))) {
-                assertFalse(true);
+                Assertions.assertFalse(true);
             }
         }
-        assertTrue(true);
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -234,10 +236,10 @@ class JspritTest {
         second.searchSolutions();
         for (int i = 0; i < 100; i++) {
             if (!firstRecord.get(i).equals(secondRecord.get(i))) {
-                assertFalse(true);
+                Assertions.assertFalse(true);
             }
         }
-        assertTrue(true);
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -287,13 +289,13 @@ class JspritTest {
             }
         });
         second.searchSolutions();
-        assertEquals(secondRecord.size(), firstRecord.size());
+        Assertions.assertEquals(secondRecord.size(), firstRecord.size());
         for (int i = 0; i < firstRecord.size(); i++) {
             if (!firstRecord.get(i).equals(secondRecord.get(i))) {
-                assertFalse(true);
+                Assertions.assertFalse(true);
             }
         }
-        assertTrue(true);
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -343,13 +345,13 @@ class JspritTest {
             }
         });
         second.searchSolutions();
-        assertEquals(secondRecord.size(), firstRecord.size());
+        Assertions.assertEquals(secondRecord.size(), firstRecord.size());
         for (int i = 0; i < firstRecord.size(); i++) {
             if (!firstRecord.get(i).equals(secondRecord.get(i))) {
-                assertFalse(true);
+                Assertions.assertFalse(true);
             }
         }
-        assertTrue(true);
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -383,13 +385,13 @@ class JspritTest {
             }
         });
         second.searchSolutions();
-        assertEquals(secondRecord.size(), firstRecord.size());
+        Assertions.assertEquals(secondRecord.size(), firstRecord.size());
         for (int i = 0; i < firstRecord.size(); i++) {
             if (!firstRecord.get(i).equals(secondRecord.get(i))) {
-                assertFalse(true);
+                Assertions.assertFalse(true);
             }
         }
-        assertTrue(true);
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -435,13 +437,13 @@ class JspritTest {
         // for(int i=0;i<secondRecord.size();i++){
         // System.out.print(secondRecord.get(i) + " (" + ((int)(firstRecordCosts.get(i)*100.))/100. + "), ");
         // }
-        assertEquals(secondRecord.size(), firstRecord.size());
+        Assertions.assertEquals(secondRecord.size(), firstRecord.size());
         for (int i = 0; i < firstRecord.size(); i++) {
             if (!firstRecord.get(i).equals(secondRecord.get(i))) {
-                assertFalse(true);
+                Assertions.assertFalse(true);
             }
         }
-        assertTrue(true);
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -450,6 +452,6 @@ class JspritTest {
         String s1 = "s2234";
         String s2 = "s1";
         int c = s1.compareTo(s2);
-        assertEquals(1, c);
+        Assertions.assertEquals(1, c);
     }
 }

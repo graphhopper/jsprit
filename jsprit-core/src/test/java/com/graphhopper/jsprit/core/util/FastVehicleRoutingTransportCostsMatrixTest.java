@@ -21,6 +21,8 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,10 +39,10 @@ class FastVehicleRoutingTransportCostsMatrixTest {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(3, true);
         matrixBuilder.addTransportDistance(1, 2, 2.);
         FastVehicleRoutingTransportCostsMatrix matrix = matrixBuilder.build();
-        assertEquals(2., matrix.getTransportCost(loc(1), loc(2), 0.0, null, null), 0.1);
-        assertEquals(2., matrix.getDistance(1, 2), 0.1);
-        assertEquals(2., matrix.getTransportCost(loc(2), loc(1), 0.0, null, null), 0.1);
-        assertEquals(2., matrix.getDistance(2, 1), 0.1);
+        Assertions.assertEquals(2., matrix.getTransportCost(loc(1), loc(2), 0.0, null, null), 0.1);
+        Assertions.assertEquals(2., matrix.getDistance(1, 2), 0.1);
+        Assertions.assertEquals(2., matrix.getTransportCost(loc(2), loc(1), 0.0, null, null), 0.1);
+        Assertions.assertEquals(2., matrix.getDistance(2, 1), 0.1);
     }
 
     @Test
@@ -49,7 +51,7 @@ class FastVehicleRoutingTransportCostsMatrixTest {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(3, false);
         matrixBuilder.addTransportDistance(1, 2, 2.);
         FastVehicleRoutingTransportCostsMatrix matrix = matrixBuilder.build();
-        assertEquals(2., matrix.getTransportCost(loc(1), loc(2), 0.0, null, null), 0.1);
+        Assertions.assertEquals(2., matrix.getTransportCost(loc(1), loc(2), 0.0, null, null), 0.1);
     }
 
     private Location loc(int index) {
@@ -62,8 +64,8 @@ class FastVehicleRoutingTransportCostsMatrixTest {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(3, true);
         matrixBuilder.addTransportTime(1, 2, 2.);
         FastVehicleRoutingTransportCostsMatrix matrix = matrixBuilder.build();
-        assertEquals(2., matrix.getTransportTime(loc(1), loc(2), 0.0, null, null), 0.1);
-        assertEquals(2., matrix.getTransportTime(loc(2), loc(1), 0.0, null, null), 0.1);
+        Assertions.assertEquals(2., matrix.getTransportTime(loc(1), loc(2), 0.0, null, null), 0.1);
+        Assertions.assertEquals(2., matrix.getTransportTime(loc(2), loc(1), 0.0, null, null), 0.1);
     }
 
     @Test
@@ -72,10 +74,10 @@ class FastVehicleRoutingTransportCostsMatrixTest {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(3, true);
         matrixBuilder.addTransportTimeAndDistance(1, 2, 2., 100.);
         FastVehicleRoutingTransportCostsMatrix matrix = matrixBuilder.build();
-        assertEquals(2., matrix.getTransportTime(loc(1), loc(2), 0.0, null, null), 0.1);
-        assertEquals(2., matrix.getTransportTime(loc(2), loc(1), 0.0, null, null), 0.1);
-        assertEquals(100., matrix.getDistance(loc(1), loc(2), 0.0, null), 0.1);
-        assertEquals(100., matrix.getDistance(loc(2), loc(1), 0.0, null), 0.1);
+        Assertions.assertEquals(2., matrix.getTransportTime(loc(1), loc(2), 0.0, null, null), 0.1);
+        Assertions.assertEquals(2., matrix.getTransportTime(loc(2), loc(1), 0.0, null, null), 0.1);
+        Assertions.assertEquals(100., matrix.getDistance(loc(1), loc(2), 0.0, null), 0.1);
+        Assertions.assertEquals(100., matrix.getDistance(loc(2), loc(1), 0.0, null), 0.1);
     }
 
     @Test
@@ -84,7 +86,7 @@ class FastVehicleRoutingTransportCostsMatrixTest {
         FastVehicleRoutingTransportCostsMatrix.Builder matrixBuilder = FastVehicleRoutingTransportCostsMatrix.Builder.newInstance(3, false);
         matrixBuilder.addTransportTime(1, 2, 2.);
         FastVehicleRoutingTransportCostsMatrix matrix = matrixBuilder.build();
-        assertEquals(2., matrix.getTransportTime(loc(1), loc(2), 0.0, null, null), 0.1);
+        Assertions.assertEquals(2., matrix.getTransportTime(loc(1), loc(2), 0.0, null, null), 0.1);
     }
 
     @Test
@@ -97,8 +99,8 @@ class FastVehicleRoutingTransportCostsMatrixTest {
         Vehicle vehicle = mock(Vehicle.class);
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerDistance(1.).setCostPerTime(2.).build();
         when(vehicle.getType()).thenReturn(type);
-        assertEquals(24., matrix.getTransportCost(loc(1), loc(2), 0.0, null, vehicle), 0.1);
-        assertEquals(24., matrix.getTransportCost(loc(2), loc(1), 0.0, null, vehicle), 0.1);
+        Assertions.assertEquals(24., matrix.getTransportCost(loc(1), loc(2), 0.0, null, vehicle), 0.1);
+        Assertions.assertEquals(24., matrix.getTransportCost(loc(2), loc(1), 0.0, null, vehicle), 0.1);
     }
 
     @Test
@@ -111,7 +113,7 @@ class FastVehicleRoutingTransportCostsMatrixTest {
         Vehicle vehicle = mock(Vehicle.class);
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerDistance(1.).setCostPerTime(2.).build();
         when(vehicle.getType()).thenReturn(type);
-        assertEquals(4., matrix.getTransportCost(loc(1), loc(2), 0.0, null, vehicle), 0.1);
-        assertEquals(16., matrix.getTransportCost(loc(2), loc(1), 0.0, null, vehicle), 0.1);
+        Assertions.assertEquals(4., matrix.getTransportCost(loc(1), loc(2), 0.0, null, vehicle), 0.1);
+        Assertions.assertEquals(16., matrix.getTransportCost(loc(2), loc(1), 0.0, null, vehicle), 0.1);
     }
 }

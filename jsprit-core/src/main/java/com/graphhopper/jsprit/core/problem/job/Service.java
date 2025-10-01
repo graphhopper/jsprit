@@ -98,7 +98,7 @@ public class Service extends AbstractJob {
 
         protected Activity activity;
 
-		Builder(String id){
+		Builder(String id) {
 			this.id = id;
 			timeWindows = new TimeWindowsImpl();
 			timeWindows.add(TimeWindow.newInstance(0.0, Double.MAX_VALUE));

@@ -24,13 +24,13 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("External Initial Solution Is In Valid Test")
 class ExternalInitialSolutionIsInValidTest {
@@ -50,9 +50,9 @@ class ExternalInitialSolutionIsInValidTest {
         vra.addInitialSolution(new VehicleRoutingProblemSolution(Arrays.asList(route1), 20.));
         try {
             vra.searchSolutions();
-            assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            assertFalse(true);
+            Assertions.assertFalse(true);
         }
     }
 }

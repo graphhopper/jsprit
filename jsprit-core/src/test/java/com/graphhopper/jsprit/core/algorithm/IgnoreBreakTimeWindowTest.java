@@ -33,7 +33,7 @@ import com.graphhopper.jsprit.core.util.Solutions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Created by schroeder on 08/01/16.
@@ -47,8 +47,9 @@ class IgnoreBreakTimeWindowTest {
         VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType");
         VehicleType vehicleType = vehicleTypeBuilder.setCostPerWaitingTime(0.8).build();
         /*
-         * get a vehicle-builder and build a vehicle located at (10,10) with type "vehicleType"
-		 */
+         * get a vehicle-builder and build a vehicle located at (10,10) with type
+         * "vehicleType"
+         */
         VehicleImpl vehicle2;
         {
             VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("v2");
@@ -60,7 +61,7 @@ class IgnoreBreakTimeWindowTest {
         }
         /*
          * build services at the required locations, each with a capacity-demand of 1.
-		 */
+         */
         Service service4 = Service.Builder.newInstance("2").setLocation(Location.newInstance(0, 0)).setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(17, 17)).build();
         Service service5 = Service.Builder.newInstance("3").setLocation(Location.newInstance(0, 0)).setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(18, 18)).build();
         Service service7 = Service.Builder.newInstance("4").setLocation(Location.newInstance(0, 0)).setServiceTime(1.).setTimeWindow(TimeWindow.newInstance(10, 10)).build();
@@ -71,7 +72,7 @@ class IgnoreBreakTimeWindowTest {
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(50);
         VehicleRoutingProblemSolution solution = Solutions.bestOf(vra.searchSolutions());
-        assertTrue(breakShouldBeTime(solution));
+        Assertions.assertTrue(breakShouldBeTime(solution));
     }
 
     private boolean breakShouldBeTime(VehicleRoutingProblemSolution solution) {

@@ -23,12 +23,13 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +41,7 @@ public class TestAuxilliaryCostCalculator {
 
     private Vehicle vehicle;
 
-    @Before
+    @BeforeEach
     public void doBefore() {
         vehicle = mock(Vehicle.class);
 
@@ -72,7 +73,7 @@ public class TestAuxilliaryCostCalculator {
 
         AuxilliaryCostCalculator aCalc = new AuxilliaryCostCalculator(routingCosts, actCosts);
         double costs = aCalc.costOfPath(Arrays.asList(prevAct, newAct, nextAct), 0.0, null, vehicle);
-        assertEquals(6.0, costs, 0.01);
+		Assertions.assertEquals(6.0, costs, 0.01);
     }
 
     @Test
@@ -87,7 +88,7 @@ public class TestAuxilliaryCostCalculator {
 
         AuxilliaryCostCalculator aCalc = new AuxilliaryCostCalculator(routingCosts, actCosts);
         double costs = aCalc.costOfPath(Arrays.asList(prevAct, newAct, nextAct), 0.0, null, vehicle);
-        assertEquals(6.0, costs, 0.01);
+		Assertions.assertEquals(6.0, costs, 0.01);
     }
 
     @Test
@@ -103,7 +104,7 @@ public class TestAuxilliaryCostCalculator {
 
         AuxilliaryCostCalculator aCalc = new AuxilliaryCostCalculator(routingCosts, actCosts);
         double costs = aCalc.costOfPath(Arrays.asList(prevAct, newAct, nextAct), 0.0, null, vehicle);
-        assertEquals(6.0, costs, 0.01);
+		Assertions.assertEquals(6.0, costs, 0.01);
     }
 
     @Test
@@ -118,7 +119,7 @@ public class TestAuxilliaryCostCalculator {
 
         AuxilliaryCostCalculator aCalc = new AuxilliaryCostCalculator(routingCosts, actCosts);
         double costs = aCalc.costOfPath(Arrays.asList(prevAct, newAct, nextAct), 0.0, null, vehicle);
-        assertEquals(3.0, costs, 0.01);
+		Assertions.assertEquals(3.0, costs, 0.01);
     }
 
 }

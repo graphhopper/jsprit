@@ -35,6 +35,8 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.util.CostFactory;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -86,21 +88,24 @@ class UpdatePracticalTimeWindowTest {
     @Test
     @DisplayName("When Vehicle Route Has Pickup And Delivery And Pickup _ latest Start Time Of Act 3 Must Be Correct")
     void whenVehicleRouteHasPickupAndDeliveryAndPickup_latestStartTimeOfAct3MustBeCorrect() {
-        assertEquals(50., route.getActivities().get(2).getTheoreticalLatestOperationStartTime(), 0.01);
-        assertEquals(50., stateManager.getActivityState(route.getActivities().get(2), InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+        Assertions.assertEquals(50., route.getActivities().get(2).getTheoreticalLatestOperationStartTime(), 0.01);
+        Assertions.assertEquals(50., stateManager.getActivityState(route.getActivities().get(2),
+                InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     @DisplayName("When Vehicle Route Has Pickup And Delivery And Pickup _ latest Start Time Of Act 2 Must Be Correct")
     void whenVehicleRouteHasPickupAndDeliveryAndPickup_latestStartTimeOfAct2MustBeCorrect() {
-        assertEquals(40., route.getActivities().get(1).getTheoreticalLatestOperationStartTime(), 0.01);
-        assertEquals(30., stateManager.getActivityState(route.getActivities().get(1), InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+        Assertions.assertEquals(40., route.getActivities().get(1).getTheoreticalLatestOperationStartTime(), 0.01);
+        Assertions.assertEquals(30., stateManager.getActivityState(route.getActivities().get(1),
+                InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 
     @Test
     @DisplayName("When Vehicle Route Has Pickup And Delivery And Pickup _ latest Start Time Of Act 1 Must Be Correct")
     void whenVehicleRouteHasPickupAndDeliveryAndPickup_latestStartTimeOfAct1MustBeCorrect() {
-        assertEquals(30., route.getActivities().get(0).getTheoreticalLatestOperationStartTime(), 0.01);
-        assertEquals(10., stateManager.getActivityState(route.getActivities().get(0), InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
+        Assertions.assertEquals(30., route.getActivities().get(0).getTheoreticalLatestOperationStartTime(), 0.01);
+        Assertions.assertEquals(10., stateManager.getActivityState(route.getActivities().get(0),
+                InternalStates.LATEST_OPERATION_START_TIME, Double.class), 0.01);
     }
 }

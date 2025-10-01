@@ -25,6 +25,8 @@ import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +53,7 @@ class RuinWorstTest {
         RuinWorst worst = new RuinWorst(vrp, 1);
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3).setJobActivityFactory(vrp.getJobActivityFactory()).build();
         Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList(route));
-        assertEquals(1, unassigned.size());
+        Assertions.assertEquals(1, unassigned.size());
     }
 
     @Test
@@ -65,7 +67,7 @@ class RuinWorstTest {
         RuinWorst worst = new RuinWorst(vrp, 1);
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3).setJobActivityFactory(vrp.getJobActivityFactory()).build();
         Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList(route));
-        assertEquals(s3, unassigned.iterator().next());
+        Assertions.assertEquals(s3, unassigned.iterator().next());
     }
 
     @Test
@@ -86,9 +88,9 @@ class RuinWorstTest {
         });
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3).setJobActivityFactory(vrp.getJobActivityFactory()).build();
         Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList(route));
-        assertTrue(unassigned.size() == 2);
-        assertTrue(unassigned.contains(s2));
-        assertTrue(unassigned.contains(s3));
+        Assertions.assertTrue(unassigned.size() == 2);
+        Assertions.assertTrue(unassigned.contains(s2));
+        Assertions.assertTrue(unassigned.contains(s3));
     }
 
     @Test
@@ -110,8 +112,8 @@ class RuinWorstTest {
         });
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).addPickup(shipment).addService(s1).addService(s2).addService(s3).addDelivery(shipment).setJobActivityFactory(vrp.getJobActivityFactory()).build();
         Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList(route));
-        assertTrue(unassigned.size() == 1);
-        assertTrue(unassigned.contains(shipment));
+        Assertions.assertTrue(unassigned.size() == 1);
+        Assertions.assertTrue(unassigned.contains(shipment));
     }
 
     @Test
@@ -135,8 +137,8 @@ class RuinWorstTest {
         VehicleRoute route1 = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3).setJobActivityFactory(vrp.getJobActivityFactory()).build();
         VehicleRoute route2 = VehicleRoute.Builder.newInstance(v2).addPickup(shipment).addDelivery(shipment).build();
         Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList(route1, route2));
-        assertTrue(unassigned.size() == 1);
-        assertTrue(unassigned.contains(shipment));
+        Assertions.assertTrue(unassigned.size() == 1);
+        Assertions.assertTrue(unassigned.contains(shipment));
     }
 
     @Test
@@ -160,8 +162,8 @@ class RuinWorstTest {
         VehicleRoute route1 = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3).setJobActivityFactory(vrp.getJobActivityFactory()).build();
         VehicleRoute route2 = VehicleRoute.Builder.newInstance(v2).addPickup(shipment).addDelivery(shipment).build();
         Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList(route1, route2));
-        assertTrue(unassigned.size() == 2);
-        assertTrue(unassigned.contains(shipment));
-        assertTrue(unassigned.contains(s3));
+        Assertions.assertTrue(unassigned.size() == 2);
+        Assertions.assertTrue(unassigned.contains(shipment));
+        Assertions.assertTrue(unassigned.contains(s3));
     }
 }

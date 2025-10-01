@@ -41,13 +41,13 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Coordinate;
 import com.graphhopper.jsprit.core.util.Solutions;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Initial Routes Test")
 class InitialRoutesTest {
@@ -74,7 +74,7 @@ class InitialRoutesTest {
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-        assertEquals(2, solution.getRoutes().iterator().next().getTourActivities().getJobs().size());
+		Assertions.assertEquals(2, solution.getRoutes().iterator().next().getTourActivities().getJobs().size());
     }
 
     @Test
@@ -83,7 +83,7 @@ class InitialRoutesTest {
         VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-        assertEquals(2, solution.getRoutes().iterator().next().getActivities().size());
+		Assertions.assertEquals(2, solution.getRoutes().iterator().next().getActivities().size());
     }
 
     @Test
@@ -93,7 +93,7 @@ class InitialRoutesTest {
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
         Job job = getInitialJob("s1", vrp);
-        assertTrue(hasActivityIn(solution, "veh1", job));
+		Assertions.assertTrue(hasActivityIn(solution, "veh1", job));
     }
 
     private Job getInitialJob(String jobId, VehicleRoutingProblem vrp) {
@@ -148,7 +148,7 @@ class InitialRoutesTest {
         VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         VehicleRoutingProblemSolution solution = Solutions.bestOf(solutions);
-        assertTrue(hasActivityIn(solution.getRoutes().iterator().next(), "s2"));
+		Assertions.assertTrue(hasActivityIn(solution.getRoutes().iterator().next(), "s2"));
     }
 
     @Test
@@ -163,7 +163,7 @@ class InitialRoutesTest {
         VehicleRoutingAlgorithm vra = new GreedySchrimpfFactory().createAlgorithm(vrp);
         vra.setMaxIterations(10);
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-        assertFalse(secondActIsPickup(solutions));
+		Assertions.assertFalse(secondActIsPickup(solutions));
     }
 
     private boolean secondActIsPickup(Collection<VehicleRoutingProblemSolution> solutions) {
@@ -182,7 +182,7 @@ class InitialRoutesTest {
         VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
         vra.setMaxIterations(100);
         vra.searchSolutions();
-        assertTrue(true);
+		Assertions.assertTrue(true);
     }
 
     @Test
@@ -208,8 +208,9 @@ class InitialRoutesTest {
         Collection<VehicleRoutingProblemSolution> searchSolutions = vra.searchSolutions();
         VehicleRoutingProblemSolution bestOf = Solutions.bestOf(searchSolutions);
         // ensure 2 routes
-        assertEquals(2, bestOf.getRoutes().size());
+		Assertions.assertEquals(2, bestOf.getRoutes().size());
         // ensure no time information in first service of first route
-        assertEquals(0, bestOf.getRoutes().iterator().next().getActivities().iterator().next().getArrTime(), 0.001);
+		Assertions.assertEquals(0, bestOf.getRoutes().iterator().next().getActivities().iterator().next().getArrTime(),
+				0.001);
     }
 }

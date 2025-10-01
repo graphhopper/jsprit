@@ -24,7 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
 
 @DisplayName("Break Activity Test")
 class BreakActivityTest {
@@ -44,49 +44,49 @@ class BreakActivityTest {
     @Test
     @DisplayName("When Calling Capacity _ it Should Return Correct Capacity")
     void whenCallingCapacity_itShouldReturnCorrectCapacity() {
-        assertEquals(0, serviceActivity.getSize().get(0));
+        Assertions.assertEquals(0, serviceActivity.getSize().get(0));
     }
 
     @Test
     @DisplayName("Has Variable Location Should Be True")
     void hasVariableLocationShouldBeTrue() {
         Break aBreak = (Break) serviceActivity.getJob();
-        assertTrue(aBreak.hasVariableLocation());
+        Assertions.assertTrue(aBreak.hasVariableLocation());
     }
 
     @Test
     @DisplayName("When Start Is Ini With Earliest Start _ it Should Be Set Correctly")
     void whenStartIsIniWithEarliestStart_itShouldBeSetCorrectly() {
-        assertEquals(1., serviceActivity.getTheoreticalEarliestOperationStartTime(), 0.01);
+        Assertions.assertEquals(1., serviceActivity.getTheoreticalEarliestOperationStartTime(), 0.01);
     }
 
     @Test
     @DisplayName("When Start Is Ini With Latest Start _ it Should Be Set Correctly")
     void whenStartIsIniWithLatestStart_itShouldBeSetCorrectly() {
-        assertEquals(2., serviceActivity.getTheoreticalLatestOperationStartTime(), 0.01);
+        Assertions.assertEquals(2., serviceActivity.getTheoreticalLatestOperationStartTime(), 0.01);
     }
 
     @Test
     @DisplayName("When Setting Arr Time _ it Should Be Set Correctly")
     void whenSettingArrTime_itShouldBeSetCorrectly() {
         serviceActivity.setArrTime(4.0);
-        assertEquals(4., serviceActivity.getArrTime(), 0.01);
+        Assertions.assertEquals(4., serviceActivity.getArrTime(), 0.01);
     }
 
     @Test
     @DisplayName("When Setting End Time _ it Should Be Set Correctly")
     void whenSettingEndTime_itShouldBeSetCorrectly() {
         serviceActivity.setEndTime(5.0);
-        assertEquals(5., serviceActivity.getEndTime(), 0.01);
+        Assertions.assertEquals(5., serviceActivity.getEndTime(), 0.01);
     }
 
     @Test
     @DisplayName("When Copying Start _ it Should Be Done Correctly")
     void whenCopyingStart_itShouldBeDoneCorrectly() {
         BreakActivity copy = (BreakActivity) serviceActivity.duplicate();
-        assertEquals(1., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
-        assertEquals(2., copy.getTheoreticalLatestOperationStartTime(), 0.01);
-        assertTrue(copy != serviceActivity);
+        Assertions.assertEquals(1., copy.getTheoreticalEarliestOperationStartTime(), 0.01);
+        Assertions.assertEquals(2., copy.getTheoreticalLatestOperationStartTime(), 0.01);
+        Assertions.assertTrue(copy != serviceActivity);
     }
 
     @Test
@@ -96,7 +96,7 @@ class BreakActivityTest {
         Service s2 = Service.Builder.newInstance("s").setLocation(Location.newInstance("loc")).build();
         ServiceActivity d1 = ServiceActivity.newInstance(s1);
         ServiceActivity d2 = ServiceActivity.newInstance(s2);
-        assertTrue(d1.equals(d2));
+        Assertions.assertTrue(d1.equals(d2));
     }
 
     @Test
@@ -106,6 +106,6 @@ class BreakActivityTest {
         Service s2 = Service.Builder.newInstance("s1").setLocation(Location.newInstance("loc")).build();
         ServiceActivity d1 = ServiceActivity.newInstance(s1);
         ServiceActivity d2 = ServiceActivity.newInstance(s2);
-        assertFalse(d1.equals(d2));
+        Assertions.assertFalse(d1.equals(d2));
     }
 }

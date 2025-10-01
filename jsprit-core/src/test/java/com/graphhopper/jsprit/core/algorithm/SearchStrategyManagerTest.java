@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -49,7 +47,7 @@ class SearchStrategyManagerTest {
         when(strat2.getId()).thenReturn("strat2");
         manager.addStrategy(strat1, 0.5);
         manager.addStrategy(strat2, 0.5);
-        assertTrue(true);
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -58,7 +56,7 @@ class SearchStrategyManagerTest {
         assertThrows(IllegalStateException.class, () -> {
             SearchStrategyManager manager = new SearchStrategyManager();
             manager.addStrategy(null, 1.0);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         });
     }
 
@@ -70,7 +68,7 @@ class SearchStrategyManagerTest {
             SearchStrategy strat = mock(SearchStrategy.class);
             when(strat.getId()).thenReturn("strat1");
             manager.addStrategy(strat, -1.0);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         });
     }
 
@@ -87,7 +85,7 @@ class SearchStrategyManagerTest {
         Random mockedRandom = mock(Random.class);
         manager.setRandom(mockedRandom);
         when(mockedRandom.nextDouble()).thenReturn(0.25);
-        assertThat(manager.getRandomStrategy(), is(mockedStrat2));
+        Assertions.assertSame(manager.getRandomStrategy(), mockedStrat2);
     }
 
     @Test
@@ -103,9 +101,9 @@ class SearchStrategyManagerTest {
         Random mockedRandom = mock(Random.class);
         manager.setRandom(mockedRandom);
         when(mockedRandom.nextDouble()).thenReturn(0.25);
-        assertThat(manager.getRandomStrategy(), is(mockedStrat2));
+        Assertions.assertSame(manager.getRandomStrategy(), mockedStrat2);
         manager.informStrategyWeightChanged("strat2", 1.4);
-        assertThat(manager.getRandomStrategy(), is(mockedStrat1));
+        Assertions.assertSame(manager.getRandomStrategy(), mockedStrat1);
     }
 
     @Test
@@ -121,7 +119,7 @@ class SearchStrategyManagerTest {
         Random mockedRandom = mock(Random.class);
         manager.setRandom(mockedRandom);
         when(mockedRandom.nextDouble()).thenReturn(0.24);
-        assertThat(manager.getRandomStrategy(), is(mockedStrat1));
+        Assertions.assertSame(manager.getRandomStrategy(), mockedStrat1);
     }
 
     @Test
@@ -137,7 +135,7 @@ class SearchStrategyManagerTest {
         Random mockedRandom = mock(Random.class);
         managerUnderTest.setRandom(mockedRandom);
         when(mockedRandom.nextDouble()).thenReturn(0.1);
-        assertThat(managerUnderTest.getRandomStrategy(), is(mockedStrategy1));
+        Assertions.assertSame(managerUnderTest.getRandomStrategy(), mockedStrategy1);
     }
 
     @Test
@@ -153,7 +151,7 @@ class SearchStrategyManagerTest {
         Random mockedRandom = mock(Random.class);
         managerUnderTest.setRandom(mockedRandom);
         when(mockedRandom.nextDouble()).thenReturn(0.5);
-        assertThat(managerUnderTest.getRandomStrategy(), is(mockedStrategy2));
+        Assertions.assertSame(managerUnderTest.getRandomStrategy(), mockedStrategy2);
     }
 
     @Test
@@ -169,7 +167,7 @@ class SearchStrategyManagerTest {
         Random mockedRandom = mock(Random.class);
         managerUnderTest.setRandom(mockedRandom);
         when(mockedRandom.nextDouble()).thenReturn(0.0);
-        assertThat(managerUnderTest.getRandomStrategy(), is(mockedStrategy1));
+        Assertions.assertSame(managerUnderTest.getRandomStrategy(), mockedStrategy1);
     }
 
     @Test
