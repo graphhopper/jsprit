@@ -83,8 +83,6 @@ public class Shipment extends AbstractJob {
 
         private boolean deliveryTimeWindowAdded = false;
 
-        private boolean pickupLocationAdded = false;
-
         private int priority = 2;
 
         public Object userData;
@@ -172,11 +170,11 @@ public class Shipment extends AbstractJob {
          */
         public Builder setPickupLocation(PickupLocation pickupLocation) {
             if (pickupLocation == null) throw new IllegalArgumentException("The pickup location must not be null.");
+            // Replace the collection (this is the "set" behavior)
             this.pickupLocations = new PickupLocationsImpl();
             this.pickupLocations.add(pickupLocation);
             return this;
         }
-
 
 
         /**
@@ -254,7 +252,8 @@ public class Shipment extends AbstractJob {
          *                               is set
          */
         public Shipment build() {
-            if (pickupLocations == null) throw new IllegalArgumentException("The pickup locations is missing.");
+            if (pickupLocations == null || pickupLocations.getPickupLocations().size() == 0)
+                throw new IllegalArgumentException("At least one pickup location must be provided.");
             if (deliveryLocation_ == null) throw new IllegalArgumentException("The delivery location is missing.");
             capacity = capacityBuilder.build();
             skills = skillBuilder.build();
@@ -308,9 +307,9 @@ public class Shipment extends AbstractJob {
 
         public Builder addPickupLocation(PickupLocation pickupLocation) {
             if (pickupLocation == null) throw new IllegalArgumentException("The pickup location must not be null.");
-            if(!pickupLocationAdded){
+            // Lazy initialization: create only if null (no flag needed)
+            if (pickupLocations == null) {
                 pickupLocations = new PickupLocationsImpl();
-                pickupLocationAdded = true;
             }
             pickupLocations.add(pickupLocation);
             return this;
