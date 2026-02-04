@@ -522,7 +522,8 @@ public class Jsprit {
             }
         }
 
-        RuinRadial radial = new RuinRadial(vrp, vrp.getJobs().size(), jobNeighborhoods);
+        RuinRadialDynamic radial = new RuinRadialDynamic(vrp, vrp.getJobs().size());
+//        RuinRadial radial = new RuinRadial(vrp, vrp.getJobs().size(), jobNeighborhoods);
         radial.setRandom(random);
         radial.setJobFilter(jobFilter);
         RuinShareFactoryImpl radialRuinFactory = new RuinShareFactoryImpl(
