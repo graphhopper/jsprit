@@ -207,6 +207,9 @@ public final class RuinRadialDynamic extends AbstractRuinStrategy {
                                                            List<TourActivity.JobActivity> allActivities,
                                                            Set<String> excludeJobIds,
                                                            int k) {
+        if (k <= 0) {
+            return Collections.emptyList();
+        }
         PriorityQueue<JobActivityDistance> maxHeap = new PriorityQueue<>(
                 k + 1,
                 (a, b) -> Double.compare(b.distance, a.distance)
