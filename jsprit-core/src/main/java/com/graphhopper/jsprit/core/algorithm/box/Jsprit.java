@@ -58,7 +58,7 @@ public class Jsprit {
 
     public enum Construction {
 
-        BEST_INSERTION("best_insertion"), REGRET_INSERTION("regret_insertion");
+        BEST_INSERTION("best_insertion"), REGRET_INSERTION("regret_insertion"), CHEAPEST_INSERTION("cheapest_insertion");
 
         String name;
 
@@ -76,16 +76,22 @@ public class Jsprit {
 
         RADIAL_BEST("radial_best"),
         RADIAL_REGRET("radial_regret"),
+        RADIAL_CHEAPEST("radial_cheapest"),
         RANDOM_BEST("random_best"),
         RANDOM_REGRET("random_regret"),
+        RANDOM_CHEAPEST("random_cheapest"),
         WORST_BEST("worst_best"),
         WORST_REGRET("worst_regret"),
+        WORST_CHEAPEST("worst_cheapest"),
         CLUSTER_BEST("cluster_best"),
         CLUSTER_REGRET("cluster_regret"),
+        CLUSTER_CHEAPEST("cluster_cheapest"),
         STRING_BEST("string_best"),
         STRING_REGRET("string_regret"),
+        STRING_CHEAPEST("string_cheapest"),
+        TIME_RELATED_BEST("time_related_best"),
         TIME_RELATED_REGRET("time_related_regret"),
-        TIME_RELATED_BEST("time_related_best");
+        TIME_RELATED_CHEAPEST("time_related_cheapest");
 
 
         String strategyName;
@@ -202,15 +208,19 @@ public class Jsprit {
             Properties defaults = new Properties();
             defaults.put(Strategy.RADIAL_BEST.toString(), "0.");
             defaults.put(Strategy.RADIAL_REGRET.toString(), ".5");
+            defaults.put(Strategy.RADIAL_CHEAPEST.toString(), "0.");
 
             defaults.put(Strategy.TIME_RELATED_BEST.toString(), "0.");
             defaults.put(Strategy.TIME_RELATED_REGRET.toString(), "0.");
+            defaults.put(Strategy.TIME_RELATED_CHEAPEST.toString(), "0.");
 
             defaults.put(Strategy.RANDOM_BEST.toString(), ".5");
             defaults.put(Strategy.RANDOM_REGRET.toString(), ".5");
+            defaults.put(Strategy.RANDOM_CHEAPEST.toString(), "0.");
 
             defaults.put(Strategy.STRING_BEST.toString(), "0.0");
             defaults.put(Strategy.STRING_REGRET.toString(), "0.0");
+            defaults.put(Strategy.STRING_CHEAPEST.toString(), "0.");
 
             defaults.put(Parameter.STRING_K_MIN.toString(), "1");
             defaults.put(Parameter.STRING_K_MAX.toString(), "6");
@@ -219,9 +229,11 @@ public class Jsprit {
 
             defaults.put(Strategy.WORST_BEST.toString(), "0.");
             defaults.put(Strategy.WORST_REGRET.toString(), "1.");
+            defaults.put(Strategy.WORST_CHEAPEST.toString(), "0.");
 
             defaults.put(Strategy.CLUSTER_BEST.toString(), "0.");
             defaults.put(Strategy.CLUSTER_REGRET.toString(), "1.");
+            defaults.put(Strategy.CLUSTER_CHEAPEST.toString(), "0.");
 
 
             defaults.put(Parameter.FIXED_COST_PARAM.toString(), "0.");
@@ -678,6 +690,17 @@ public class Jsprit {
         }
         best.setRandom(random);
 
+        // True cheapest insertion (best insertion as defined in VRP literature)
+        CheapestInsertion cheapest = (CheapestInsertion) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                .setInsertionStrategy(InsertionStrategyBuilder.Strategy.CHEAPEST)
+                .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
+                .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
+                .setActivityInsertionCostCalculator(activityInsertion)
+                .setServiceInsertionCalculator(this.serviceCalculatorFactory)
+                .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
+                .build();
+        cheapest.setRandom(random);
+
         IterationStartsListener schrimpfThreshold = null;
         if(acceptor == null) {
             final SchrimpfAcceptance schrimpfAcceptance = new SchrimpfAcceptance(1, toDouble(getProperty(Parameter.THRESHOLD_ALPHA.toString())));
@@ -731,6 +754,25 @@ public class Jsprit {
         SearchStrategy stringBest = new SearchStrategy(Strategy.STRING_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
         stringBest.addModule(configureModule(new RuinAndRecreateModule(Strategy.STRING_BEST.toString(), best, stringRuin)));
 
+        // Cheapest insertion strategies (true best insertion from VRP literature)
+        SearchStrategy radialCheapest = new SearchStrategy(Strategy.RADIAL_CHEAPEST.toString(), new SelectBest(), acceptor, objectiveFunction);
+        radialCheapest.addModule(configureModule(new RuinAndRecreateModule(Strategy.RADIAL_CHEAPEST.toString(), cheapest, radial)));
+
+        SearchStrategy randomCheapest = new SearchStrategy(Strategy.RANDOM_CHEAPEST.toString(), new SelectBest(), acceptor, objectiveFunction);
+        randomCheapest.addModule(configureModule(new RuinAndRecreateModule(Strategy.RANDOM_CHEAPEST.toString(), cheapest, randomForBest)));
+
+        SearchStrategy worstCheapest = new SearchStrategy(Strategy.WORST_CHEAPEST.toString(), new SelectBest(), acceptor, objectiveFunction);
+        worstCheapest.addModule(configureModule(new RuinAndRecreateModule(Strategy.WORST_CHEAPEST.toString(), cheapest, worst)));
+
+        SearchStrategy clustersCheapest = new SearchStrategy(Strategy.CLUSTER_CHEAPEST.toString(), new SelectBest(), acceptor, objectiveFunction);
+        clustersCheapest.addModule(configureModule(new RuinAndRecreateModule(Strategy.CLUSTER_CHEAPEST.toString(), cheapest, clusters)));
+
+        SearchStrategy stringCheapest = new SearchStrategy(Strategy.STRING_CHEAPEST.toString(), new SelectBest(), acceptor, objectiveFunction);
+        stringCheapest.addModule(configureModule(new RuinAndRecreateModule(Strategy.STRING_CHEAPEST.toString(), cheapest, stringRuin)));
+
+        SearchStrategy timeRelatedCheapest = new SearchStrategy(Strategy.TIME_RELATED_CHEAPEST.toString(), new SelectBest(), acceptor, objectiveFunction);
+        timeRelatedCheapest.addModule(configureModule(new RuinAndRecreateModule(Strategy.TIME_RELATED_CHEAPEST.toString(), cheapest, ruinTimeRelated)));
+
         PrettyAlgorithmBuilder prettyBuilder = PrettyAlgorithmBuilder.newInstance(vrp, vehicleFleetManager, stateManager, constraintManager);
         prettyBuilder.setRandom(random);
         if (addCoreConstraints) {
@@ -738,25 +780,37 @@ public class Jsprit {
         }
         prettyBuilder.withStrategy(radialRegret, toDouble(getProperty(Strategy.RADIAL_REGRET.toString())))
             .withStrategy(radialBest, toDouble(getProperty(Strategy.RADIAL_BEST.toString())))
+                .withStrategy(radialCheapest, toDouble(getProperty(Strategy.RADIAL_CHEAPEST.toString())))
 
             .withStrategy(timeRelatedBest, toDouble(getProperty(Strategy.TIME_RELATED_BEST.toString())))
             .withStrategy(timeRelatedRegret, toDouble(getProperty(Strategy.TIME_RELATED_REGRET.toString())))
+                .withStrategy(timeRelatedCheapest, toDouble(getProperty(Strategy.TIME_RELATED_CHEAPEST.toString())))
 
             .withStrategy(randomBest, toDouble(getProperty(Strategy.RANDOM_BEST.toString())))
             .withStrategy(randomRegret, toDouble(getProperty(Strategy.RANDOM_REGRET.toString())))
+                .withStrategy(randomCheapest, toDouble(getProperty(Strategy.RANDOM_CHEAPEST.toString())))
+
             .withStrategy(worstBest, toDouble(getProperty(Strategy.WORST_BEST.toString())))
             .withStrategy(worstRegret, toDouble(getProperty(Strategy.WORST_REGRET.toString())))
+                .withStrategy(worstCheapest, toDouble(getProperty(Strategy.WORST_CHEAPEST.toString())))
+
             .withStrategy(clustersRegret, toDouble(getProperty(Strategy.CLUSTER_REGRET.toString())))
             .withStrategy(clustersBest, toDouble(getProperty(Strategy.CLUSTER_BEST.toString())))
+                .withStrategy(clustersCheapest, toDouble(getProperty(Strategy.CLUSTER_CHEAPEST.toString())))
+
             .withStrategy(stringBest, toDouble(getProperty(Strategy.STRING_BEST.toString())))
-            .withStrategy(stringRegret, toDouble(getProperty(Strategy.STRING_REGRET.toString())));
+                .withStrategy(stringRegret, toDouble(getProperty(Strategy.STRING_REGRET.toString())))
+                .withStrategy(stringCheapest, toDouble(getProperty(Strategy.STRING_CHEAPEST.toString())));
 
         for (SearchStrategy customStrategy : customStrategies.keySet()) {
             prettyBuilder.withStrategy(customStrategy, customStrategies.get(customStrategy));
         }
 
-        if (getProperty(Parameter.CONSTRUCTION.toString()).equals(Construction.BEST_INSERTION.toString())) {
+        String constructionMethod = getProperty(Parameter.CONSTRUCTION.toString());
+        if (constructionMethod.equals(Construction.BEST_INSERTION.toString())) {
             prettyBuilder.constructInitialSolutionWith(best, objectiveFunction);
+        } else if (constructionMethod.equals(Construction.CHEAPEST_INSERTION.toString())) {
+            prettyBuilder.constructInitialSolutionWith(cheapest, objectiveFunction);
         } else {
             prettyBuilder.constructInitialSolutionWith(regret, objectiveFunction);
         }

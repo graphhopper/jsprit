@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutorService;
 public class InsertionStrategyBuilder {
 
     public enum Strategy {
-        REGRET, BEST
+        REGRET, BEST, CHEAPEST
     }
 
     private final VehicleRoutingProblem vrp;
@@ -197,6 +197,11 @@ public class InsertionStrategyBuilder {
                 bestInsertion.setRandom(random);
                 insertion = bestInsertion;
             }
+        } else if (strategy.equals(Strategy.CHEAPEST)) {
+            // True Best Insertion as defined in VRP literature
+            CheapestInsertion cheapestInsertion = new CheapestInsertion(costCalculator, vrp);
+            cheapestInsertion.setRandom(random);
+            insertion = cheapestInsertion;
         } else if (strategy.equals(Strategy.REGRET)) {
             if (executor == null) {
                 if (isFastRegret) {

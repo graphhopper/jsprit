@@ -31,9 +31,24 @@ import java.util.List;
 
 
 /**
- * Best insertion that insert the job where additional costs are minimal.
+ * Sequential insertion that processes jobs in random order, inserting each at its best position.
+ * <p>
+ * <b>Note:</b> Despite the name, this is NOT "Best Insertion" as defined in VRP literature.
+ * This implementation:
+ * <ol>
+ *   <li>Shuffles jobs randomly</li>
+ *   <li>Sorts by priority</li>
+ *   <li>For each job in this order, inserts it at the position with minimum additional cost</li>
+ * </ol>
+ * This is more accurately called "Sequential Insertion with Random Order" or "Random Order Insertion".
+ * </p>
+ * <p>
+ * For true Best Insertion (Cheapest Insertion) as defined in literature, where the globally
+ * cheapest (job, position) pair is selected at each iteration, use {@link CheapestInsertion}.
+ * </p>
  *
  * @author stefan schroeder
+ * @see CheapestInsertion
  */
 public final class BestInsertion extends AbstractInsertionStrategy {
 
