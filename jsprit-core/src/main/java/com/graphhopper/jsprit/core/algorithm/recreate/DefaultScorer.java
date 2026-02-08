@@ -69,12 +69,14 @@ public class DefaultScorer implements ScoringFunction  {
     }
 
     private TimeWindow getLargestTimeWindow(Activity act) {
-        TimeWindow timeWindow = null;
+        TimeWindow largest = null;
         for (TimeWindow tw : act.getTimeWindows()) {
-            if (timeWindow == null) timeWindow = tw;
-            else if (tw.larger(timeWindow)) timeWindow = tw;
+            if (largest == null || tw.larger(largest)) {
+                largest = tw;
+            }
         }
-        return TimeWindow.newInstance(0, Double.MAX_VALUE);
+        // Fallback to infinite window if no time windows defined
+        return largest != null ? largest : TimeWindow.newInstance(0, Double.MAX_VALUE);
     }
 
 
