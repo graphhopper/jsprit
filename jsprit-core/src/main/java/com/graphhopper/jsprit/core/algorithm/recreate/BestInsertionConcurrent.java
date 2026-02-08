@@ -76,7 +76,16 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
 
     private final ExecutorService executorService;
 
+    /**
+     * @deprecated use {@link #BestInsertionConcurrent(JobInsertionCostsCalculator, ExecutorService, VehicleRoutingProblem)} instead.
+     * The nuOfBatches parameter is unused.
+     */
+    @Deprecated
     public BestInsertionConcurrent(JobInsertionCostsCalculator jobInsertionCalculator, ExecutorService executorService, int nuOfBatches, VehicleRoutingProblem vehicleRoutingProblem) {
+        this(jobInsertionCalculator, executorService, vehicleRoutingProblem);
+    }
+
+    public BestInsertionConcurrent(JobInsertionCostsCalculator jobInsertionCalculator, ExecutorService executorService, VehicleRoutingProblem vehicleRoutingProblem) {
         super(vehicleRoutingProblem);
         bestInsertionCostCalculator = jobInsertionCalculator;
         this.executorService = executorService;
@@ -94,18 +103,19 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
         List<Job> unassignedJobList = new ArrayList<>(unassignedJobs);
         Collections.shuffle(unassignedJobList, random);
         unassignedJobList.sort(new AccordingToPriorities());
-        List<String> failedConstraintNames = new ArrayList<>();
+        List<Callable<Insertion>> tasks = new ArrayList<>();
         for (final Job unassignedJob : unassignedJobList) {
+            List<String> failedConstraintNames = new ArrayList<>();
             Insertion bestInsertion = null;
             double bestInsertionCost = Double.MAX_VALUE;
-            List<Callable<Insertion>> tasks = new ArrayList<>(vehicleRoutes.size());
+            tasks.clear();
             for (VehicleRoute route : vehicleRoutes) {
                 tasks.add(() -> getBestInsertion(route, unassignedJob));
             }
             try {
                 List<Future<Insertion>> futureResponses = executorService.invokeAll(tasks);
-                for (int i = 0; i < vehicleRoutes.size(); i++) {
-                    Insertion insertion = futureResponses.get(i).get();
+                for (Future<Insertion> futureResponse : futureResponses) {
+                    Insertion insertion = futureResponse.get();
                     if (insertion.insertionData instanceof NoInsertionFound) {
                         failedConstraintNames.addAll(insertion.getInsertionData().getFailedConstraintNames());
                         continue;
@@ -126,12 +136,15 @@ public final class BestInsertionConcurrent extends AbstractInsertionStrategy {
             if (newIData.getInsertionCost() < bestInsertionCost) {
                 bestInsertion = new Insertion(newRoute, newIData);
                 vehicleRoutes.add(newRoute);
+            } else if (newIData instanceof NoInsertionFound) {
+                failedConstraintNames.addAll(newIData.getFailedConstraintNames());
             }
             if (bestInsertion == null) {
                 badJobs.add(unassignedJob);
                 markUnassigned(unassignedJob, failedConstraintNames);
+            } else {
+                insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
             }
-            else insertJob(unassignedJob, bestInsertion.getInsertionData(), bestInsertion.getRoute());
         }
         return badJobs;
     }
