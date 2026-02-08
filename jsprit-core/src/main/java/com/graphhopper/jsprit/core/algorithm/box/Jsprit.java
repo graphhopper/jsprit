@@ -691,14 +691,27 @@ public class Jsprit {
         best.setRandom(random);
 
         // True cheapest insertion (best insertion as defined in VRP literature)
-        CheapestInsertion cheapest = (CheapestInsertion) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
-                .setInsertionStrategy(InsertionStrategyBuilder.Strategy.CHEAPEST)
-                .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
-                .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
-                .setActivityInsertionCostCalculator(activityInsertion)
-                .setServiceInsertionCalculator(this.serviceCalculatorFactory)
-                .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
-                .build();
+        AbstractInsertionStrategy cheapest;
+        if (es == null) {
+            cheapest = (CheapestInsertion) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionStrategyBuilder.Strategy.CHEAPEST)
+                    .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
+                    .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
+                    .setActivityInsertionCostCalculator(activityInsertion)
+                    .setServiceInsertionCalculator(this.serviceCalculatorFactory)
+                    .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
+                    .build();
+        } else {
+            cheapest = (CheapestInsertionConcurrent) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
+                    .setInsertionStrategy(InsertionStrategyBuilder.Strategy.CHEAPEST)
+                    .setConcurrentMode(es, noThreads)
+                    .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
+                    .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
+                    .setActivityInsertionCostCalculator(activityInsertion)
+                    .setServiceInsertionCalculator(this.serviceCalculatorFactory)
+                    .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
+                    .build();
+        }
         cheapest.setRandom(random);
 
         IterationStartsListener schrimpfThreshold = null;
