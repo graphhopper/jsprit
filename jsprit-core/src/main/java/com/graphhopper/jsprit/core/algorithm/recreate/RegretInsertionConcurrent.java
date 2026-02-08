@@ -24,10 +24,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -73,7 +70,6 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 //        this.scoringFunction = new DefaultScorer(vehicleRoutingProblem);
         this.regretScoringFunction = new DefaultRegretScoringFunction(new DefaultScorer(vehicleRoutingProblem));
         this.insertionCostsCalculator = jobInsertionCalculator;
-        this.vrp = vehicleRoutingProblem;
         this.executorService = executorService;
         logger.debug("initialise " + this);
     }
@@ -95,9 +91,11 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
     public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
         List<Job> badJobs = new ArrayList<>(unassignedJobs.size());
 
-        Iterator<Job> jobIterator = unassignedJobs.iterator();
-        while (jobIterator.hasNext()){
-            Job job = jobIterator.next();
+        // Use LinkedHashSet for O(1) removal while preserving insertion order
+        Set<Job> jobs = new LinkedHashSet<>(unassignedJobs);
+
+        // Handle breaks first (without modifying the input collection)
+        for (Job job : unassignedJobs) {
             if (job.getJobType().isBreak()) {
                 VehicleRoute route = findRoute(routes, job);
                 if (route == null) {
@@ -110,15 +108,13 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
                         insertJob(job, iData, route);
                     }
                 }
-                jobIterator.remove();
+                jobs.remove(job);
             }
         }
 
-        List<Job> jobs = new ArrayList<>(unassignedJobs);
         while (!jobs.isEmpty()) {
-            List<Job> unassignedJobList = new ArrayList<>(jobs);
             List<ScoredJob> badJobList = new ArrayList<>();
-            ScoredJob bestScoredJob = calculateBestJob(routes, unassignedJobList, badJobList);
+            ScoredJob bestScoredJob = calculateBestJob(routes, jobs, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
@@ -136,17 +132,17 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
         return badJobs;
     }
 
-    private ScoredJob calculateBestJob(final Collection<VehicleRoute> routes, List<Job> unassignedJobList, List<ScoredJob> badJobList) {
+    private ScoredJob calculateBestJob(final Collection<VehicleRoute> routes, Collection<Job> unassignedJobs, List<ScoredJob> badJobList) {
         ScoredJob bestScoredJob = null;
-        List<Callable<ScoredJob>> tasks = new ArrayList<>(unassignedJobList.size());
-        for (final Job unassignedJob : unassignedJobList) {
+        List<Callable<ScoredJob>> tasks = new ArrayList<>();
+        for (final Job unassignedJob : unassignedJobs) {
             tasks.add(() -> Scorer.scoreUnassignedJob(routes, unassignedJob, insertionCostsCalculator, regretScoringFunction));
         }
 
         try {
             List<Future<ScoredJob>> futureResponses = executorService.invokeAll(tasks);
-            for (int i = 0; i < unassignedJobList.size(); i++) {
-                ScoredJob sJob = futureResponses.get(i).get();
+            for (Future<ScoredJob> futureResponse : futureResponses) {
+                ScoredJob sJob = futureResponse.get();
                 if (sJob instanceof ScoredJob.BadJob) {
                     badJobList.add(sJob);
                     continue;

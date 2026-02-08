@@ -59,7 +59,6 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
         this.regretScoringFunction = new DefaultRegretScoringFunction(new DefaultScorer(vehicleRoutingProblem));
         this.insertionCostsCalculator = jobInsertionCalculator;
         this.fleetManager = fleetManager;
-        this.vrp = vehicleRoutingProblem;
         this.initialVehicleIds = getInitialVehicleIds(vehicleRoutingProblem);
         logger.debug("initialise {}", this);
     }
@@ -109,27 +108,24 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
     @Override
     public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
         List<Job> badJobs = new ArrayList<>(unassignedJobs.size());
-        List<Job> jobs = new ArrayList<>(unassignedJobs);
+        Set<Job> jobs = new LinkedHashSet<>(unassignedJobs);
         TreeSet<VersionedInsertionData>[] priorityQueues = new TreeSet[vrp.getJobs().values().size() + 2];
         VehicleRoute lastModified = null;
         boolean firstRun = true;
         int updateRound = 0;
         Map<VehicleRoute, Integer> updates = new HashMap<>();
         while (!jobs.isEmpty()) {
-            List<Job> unassignedJobList = new ArrayList<>(jobs);
             List<ScoredJob> badJobList = new ArrayList<>();
             if(!firstRun && lastModified == null) throw new IllegalStateException("last modified route is null. this should not be.");
             if(firstRun){
-                updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound, firstRun, lastModified, updates);
+                updateInsertionData(priorityQueues, routes, jobs, updateRound, firstRun, lastModified, updates);
                 firstRun = false;
             }
             else{
-                //update for all routes || remove history and only update modified route
-                updateInsertionData(priorityQueues, routes, unassignedJobList, updateRound, firstRun, lastModified, updates);
-//                updates.put(lastModified,updateRound);
+                updateInsertionData(priorityQueues, routes, jobs, updateRound, firstRun, lastModified, updates);
             }
             updateRound++;
-            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, regretScoringFunction, priorityQueues, updates, unassignedJobList, badJobList);
+            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, regretScoringFunction, priorityQueues, updates, jobs, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
@@ -149,8 +145,8 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
         return badJobs;
     }
 
-    private void updateInsertionData(TreeSet<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, List<Job> unassignedJobList, int updateRound, boolean firstRun, VehicleRoute lastModified, Map<VehicleRoute, Integer> updates) {
-        for (Job unassignedJob : unassignedJobList) {
+    private void updateInsertionData(TreeSet<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, Collection<Job> unassignedJobs, int updateRound, boolean firstRun, VehicleRoute lastModified, Map<VehicleRoute, Integer> updates) {
+        for (Job unassignedJob : unassignedJobs) {
             if(priorityQueues[unassignedJob.getIndex()] == null){
                 priorityQueues[unassignedJob.getIndex()] = new TreeSet<>(InsertionDataUpdater.getComparator());
             }

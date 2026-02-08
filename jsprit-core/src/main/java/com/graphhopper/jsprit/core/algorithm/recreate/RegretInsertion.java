@@ -24,10 +24,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Insertion based on regret approach.
@@ -68,7 +65,6 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         super(vehicleRoutingProblem);
         this.regretScoringFunction = new DefaultRegretScoringFunction(new DefaultScorer(vehicleRoutingProblem));
         this.insertionCostsCalculator = jobInsertionCalculator;
-        this.vrp = vehicleRoutingProblem;
         logger.debug("initialise {}", this);
     }
 
@@ -87,9 +83,11 @@ public class RegretInsertion extends AbstractInsertionStrategy {
     public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
         List<Job> badJobs = new ArrayList<>(unassignedJobs.size());
 
-        Iterator<Job> jobIterator = unassignedJobs.iterator();
-        while (jobIterator.hasNext()){
-            Job job = jobIterator.next();
+        // Use LinkedHashSet for O(1) removal while preserving insertion order
+        Set<Job> jobs = new LinkedHashSet<>(unassignedJobs);
+
+        // Handle breaks first (without modifying the input collection)
+        for (Job job : unassignedJobs) {
             if (job.getJobType().isBreak()) {
                 VehicleRoute route = findRoute(routes, job);
                 if (route == null) {
@@ -102,15 +100,13 @@ public class RegretInsertion extends AbstractInsertionStrategy {
                         insertJob(job, iData, route);
                     }
                 }
-                jobIterator.remove();
+                jobs.remove(job);
             }
         }
 
-        List<Job> jobs = new ArrayList<>(unassignedJobs);
         while (!jobs.isEmpty()) {
-            List<Job> unassignedJobList = new ArrayList<>(jobs);
             List<ScoredJob> badJobList = new ArrayList<>();
-            ScoredJob bestScoredJob = getBestScoredUnassignedJob(routes, unassignedJobList, badJobList);
+            ScoredJob bestScoredJob = getBestScoredUnassignedJob(routes, jobs, badJobList);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
@@ -135,9 +131,9 @@ public class RegretInsertion extends AbstractInsertionStrategy {
         return null;
     }
 
-    private ScoredJob getBestScoredUnassignedJob(Collection<VehicleRoute> routes, Collection<Job> unassignedJobList, List<ScoredJob> badJobs) {
+    private ScoredJob getBestScoredUnassignedJob(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs, List<ScoredJob> badJobs) {
         ScoredJob bestScoredJob = null;
-        for (Job unassignedJob : unassignedJobList) {
+        for (Job unassignedJob : unassignedJobs) {
             ScoredJob scoredJob = Scorer.scoreUnassignedJob(routes, unassignedJob, insertionCostsCalculator, regretScoringFunction);
             if (scoredJob instanceof ScoredJob.BadJob) {
                 badJobs.add(scoredJob);

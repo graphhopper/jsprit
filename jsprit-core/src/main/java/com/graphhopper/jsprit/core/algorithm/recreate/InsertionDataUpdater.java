@@ -68,9 +68,9 @@ class InsertionDataUpdater {
         };
     }
 
-    static ScoredJob getBest(boolean switchAllowed, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, RegretScoringFunction scoringFunction, TreeSet<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, List<Job> unassignedJobList, List<ScoredJob> badJobs) {
+    static ScoredJob getBest(boolean switchAllowed, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, RegretScoringFunction scoringFunction, TreeSet<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, Collection<Job> unassignedJobs, List<ScoredJob> badJobs) {
         ScoredJob bestScoredJob = null;
-        for (Job j : unassignedJobList) {
+        for (Job j : unassignedJobs) {
             VehicleRoute bestRoute = null;
             InsertionData best = null;
             InsertionData secondBest = null;
