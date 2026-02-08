@@ -164,4 +164,118 @@ class RuinWorstTest {
         assertTrue(unassigned.contains(shipment));
         assertTrue(unassigned.contains(s3));
     }
+
+    @Test
+    @DisplayName("It Should Handle Removing All Jobs From Route")
+    void itShouldHandleRemovingAllJobsFromRoute() {
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(1, 1)).build()).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build()).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(5, 1)).build()).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addVehicle(v).build();
+        RuinWorst worst = new RuinWorst(vrp, 3);
+        VehicleRoute route = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3).setJobActivityFactory(vrp.getJobActivityFactory()).build();
+        Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList(route));
+        assertEquals(3, unassigned.size());
+        assertTrue(unassigned.contains(s1));
+        assertTrue(unassigned.contains(s2));
+        assertTrue(unassigned.contains(s3));
+    }
+
+    @Test
+    @DisplayName("It Should Handle Single Job Route")
+    void itShouldHandleSingleJobRoute() {
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10)).build()).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addVehicle(v).build();
+        RuinWorst worst = new RuinWorst(vrp, 1);
+        VehicleRoute route = VehicleRoute.Builder.newInstance(v).addService(s1).setJobActivityFactory(vrp.getJobActivityFactory()).build();
+        Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList(route));
+        assertEquals(1, unassigned.size());
+        assertTrue(unassigned.contains(s1));
+    }
+
+    @Test
+    @DisplayName("It Should Correctly Update Neighbor Savings After Removal")
+    void itShouldCorrectlyUpdateNeighborSavingsAfterRemoval() {
+        // Create a route: depot -> s1 -> s2 -> s3 -> s4 -> depot
+        // s2 is a detour (far from line), removing it should change s1 and s3 savings
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(2, 0)).build()).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 10)).build()).build(); // detour
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(4, 0)).build()).build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(6, 0)).build()).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addJob(s4).addVehicle(v).build();
+        RuinWorst worst = new RuinWorst(vrp, 2);
+        VehicleRoute route = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3).addService(s4).setJobActivityFactory(vrp.getJobActivityFactory()).build();
+        Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList(route));
+        assertEquals(2, unassigned.size());
+        // s2 should be removed first (biggest detour)
+        assertTrue(unassigned.contains(s2));
+    }
+
+    @Test
+    @DisplayName("It Should Handle Multiple Routes With Different Worst Jobs")
+    void itShouldHandleMultipleRoutesWithDifferentWorstJobs() {
+        // Route 1: tight route with small detour
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(1, 0)).build()).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(2, 1)).build()).build(); // small detour
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 0)).build()).build();
+
+        // Route 2: route with big detour
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(1, 0)).build()).build();
+        Service s5 = Service.Builder.newInstance("s5").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(2, 20)).build()).build(); // big detour
+        Service s6 = Service.Builder.newInstance("s6").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 0)).build()).build();
+
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
+                .addJob(s1).addJob(s2).addJob(s3).addJob(s4).addJob(s5).addJob(s6)
+                .addVehicle(v1).addVehicle(v2).build();
+
+        RuinWorst worst = new RuinWorst(vrp, 1);
+        VehicleRoute route1 = VehicleRoute.Builder.newInstance(v1).addService(s1).addService(s2).addService(s3).setJobActivityFactory(vrp.getJobActivityFactory()).build();
+        VehicleRoute route2 = VehicleRoute.Builder.newInstance(v2).addService(s4).addService(s5).addService(s6).setJobActivityFactory(vrp.getJobActivityFactory()).build();
+
+        Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList(route1, route2));
+        assertEquals(1, unassigned.size());
+        // s5 should be removed (bigger detour than s2)
+        assertTrue(unassigned.contains(s5));
+    }
+
+    @Test
+    @DisplayName("It Should Handle Consecutive Removals From Same Route")
+    void itShouldHandleConsecutiveRemovalsFromSameRoute() {
+        // Route with multiple jobs, remove several consecutively
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(1, 0)).build()).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(2, 0)).build()).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 0)).build()).build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(4, 0)).build()).build();
+        Service s5 = Service.Builder.newInstance("s5").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(5, 0)).build()).build();
+
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
+                .addJob(s1).addJob(s2).addJob(s3).addJob(s4).addJob(s5)
+                .addVehicle(v).build();
+
+        RuinWorst worst = new RuinWorst(vrp, 4);
+        VehicleRoute route = VehicleRoute.Builder.newInstance(v)
+                .addService(s1).addService(s2).addService(s3).addService(s4).addService(s5)
+                .setJobActivityFactory(vrp.getJobActivityFactory()).build();
+
+        Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList(route));
+        assertEquals(4, unassigned.size());
+    }
+
+    @Test
+    @DisplayName("It Should Handle Empty Route Collection")
+    void itShouldHandleEmptyRouteCollection() {
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(1, 1)).build()).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addVehicle(v).build();
+        RuinWorst worst = new RuinWorst(vrp, 1);
+        Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList());
+        assertEquals(0, unassigned.size());
+    }
 }

@@ -106,6 +106,12 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
         Map<Job, VehicleRoute> mappedRoutes = map(vehicleRoutes);
         int toRemove = nOfJobs2BeRemoved;
 
+        // Create clusterer once - reuse across iterations (minPts/epsFactor don't change during ruin)
+        DBSCANClusterer dbscan = new DBSCANClusterer(vrp.getTransportCosts());
+        dbscan.setRandom(random);
+        dbscan.setMinPts(minPts);
+        dbscan.setEpsFactor(epsFactor);
+
         Collection<Job> lastRemoved = new ArrayList<>();
         Set<VehicleRoute> ruined = new HashSet<>();
         Set<Job> removed = new HashSet<>();
@@ -134,10 +140,6 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
                 cycleCandidates.add(targetRoute);
                 break;
             }
-            DBSCANClusterer dbscan = new DBSCANClusterer(vrp.getTransportCosts());
-            dbscan.setRandom(random);
-            dbscan.setMinPts(minPts);
-            dbscan.setEpsFactor(epsFactor);
             List<Job> cluster = dbscan.getRandomCluster(targetRoute);
             for (Job j : cluster) {
                 if (toRemove == 0) break;

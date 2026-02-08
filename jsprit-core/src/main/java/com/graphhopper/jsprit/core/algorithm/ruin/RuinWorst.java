@@ -72,11 +72,33 @@ public final class RuinWorst extends AbstractRuinStrategy {
     private void ruin(Collection<VehicleRoute> vehicleRoutes, int nOfJobs2BeRemoved, List<Job> unassignedJobs) {
         int toRemove = nOfJobs2BeRemoved;
         Set<Job> tabu = new HashSet<>();
+
+        // Calculate savings once for all jobs - O(n) instead of O(k*n)
+        Map<Job, Double> jobToSavings = new HashMap<>();
+        NavigableMap<Double, Set<Job>> savingsToJobs = new TreeMap<>();
+        Map<Job, VehicleRoute> jobToRoute = new HashMap<>();
+
+        initializeSavings(vehicleRoutes, jobToSavings, savingsToJobs, jobToRoute);
+
         while (toRemove > 0) {
-            Job worst = getWorst(vehicleRoutes, tabu);
+            Job worst = getWorstFromSortedMap(savingsToJobs, jobToSavings, tabu);
             if (worst == null) break;
+
+            VehicleRoute affectedRoute = jobToRoute.get(worst);
+
+            // Collect neighbors before removal for incremental update
+            List<Job> neighborsToUpdate = getNeighborJobs(worst, affectedRoute);
+
             if (removeJob(worst, vehicleRoutes)) {
                 unassignedJobs.add(worst);
+                // Remove the job from our tracking structures
+                removeJobFromSavingsMap(worst, jobToSavings, savingsToJobs);
+                jobToRoute.remove(worst);
+
+                // Incrementally update only the affected neighbors
+                if (affectedRoute != null && !affectedRoute.isEmpty()) {
+                    updateNeighborSavings(neighborsToUpdate, affectedRoute, jobToSavings, savingsToJobs);
+                }
             } else {
                 tabu.add(worst);
             }
@@ -84,47 +106,145 @@ public final class RuinWorst extends AbstractRuinStrategy {
         }
     }
 
-    private Job getWorst(Collection<VehicleRoute> routes, Set<Job> tabu) {
-        if (routes.isEmpty()) return null;
-
-        Job worst = null;
-        double bestSavings = Double.MIN_VALUE;
-        Map<Job, Double> savingsMap = new HashMap<>();
-
-        // Calculate savings for all jobs across all routes
-        for (VehicleRoute route : routes) {
+    private void initializeSavings(Collection<VehicleRoute> vehicleRoutes,
+                                   Map<Job, Double> jobToSavings,
+                                   NavigableMap<Double, Set<Job>> savingsToJobs,
+                                   Map<Job, VehicleRoute> jobToRoute) {
+        for (VehicleRoute route : vehicleRoutes) {
             if (route.isEmpty()) continue;
-
-            calculateSavingsForRoute(route, savingsMap);
+            calculateSavingsForRoute(route, jobToSavings, savingsToJobs, jobToRoute);
         }
-
-        // If no jobs have been evaluated, return null
-        if (savingsMap.isEmpty()) return null;
-
-        // Find the job with highest savings (worst job to keep)
-        for (Map.Entry<Job, Double> entry : savingsMap.entrySet()) {
-            Job job = entry.getKey();
-            double savings = entry.getValue();
-
-            if (tabu.contains(job) || !vrp.getJobs().containsKey(job.getId())) {
-                continue;
-            }
-
-            // Skip jobs that don't pass the filter
-            if (!jobFilter.accept(job)) {
-                continue;
-            }
-
-            if (savings > bestSavings) {
-                bestSavings = savings;
-                worst = job;
-            }
-        }
-
-        return worst;
     }
 
-    private void calculateSavingsForRoute(VehicleRoute route, Map<Job, Double> savingsMap) {
+    private Job getWorstFromSortedMap(NavigableMap<Double, Set<Job>> savingsToJobs,
+                                      Map<Job, Double> jobToSavings,
+                                      Set<Job> tabu) {
+        // Iterate from highest savings to lowest - O(log n) to get highest entry
+        while (!savingsToJobs.isEmpty()) {
+            Map.Entry<Double, Set<Job>> highestEntry = savingsToJobs.lastEntry();
+            if (highestEntry == null) return null;
+
+            Set<Job> jobs = highestEntry.getValue();
+            Iterator<Job> iterator = jobs.iterator();
+
+            while (iterator.hasNext()) {
+                Job job = iterator.next();
+
+                if (tabu.contains(job) || !vrp.getJobs().containsKey(job.getId())) {
+                    continue;
+                }
+
+                if (!jobFilter.accept(job)) {
+                    continue;
+                }
+
+                return job;
+            }
+
+            // All jobs at this savings level are filtered out, try next level
+            savingsToJobs.pollLastEntry();
+        }
+        return null;
+    }
+
+    private List<Job> getNeighborJobs(Job job, VehicleRoute route) {
+        List<Job> neighbors = new ArrayList<>();
+        if (route == null || route.isEmpty()) return neighbors;
+
+        List<TourActivity> activities = route.getActivities();
+        Set<Integer> jobActivityIndices = new HashSet<>();
+
+        // Find all activity indices for this job
+        for (int i = 0; i < activities.size(); i++) {
+            TourActivity act = activities.get(i);
+            if (act instanceof TourActivity.JobActivity) {
+                if (((TourActivity.JobActivity) act).getJob().equals(job)) {
+                    jobActivityIndices.add(i);
+                }
+            }
+        }
+
+        // Find neighbor jobs (activities adjacent to any of the job's activities)
+        Set<Job> neighborSet = new HashSet<>();
+        for (int idx : jobActivityIndices) {
+            // Check activity before
+            if (idx > 0) {
+                TourActivity prevAct = activities.get(idx - 1);
+                if (prevAct instanceof TourActivity.JobActivity) {
+                    Job neighborJob = ((TourActivity.JobActivity) prevAct).getJob();
+                    if (!neighborJob.equals(job)) {
+                        neighborSet.add(neighborJob);
+                    }
+                }
+            }
+            // Check activity after
+            if (idx < activities.size() - 1) {
+                TourActivity nextAct = activities.get(idx + 1);
+                if (nextAct instanceof TourActivity.JobActivity) {
+                    Job neighborJob = ((TourActivity.JobActivity) nextAct).getJob();
+                    if (!neighborJob.equals(job)) {
+                        neighborSet.add(neighborJob);
+                    }
+                }
+            }
+        }
+
+        neighbors.addAll(neighborSet);
+        return neighbors;
+    }
+
+    private void removeJobFromSavingsMap(Job job, Map<Job, Double> jobToSavings,
+                                         NavigableMap<Double, Set<Job>> savingsToJobs) {
+        Double oldSavings = jobToSavings.remove(job);
+        if (oldSavings != null) {
+            Set<Job> jobsAtSavings = savingsToJobs.get(oldSavings);
+            if (jobsAtSavings != null) {
+                jobsAtSavings.remove(job);
+                if (jobsAtSavings.isEmpty()) {
+                    savingsToJobs.remove(oldSavings);
+                }
+            }
+        }
+    }
+
+    private void updateNeighborSavings(List<Job> neighbors, VehicleRoute route,
+                                       Map<Job, Double> jobToSavings,
+                                       NavigableMap<Double, Set<Job>> savingsToJobs) {
+        for (Job neighbor : neighbors) {
+            // Remove old savings entry
+            removeJobFromSavingsMap(neighbor, jobToSavings, savingsToJobs);
+
+            // Recalculate savings for this job
+            double newSavings = calculateSavingsForJob(neighbor, route);
+
+            // Add new savings entry
+            jobToSavings.put(neighbor, newSavings);
+            savingsToJobs.computeIfAbsent(newSavings, k -> new HashSet<>()).add(neighbor);
+        }
+    }
+
+    private double calculateSavingsForJob(Job job, VehicleRoute route) {
+        double totalSavings = 0.0;
+        List<TourActivity> activities = route.getActivities();
+
+        for (int i = 0; i < activities.size(); i++) {
+            TourActivity act = activities.get(i);
+            if (!(act instanceof TourActivity.JobActivity)) continue;
+            if (!((TourActivity.JobActivity) act).getJob().equals(job)) continue;
+
+            TourActivity actBefore = (i == 0) ? route.getStart() : activities.get(i - 1);
+            TourActivity actAfter = (i == activities.size() - 1) ? route.getEnd() : activities.get(i + 1);
+
+            totalSavings += savings(route, actBefore, act, actAfter);
+        }
+
+        return totalSavings;
+    }
+
+    private void calculateSavingsForRoute(VehicleRoute route,
+                                          Map<Job, Double> jobToSavings,
+                                          NavigableMap<Double, Set<Job>> savingsToJobs,
+                                          Map<Job, VehicleRoute> jobToRoute) {
         if (route.isEmpty()) return;
 
         TourActivity actBefore = route.getStart();
@@ -143,8 +263,8 @@ public final class RuinWorst extends AbstractRuinStrategy {
             double savings = savings(route, actBefore, actToEval, act);
             Job job = ((TourActivity.JobActivity) actToEval).getJob();
 
-            // Add to savings map
-            savingsMap.merge(job, savings, Double::sum);
+            // Update savings tracking structures
+            updateSavingsStructures(job, savings, route, jobToSavings, savingsToJobs, jobToRoute);
 
             actBefore = actToEval;
             actToEval = act;
@@ -155,9 +275,37 @@ public final class RuinWorst extends AbstractRuinStrategy {
             double savings = savings(route, actBefore, actToEval, route.getEnd());
             Job job = ((TourActivity.JobActivity) actToEval).getJob();
 
-            // Add to savings map
-            savingsMap.merge(job, savings, Double::sum);
+            updateSavingsStructures(job, savings, route, jobToSavings, savingsToJobs, jobToRoute);
         }
+    }
+
+    private void updateSavingsStructures(Job job, double additionalSavings, VehicleRoute route,
+                                         Map<Job, Double> jobToSavings,
+                                         NavigableMap<Double, Set<Job>> savingsToJobs,
+                                         Map<Job, VehicleRoute> jobToRoute) {
+        // Remove old entry from savingsToJobs if exists
+        Double oldSavings = jobToSavings.get(job);
+        if (oldSavings != null) {
+            Set<Job> oldSet = savingsToJobs.get(oldSavings);
+            if (oldSet != null) {
+                oldSet.remove(job);
+                if (oldSet.isEmpty()) {
+                    savingsToJobs.remove(oldSavings);
+                }
+            }
+        }
+
+        // Calculate new total savings
+        double newSavings = (oldSavings != null ? oldSavings : 0.0) + additionalSavings;
+
+        // Update jobToSavings
+        jobToSavings.put(job, newSavings);
+
+        // Update savingsToJobs
+        savingsToJobs.computeIfAbsent(newSavings, k -> new HashSet<>()).add(job);
+
+        // Update jobToRoute
+        jobToRoute.put(job, route);
     }
 
     private double savings(VehicleRoute route, TourActivity actBefore, TourActivity actToEval, TourActivity act) {

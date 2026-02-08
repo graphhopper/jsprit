@@ -81,4 +81,56 @@ class DBSCANClustererTest {
         List<List<Job>> cluster = c.getClusters(r);
         assertEquals(3, cluster.size());
     }
+
+    @Test
+    @DisplayName("Reusing Clusterer Should Return Consistent Results")
+    void reusingClustererShouldReturnConsistentResults() {
+        // Test that reusing the same clusterer instance produces consistent results
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(10, 10)).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(9, 9)).build();
+        Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance(2, 2)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
+
+        VehicleRoute r1 = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3).build();
+        VehicleRoute r2 = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s4).build();
+
+        DBSCANClusterer c = new DBSCANClusterer(new EuclideanCosts());
+        c.setEpsDistance(3);
+
+        // First call
+        List<List<Job>> clusters1 = c.getClusters(r1);
+        assertEquals(1, clusters1.size());
+        assertEquals(2, clusters1.get(0).size());
+
+        // Second call with different route - should work correctly
+        List<List<Job>> clusters2 = c.getClusters(r2);
+        assertEquals(1, clusters2.size());
+        assertEquals(2, clusters2.get(0).size());
+
+        // Third call with first route again - should be consistent
+        List<List<Job>> clusters3 = c.getClusters(r1);
+        assertEquals(1, clusters3.size());
+        assertEquals(2, clusters3.get(0).size());
+    }
+
+    @Test
+    @DisplayName("Clusterer Should Handle Multiple Calls With Same Route")
+    void clustererShouldHandleMultipleCallsWithSameRoute() {
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(10, 10)).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(9, 9)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
+        VehicleRoute r = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3).build();
+
+        DBSCANClusterer c = new DBSCANClusterer(new EuclideanCosts());
+        c.setEpsDistance(3);
+
+        // Call multiple times - results should be consistent
+        for (int i = 0; i < 5; i++) {
+            List<List<Job>> clusters = c.getClusters(r);
+            assertEquals(1, clusters.size());
+            assertEquals(2, clusters.get(0).size());
+        }
+    }
 }

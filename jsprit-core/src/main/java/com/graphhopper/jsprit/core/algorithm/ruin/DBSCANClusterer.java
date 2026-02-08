@@ -73,18 +73,33 @@ public class DBSCANClusterer {
 
         private final VehicleRoutingTransportCosts costs;
 
+        // Cache for computed distances: key = (id1 << 20) | id2 (assuming ids < 2^20)
+        private final Map<Long, Double> distanceCache;
+
         public MyDistance(List<LocationWrapper> locations, VehicleRoutingTransportCosts costs) {
             this.locations = new HashMap<>();
             for (LocationWrapper lw : locations) {
                 this.locations.put((int) lw.getPoint()[0], lw);
             }
             this.costs = costs;
+            this.distanceCache = new HashMap<>();
         }
 
         @Override
         public double compute(double[] doubles, double[] doubles1) {
-            LocationWrapper l1 = locations.get((int) doubles[0]);
-            LocationWrapper l2 = locations.get((int) doubles1[0]);
+            int id1 = (int) doubles[0];
+            int id2 = (int) doubles1[0];
+
+            // Create symmetric cache key (order-independent)
+            long cacheKey = id1 < id2 ? ((long) id1 << 20) | id2 : ((long) id2 << 20) | id1;
+
+            Double cached = distanceCache.get(cacheKey);
+            if (cached != null) {
+                return cached;
+            }
+
+            LocationWrapper l1 = locations.get(id1);
+            LocationWrapper l2 = locations.get(id2);
             int count = 0;
             double sum = 0;
             for (Location loc_1 : l1.getLocations()) {
@@ -93,7 +108,9 @@ public class DBSCANClusterer {
                     count++;
                 }
             }
-            return sum / (double) count;
+            double result = sum / (double) count;
+            distanceCache.put(cacheKey, result);
+            return result;
         }
     }
 
