@@ -199,9 +199,15 @@ public class InsertionStrategyBuilder {
             }
         } else if (strategy.equals(Strategy.CHEAPEST)) {
             // True Best Insertion as defined in VRP literature
-            CheapestInsertion cheapestInsertion = new CheapestInsertion(costCalculator, vrp);
-            cheapestInsertion.setRandom(random);
-            insertion = cheapestInsertion;
+            if (executor == null) {
+                CheapestInsertion cheapestInsertion = new CheapestInsertion(costCalculator, vrp);
+                cheapestInsertion.setRandom(random);
+                insertion = cheapestInsertion;
+            } else {
+                CheapestInsertionConcurrent cheapestInsertion = new CheapestInsertionConcurrent(costCalculator, executor, vrp);
+                cheapestInsertion.setRandom(random);
+                insertion = cheapestInsertion;
+            }
         } else if (strategy.equals(Strategy.REGRET)) {
             if (executor == null) {
                 if (isFastRegret) {
