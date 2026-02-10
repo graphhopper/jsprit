@@ -177,7 +177,7 @@ public class SolutionAnalyser {
                 lastTransportCostsStates.put(activity, transportCost + activityCost);
 
                 // Service time
-                double serviceTime = getActivityDuration(activity, currentTime);
+                double serviceTime = getActivityDuration(prevAct, activity, currentTime);
                 totalServiceTime += serviceTime;
                 currentTime += serviceTime;
 
@@ -218,8 +218,9 @@ public class SolutionAnalyser {
             );
         }
 
-        private double getActivityDuration(TourActivity activity, double arrivalTime) {
+        private double getActivityDuration(TourActivity prevAct, TourActivity activity, double arrivalTime) {
             return vrp.getActivityCosts().getActivityDuration(
+                    prevAct,
                 activity,
                 arrivalTime,
                 route.getDriver(),

@@ -51,6 +51,8 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
 
     private Location[] prevActLocations;
 
+    private TourActivity[] prevActs;
+
     private Collection<Vehicle> vehicles;
 
     private final TransportTime transportTime;
@@ -66,6 +68,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
         this.transportTime = transportTime;
         prevActEndTimes = new double[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
         prevActLocations = new Location[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
+        prevActs = new TourActivity[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
         this.activityCosts = activityCosts;
     }
 
@@ -89,6 +92,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
             actStartTimesPerVehicle.put(vehicleIndex, new HashMap<>());
             prevActEndTimes[vehicleIndex] = v.getEarliestDeparture();
             prevActLocations[vehicleIndex] = v.getStartLocation();
+            prevActs[vehicleIndex] = route.getStart();
         }
     }
 
@@ -103,7 +107,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
             double activityArrival = prevActEndTimes[v.getVehicleTypeIdentifier().getIndex()] + transportTime.getTransportTime(prevActLocation,activity.getLocation(),prevActEndTime,route.getDriver(),v);
             double activityStart = Math.max(activityArrival,activity.getTheoreticalEarliestOperationStartTime());
             memorizeActStart(activity,v,activityStart);
-            double activityEnd = activityStart + activityCosts.getActivityDuration(activity, activityArrival, route.getDriver(), v);
+            double activityEnd = activityStart + activityCosts.getActivityDuration(prevActs[vehicleIndex], activity, activityArrival, route.getDriver(), v);
             Map<Job, Double> openPickups = openPickupEndTimesPerVehicle.get(vehicleIndex);
             if (activity instanceof ServiceActivity || activity instanceof PickupActivity) {
                 openPickups.put(((TourActivity.JobActivity) activity).getJob(), activityEnd);
@@ -119,6 +123,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
             }
             prevActLocations[vehicleIndex] = activity.getLocation();
             prevActEndTimes[vehicleIndex] = activityEnd;
+            prevActs[vehicleIndex] = activity;
         }
 
     }

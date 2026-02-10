@@ -204,7 +204,7 @@ final class ServiceInsertionOnRouteLevelCalculator implements JobInsertionCostsC
             /**
              * departure time at nextAct with new vehicle
              */
-            double depTime_nextAct_newVehicle = Math.max(arrTime_nextAct_newVehicle, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(nextAct, arrTime_nextAct_newVehicle,newDriver,newVehicle);
+            double depTime_nextAct_newVehicle = Math.max(arrTime_nextAct_newVehicle, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(prevAct, nextAct, arrTime_nextAct_newVehicle, newDriver, newVehicle);
 
             /**
              * set previous to next

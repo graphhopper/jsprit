@@ -23,6 +23,11 @@ import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Updates and memorizes latest operation start times at activities.
  *
@@ -42,6 +47,10 @@ class UpdatePracticalTimeWindows implements ReverseActivityVisitor, StateUpdater
 
     private TourActivity prevAct;
 
+    private List<TourActivity> activities;
+
+    private Map<TourActivity, Integer> activityIndex;
+
     public UpdatePracticalTimeWindows(StateManager states, VehicleRoutingTransportCosts tpCosts, VehicleRoutingActivityCosts activityCosts) {
         super();
         this.states = states;
@@ -54,11 +63,22 @@ class UpdatePracticalTimeWindows implements ReverseActivityVisitor, StateUpdater
         this.route = route;
         latestArrTimeAtPrevAct = route.getEnd().getTheoreticalLatestOperationStartTime();
         prevAct = route.getEnd();
+
+        // Store activities in a list to find previous activity in forward order during backward pass
+        activities = new ArrayList<>(route.getTourActivities().getActivities());
+        activityIndex = new HashMap<>();
+        for (int i = 0; i < activities.size(); i++) {
+            activityIndex.put(activities.get(i), i);
+        }
     }
 
     @Override
     public void visit(TourActivity activity) {
-        double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevAct.getLocation(), latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle()) - activityCosts.getActivityDuration(activity,latestArrTimeAtPrevAct,route.getDriver(),route.getVehicle());
+        // Find the previous activity in forward time order for setup_time calculation
+        Integer idx = activityIndex.get(activity);
+        TourActivity prevActInForwardOrder = (idx != null && idx > 0) ? activities.get(idx - 1) : route.getStart();
+
+        double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevAct.getLocation(), latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle()) - activityCosts.getActivityDuration(prevActInForwardOrder, activity, latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle());
         double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
 
         states.putInternalTypedActivityState(activity, InternalStates.LATEST_OPERATION_START_TIME, latestArrivalTime);
