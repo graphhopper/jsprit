@@ -100,7 +100,7 @@ class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
         vehicles.add(v4);
         vehicles.add(v5);
         vehicles.add(v6);
-        final VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
+        final VehicleFleetManager fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager(vrp);
         // stateManager.updateTimeWindowStates();
         UpdateVehicleDependentPracticalTimeWindows timeWindow_updater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, routingCosts, activityCosts);
         timeWindow_updater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {

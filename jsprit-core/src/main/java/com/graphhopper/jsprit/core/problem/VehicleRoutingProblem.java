@@ -366,10 +366,8 @@ public class VehicleRoutingProblem {
                 vehicleIdToIndexBuilder.put(vehicle.getId(), vehicleIndexCounter);
                 incVehicleIndexCounter();
             }
-            if (typeKeyIndices.containsKey(vehicle.getVehicleTypeIdentifier())) {
-                vehicle.getVehicleTypeIdentifier().setIndex(typeKeyIndices.get(vehicle.getVehicleTypeIdentifier()));
-            } else {
-                vehicle.getVehicleTypeIdentifier().setIndex(vehicleTypeIdIndexCounter);
+            // Store type key index in map instead of mutating the VehicleTypeKey object
+            if (!typeKeyIndices.containsKey(vehicle.getVehicleTypeIdentifier())) {
                 typeKeyIndices.put(vehicle.getVehicleTypeIdentifier(), vehicleTypeIdIndexCounter);
                 incVehicleTypeIdIndexCounter();
             }
@@ -534,6 +532,7 @@ public class VehicleRoutingProblem {
     // Index maps - indices are now stored in VRP, not on vehicle/job objects
     private final Map<String, Integer> vehicleIdToIndex;
     private final Map<String, Integer> jobIdToIndex;
+    private final Map<VehicleTypeKey, Integer> typeKeyToIndex;
 
     // Array-based fast access by index
     private final Vehicle[] vehiclesByIndex;
@@ -617,6 +616,9 @@ public class VehicleRoutingProblem {
                 jobsByIndex[index] = job;
             }
         }
+
+        // Use type key index map from builder
+        this.typeKeyToIndex = new HashMap<>(builder.typeKeyIndices);
 
         logger.info("setup problem: {}", this);
     }
@@ -783,6 +785,50 @@ public class VehicleRoutingProblem {
         }
         // Fallback to deprecated method for backward compatibility
         return job.getIndex();
+    }
+
+    /**
+     * Returns the index of the given vehicle type key within this VRP.
+     * <p>
+     * Note: Indices are VRP-specific. A vehicle type key can have different indices
+     * in different VRP instances. This is the preferred way to get vehicle type key
+     * indices instead of using {@link VehicleTypeKey#getIndex()}.
+     *
+     * @param typeKey the vehicle type key
+     * @return the index (1-based), or fallback to typeKey.getIndex() if not found in VRP
+     */
+    @SuppressWarnings("deprecation")
+    public int getVehicleTypeKeyIndex(VehicleTypeKey typeKey) {
+        Integer index = typeKeyToIndex.get(typeKey);
+        if (index != null) {
+            return index;
+        }
+        // Fallback to deprecated method for backward compatibility
+        return typeKey.getIndex();
+    }
+
+    /**
+     * Returns the number of vehicle type keys (distinct vehicle types by type, location, time windows).
+     *
+     * @return number of vehicle type keys
+     */
+    public int getNuVehicleTypeKeys() {
+        return typeKeyToIndex.size();
+    }
+
+    /**
+     * Returns the maximum vehicle type key index.
+     *
+     * @return max type key index
+     */
+    public int getMaxVehicleTypeKeyIndex() {
+        int maxIndex = 0;
+        for (Integer index : typeKeyToIndex.values()) {
+            if (index > maxIndex) {
+                maxIndex = index;
+            }
+        }
+        return maxIndex;
     }
 
     /**

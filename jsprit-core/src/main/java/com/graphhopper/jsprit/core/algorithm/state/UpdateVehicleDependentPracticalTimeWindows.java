@@ -94,6 +94,13 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
         this.vehiclesToUpdate = vehiclesToUpdate;
     }
 
+    /**
+     * Get vehicle type key index from VRP's index map.
+     */
+    @SuppressWarnings("deprecation")
+    private int getTypeKeyIndex(Vehicle vehicle) {
+        return stateManager.getVrp().getVehicleTypeKeyIndex(vehicle.getVehicleTypeIdentifier());
+    }
 
     void begin(VehicleRoute route) {
         this.route = route;
@@ -107,19 +114,20 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
         }
 
         for (Vehicle vehicle : vehicles) {
-            vehicleDependentLatestArrTimesPrevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getLatestArrival();
-            vehicleDependentEarliestDepartureTimesPrevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getEarliestDeparture();
+            int vehicleIdx = getTypeKeyIndex(vehicle);
+            vehicleDependentLatestArrTimesPrevAct[vehicleIdx] = vehicle.getLatestArrival();
+            vehicleDependentEarliestDepartureTimesPrevAct[vehicleIdx] = vehicle.getEarliestDeparture();
             Location location = vehicle.getEndLocation();
             if(!vehicle.isReturnToDepot()){
                 location = route.getEnd().getLocation();
             }
-            vehicleDependentLocationPrevActBackward[vehicle.getVehicleTypeIdentifier().getIndex()] = location;
+            vehicleDependentLocationPrevActBackward[vehicleIdx] = location;
             Location startLocation = vehicle.getStartLocation();
             if (vehicle.getStartLocation() == null) {
                 startLocation = route.getStart().getLocation();
             }
-            vehicleDependentLocationPrevActForward[vehicle.getVehicleTypeIdentifier().getIndex()] = startLocation;
-            vehicleDependentPrevActForward[vehicle.getVehicleTypeIdentifier().getIndex()] = route.getStart();
+            vehicleDependentLocationPrevActForward[vehicleIdx] = startLocation;
+            vehicleDependentPrevActForward[vehicleIdx] = route.getStart();
         }
     }
 
@@ -130,8 +138,9 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
         TourActivity prevActInForwardOrder = (idx != null && idx > 0) ? activities.get(idx - 1) : route.getStart();
 
         for (Vehicle vehicle : vehicles) {
-            double latestArrTimeAtPrevAct = vehicleDependentLatestArrTimesPrevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
-            Location prevLocation = vehicleDependentLocationPrevActBackward[vehicle.getVehicleTypeIdentifier().getIndex()];
+            int vehicleIdx = getTypeKeyIndex(vehicle);
+            double latestArrTimeAtPrevAct = vehicleDependentLatestArrTimesPrevAct[vehicleIdx];
+            Location prevLocation = vehicleDependentLocationPrevActBackward[vehicleIdx];
             double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevLocation,
                     latestArrTimeAtPrevAct, route.getDriver(), vehicle) - activityCosts.getActivityDuration(prevActInForwardOrder, activity, latestArrTimeAtPrevAct, route.getDriver(), vehicle);
             double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
@@ -139,15 +148,15 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
                 stateManager.putTypedInternalRouteState(route, vehicle, InternalStates.SWITCH_NOT_FEASIBLE, true);
             }
             stateManager.putInternalTypedActivityState(activity, vehicle, InternalStates.LATEST_OPERATION_START_TIME, latestArrivalTime);
-            vehicleDependentLatestArrTimesPrevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = latestArrivalTime;
-            vehicleDependentLocationPrevActBackward[vehicle.getVehicleTypeIdentifier().getIndex()] = activity.getLocation();
+            vehicleDependentLatestArrTimesPrevAct[vehicleIdx] = latestArrivalTime;
+            vehicleDependentLocationPrevActBackward[vehicleIdx] = activity.getLocation();
 
         }
     }
 
     void visitForward(TourActivity activity) {
         for (Vehicle vehicle : vehicles) {
-            int vehicleIdx = vehicle.getVehicleTypeIdentifier().getIndex();
+            int vehicleIdx = getTypeKeyIndex(vehicle);
             double earliestDepartureAtPrevAct = vehicleDependentEarliestDepartureTimesPrevAct[vehicleIdx];
             Location earliestLocation = vehicleDependentLocationPrevActForward[vehicleIdx];
             TourActivity prevAct = vehicleDependentPrevActForward[vehicleIdx];

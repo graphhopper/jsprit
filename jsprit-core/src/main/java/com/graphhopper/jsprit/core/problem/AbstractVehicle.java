@@ -30,13 +30,19 @@ public abstract class AbstractVehicle implements Vehicle {
 
         private int index;
 
+        /**
+         * @deprecated Use {@link VehicleRoutingProblem#getVehicleTypeKeyIndex(VehicleTypeKey)} instead.
+         * VehicleTypeKey indices are VRP-specific and should not be accessed directly from the type key.
+         * A VehicleTypeKey can have different indices in different VRP instances.
+         */
+        @Deprecated
         @Override
         public int getIndex() {
             return index;
         }
 
         /**
-         * @deprecated Vehicle indices are now managed by VehicleRoutingProblem.
+         * @deprecated VehicleTypeKey indices are now managed by VehicleRoutingProblem.
          * This method is no longer called by the framework.
          */
         @Deprecated

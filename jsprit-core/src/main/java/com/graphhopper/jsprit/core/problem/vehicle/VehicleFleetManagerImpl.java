@@ -106,6 +106,15 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         return vehicle.getIndex();
     }
 
+    @SuppressWarnings("deprecation")
+    private int getTypeKeyIndex(VehicleTypeKey typeKey) {
+        if (vrp != null) {
+            return vrp.getVehicleTypeKeyIndex(typeKey);
+        }
+        // Fallback to deprecated method for backwards compatibility
+        return typeKey.getIndex();
+    }
+
     void init(){
         initializeVehicleTypes();
         logger.debug("initialise {}",this);
@@ -119,8 +128,9 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
     private void initializeVehicleTypes() {
         int maxTypeIndex = 0;
         for(Vehicle v : vehicles){
-            if(v.getVehicleTypeIdentifier().getIndex() > maxTypeIndex){
-                maxTypeIndex = v.getVehicleTypeIdentifier().getIndex();
+            int typeKeyIndex = getTypeKeyIndex(v.getVehicleTypeIdentifier());
+            if (typeKeyIndex > maxTypeIndex) {
+                maxTypeIndex = typeKeyIndex;
             }
         }
         vehicleTypes = new TypeContainer[maxTypeIndex+1];
@@ -138,11 +148,11 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         if (v.getType() == null) {
             throw new IllegalStateException("vehicle needs type");
         }
-        vehicleTypes[v.getVehicleTypeIdentifier().getIndex()].add(v);
+        vehicleTypes[getTypeKeyIndex(v.getVehicleTypeIdentifier())].add(v);
     }
 
     private void removeVehicle(Vehicle v) {
-        vehicleTypes[v.getVehicleTypeIdentifier().getIndex()].remove(v);
+        vehicleTypes[getTypeKeyIndex(v.getVehicleTypeIdentifier())].remove(v);
     }
 
 
@@ -166,8 +176,9 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
     @Override
     public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
         List<Vehicle> vehicles = new ArrayList<>();
+        int excludeTypeIndex = getTypeKeyIndex(withoutThisType.getVehicleTypeIdentifier());
         for(int i=0;i< vehicleTypes.length;i++){
-            if(!vehicleTypes[i].isEmpty() && i != withoutThisType.getVehicleTypeIdentifier().getIndex()){
+            if (!vehicleTypes[i].isEmpty() && i != excludeTypeIndex) {
                 vehicles.add(vehicleTypes[i].getVehicle());
             }
         }
@@ -177,8 +188,9 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
     @Override
     public Vehicle getAvailableVehicle(VehicleTypeKey vehicleTypeIdentifier) {
-        if(!vehicleTypes[vehicleTypeIdentifier.getIndex()].isEmpty()){
-            return vehicleTypes[vehicleTypeIdentifier.getIndex()].getVehicle();
+        int typeKeyIndex = getTypeKeyIndex(vehicleTypeIdentifier);
+        if (!vehicleTypes[typeKeyIndex].isEmpty()) {
+            return vehicleTypes[typeKeyIndex].getVehicle();
         }
         return null;
     }

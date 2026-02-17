@@ -72,6 +72,14 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
         this.activityCosts = activityCosts;
     }
 
+    /**
+     * Get vehicle type key index from VRP's index map.
+     */
+    @SuppressWarnings("deprecation")
+    private int getTypeKeyIndex(Vehicle v) {
+        return stateManager.getVrp().getVehicleTypeKeyIndex(v.getVehicleTypeIdentifier());
+    }
+
 
     public void setVehiclesToUpdate(UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate vehiclesToUpdate) {
         this.vehiclesToUpdate = vehiclesToUpdate;
@@ -86,7 +94,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
         vehicles = vehiclesToUpdate.get(route);
         this.route = route;
         for(Vehicle v : vehicles) {
-            int vehicleIndex = v.getVehicleTypeIdentifier().getIndex();
+            int vehicleIndex = getTypeKeyIndex(v);
             openPickupEndTimesPerVehicle.put(vehicleIndex, new HashMap<>());
             slackTimesPerVehicle.put(vehicleIndex, new HashMap<>());
             actStartTimesPerVehicle.put(vehicleIndex, new HashMap<>());
@@ -101,10 +109,10 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
         double maxTime = getMaxTimeInVehicle(activity);
 
         for(Vehicle v : vehicles) {
-            int vehicleIndex = v.getVehicleTypeIdentifier().getIndex();
+            int vehicleIndex = getTypeKeyIndex(v);
             Location prevActLocation = prevActLocations[vehicleIndex];
-            double prevActEndTime = prevActEndTimes[v.getVehicleTypeIdentifier().getIndex()];
-            double activityArrival = prevActEndTimes[v.getVehicleTypeIdentifier().getIndex()] + transportTime.getTransportTime(prevActLocation,activity.getLocation(),prevActEndTime,route.getDriver(),v);
+            double prevActEndTime = prevActEndTimes[vehicleIndex];
+            double activityArrival = prevActEndTimes[vehicleIndex] + transportTime.getTransportTime(prevActLocation, activity.getLocation(), prevActEndTime, route.getDriver(), v);
             double activityStart = Math.max(activityArrival,activity.getTheoreticalEarliestOperationStartTime());
             memorizeActStart(activity,v,activityStart);
             double activityEnd = activityStart + activityCosts.getActivityDuration(prevActs[vehicleIndex], activity, activityArrival, route.getDriver(), v);
@@ -137,13 +145,13 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
     }
 
     private void memorizeActStart(TourActivity activity, Vehicle v, double activityStart) {
-        actStartTimesPerVehicle.get(v.getVehicleTypeIdentifier().getIndex()).put(activity, activityStart);
+        actStartTimesPerVehicle.get(getTypeKeyIndex(v)).put(activity, activityStart);
     }
 
     @Override
     public void finish() {
         for(Vehicle v : vehicles) {
-            int vehicleIndex = v.getVehicleTypeIdentifier().getIndex();
+            int vehicleIndex = getTypeKeyIndex(v);
 
             //!!! open routes !!!
             double routeEnd;
@@ -186,7 +194,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
 
     public void finish(List<TourActivity> activities, Job ignore) {
         for (Vehicle v : vehicles) {
-            int vehicleIndex = v.getVehicleTypeIdentifier().getIndex();
+            int vehicleIndex = getTypeKeyIndex(v);
 
             //!!! open routes !!!
             double routeEnd;
@@ -227,7 +235,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
     }
 
     private double actStart(TourActivity act, Vehicle v) {
-        return actStartTimesPerVehicle.get(v.getVehicleTypeIdentifier().getIndex()).get(act);
+        return actStartTimesPerVehicle.get(getTypeKeyIndex(v)).get(act);
     }
 
     private double minSlackTime(Map<Job, Double> openDeliveries) {

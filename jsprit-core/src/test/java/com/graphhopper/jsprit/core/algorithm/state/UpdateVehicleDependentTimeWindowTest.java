@@ -83,12 +83,12 @@ class UpdateVehicleDependentTimeWindowTest {
         vehicles.add(vehicle);
         vehicles.add(vehicle2);
         vehicles.add(vehicle3);
-        fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
         Service service = Service.Builder.newInstance("s1").setLocation(Location.newInstance("10,0")).build();
         Service service2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance("20,0")).build();
         Service service3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance("30,0")).build();
         vrpBuilder.addJob(service).addJob(service2).addJob(service3);
         vrp = vrpBuilder.build();
+        fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager(vrp);
         route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(new JobActivityFactory() {
 
             @Override

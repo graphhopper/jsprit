@@ -96,6 +96,15 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     /**
+     * Returns the VehicleRoutingProblem associated with this StateManager.
+     *
+     * @return the VRP
+     */
+    public VehicleRoutingProblem getVrp() {
+        return vrp;
+    }
+
+    /**
      * Get vehicle index from VRP's index map.
      * Falls back to deprecated vehicle.getIndex() for backwards compatibility.
      */
@@ -108,6 +117,15 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             index = vehicle.getIndex();
         }
         return index;
+    }
+
+    /**
+     * Get vehicle type key index from VRP's index map.
+     * Falls back to deprecated typeKey.getIndex() for backwards compatibility.
+     */
+    @SuppressWarnings("deprecation")
+    private int getTypeKeyIndex(Vehicle vehicle) {
+        return vrp.getVehicleTypeKeyIndex(vehicle.getVehicleTypeIdentifier());
     }
 
     /**
@@ -162,7 +180,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     private int getNuVehicleTypes(VehicleRoutingProblem vrp) {
         int maxIndex = 0;
         for (Vehicle v : vrp.getVehicles()) {
-            maxIndex = Math.max(maxIndex, v.getVehicleTypeIdentifier().getIndex());
+            maxIndex = Math.max(maxIndex, getTypeKeyIndex(v));
         }
         return maxIndex;
     }
@@ -262,7 +280,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      */
     public boolean hasActivityState(TourActivity act, Vehicle vehicle, StateId stateId) {
         if (act.getIndex() == 0) throw new IllegalStateException("activity index is 0. this should not be.");
-        return vehicleDependentActivityStates[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] != null;
+        return vehicleDependentActivityStates[act.getIndex()][getTypeKeyIndex(vehicle)][stateId.getIndex()] != null;
     }
 
     /**
@@ -284,10 +302,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         if (act.getIndex() == 0) throw new IllegalStateException("activity index is 0. this should not be.");
         if (act.getIndex() < 0) return null; //act.getIndex() < 0 indicates that act is either Start (-1) or End (-2)
         T state;
+        int typeKeyIndex = getTypeKeyIndex(vehicle);
         try {
-            state = type.cast(vehicleDependentActivityStates[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
+            state = type.cast(vehicleDependentActivityStates[act.getIndex()][typeKeyIndex][stateId.getIndex()]);
         } catch (ClassCastException e) {
-            Object state_class = vehicleDependentActivityStates[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()];
+            Object state_class = vehicleDependentActivityStates[act.getIndex()][typeKeyIndex][stateId.getIndex()];
             throw getClassCastException(e, stateId, type.toString(), state_class.getClass().toString());
         }
         return state;
@@ -342,7 +361,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     @SuppressWarnings("UnusedDeclaration")
     public boolean hasRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId) {
         if (!vehicleDependentRouteStateMap.containsKey(route)) return false;
-        return vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] != null;
+        return vehicleDependentRouteStateMap.get(route)[getTypeKeyIndex(vehicle)][stateId.getIndex()] != null;
 //        return vehicle_dependent_route_states[route.getActivities().get(0).getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] != null;
     }
 
@@ -362,19 +381,20 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     public <T> T getRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, Class<T> type) {
 //        if (route.isEmpty()) return null;
         T state = null;
+        int typeKeyIndex = getTypeKeyIndex(vehicle);
         if (isIndexedBased) {
             try {
-                state = type.cast(vehicleDependentRouteStatesArr[getVehicleIndex(route.getVehicle())][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
+                state = type.cast(vehicleDependentRouteStatesArr[getVehicleIndex(route.getVehicle())][typeKeyIndex][stateId.getIndex()]);
             } catch (ClassCastException e) {
-                throw getClassCastException(e, stateId, type.toString(), vehicleDependentRouteStatesArr[getVehicleIndex(route.getVehicle())][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()].getClass().toString());
+                throw getClassCastException(e, stateId, type.toString(), vehicleDependentRouteStatesArr[getVehicleIndex(route.getVehicle())][typeKeyIndex][stateId.getIndex()].getClass().toString());
             }
         } else {
             try {
                 if (vehicleDependentRouteStateMap.containsKey(route)) {
-                    state = type.cast(vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()]);
+                    state = type.cast(vehicleDependentRouteStateMap.get(route)[typeKeyIndex][stateId.getIndex()]);
                 }
             } catch (ClassCastException e) {
-                throw getClassCastException(e, stateId, type.toString(), vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()].getClass().toString());
+                throw getClassCastException(e, stateId, type.toString(), vehicleDependentRouteStateMap.get(route)[typeKeyIndex][stateId.getIndex()].getClass().toString());
             }
         }
         return state;
@@ -430,7 +450,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     <T> void putInternalTypedActivityState(TourActivity act, Vehicle vehicle, StateId stateId, T state) {
-        vehicleDependentActivityStates[act.getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] = state;
+        vehicleDependentActivityStates[act.getIndex()][getTypeKeyIndex(vehicle)][stateId.getIndex()] = state;
     }
 
     /**
@@ -480,13 +500,14 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     <T> void putTypedInternalRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, T state) {
 //        if (route.isEmpty()) return;
+        int typeKeyIndex = getTypeKeyIndex(vehicle);
         if (isIndexedBased) {
-            vehicleDependentRouteStatesArr[getVehicleIndex(route.getVehicle())][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] = state;
+            vehicleDependentRouteStatesArr[getVehicleIndex(route.getVehicle())][typeKeyIndex][stateId.getIndex()] = state;
         } else {
             if (!vehicleDependentRouteStateMap.containsKey(route)) {
                 vehicleDependentRouteStateMap.put(route, new Object[nuVehicleTypeKeys][stateIndexCounter]);
             }
-            vehicleDependentRouteStateMap.get(route)[vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] = state;
+            vehicleDependentRouteStateMap.get(route)[typeKeyIndex][stateId.getIndex()] = state;
         }
 
     }
