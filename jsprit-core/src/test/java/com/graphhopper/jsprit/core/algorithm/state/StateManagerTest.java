@@ -249,10 +249,9 @@ class StateManagerTest {
     @DisplayName("When Creating A Vehicle Dependent Route State _ it Should Be Memorized")
     void whenCreatingAVehicleDependentRouteState_itShouldBeMemorized() {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
-        // noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
         VehicleRoute route = getRoute(vehicle);
-        StateManager stateManager = new StateManager(vrpMock);
+        StateManager stateManager = new StateManager(vrp);
         StateId id = stateManager.createStateId("myState");
         Capacity capacity = Capacity.Builder.newInstance().addDimension(0, 500).build();
         stateManager.putRouteState(route, vehicle, id, capacity);
@@ -280,10 +279,9 @@ class StateManagerTest {
     @DisplayName("When Memorizing Vehicle Info _ it Should Be Memorized")
     void whenMemorizingVehicleInfo_itShouldBeMemorized() {
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("loc")).build();
-        // noinspection UnusedDeclaration
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).build();
         VehicleRoute route = getRoute(vehicle);
-        StateManager stateManager = new StateManager(vrpMock);
+        StateManager stateManager = new StateManager(vrp);
         StateId id = stateManager.createStateId("vehicleParam");
         double distanceParam = vehicle.getType().getVehicleCostParams().perDistanceUnit;
         stateManager.putRouteState(route, vehicle, id, distanceParam);

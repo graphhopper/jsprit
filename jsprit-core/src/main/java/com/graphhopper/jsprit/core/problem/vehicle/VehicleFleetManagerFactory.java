@@ -17,8 +17,24 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+
 public interface VehicleFleetManagerFactory {
 
+    /**
+     * @deprecated Use {@link #createFleetManager(VehicleRoutingProblem)} instead.
+     */
+    @Deprecated
     VehicleFleetManager createFleetManager();
+
+    /**
+     * Creates a fleet manager with access to the VRP for index lookups.
+     *
+     * @param vrp the VehicleRoutingProblem
+     * @return the fleet manager
+     */
+    default VehicleFleetManager createFleetManager(VehicleRoutingProblem vrp) {
+        return createFleetManager();
+    }
 
 }

@@ -35,6 +35,11 @@ public abstract class AbstractVehicle implements Vehicle {
             return index;
         }
 
+        /**
+         * @deprecated Vehicle indices are now managed by VehicleRoutingProblem.
+         * This method is no longer called by the framework.
+         */
+        @Deprecated
         public void setIndex(int index) {
             this.index = index;
         }
@@ -59,11 +64,22 @@ public abstract class AbstractVehicle implements Vehicle {
         this.userData = userData;
     }
 
+    /**
+     * @deprecated Use {@link VehicleRoutingProblem#getVehicleIndex(Vehicle)} instead.
+     * Vehicle indices are VRP-specific and should not be accessed directly from the vehicle.
+     * A vehicle can have different indices in different VRP instances.
+     */
+    @Deprecated
     @Override
     public int getIndex() {
         return index;
     }
 
+    /**
+     * @deprecated Vehicle indices are now managed by VehicleRoutingProblem.
+     * This method is no longer called by the framework.
+     */
+    @Deprecated
     protected void setIndex(int index) {
         this.index = index;
     }

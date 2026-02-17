@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+
 import java.util.Collection;
 
 /**
@@ -43,12 +45,26 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory {
      *
      * @return VehicleFleetManager
      * @throws java.lang.IllegalStateException if vehicles == null or vehicles.isEmpty()
+     * @deprecated Use {@link #createFleetManager(VehicleRoutingProblem)} instead.
      */
+    @Deprecated
     @Override
     public VehicleFleetManager createFleetManager() {
+        return createFleetManager(null);
+    }
+
+    /**
+     * Creates the finite fleetmanager with access to the VRP for index lookups.
+     *
+     * @param vrp the VehicleRoutingProblem
+     * @return VehicleFleetManager
+     * @throws java.lang.IllegalStateException if vehicles == null or vehicles.isEmpty()
+     */
+    @Override
+    public VehicleFleetManager createFleetManager(VehicleRoutingProblem vrp) {
         if (vehicles == null) throw new IllegalStateException("vehicles is null. this must not be.");
         if (vehicles.isEmpty()) throw new IllegalStateException("vehicle-collection is empty. this must not be");
-        VehicleFleetManagerImpl vehicleFleetManager = new VehicleFleetManagerImpl(vehicles);
+        VehicleFleetManagerImpl vehicleFleetManager = new VehicleFleetManagerImpl(vehicles, vrp);
         vehicleFleetManager.init();
         return vehicleFleetManager;
     }

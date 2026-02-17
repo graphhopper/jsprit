@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,12 +79,31 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
 
     private Vehicle[] vehicleArr;
 
+    private final VehicleRoutingProblem vrp;
+
+    /**
+     * @deprecated Use {@link #VehicleFleetManagerImpl(Collection, VehicleRoutingProblem)} instead.
+     */
+    @Deprecated
     VehicleFleetManagerImpl(Collection<Vehicle> vehicles) {
+        this(vehicles, null);
+    }
+
+    VehicleFleetManagerImpl(Collection<Vehicle> vehicles, VehicleRoutingProblem vrp) {
         super();
         this.vehicles = vehicles;
+        this.vrp = vrp;
         int arrSize = vehicles.size() + 2;
         locked = new boolean[arrSize];
         vehicleArr = new Vehicle[arrSize];
+    }
+
+    private int getVehicleIndex(Vehicle vehicle) {
+        if (vrp != null) {
+            return vrp.getVehicleIndex(vehicle);
+        }
+        // Fallback to deprecated method for backwards compatibility
+        return vehicle.getIndex();
     }
 
     void init(){
@@ -109,7 +129,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
             vehicleTypes[i] = typeContainer;
         }
         for (Vehicle v : vehicles) {
-            vehicleArr[v.getIndex()]=v;
+            vehicleArr[getVehicleIndex(v)] = v;
             addVehicle(v);
         }
     }
@@ -171,11 +191,12 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         if (vehicles.isEmpty() || vehicle instanceof VehicleImpl.NoVehicle) {
             return;
         }
-        if(locked[vehicle.getIndex()]){
+        int index = getVehicleIndex(vehicle);
+        if (locked[index]) {
             throw new IllegalStateException("cannot lock vehicle twice " + vehicle.getId());
         }
         else{
-            locked[vehicle.getIndex()] = true;
+            locked[index] = true;
             removeVehicle(vehicle);
         }
     }
@@ -188,7 +209,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
         if (vehicle == null || vehicles.isEmpty() || vehicle instanceof VehicleImpl.NoVehicle) {
             return;
         }
-        locked[vehicle.getIndex()] = false;
+        locked[getVehicleIndex(vehicle)] = false;
         addVehicle(vehicle);
     }
 
@@ -197,7 +218,7 @@ class VehicleFleetManagerImpl implements VehicleFleetManager {
      */
     @Override
     public boolean isLocked(Vehicle vehicle) {
-        return locked[vehicle.getIndex()];
+        return locked[getVehicleIndex(vehicle)];
     }
 
     /* (non-Javadoc)

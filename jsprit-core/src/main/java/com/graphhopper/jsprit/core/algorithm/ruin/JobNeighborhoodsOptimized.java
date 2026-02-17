@@ -92,11 +92,12 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
 
     @Override
     public Iterator<Job> getNearestNeighborsIterator(int nNeighbors, Job neighborTo) {
-        if (neighborTo.getIndex() == 0) {
+        int jobIndex = vrp.getJobIndex(neighborTo);
+        if (jobIndex <= 0) {
             return Collections.emptyIterator();
         }
 
-        int[] neighbors = this.neighbors[neighborTo.getIndex()-1];
+        int[] neighbors = this.neighbors[jobIndex - 1];
         return new ArrayIterator(nNeighbors,neighbors,jobs);
     }
 
@@ -118,7 +119,8 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
         stopWatch.start();
         for (Job job_i : vrp.getJobsInclusiveInitialJobsInRoutes().values()) {
             if (job_i.getActivities().get(0).getLocation() == null) continue;
-            jobs[job_i.getIndex()] = job_i;
+            int jobIndex_i = vrp.getJobIndex(job_i);
+            jobs[jobIndex_i] = job_i;
             List<ReferencedJob> jobList = new ArrayList<>(vrp.getJobsInclusiveInitialJobsInRoutes().values().size());
             for (Job job_j : vrp.getJobsInclusiveInitialJobsInRoutes().values()) {
                 if (job_j.getActivities().get(0).getLocation() == null) continue;
@@ -132,9 +134,9 @@ class JobNeighborhoodsOptimized implements JobNeighborhoods {
             int neiborhoodSize = Math.min(capacity, jobList.size());
             int[] jobIndices = new int[neiborhoodSize];
             for (int index = 0; index < neiborhoodSize; index++) {
-                jobIndices[index] = jobList.get(index).getJob().getIndex();
+                jobIndices[index] = vrp.getJobIndex(jobList.get(index).getJob());
             }
-            neighbors[job_i.getIndex()-1] = jobIndices;
+            neighbors[jobIndex_i - 1] = jobIndices;
         }
         stopWatch.stop();
         logger.debug("pre-processing comp-time: {}", stopWatch);

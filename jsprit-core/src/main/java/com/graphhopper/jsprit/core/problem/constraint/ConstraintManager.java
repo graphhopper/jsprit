@@ -107,14 +107,14 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
     public void setDependencyType(String jobId, DependencyType dependencyType){
         Job job = vrp.getJobs().get(jobId);
         if(job != null) {
-            dependencyTypes[job.getIndex()] = dependencyType;
+            dependencyTypes[vrp.getJobIndex(job)] = dependencyType;
         }
     }
 
     public DependencyType getDependencyType(String jobId){
         Job job = vrp.getJobs().get(jobId);
         if(job != null){
-            return dependencyTypes[job.getIndex()];
+            return dependencyTypes[vrp.getJobIndex(job)];
         }
         return DependencyType.NO_TYPE;
     }

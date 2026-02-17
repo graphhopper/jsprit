@@ -152,7 +152,7 @@ public class VehicleRoutingAlgorithm {
         jobsNotInSolution.removeAll(solution.getUnassignedJobs());
         for (VehicleRoute route : solution.getRoutes()) {
             jobsNotInSolution.removeAll(route.getTourActivities().getJobs());
-            if (route.getVehicle().getIndex() == 0)
+            if (problem.getVehicleIndex(route.getVehicle()) == 0 || problem.getVehicleIndex(route.getVehicle()) == -1)
                 throw new IllegalStateException("vehicle used in initial solution has no index. probably a vehicle is used that has not been added to the " +
                     " the VehicleRoutingProblem. only use vehicles that have already been added to the problem.");
             for (TourActivity act : route.getActivities()) {

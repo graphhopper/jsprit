@@ -28,11 +28,22 @@ public abstract class AbstractJob implements Job {
     private int index;
     private Object userData;
 
+    /**
+     * @deprecated Use {@link VehicleRoutingProblem#getJobIndex(Job)} instead.
+     * Job indices are VRP-specific and should not be accessed directly from the job.
+     * A job can have different indices in different VRP instances.
+     */
+    @Deprecated
     @Override
     public int getIndex() {
         return index;
     }
 
+    /**
+     * @deprecated Job indices are now managed by VehicleRoutingProblem.
+     * This method is no longer called by the framework.
+     */
+    @Deprecated
     protected void setIndex(int index) {
         this.index = index;
     }

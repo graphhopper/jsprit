@@ -18,6 +18,7 @@
 
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
@@ -68,13 +69,13 @@ class InsertionDataUpdater {
         };
     }
 
-    static ScoredJob getBest(boolean switchAllowed, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, RegretScoringFunction scoringFunction, TreeSet<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, Collection<Job> unassignedJobs, List<ScoredJob> badJobs) {
+    static ScoredJob getBest(boolean switchAllowed, Set<String> initialVehicleIds, VehicleFleetManager fleetManager, JobInsertionCostsCalculator insertionCostsCalculator, RegretScoringFunction scoringFunction, TreeSet<VersionedInsertionData>[] priorityQueues, Map<VehicleRoute, Integer> updates, Collection<Job> unassignedJobs, List<ScoredJob> badJobs, VehicleRoutingProblem vrp) {
         ScoredJob bestScoredJob = null;
         for (Job j : unassignedJobs) {
             VehicleRoute bestRoute = null;
             InsertionData best = null;
             InsertionData secondBest = null;
-            TreeSet<VersionedInsertionData> priorityQueue = priorityQueues[j.getIndex()];
+            TreeSet<VersionedInsertionData> priorityQueue = priorityQueues[vrp.getJobIndex(j)];
             Iterator<VersionedInsertionData> iterator = priorityQueue.iterator();
             List<String> failedConstraintNames = new ArrayList<>();
             while (iterator.hasNext()) {

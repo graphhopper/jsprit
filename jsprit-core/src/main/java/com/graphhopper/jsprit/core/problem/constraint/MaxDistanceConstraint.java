@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.state.StateId;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
@@ -44,10 +45,21 @@ public class MaxDistanceConstraint implements HardActivityConstraint {
 
     private Double[] maxDistances;
 
+    private VehicleRoutingProblem vrp;
+
+    /**
+     * @deprecated Use {@link #MaxDistanceConstraint(StateManager, StateId, TransportDistance, Map, VehicleRoutingProblem)} instead.
+     */
+    @Deprecated
     public MaxDistanceConstraint(StateManager stateManager, StateId distanceId, TransportDistance distanceCalculator, Map<Vehicle, Double> maxDistancePerVehicleMap) {
+        this(stateManager, distanceId, distanceCalculator, maxDistancePerVehicleMap, null);
+    }
+
+    public MaxDistanceConstraint(StateManager stateManager, StateId distanceId, TransportDistance distanceCalculator, Map<Vehicle, Double> maxDistancePerVehicleMap, VehicleRoutingProblem vrp) {
         this.stateManager = stateManager;
         this.distanceId = distanceId;
         this.distanceCalculator = distanceCalculator;
+        this.vrp = vrp;
         makeArray(maxDistancePerVehicleMap);
     }
 
@@ -55,16 +67,26 @@ public class MaxDistanceConstraint implements HardActivityConstraint {
         int maxIndex = getMaxIndex(maxDistances.keySet());
         this.maxDistances = new Double[maxIndex + 1];
         for (Vehicle v : maxDistances.keySet()) {
-            this.maxDistances[v.getIndex()] = maxDistances.get(v);
+            this.maxDistances[getVehicleIndex(v)] = maxDistances.get(v);
         }
     }
 
     private int getMaxIndex(Collection<Vehicle> vehicles) {
         int index = 0;
         for (Vehicle v : vehicles) {
-            if (v.getIndex() > index) index = v.getIndex();
+            int vIndex = getVehicleIndex(v);
+            if (vIndex > index) index = vIndex;
         }
         return index;
+    }
+
+    @SuppressWarnings("deprecation")
+    private int getVehicleIndex(Vehicle vehicle) {
+        if (vrp != null) {
+            return vrp.getVehicleIndex(vehicle);
+        }
+        // Fallback to deprecated method
+        return vehicle.getIndex();
     }
 
     @Override
@@ -122,12 +144,13 @@ public class MaxDistanceConstraint implements HardActivityConstraint {
     }
 
     private boolean hasMaxDistance(Vehicle newVehicle) {
-        if (newVehicle.getIndex() >= this.maxDistances.length) return false;
-        return this.maxDistances[newVehicle.getIndex()] != null;
+        int index = getVehicleIndex(newVehicle);
+        if (index >= this.maxDistances.length) return false;
+        return this.maxDistances[index] != null;
     }
 
     private double getMaxDistance(Vehicle newVehicle) {
-        Double maxDistance = this.maxDistances[newVehicle.getIndex()];
+        Double maxDistance = this.maxDistances[getVehicleIndex(newVehicle)];
         if (maxDistance == null) return Double.MAX_VALUE;
         return maxDistance;
     }

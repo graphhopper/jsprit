@@ -150,7 +150,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
             updateInsertionData(priorityQueues, routes, jobs, updateRound, firstRun, lastModified, updates);
             if(firstRun) firstRun = false;
             updateRound++;
-            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, regretScoringFunction, priorityQueues, updates, jobs, badJobList);
+            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, regretScoringFunction, priorityQueues, updates, jobs, badJobList, vrp);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
@@ -174,24 +174,25 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
         List<Callable<Boolean>> tasks = new ArrayList<>();
         boolean updatedAllRoutes = false;
         for (final Job unassignedJob : unassignedJobs) {
-            if(priorityQueues[unassignedJob.getIndex()] == null){
-                priorityQueues[unassignedJob.getIndex()] = new TreeSet<>(InsertionDataUpdater.getComparator());
+            int jobIndex = vrp.getJobIndex(unassignedJob);
+            if (priorityQueues[jobIndex] == null) {
+                priorityQueues[jobIndex] = new TreeSet<>(InsertionDataUpdater.getComparator());
             }
             if(firstRun) {
                 updatedAllRoutes = true;
-                makeCallables(tasks, true, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
+                makeCallables(tasks, true, priorityQueues[jobIndex], updateRound, unassignedJob, routes, lastModified);
             }
             else{
-                if(dependencyTypes == null || dependencyTypes[unassignedJob.getIndex()] == null){
-                    makeCallables(tasks, updatedAllRoutes, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
+                if (dependencyTypes == null || dependencyTypes[jobIndex] == null) {
+                    makeCallables(tasks, updatedAllRoutes, priorityQueues[jobIndex], updateRound, unassignedJob, routes, lastModified);
                 }
                 else {
-                    DependencyType dependencyType = dependencyTypes[unassignedJob.getIndex()];
+                    DependencyType dependencyType = dependencyTypes[jobIndex];
                     if (dependencyType.equals(DependencyType.INTER_ROUTE) || dependencyType.equals(DependencyType.INTRA_ROUTE)) {
                         updatedAllRoutes = true;
-                        makeCallables(tasks, true, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
+                        makeCallables(tasks, true, priorityQueues[jobIndex], updateRound, unassignedJob, routes, lastModified);
                     } else {
-                        makeCallables(tasks, updatedAllRoutes, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes, lastModified);
+                        makeCallables(tasks, updatedAllRoutes, priorityQueues[jobIndex], updateRound, unassignedJob, routes, lastModified);
                     }
                 }
             }

@@ -119,6 +119,12 @@ public class VehicleRoutingProblem {
 
         private int vehicleTypeIdIndexCounter = 1;
 
+        private int jobIndexCounterFinal = 0;
+
+        // Index maps built during construction - vehicles and jobs are NOT mutated
+        private final Map<String, Integer> vehicleIdToIndexBuilder = new HashMap<>();
+        private final Map<String, Integer> jobIdToIndexBuilder = new HashMap<>();
+
         private final Map<VehicleTypeKey, Integer> typeKeyIndices = new HashMap<>();
 
         private final Map<Job, List<AbstractActivity>> activityMap = new HashMap<>();
@@ -356,7 +362,8 @@ public class VehicleRoutingProblem {
             }
             else addedVehicleIds.add(vehicle.getId());
             if (!uniqueVehicles.contains(vehicle)) {
-                vehicle.setIndex(vehicleIndexCounter);
+                // Store index in map instead of mutating the vehicle object
+                vehicleIdToIndexBuilder.put(vehicle.getId(), vehicleIndexCounter);
                 incVehicleIndexCounter();
             }
             if (typeKeyIndices.containsKey(vehicle.getVehicleTypeIdentifier())) {
@@ -431,13 +438,15 @@ public class VehicleRoutingProblem {
                 }
             }
 
+            // Store indices in map instead of mutating the job objects
             int jobIndexCounter = 1;
             for (Job job : jobs.values()) {
-                ((AbstractJob)job).setIndex(jobIndexCounter++);
+                jobIdToIndexBuilder.put(job.getId(), jobIndexCounter++);
             }
             for (Job job : jobsInInitialRoutes.values()) {
-                ((AbstractJob)job).setIndex(jobIndexCounter++);
+                jobIdToIndexBuilder.put(job.getId(), jobIndexCounter++);
             }
+            this.jobIndexCounterFinal = jobIndexCounter - 1;
 
             boolean hasBreaks = addBreaksToActivityMap();
             if (hasBreaks && fleetSize.equals(FleetSize.INFINITE))
@@ -522,6 +531,14 @@ public class VehicleRoutingProblem {
      */
     private final static Logger logger = LoggerFactory.getLogger(VehicleRoutingProblem.class);
 
+    // Index maps - indices are now stored in VRP, not on vehicle/job objects
+    private final Map<String, Integer> vehicleIdToIndex;
+    private final Map<String, Integer> jobIdToIndex;
+
+    // Array-based fast access by index
+    private final Vehicle[] vehiclesByIndex;
+    private final Job[] jobsByIndex;
+
     /**
      * contains transportation costs, i.e. the costs traveling from location A to B
      */
@@ -580,6 +597,27 @@ public class VehicleRoutingProblem {
         this.allLocations = builder.allLocations;
         this.allJobs = new LinkedHashMap<>(jobs);
         this.allJobs.putAll(builder.jobsInInitialRoutes);
+
+        // Use index maps from builder (vehicles and jobs are NOT mutated)
+        this.vehicleIdToIndex = new HashMap<>(builder.vehicleIdToIndexBuilder);
+        this.vehiclesByIndex = new Vehicle[builder.vehicleIndexCounter];
+        for (Vehicle vehicle : vehicles) {
+            Integer index = vehicleIdToIndex.get(vehicle.getId());
+            if (index != null && index > 0 && index < vehiclesByIndex.length) {
+                vehiclesByIndex[index] = vehicle;
+            }
+        }
+
+        // Use job index map from builder
+        this.jobIdToIndex = new HashMap<>(builder.jobIdToIndexBuilder);
+        this.jobsByIndex = new Job[builder.jobIndexCounterFinal + 1];
+        for (Job job : allJobs.values()) {
+            Integer index = jobIdToIndex.get(job.getId());
+            if (index != null && index > 0 && index < jobsByIndex.length) {
+                jobsByIndex[index] = job;
+            }
+        }
+
         logger.info("setup problem: {}", this);
     }
 
@@ -705,6 +743,90 @@ public class VehicleRoutingProblem {
             for (AbstractActivity act : activityMap.get(job)) acts.add((AbstractActivity) act.duplicate());
         }
         return acts;
+    }
+
+    /**
+     * Returns the index of the given vehicle within this VRP.
+     * <p>
+     * Note: Indices are VRP-specific. A vehicle can have different indices
+     * in different VRP instances. This is the preferred way to get vehicle
+     * indices instead of using {@link Vehicle#getIndex()}.
+     *
+     * @param vehicle the vehicle
+     * @return the index (1-based), or fallback to vehicle.getIndex() if vehicle not found in VRP
+     */
+    @SuppressWarnings("deprecation")
+    public int getVehicleIndex(Vehicle vehicle) {
+        Integer index = vehicleIdToIndex.get(vehicle.getId());
+        if (index != null) {
+            return index;
+        }
+        // Fallback to deprecated method for backward compatibility
+        return vehicle.getIndex();
+    }
+
+    /**
+     * Returns the index of the given job within this VRP.
+     * <p>
+     * Note: Indices are VRP-specific. A job can have different indices
+     * in different VRP instances. This is the preferred way to get job
+     * indices instead of using {@link Job#getIndex()}.
+     *
+     * @param job the job
+     * @return the index (1-based), or fallback to job.getIndex() if job not found in VRP
+     */
+    @SuppressWarnings("deprecation")
+    public int getJobIndex(Job job) {
+        Integer index = jobIdToIndex.get(job.getId());
+        if (index != null) {
+            return index;
+        }
+        // Fallback to deprecated method for backward compatibility
+        return job.getIndex();
+    }
+
+    /**
+     * Returns the vehicle at the given index.
+     *
+     * @param index the index (1-based)
+     * @return the vehicle, or null if index out of bounds
+     */
+    public Vehicle getVehicleByIndex(int index) {
+        if (index <= 0 || index >= vehiclesByIndex.length) {
+            return null;
+        }
+        return vehiclesByIndex[index];
+    }
+
+    /**
+     * Returns the job at the given index.
+     *
+     * @param index the index (1-based)
+     * @return the job, or null if index out of bounds
+     */
+    public Job getJobByIndex(int index) {
+        if (index <= 0 || index >= jobsByIndex.length) {
+            return null;
+        }
+        return jobsByIndex[index];
+    }
+
+    /**
+     * Returns the number of vehicles (also the max vehicle index).
+     *
+     * @return number of vehicles
+     */
+    public int getNuVehicles() {
+        return vehicleIdToIndex.size();
+    }
+
+    /**
+     * Returns the number of jobs (also the max job index).
+     *
+     * @return number of jobs
+     */
+    public int getNuJobs() {
+        return jobIdToIndex.size();
     }
 
 }

@@ -44,11 +44,10 @@ public class TestVehicleFleetManagerImpl {
         v1 = VehicleImpl.Builder.newInstance("standard").setStartLocation(Location.newInstance("loc")).setType(VehicleTypeImpl.Builder.newInstance("standard").build()).build();
         v2 = VehicleImpl.Builder.newInstance("foo").setStartLocation(Location.newInstance("fooLoc")).setType(VehicleTypeImpl.Builder.newInstance("foo").build()).build();
 
-        VehicleRoutingProblem.Builder.newInstance().addVehicle(v1).addVehicle(v2).build();
-//		v1.
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(v1).addVehicle(v2).build();
         vehicles.add(v1);
         vehicles.add(v2);
-        fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager();
+        fleetManager = new FiniteFleetManagerFactory(vehicles).createFleetManager(vrp);
     }
 
     @Test

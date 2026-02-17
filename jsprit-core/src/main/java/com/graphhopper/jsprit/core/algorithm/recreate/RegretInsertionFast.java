@@ -125,7 +125,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
                 updateInsertionData(priorityQueues, routes, jobs, updateRound, firstRun, lastModified, updates);
             }
             updateRound++;
-            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, regretScoringFunction, priorityQueues, updates, jobs, badJobList);
+            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, regretScoringFunction, priorityQueues, updates, jobs, badJobList, vrp);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
@@ -147,25 +147,26 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
 
     private void updateInsertionData(TreeSet<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, Collection<Job> unassignedJobs, int updateRound, boolean firstRun, VehicleRoute lastModified, Map<VehicleRoute, Integer> updates) {
         for (Job unassignedJob : unassignedJobs) {
-            if(priorityQueues[unassignedJob.getIndex()] == null){
-                priorityQueues[unassignedJob.getIndex()] = new TreeSet<>(InsertionDataUpdater.getComparator());
+            int jobIndex = vrp.getJobIndex(unassignedJob);
+            if (priorityQueues[jobIndex] == null) {
+                priorityQueues[jobIndex] = new TreeSet<>(InsertionDataUpdater.getComparator());
             }
             if(firstRun) {
-                InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes);
+                InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[jobIndex], updateRound, unassignedJob, routes);
                 for(VehicleRoute r : routes) updates.put(r,updateRound);
             }
             else{
-                if(dependencyTypes == null || dependencyTypes[unassignedJob.getIndex()] == null){
-                    InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, Collections.singletonList(lastModified));
+                if (dependencyTypes == null || dependencyTypes[jobIndex] == null) {
+                    InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[jobIndex], updateRound, unassignedJob, Collections.singletonList(lastModified));
                     updates.put(lastModified,updateRound);
                 }
                 else {
-                    DependencyType dependencyType = dependencyTypes[unassignedJob.getIndex()];
+                    DependencyType dependencyType = dependencyTypes[jobIndex];
                     if (dependencyType.equals(DependencyType.INTER_ROUTE) || dependencyType.equals(DependencyType.INTRA_ROUTE)) {
-                        InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, routes);
+                        InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[jobIndex], updateRound, unassignedJob, routes);
                         for(VehicleRoute r : routes) updates.put(r,updateRound);
                     } else {
-                        InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[unassignedJob.getIndex()], updateRound, unassignedJob, Collections.singletonList(lastModified));
+                        InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[jobIndex], updateRound, unassignedJob, Collections.singletonList(lastModified));
                         updates.put(lastModified,updateRound);
                     }
                 }

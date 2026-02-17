@@ -474,10 +474,10 @@ public class Jsprit {
         boolean isInfinite = vrp.getFleetSize().equals(VehicleRoutingProblem.FleetSize.INFINITE);
         if (vehicleFleetManager == null) {
             if (isInfinite) {
-                vehicleFleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager();
+                vehicleFleetManager = new InfiniteFleetManagerFactory(vrp.getVehicles()).createFleetManager(vrp);
             } else {
                 FiniteFleetManagerFactory finiteFleetManagerFactory = new FiniteFleetManagerFactory(vrp.getVehicles());
-                vehicleFleetManager = finiteFleetManagerFactory.createFleetManager();
+                vehicleFleetManager = finiteFleetManagerFactory.createFleetManager(vrp);
             }
         }
 
