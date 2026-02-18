@@ -22,10 +22,11 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.cost.WaitingTimeCosts;
 import com.graphhopper.jsprit.core.problem.job.*;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.BreakActivity;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DefaultShipmentActivityFactory;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.DefaultTourActivityFactory;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
+import com.graphhopper.jsprit.core.problem.solution.spec.ActivitySpec;
+import com.graphhopper.jsprit.core.problem.solution.spec.ActivityType;
+import com.graphhopper.jsprit.core.problem.solution.spec.RouteSpec;
+import com.graphhopper.jsprit.core.problem.solution.spec.SolutionSpec;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeKey;
@@ -90,6 +91,10 @@ public class VehicleRoutingProblem {
         private final Map<String, VehicleType> vehicleTypes = new HashMap<>();
 
         private final Collection<VehicleRoute> initialRoutes = new ArrayList<>();
+
+        private SolutionSpec initialSolutionSpec;
+
+        private final List<RouteSpec> initialRouteSpecs = new ArrayList<>();
 
         private final Set<Vehicle> uniqueVehicles = new LinkedHashSet<>();
 
@@ -323,6 +328,34 @@ public class VehicleRoutingProblem {
             return this;
         }
 
+        /**
+         * Sets the initial solution specification.
+         * <p>
+         * The spec will be materialized into actual routes during {@link #build()}.
+         * This is the preferred way to define initial solutions as it avoids the
+         * chicken-and-egg problem of needing a VRP to create routes.
+         *
+         * @param spec the solution specification
+         * @return the builder
+         */
+        public Builder setInitialSolutionSpec(SolutionSpec spec) {
+            this.initialSolutionSpec = spec;
+            return this;
+        }
+
+        /**
+         * Adds a single route specification.
+         * <p>
+         * The spec will be materialized into an actual route during {@link #build()}.
+         *
+         * @param spec the route specification
+         * @return the builder
+         */
+        public Builder addInitialRouteSpec(RouteSpec spec) {
+            this.initialRouteSpecs.add(spec);
+            return this;
+        }
+
         private void addJobToFinalMap(Job job) {
             if (jobs.containsKey(job.getId())) {
                 logger.warn("The job " + job + " has already been added to the job list. This overrides the existing job.");
@@ -449,7 +482,111 @@ public class VehicleRoutingProblem {
             boolean hasBreaks = addBreaksToActivityMap();
             if (hasBreaks && fleetSize.equals(FleetSize.INFINITE))
                 throw new UnsupportedOperationException("Breaks are not yet supported when dealing with infinite fleet. Either set it to finite or omit breaks.");
+
+            // Materialize solution/route specs into actual routes
+            materializeSpecs();
+
             return new VehicleRoutingProblem(this);
+        }
+
+        private void materializeSpecs() {
+            // Combine all specs to materialize
+            List<RouteSpec> allRouteSpecs = new ArrayList<>(initialRouteSpecs);
+            if (initialSolutionSpec != null) {
+                allRouteSpecs.addAll(initialSolutionSpec.routes());
+            }
+
+            if (allRouteSpecs.isEmpty()) {
+                return;
+            }
+
+            // Build lookup maps
+            Map<String, Vehicle> vehicleMap = new HashMap<>();
+            for (Vehicle v : uniqueVehicles) {
+                vehicleMap.put(v.getId(), v);
+            }
+
+            // Combine all jobs (tentative + already in initial routes)
+            Map<String, Job> allJobs = new HashMap<>(jobs);
+            allJobs.putAll(tentativeJobs);
+            allJobs.putAll(jobsInInitialRoutes);
+
+            // Materialize each route spec
+            for (RouteSpec routeSpec : allRouteSpecs) {
+                VehicleRoute route = materializeRouteSpec(routeSpec, vehicleMap, allJobs);
+                if (route != null) {
+                    // Add to initial routes using existing method to handle indexing
+                    addInitialVehicleRoute(route);
+                }
+            }
+        }
+
+        private VehicleRoute materializeRouteSpec(RouteSpec routeSpec, Map<String, Vehicle> vehicleMap, Map<String, Job> allJobs) {
+            Vehicle vehicle = vehicleMap.get(routeSpec.vehicleId());
+            if (vehicle == null) {
+                throw new IllegalArgumentException("Vehicle '%s' in spec not found".formatted(routeSpec.vehicleId()));
+            }
+
+            if (routeSpec.activities().isEmpty()) {
+                return null;
+            }
+
+            VehicleRoute.Builder builder = VehicleRoute.Builder.newInstance(vehicle)
+                    .setJobActivityFactory(jobActivityFactory);
+
+            for (ActivitySpec actSpec : routeSpec.activities()) {
+                Job job = allJobs.get(actSpec.jobId());
+                if (job == null) {
+                    throw new IllegalArgumentException("Job '%s' in spec not found".formatted(actSpec.jobId()));
+                }
+                addActivityToRouteBuilder(builder, job, actSpec);
+            }
+
+            return builder.build();
+        }
+
+        private void addActivityToRouteBuilder(VehicleRoute.Builder builder, Job job, ActivitySpec actSpec) {
+            TimeWindow timeWindow = getTimeWindowForSpec(job, actSpec);
+
+            if (job instanceof Shipment shipment) {
+                if (actSpec.type() == ActivityType.PICKUP) {
+                    builder.addPickup(shipment, timeWindow);
+                } else if (actSpec.type() == ActivityType.DELIVERY) {
+                    builder.addDelivery(shipment, timeWindow);
+                }
+            } else if (job instanceof Pickup pickup) {
+                builder.addPickup(pickup, timeWindow);
+            } else if (job instanceof Delivery delivery) {
+                builder.addDelivery(delivery, timeWindow);
+            } else if (job instanceof Service service) {
+                builder.addService(service, timeWindow);
+            }
+        }
+
+        private TimeWindow getTimeWindowForSpec(Job job, ActivitySpec actSpec) {
+            Activity activity = getActivityForSpec(job, actSpec.type());
+            Collection<TimeWindow> timeWindows = activity.getTimeWindows();
+
+            if (actSpec.options() != null && actSpec.options().timeWindowIndex() != null) {
+                int index = actSpec.options().timeWindowIndex();
+                return timeWindows.stream()
+                        .skip(index)
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "Time window index %d out of bounds for job '%s'".formatted(index, job.getId())));
+            }
+
+            // Default: use first time window
+            return timeWindows.iterator().next();
+        }
+
+        private Activity getActivityForSpec(Job job, ActivityType type) {
+            List<Activity> activities = job.getActivities();
+            return switch (type) {
+                case VISIT -> activities.get(0);
+                case PICKUP -> activities.get(0);
+                case DELIVERY -> activities.get(1);
+            };
         }
 
         @Deprecated
