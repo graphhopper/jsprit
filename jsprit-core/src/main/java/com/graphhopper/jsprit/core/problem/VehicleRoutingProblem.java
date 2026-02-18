@@ -26,7 +26,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.problem.solution.spec.ActivitySpec;
 import com.graphhopper.jsprit.core.problem.solution.spec.ActivityType;
 import com.graphhopper.jsprit.core.problem.solution.spec.RouteSpec;
-import com.graphhopper.jsprit.core.problem.solution.spec.SolutionSpec;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeKey;
@@ -91,8 +90,6 @@ public class VehicleRoutingProblem {
         private final Map<String, VehicleType> vehicleTypes = new HashMap<>();
 
         private final Collection<VehicleRoute> initialRoutes = new ArrayList<>();
-
-        private SolutionSpec initialSolutionSpec;
 
         private final List<RouteSpec> initialRouteSpecs = new ArrayList<>();
 
@@ -329,17 +326,22 @@ public class VehicleRoutingProblem {
         }
 
         /**
-         * Sets the initial solution specification.
+         * Sets the initial route specifications, replacing any previously added specs.
          * <p>
-         * The spec will be materialized into actual routes during {@link #build()}.
-         * This is the preferred way to define initial solutions as it avoids the
+         * The specs will be materialized into actual routes during {@link #build()}.
+         * This is the preferred way to define initial (locked) routes as it avoids the
          * chicken-and-egg problem of needing a VRP to create routes.
+         * <p>
+         * Note: Jobs in these routes will be locked and cannot be removed by the algorithm.
+         * If you want a starting solution that can be fully optimized, use
+         * {@code algorithm.addInitialSolution()} instead.
          *
-         * @param spec the solution specification
+         * @param specs the route specifications
          * @return the builder
          */
-        public Builder setInitialSolutionSpec(SolutionSpec spec) {
-            this.initialSolutionSpec = spec;
+        public Builder setInitialRouteSpecs(List<RouteSpec> specs) {
+            this.initialRouteSpecs.clear();
+            this.initialRouteSpecs.addAll(specs);
             return this;
         }
 
@@ -490,13 +492,7 @@ public class VehicleRoutingProblem {
         }
 
         private void materializeSpecs() {
-            // Combine all specs to materialize
-            List<RouteSpec> allRouteSpecs = new ArrayList<>(initialRouteSpecs);
-            if (initialSolutionSpec != null) {
-                allRouteSpecs.addAll(initialSolutionSpec.routes());
-            }
-
-            if (allRouteSpecs.isEmpty()) {
+            if (initialRouteSpecs.isEmpty()) {
                 return;
             }
 
@@ -512,7 +508,7 @@ public class VehicleRoutingProblem {
             allJobs.putAll(jobsInInitialRoutes);
 
             // Materialize each route spec
-            for (RouteSpec routeSpec : allRouteSpecs) {
+            for (RouteSpec routeSpec : initialRouteSpecs) {
                 VehicleRoute route = materializeRouteSpec(routeSpec, vehicleMap, allJobs);
                 if (route != null) {
                     // Add to initial routes using existing method to handle indexing
