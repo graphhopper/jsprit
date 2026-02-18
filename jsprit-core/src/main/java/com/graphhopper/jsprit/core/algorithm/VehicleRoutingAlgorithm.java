@@ -29,6 +29,8 @@ import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.spec.SolutionSpec;
+import com.graphhopper.jsprit.core.problem.solution.spec.SolutionSpecMaterializer;
 import com.graphhopper.jsprit.core.util.Solutions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,6 +147,25 @@ public class VehicleRoutingAlgorithm {
         solution = VehicleRoutingProblemSolution.copyOf(solution);
         verifyAndAdaptSolution(solution);
         initialSolutions.add(solution);
+    }
+
+    /**
+     * Adds a solution spec as an initial solution.
+     * <p>
+     * The spec will be materialized into a solution using the VRP's vehicles and jobs.
+     * This is the preferred way to provide an initial solution as it avoids issues
+     * with activity indexing and object references.
+     * <p>
+     * Unlike locked routes set via {@code VRP.Builder.setInitialRouteSpecs()}, this
+     * initial solution is fully optimizable - jobs can be moved between routes freely.
+     *
+     * @param spec the solution specification
+     * @throws IllegalArgumentException if the spec references missing vehicles or jobs
+     */
+    public void addInitialSolution(SolutionSpec spec) {
+        SolutionSpecMaterializer materializer = new SolutionSpecMaterializer(problem);
+        VehicleRoutingProblemSolution solution = materializer.materialize(spec);
+        addInitialSolution(solution);
     }
 
     private void verifyAndAdaptSolution(VehicleRoutingProblemSolution solution) {
