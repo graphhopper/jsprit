@@ -27,6 +27,7 @@ import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
+import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 
 import java.util.Random;
@@ -106,6 +107,12 @@ public class PrettyAlgorithmBuilder {
             vra.addListener((AlgorithmStartsListener) (problem, algorithm, solutions) -> {
                 if (solutions.isEmpty()) {
                     solutions.add(new InsertionInitialSolutionFactory(iniInsertionStrategy, iniObjFunction).createSolution(vrp));
+                } else {
+                    // Recalculate states and costs for externally provided initial solutions
+                    for (VehicleRoutingProblemSolution solution : solutions) {
+                        stateManager.informInsertionStarts(solution.getRoutes(), solution.getUnassignedJobs());
+                        solution.setCost(iniObjFunction.getCosts(solution));
+                    }
                 }
             });
         }
