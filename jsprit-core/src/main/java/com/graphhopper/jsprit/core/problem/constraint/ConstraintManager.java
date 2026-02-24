@@ -206,6 +206,22 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
         return Collections.unmodifiableCollection(constraints);
     }
 
+    /**
+     * Get all registered soft route constraints.
+     * These influence insertion decisions at the route level (e.g., which route to insert into).
+     */
+    public Collection<SoftRouteConstraint> getSoftRouteConstraints() {
+        return softRouteConstraintManager.getConstraints();
+    }
+
+    /**
+     * Get all registered soft activity constraints.
+     * These influence insertion decisions at the activity level (e.g., where in the route to insert).
+     */
+    public Collection<SoftActivityConstraint> getSoftActivityConstraints() {
+        return softActivityConstraintManager.getConstraints();
+    }
+
     @Override
     public double getCosts(JobInsertionContext insertionContext) {
         return softRouteConstraintManager.getCosts(insertionContext);
