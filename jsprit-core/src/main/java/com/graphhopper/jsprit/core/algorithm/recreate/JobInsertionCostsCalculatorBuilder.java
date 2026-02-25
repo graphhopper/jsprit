@@ -199,11 +199,16 @@ public class JobInsertionCostsCalculatorBuilder {
     }
 
     /**
-     * Sets a flag to consider also fixed-cost when evaluating the insertion of a job. The weight of the fixed-cost can be determined by setting
-     * weightofFixedCosts.
+     * @deprecated This method no longer has any effect. Fixed costs are now handled via
+     * {@link com.graphhopper.jsprit.core.algorithm.recreate.IncreasingAbsoluteFixedCosts} and
+     * {@link com.graphhopper.jsprit.core.algorithm.recreate.DecreasingRelativeFixedCosts} which should be added
+     * as soft route constraints to the {@link com.graphhopper.jsprit.core.problem.constraint.ConstraintManager}.
+     * See {@link com.graphhopper.jsprit.core.algorithm.box.Jsprit.Builder} for an example using FIXED_COST_PARAM.
      *
-     * @param weightOfFixedCosts
+     * @param weightOfFixedCosts the weight (ignored)
+     * @return this builder
      */
+    @Deprecated
     public JobInsertionCostsCalculatorBuilder considerFixedCosts(double weightOfFixedCosts) {
         considerFixedCost = true;
         this.weightOfFixedCost = weightOfFixedCosts;
@@ -241,12 +246,9 @@ public class JobInsertionCostsCalculatorBuilder {
         baseCalculator = standardLocal.getCalculator();
         addAlgorithmListeners(standardLocal.getAlgorithmListener());
         addInsertionListeners(standardLocal.getInsertionListener());
-        if (considerFixedCost) {
-//            CalculatorPlusListeners withFixed = createCalculatorConsideringFixedCosts(vrp, baseCalculator, states, weightOfFixedCost);
-//            baseCalculator = withFixed.getCalculator();
-//            addAlgorithmListeners(withFixed.getAlgorithmListener());
-//            addInsertionListeners(withFixed.getInsertionListener());
-        }
+        // Note: considerFixedCost is deprecated and has no effect here.
+        // Fixed costs are now handled via SoftRouteConstraints (IncreasingAbsoluteFixedCosts,
+        // DecreasingRelativeFixedCosts) added to the ConstraintManager. See Jsprit.Builder.
         if (timeScheduling) {
 //			baseCalculator = new CalculatesServiceInsertionWithTimeSchedulingInSlices(baseCalculator,timeSlice,neighbors);
             CalculatesServiceInsertionWithTimeScheduling wts = new CalculatesServiceInsertionWithTimeScheduling(baseCalculator, timeSlice, neighbors);

@@ -131,6 +131,13 @@ public class InsertionBuilder {
         return this;
     }
 
+    /**
+     * @deprecated This method no longer has any effect. Fixed costs are now handled via
+     * {@link IncreasingAbsoluteFixedCosts} and {@link DecreasingRelativeFixedCosts} added
+     * as soft route constraints to the ConstraintManager.
+     * See {@link com.graphhopper.jsprit.core.algorithm.box.Jsprit.Builder} for an example.
+     */
+    @Deprecated
     public InsertionBuilder considerFixedCosts(double weightOfFixedCosts) {
         this.weightOfFixedCosts = weightOfFixedCosts;
         this.considerFixedCosts = true;
