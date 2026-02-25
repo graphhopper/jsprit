@@ -141,6 +141,15 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
                 break;
             }
             List<Job> cluster = dbscan.getRandomCluster(targetRoute);
+
+            // Fallback: if DBSCAN found no clusters, take random jobs from the route
+            if (cluster.isEmpty() && !targetRoute.isEmpty()) {
+                List<Job> routeJobs = new ArrayList<>(targetRoute.getTourActivities().getJobs());
+                int jobsToTake = Math.min(toRemove, Math.max(1, routeJobs.size() / 3));
+                Collections.shuffle(routeJobs, random);
+                cluster = routeJobs.subList(0, jobsToTake);
+            }
+
             for (Job j : cluster) {
                 if (toRemove == 0) break;
                 if (removeJob(j, vehicleRoutes)) {
