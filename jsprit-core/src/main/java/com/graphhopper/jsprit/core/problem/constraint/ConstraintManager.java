@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.problem.constraint;
 
+import com.graphhopper.jsprit.core.algorithm.recreate.InsertionCostBreakdown;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
@@ -220,6 +221,45 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
      */
     public Collection<SoftActivityConstraint> getSoftActivityConstraints() {
         return softActivityConstraintManager.getConstraints();
+    }
+
+    /**
+     * Get route-level soft constraint costs with breakdown by constraint.
+     *
+     * @param context The job insertion context
+     * @return Breakdown of costs per constraint
+     */
+    public InsertionCostBreakdown getRouteCostsBreakdown(JobInsertionContext context) {
+        InsertionCostBreakdown breakdown = new InsertionCostBreakdown();
+        for (SoftRouteConstraint c : getSoftRouteConstraints()) {
+            double cost = c.getCosts(context);
+            if (cost != 0) {
+                breakdown.add("Route:" + c.getClass().getSimpleName(), cost);
+            }
+        }
+        return breakdown;
+    }
+
+    /**
+     * Get activity-level soft constraint costs with breakdown by constraint.
+     *
+     * @param context The job insertion context
+     * @param prevAct Previous activity
+     * @param newAct  New activity being inserted
+     * @param nextAct Next activity
+     * @param depTime Departure time at previous activity
+     * @return Breakdown of costs per constraint
+     */
+    public InsertionCostBreakdown getActivityCostsBreakdown(JobInsertionContext context,
+                                                            TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double depTime) {
+        InsertionCostBreakdown breakdown = new InsertionCostBreakdown();
+        for (SoftActivityConstraint c : getSoftActivityConstraints()) {
+            double cost = c.getCosts(context, prevAct, newAct, nextAct, depTime);
+            if (cost != 0) {
+                breakdown.add("Activity:" + c.getClass().getSimpleName(), cost);
+            }
+        }
+        return breakdown;
     }
 
     @Override

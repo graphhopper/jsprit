@@ -49,6 +49,8 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
 
     private static final Logger logger = LoggerFactory.getLogger(BreakInsertionCalculator.class);
 
+    private final ConstraintManager constraintManager;
+
     private final HardRouteConstraint hardRouteLevelConstraint;
 
     private final HardActivityConstraint hardActivityLevelConstraint;
@@ -71,6 +73,7 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
         super();
         this.transportCosts = routingCosts;
         this.activityCosts = activityCosts;
+        this.constraintManager = constraintManager;
         hardRouteLevelConstraint = constraintManager;
         hardActivityLevelConstraint = constraintManager;
         softActivityConstraint = constraintManager;
@@ -115,10 +118,17 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
         /*
         check soft constraints at route level
          */
-        double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
+        InsertionCostBreakdown routeBreakdown = constraintManager.getRouteCostsBreakdown(insertionContext);
+        double additionalICostsAtRouteLevel = routeBreakdown.getTotal();
+
+        double accessEgressCosts = additionalAccessEgressCalculator.getCosts(insertionContext);
+        if (accessEgressCosts != 0) {
+            routeBreakdown.add("AccessEgress", accessEgressCosts);
+        }
+        additionalICostsAtRouteLevel += accessEgressCosts;
 
         double bestCost = bestKnownCosts;
-        additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
+        InsertionCostBreakdown bestBreakdown = null;
 
 		/*
         generate new start and end for new vehicle
@@ -150,12 +160,20 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
                 ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, breakAct2Insert, nextAct, prevActStartTime);
                 if (status.equals(ConstraintsStatus.FULFILLED)) {
                     //from job2insert induced costs at activity level
-                    double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, breakAct2Insert, nextAct, prevActStartTime);
+                    InsertionCostBreakdown actBreakdown = constraintManager.getActivityCostsBreakdown(
+                            insertionContext, prevAct, breakAct2Insert, nextAct, prevActStartTime);
+                    double additionalICostsAtActLevel = actBreakdown.getTotal();
                     double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, breakAct2Insert, prevActStartTime);
-                    if (additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts < bestCost) {
-                        bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
+                    double totalCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
+                    if (totalCost < bestCost) {
+                        bestCost = totalCost;
                         insertionIndex = actIndex;
                         bestLocation = location;
+                        // Build complete breakdown for this position
+                        bestBreakdown = new InsertionCostBreakdown();
+                        bestBreakdown.merge(routeBreakdown);
+                        bestBreakdown.merge(actBreakdown);
+                        bestBreakdown.add("BreakInsertion", additionalTransportationCosts);
                     }
                     breakThis = false;
                 } else if (status.equals(ConstraintsStatus.NOT_FULFILLED)) {
@@ -172,6 +190,7 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
             return InsertionData.createEmptyInsertionData();
         }
         InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
+        insertionData.setCostBreakdown(bestBreakdown);
         breakAct2Insert.setLocation(bestLocation);
         insertionData.getEvents().add(new InsertBreak(currentRoute, newVehicle, breakAct2Insert, insertionIndex));
         insertionData.getEvents().add(new SwitchVehicle(currentRoute, newVehicle, newVehicleDepartureTime));

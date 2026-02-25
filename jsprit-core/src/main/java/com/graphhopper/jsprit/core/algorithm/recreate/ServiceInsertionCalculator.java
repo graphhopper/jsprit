@@ -110,10 +110,17 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         /*
         check soft constraints at route level
          */
-        double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
+        InsertionCostBreakdown routeBreakdown = constraintManager.getRouteCostsBreakdown(insertionContext);
+        double additionalICostsAtRouteLevel = routeBreakdown.getTotal();
+
+        double accessEgressCosts = additionalAccessEgressCalculator.getCosts(insertionContext);
+        if (accessEgressCosts != 0) {
+            routeBreakdown.add("AccessEgress", accessEgressCosts);
+        }
+        additionalICostsAtRouteLevel += accessEgressCosts;
 
         double bestCost = bestKnownCosts;
-        additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
+        InsertionCostBreakdown bestBreakdown = null;
 		TimeWindow bestTimeWindow = null;
 
         /*
@@ -144,12 +151,20 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
                 insertionContext.setActivityContext(activityContext);
                 ConstraintsStatus status = fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime, failedActivityConstraints, constraintManager);
                 if (status.equals(ConstraintsStatus.FULFILLED)) {
-                    double additionalICostsAtActLevel = softActivityConstraint.getCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
+                    InsertionCostBreakdown actBreakdown = constraintManager.getActivityCostsBreakdown(
+                            insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
+                    double additionalICostsAtActLevel = actBreakdown.getTotal();
                     double additionalTransportationCosts = activityInsertionCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
-                    if (additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts < bestCost) {
-                        bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
+                    double totalCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
+                    if (totalCost < bestCost) {
+                        bestCost = totalCost;
                         insertionIndex = actIndex;
                         bestTimeWindow = timeWindow;
+                        // Build complete breakdown for this position
+                        bestBreakdown = new InsertionCostBreakdown();
+                        bestBreakdown.merge(routeBreakdown);
+                        bestBreakdown.merge(actBreakdown);
+                        bestBreakdown.add("ActivityInsertion", additionalTransportationCosts);
                     }
                     not_fulfilled_break = false;
                 } else if (status.equals(ConstraintsStatus.NOT_FULFILLED)) {
@@ -170,6 +185,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
             return emptyInsertionData;
         }
         InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
+        insertionData.setCostBreakdown(bestBreakdown);
         deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(bestTimeWindow.getStart());
         deliveryAct2Insert.setTheoreticalLatestOperationStartTime(bestTimeWindow.getEnd());
         insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, deliveryAct2Insert, insertionIndex));

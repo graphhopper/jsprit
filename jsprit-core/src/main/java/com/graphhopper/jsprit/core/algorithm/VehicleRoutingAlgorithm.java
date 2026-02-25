@@ -18,10 +18,16 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy.DiscoveredSolution;
+import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEventListener;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyListener;
 import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyModuleListener;
 import com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListener;
 import com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners;
+import com.graphhopper.jsprit.core.algorithm.listener.events.AlgorithmEvent;
+import com.graphhopper.jsprit.core.algorithm.listener.events.AcceptanceDecision;
+import com.graphhopper.jsprit.core.algorithm.listener.events.IterationStarted;
+import com.graphhopper.jsprit.core.algorithm.listener.events.IterationCompleted;
+import com.graphhopper.jsprit.core.algorithm.listener.events.StrategySelected;
 import com.graphhopper.jsprit.core.algorithm.termination.PrematureAlgorithmTermination;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -100,6 +106,8 @@ public class VehicleRoutingAlgorithm {
     private final SearchStrategyManager searchStrategyManager;
 
     private final VehicleRoutingAlgorithmListeners algoListeners = new VehicleRoutingAlgorithmListeners();
+
+    private final Collection<AlgorithmEventListener> eventListeners = new ArrayList<>();
 
     private final Collection<VehicleRoutingProblemSolution> initialSolutions;
 
@@ -239,20 +247,48 @@ public class VehicleRoutingAlgorithm {
         if (logger.isTraceEnabled()) log(solutions);
         logger.info("iterations start");
         for (int i = 0; i < maxIterations; i++) {
-            iterationStarts(i + 1, problem, solutions);
+            int iteration = i + 1;
+            double previousBestCost = bestEver != null ? bestEver.getCost() : Double.MAX_VALUE;
+            iterationStarts(iteration, problem, solutions);
+            if (hasEventListeners()) {
+                emit(new IterationStarted(iteration, System.currentTimeMillis(), previousBestCost));
+            }
             logger.debug("start iteration: {}", i);
             counter.incCounter();
             SearchStrategy strategy = searchStrategyManager.getRandomStrategy();
+            // Emit strategy selected event before the strategy runs
+            if (hasEventListeners()) {
+                emit(new StrategySelected(iteration, System.currentTimeMillis(), strategy.getId()));
+            }
             DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
             if (logger.isTraceEnabled()) log(discoveredSolution);
+            double oldBestCost = bestEver != null ? bestEver.getCost() : Double.MAX_VALUE;
             memorizeIfBestEver(discoveredSolution);
+            boolean isNewBest = bestEver != null && bestEver.getCost() < oldBestCost;
+            double newSolutionCost = discoveredSolution != null ? discoveredSolution.getSolution().getCost() : Double.MAX_VALUE;
+            boolean accepted = discoveredSolution != null && discoveredSolution.isAccepted();
+
+            // Emit acceptance decision event
+            if (hasEventListeners() && discoveredSolution != null) {
+                emit(new AcceptanceDecision(iteration, System.currentTimeMillis(), oldBestCost, newSolutionCost,
+                        accepted, strategy.getId(), isNewBest));
+            }
+
             selectedStrategy(discoveredSolution, problem, solutions);
             if (terminationManager.isPrematureBreak(discoveredSolution)) {
-                logger.info("premature algorithm termination at iteration {}", (i + 1));
-                noIterationsThisAlgoIsRunning = (i + 1);
+                logger.info("premature algorithm termination at iteration {}", iteration);
+                noIterationsThisAlgoIsRunning = iteration;
+                if (hasEventListeners()) {
+                    double currentBestCost = bestEver != null ? bestEver.getCost() : Double.MAX_VALUE;
+                    emit(new IterationCompleted(iteration, System.currentTimeMillis(), newSolutionCost, currentBestCost, accepted, strategy.getId()));
+                }
                 break;
             }
-            iterationEnds(i + 1, problem, solutions);
+            if (hasEventListeners()) {
+                double currentBestCost = bestEver != null ? bestEver.getCost() : Double.MAX_VALUE;
+                emit(new IterationCompleted(iteration, System.currentTimeMillis(), newSolutionCost, currentBestCost, accepted, strategy.getId()));
+            }
+            iterationEnds(iteration, problem, solutions);
         }
         logger.info("iterations end at {} iterations", noIterationsThisAlgoIsRunning);
         addBestEver(solutions);
@@ -327,6 +363,55 @@ public class VehicleRoutingAlgorithm {
         if (l instanceof SearchStrategyModuleListener) {
             searchStrategyManager.addSearchStrategyModuleListener((SearchStrategyModuleListener) l);
         }
+    }
+
+    /**
+     * Adds an event listener for receiving algorithm events.
+     *
+     * <p>Event listeners provide a unified way to observe all aspects of the
+     * algorithm's execution, including iteration lifecycle, ruin/recreate phases,
+     * and acceptance decisions.</p>
+     *
+     * @param listener the event listener to add
+     */
+    public void addEventListener(AlgorithmEventListener listener) {
+        eventListeners.add(listener);
+    }
+
+    /**
+     * Removes an event listener.
+     *
+     * @param listener the event listener to remove
+     */
+    public void removeEventListener(AlgorithmEventListener listener) {
+        eventListeners.remove(listener);
+    }
+
+    /**
+     * Emits an event to all registered event listeners.
+     *
+     * <p>This method is intended for internal use by the algorithm and its
+     * components. It has minimal overhead when no listeners are registered.</p>
+     *
+     * @param event the event to emit
+     */
+    public void emit(AlgorithmEvent event) {
+        if (eventListeners.isEmpty()) return;
+        for (AlgorithmEventListener listener : eventListeners) {
+            listener.onEvent(event);
+        }
+    }
+
+    /**
+     * Returns whether any event listeners are registered.
+     *
+     * <p>This can be used to avoid creating event objects when no listeners
+     * are registered, minimizing performance overhead.</p>
+     *
+     * @return true if at least one event listener is registered
+     */
+    public boolean hasEventListeners() {
+        return !eventListeners.isEmpty();
     }
 
     private void iterationEnds(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {

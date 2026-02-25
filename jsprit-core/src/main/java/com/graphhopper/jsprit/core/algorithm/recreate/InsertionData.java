@@ -70,6 +70,8 @@ public class InsertionData {
 
     private double additionalTime;
 
+    private InsertionCostBreakdown costBreakdown;
+
     private List<Event> events = new ArrayList<Event>();
 
     List<Event> getEvents() {
@@ -170,6 +172,24 @@ public class InsertionData {
      */
     public void setVehicleDepartureTime(double departureTime) {
         this.departureTime = departureTime;
+    }
+
+    /**
+     * Get the cost breakdown showing contribution from each component.
+     *
+     * @return the cost breakdown, or null if not captured
+     */
+    public InsertionCostBreakdown getCostBreakdown() {
+        return costBreakdown;
+    }
+
+    /**
+     * Set the cost breakdown.
+     *
+     * @param costBreakdown the breakdown to set
+     */
+    public void setCostBreakdown(InsertionCostBreakdown costBreakdown) {
+        this.costBreakdown = costBreakdown;
     }
 
 
