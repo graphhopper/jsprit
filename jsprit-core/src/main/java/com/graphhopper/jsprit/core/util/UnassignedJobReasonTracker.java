@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.util;
 
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.JobUnassignedListener;
 import com.graphhopper.jsprit.core.problem.job.Job;
+
 import org.apache.commons.math3.stat.Frequency;
 
 import java.util.*;
@@ -62,6 +63,7 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         codesToHumanReadableReason.put(2, "cannot be visited within time window");
         codesToHumanReadableReason.put(3, "does not fit into any vehicle due to capacity");
         codesToHumanReadableReason.put(4, "cannot be assigned due to max distance constraint of vehicle");
+        codesToHumanReadableReason.put(5, "cannot be assigned due to less vehicle");
 
         failedConstraintNamesToCode.put("HardSkillConstraint", 1);
         failedConstraintNamesToCode.put("VehicleDependentTimeWindowConstraints", 2);
@@ -69,6 +71,7 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
         failedConstraintNamesToCode.put("PickupAndDeliverShipmentLoadActivityLevelConstraint", 3);
         failedConstraintNamesToCode.put("ServiceLoadActivityLevelConstraint", 3);
         failedConstraintNamesToCode.put("MaxDistanceConstraint", 4);
+        failedConstraintNamesToCode.put("HasNoEnoughVehicle", 5);
     }
 
     public void ignore(String simpleNameOfConstraint) {
