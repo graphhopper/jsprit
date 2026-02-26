@@ -41,19 +41,30 @@ class InsertionDataUpdater {
                     relevantVehicles.addAll(fleetManager.getAvailableVehicles(route.getVehicle()));
                 }
             } else relevantVehicles.addAll(fleetManager.getAvailableVehicles());
+            double bestCost = Double.MAX_VALUE;
+            InsertionData bestIData = new InsertionData.NoInsertionFound();
             for (Vehicle v : relevantVehicles) {
                 double depTime = v.getEarliestDeparture();
                 InsertionData iData = insertionCostsCalculator.getInsertionData(route, unassignedJob, v, depTime, route.getDriver(), Double.MAX_VALUE);
                 if (iData instanceof InsertionData.NoInsertionFound) {
                     continue;
                 }
-                insertionDataSet.add(new VersionedInsertionData(iData, updateRound, route));
+                if (iData.getInsertionCost() < bestCost) {
+                    bestIData = iData;
+                    bestCost = iData.getInsertionCost();
+                }
             }
+            Iterator<VersionedInsertionData> iterator = insertionDataSet.iterator();
+            while (iterator.hasNext()) {
+                VersionedInsertionData versionedInsertionData = iterator.next();
+                if (versionedInsertionData.getRoute() == route &&
+                    versionedInsertionData.getVersion() != updateRound)
+                    iterator.remove();
+            }
+            insertionDataSet.add(new VersionedInsertionData(bestIData, updateRound, route));
         }
         return true;
     }
-
-
 
     static VehicleRoute findRoute(Collection<VehicleRoute> routes, Job job) {
         for(VehicleRoute r : routes){
@@ -113,16 +124,13 @@ class InsertionDataUpdater {
                         } else continue;
                     }
                 }
-                int currentDataVersion = updates.get(versionedIData.getRoute());
-                if(versionedIData.getVersion() == currentDataVersion){
-                    if(best == null) {
-                        best = versionedIData.getiData();
-                        bestRoute = versionedIData.getRoute();
-                    }
-                    else {
-                        secondBest = versionedIData.getiData();
-                        break;
-                    }
+                if(best == null) {
+                    best = versionedIData.getiData();
+                    bestRoute = versionedIData.getRoute();
+                }
+                else {
+                    secondBest = versionedIData.getiData();
+                    break;
                 }
             }
             VehicleRoute emptyRoute = VehicleRoute.emptyRoute();
@@ -154,6 +162,11 @@ class InsertionDataUpdater {
             }
             else if(scoredJob.getScore() > bestScoredJob.getScore()){
                 bestScoredJob = scoredJob;
+            }
+            else if (scoredJob.getScore() == bestScoredJob.getScore()) {
+                if (scoredJob.getJob().getId().compareTo(bestScoredJob.getJob().getId()) <= 0) {
+                    bestScoredJob = scoredJob;
+                }
             }
         }
         return bestScoredJob;
