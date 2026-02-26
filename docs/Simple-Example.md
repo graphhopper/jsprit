@@ -8,7 +8,7 @@ This example covers
 - plotting the solution,
 - printing solution stats.
 
-Add the latest release to your pom (see [Getting Started](Getting-Started.md)).
+Add the latest release to your pom (see [Getting Started](Getting-Started.md)). Note that, in addition to adding jsprit-core to your pom, in order to build the following example you will also need to add jsprit-analysis and jsprit-io, making a total of 3 added dependencies in this case.
 
 Assume the following problem. We can employ one vehicle(-type) located at (10,10) with one capacity dimension, e.g. weight, and a capacity value of 2 to deliver four customers located at [(5,7),(5,13),(15,7),(15,13)], each with a demand that has a weight of 1. All employed vehicles need to return to their start-locations. Setting up this problem and solving it is as simple as coding the following lines:
 
