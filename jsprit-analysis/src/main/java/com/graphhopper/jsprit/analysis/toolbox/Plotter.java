@@ -31,12 +31,12 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
+import org.jfree.chart.ui.RectangleEdge;
+import org.jfree.chart.util.ShapeUtils;
 import org.jfree.data.Range;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.ui.RectangleEdge;
-import org.jfree.util.ShapeUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +90,7 @@ public class Plotter {
         public Shape getItemShape(int seriesIndex, int itemIndex) {
             XYDataItem dataItem = seriesCollection.getSeries(seriesIndex).getDataItem(itemIndex);
             if (firstActivities.contains(dataItem)) {
-                return ShapeUtilities.createUpTriangle(4.0f);
+                return ShapeUtils.createUpTriangle(4.0f);
             }
             return ELLIPSE;
         }
@@ -331,7 +331,7 @@ public class Plotter {
                 }
                 if (routes != null) {
                     LegendItem item = new LegendItem("firstActivity", Color.BLACK);
-                    Shape upTriangle = ShapeUtilities.createUpTriangle(3.0f);
+                    Shape upTriangle = ShapeUtils.createUpTriangle(3.0f);
                     item.setShape(upTriangle);
                     item.setOutlinePaint(Color.BLACK);
 
@@ -377,12 +377,12 @@ public class Plotter {
 
     private MyActivityRenderer getProblemRenderer(final XYSeriesCollection problem) {
         MyActivityRenderer problemRenderer = new MyActivityRenderer(problem, activitiesByDataItem, firstActivities);
-        problemRenderer.setBaseItemLabelGenerator((arg0, arg1, arg2) -> {
+        problemRenderer.setDefaultItemLabelGenerator((arg0, arg1, arg2) -> {
             XYDataItem item = problem.getSeries(arg1).getDataItem(arg2);
             return labelsByDataItem.get(item);
         });
-        problemRenderer.setBaseItemLabelsVisible(true);
-        problemRenderer.setBaseItemLabelPaint(Color.BLACK);
+        problemRenderer.setDefaultItemLabelsVisible(true);
+        problemRenderer.setDefaultItemLabelPaint(Color.BLACK);
 
         return problemRenderer;
     }
@@ -446,7 +446,7 @@ public class Plotter {
 
     private void save(JFreeChart chart, String pngFile) {
         try {
-            ChartUtilities.saveChartAsPNG(new File(pngFile), chart, 1000, 600);
+            ChartUtils.saveChartAsPNG(new File(pngFile), chart, 1000, 600);
         } catch (IOException e) {
             log.error("cannot plot");
             log.error(e.toString());
