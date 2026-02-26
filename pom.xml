@@ -65,7 +65,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>5.10.2</junit.version>
+        <junit.version>5.13.1</junit.version>
         <mockito.version>5.10.0</mockito.version>
         <slf4j.version>2.0.16</slf4j.version>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
