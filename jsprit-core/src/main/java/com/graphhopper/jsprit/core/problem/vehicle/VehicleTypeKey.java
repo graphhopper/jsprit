@@ -36,6 +36,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
     public final double latestEnd;
     public final Skills skills;
     public final boolean returnToDepot;
+    private final int cachedHashCode;
 
     public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot) {
         super();
@@ -46,6 +47,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         this.latestEnd = latestEnd;
         this.skills = skills;
         this.returnToDepot = returnToDepot;
+        this.cachedHashCode = computeHashCode();
     }
 
     @Override
@@ -68,16 +70,20 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
 
     @Override
     public int hashCode() {
+        return cachedHashCode;
+    }
+
+    private int computeHashCode() {
         int result;
         long temp;
-        result = type.hashCode();
-        result = 31 * result + startLocationId.hashCode();
-        result = 31 * result + endLocationId.hashCode();
+        result = type != null ? type.hashCode() : 0;
+        result = 31 * result + (startLocationId != null ? startLocationId.hashCode() : 0);
+        result = 31 * result + (endLocationId != null ? endLocationId.hashCode() : 0);
         temp = Double.doubleToLongBits(earliestStart);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(latestEnd);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + skills.hashCode();
+        result = 31 * result + (skills != null ? skills.hashCode() : 0);
         result = 31 * result + (returnToDepot ? 1 : 0);
         return result;
     }

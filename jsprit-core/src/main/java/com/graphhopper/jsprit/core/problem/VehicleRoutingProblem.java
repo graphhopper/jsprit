@@ -124,7 +124,7 @@ public class VehicleRoutingProblem {
         private int jobIndexCounterFinal = 0;
 
         // Index maps built during construction - vehicles and jobs are NOT mutated
-        private final Map<String, Integer> vehicleIdToIndexBuilder = new HashMap<>();
+        private final IdentityHashMap<Vehicle, Integer> vehicleToIndexBuilder = new IdentityHashMap<>();
         private final IdentityHashMap<Job, Integer> jobToIndexBuilder = new IdentityHashMap<>();
 
         private final Map<VehicleTypeKey, Integer> typeKeyIndices = new HashMap<>();
@@ -398,7 +398,7 @@ public class VehicleRoutingProblem {
             else addedVehicleIds.add(vehicle.getId());
             if (!uniqueVehicles.contains(vehicle)) {
                 // Store index in map instead of mutating the vehicle object
-                vehicleIdToIndexBuilder.put(vehicle.getId(), vehicleIndexCounter);
+                vehicleToIndexBuilder.put(vehicle, vehicleIndexCounter);
                 incVehicleIndexCounter();
             }
             // Store type key index in map instead of mutating the VehicleTypeKey object
@@ -663,7 +663,7 @@ public class VehicleRoutingProblem {
     private final static Logger logger = LoggerFactory.getLogger(VehicleRoutingProblem.class);
 
     // Index maps - indices are now stored in VRP, not on vehicle/job objects
-    private final Map<String, Integer> vehicleIdToIndex;
+    private final IdentityHashMap<Vehicle, Integer> vehicleToIndex;
     private final IdentityHashMap<Job, Integer> jobToIndex;
     private final Map<VehicleTypeKey, Integer> typeKeyToIndex;
 
@@ -731,10 +731,10 @@ public class VehicleRoutingProblem {
         this.allJobs.putAll(builder.jobsInInitialRoutes);
 
         // Use index maps from builder (vehicles and jobs are NOT mutated)
-        this.vehicleIdToIndex = new HashMap<>(builder.vehicleIdToIndexBuilder);
+        this.vehicleToIndex = new IdentityHashMap<>(builder.vehicleToIndexBuilder);
         this.vehiclesByIndex = new Vehicle[builder.vehicleIndexCounter];
         for (Vehicle vehicle : vehicles) {
-            Integer index = vehicleIdToIndex.get(vehicle.getId());
+            Integer index = vehicleToIndex.get(vehicle);
             if (index != null && index > 0 && index < vehiclesByIndex.length) {
                 vehiclesByIndex[index] = vehicle;
             }
@@ -892,7 +892,7 @@ public class VehicleRoutingProblem {
      */
     @SuppressWarnings("deprecation")
     public int getVehicleIndex(Vehicle vehicle) {
-        Integer index = vehicleIdToIndex.get(vehicle.getId());
+        Integer index = vehicleToIndex.get(vehicle);
         if (index != null) {
             return index;
         }
@@ -996,7 +996,7 @@ public class VehicleRoutingProblem {
      * @return number of vehicles
      */
     public int getNuVehicles() {
-        return vehicleIdToIndex.size();
+        return vehicleToIndex.size();
     }
 
     /**
