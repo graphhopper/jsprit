@@ -125,7 +125,7 @@ public class VehicleRoutingProblem {
 
         // Index maps built during construction - vehicles and jobs are NOT mutated
         private final Map<String, Integer> vehicleIdToIndexBuilder = new HashMap<>();
-        private final Map<String, Integer> jobIdToIndexBuilder = new HashMap<>();
+        private final IdentityHashMap<Job, Integer> jobToIndexBuilder = new IdentityHashMap<>();
 
         private final Map<VehicleTypeKey, Integer> typeKeyIndices = new HashMap<>();
 
@@ -474,10 +474,10 @@ public class VehicleRoutingProblem {
             // Store indices in map instead of mutating the job objects
             int jobIndexCounter = 1;
             for (Job job : jobs.values()) {
-                jobIdToIndexBuilder.put(job.getId(), jobIndexCounter++);
+                jobToIndexBuilder.put(job, jobIndexCounter++);
             }
             for (Job job : jobsInInitialRoutes.values()) {
-                jobIdToIndexBuilder.put(job.getId(), jobIndexCounter++);
+                jobToIndexBuilder.put(job, jobIndexCounter++);
             }
             this.jobIndexCounterFinal = jobIndexCounter - 1;
 
@@ -664,7 +664,7 @@ public class VehicleRoutingProblem {
 
     // Index maps - indices are now stored in VRP, not on vehicle/job objects
     private final Map<String, Integer> vehicleIdToIndex;
-    private final Map<String, Integer> jobIdToIndex;
+    private final IdentityHashMap<Job, Integer> jobToIndex;
     private final Map<VehicleTypeKey, Integer> typeKeyToIndex;
 
     // Array-based fast access by index
@@ -741,10 +741,10 @@ public class VehicleRoutingProblem {
         }
 
         // Use job index map from builder
-        this.jobIdToIndex = new HashMap<>(builder.jobIdToIndexBuilder);
+        this.jobToIndex = new IdentityHashMap<>(builder.jobToIndexBuilder);
         this.jobsByIndex = new Job[builder.jobIndexCounterFinal + 1];
         for (Job job : allJobs.values()) {
-            Integer index = jobIdToIndex.get(job.getId());
+            Integer index = jobToIndex.get(job);
             if (index != null && index > 0 && index < jobsByIndex.length) {
                 jobsByIndex[index] = job;
             }
@@ -912,7 +912,7 @@ public class VehicleRoutingProblem {
      */
     @SuppressWarnings("deprecation")
     public int getJobIndex(Job job) {
-        Integer index = jobIdToIndex.get(job.getId());
+        Integer index = jobToIndex.get(job);
         if (index != null) {
             return index;
         }
@@ -1005,7 +1005,7 @@ public class VehicleRoutingProblem {
      * @return number of jobs
      */
     public int getNuJobs() {
-        return jobIdToIndex.size();
+        return jobToIndex.size();
     }
 
 }
