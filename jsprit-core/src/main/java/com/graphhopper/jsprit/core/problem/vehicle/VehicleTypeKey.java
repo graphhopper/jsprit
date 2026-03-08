@@ -57,6 +57,9 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
 
         VehicleTypeKey that = (VehicleTypeKey) o;
 
+        // Fast path: if hashCodes differ, objects can't be equal
+        if (this.cachedHashCode != that.cachedHashCode) return false;
+
         if (Double.compare(that.earliestStart, earliestStart) != 0) return false;
         if (Double.compare(that.latestEnd, latestEnd) != 0) return false;
         if (returnToDepot != that.returnToDepot) return false;
