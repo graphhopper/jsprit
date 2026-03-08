@@ -27,6 +27,7 @@ package com.graphhopper.jsprit.core.algorithm.listener.events;
  * @param accepted   Whether the new solution was accepted
  * @param strategyId The ID of the search strategy that produced this solution
  * @param isNewBest  Whether this is a new best solution overall
+ * @param threshold  The acceptance threshold at this iteration (for Schrimpf acceptance)
  */
 public record AcceptanceDecision(
         int iteration,
@@ -35,6 +36,7 @@ public record AcceptanceDecision(
         double newCost,
         boolean accepted,
         String strategyId,
-        boolean isNewBest
+        boolean isNewBest,
+        double threshold
 ) implements AlgorithmEvent {
 }

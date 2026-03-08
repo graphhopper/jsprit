@@ -41,4 +41,15 @@ public interface SolutionAcceptor {
      */
     public boolean acceptSolution(Collection<VehicleRoutingProblemSolution> solutions, VehicleRoutingProblemSolution newSolution);
 
+    /**
+     * Returns the current acceptance threshold.
+     * <p>For threshold-based acceptors like Schrimpf acceptance, this returns the current threshold value.
+     * For greedy acceptors, this returns 0.</p>
+     *
+     * @return the current threshold value
+     */
+    default double getCurrentThreshold() {
+        return 0.0;
+    }
+
 }

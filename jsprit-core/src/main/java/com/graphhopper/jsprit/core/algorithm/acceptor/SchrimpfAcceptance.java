@@ -147,6 +147,11 @@ public class SchrimpfAcceptance implements SolutionAcceptor, IterationStartsList
         return initialThreshold * Math.exp(-1. * Math.log(2) * scheduleVariable / alpha);
     }
 
+    @Override
+    public double getCurrentThreshold() {
+        return getThreshold(currentIteration);
+    }
+
 
     @SuppressWarnings("UnusedDeclaration")
     public double getInitialThreshold() {

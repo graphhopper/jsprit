@@ -18,16 +18,8 @@
 package com.graphhopper.jsprit.core.algorithm;
 
 import com.graphhopper.jsprit.core.algorithm.SearchStrategy.DiscoveredSolution;
-import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEventListener;
-import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyListener;
-import com.graphhopper.jsprit.core.algorithm.listener.SearchStrategyModuleListener;
-import com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListener;
-import com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners;
-import com.graphhopper.jsprit.core.algorithm.listener.events.AlgorithmEvent;
-import com.graphhopper.jsprit.core.algorithm.listener.events.AcceptanceDecision;
-import com.graphhopper.jsprit.core.algorithm.listener.events.IterationStarted;
-import com.graphhopper.jsprit.core.algorithm.listener.events.IterationCompleted;
-import com.graphhopper.jsprit.core.algorithm.listener.events.StrategySelected;
+import com.graphhopper.jsprit.core.algorithm.listener.*;
+import com.graphhopper.jsprit.core.algorithm.listener.events.*;
 import com.graphhopper.jsprit.core.algorithm.termination.PrematureAlgorithmTermination;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -270,8 +262,9 @@ public class VehicleRoutingAlgorithm {
 
             // Emit acceptance decision event
             if (hasEventListeners() && discoveredSolution != null) {
+                double threshold = strategy.getSolutionAcceptor().getCurrentThreshold();
                 emit(new AcceptanceDecision(iteration, System.currentTimeMillis(), oldBestCost, newSolutionCost,
-                        accepted, strategy.getId(), isNewBest));
+                        accepted, strategy.getId(), isNewBest, threshold));
             }
 
             selectedStrategy(discoveredSolution, problem, solutions);
