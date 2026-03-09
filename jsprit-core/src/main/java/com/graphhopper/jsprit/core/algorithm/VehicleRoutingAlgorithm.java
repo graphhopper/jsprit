@@ -252,6 +252,7 @@ public class VehicleRoutingAlgorithm {
             DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
             if (logger.isTraceEnabled()) log(discoveredSolution);
             double oldBestCost = bestEver != null ? bestEver.getCost() : Double.MAX_VALUE;
+            VehicleRoutingProblemSolution oldBestSolution = bestEver; // Capture before update
             memorizeIfBestEver(discoveredSolution);
             boolean isNewBest = bestEver != null && bestEver.getCost() < oldBestCost;
             double newSolutionCost = discoveredSolution != null ? discoveredSolution.getSolution().getCost() : Double.MAX_VALUE;
@@ -263,8 +264,8 @@ public class VehicleRoutingAlgorithm {
                 Map<String, Double> oldBreakdown = null;
                 Map<String, Double> newBreakdown = null;
                 if (objectiveFunction != null) {
-                    if (bestEver != null) {
-                        oldBreakdown = objectiveFunction.getCostBreakdown(bestEver);
+                    if (oldBestSolution != null) {
+                        oldBreakdown = objectiveFunction.getCostBreakdown(oldBestSolution);
                     }
                     newBreakdown = objectiveFunction.getCostBreakdown(discoveredSolution.getSolution());
                 }
