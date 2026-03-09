@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.problem.solution;
 
+import java.util.Map;
+
 /**
  * Interface for all solutionCostCalculators which should be the objective-functions of the problem.
  * <p>
@@ -33,5 +35,18 @@ public interface SolutionCostCalculator {
      * @return costs
      */
     public double getCosts(VehicleRoutingProblemSolution solution);
+
+    /**
+     * Returns a breakdown of costs by component name.
+     * <p>
+     * Override this method to provide detailed cost breakdown for analysis and debugging.
+     * The default implementation returns null, indicating no breakdown is available.
+     *
+     * @param solution the solution to analyze
+     * @return map of component name to cost, or null if breakdown not supported
+     */
+    default Map<String, Double> getCostBreakdown(VehicleRoutingProblemSolution solution) {
+        return null;
+    }
 
 }

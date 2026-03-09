@@ -33,10 +33,7 @@ import com.graphhopper.jsprit.core.util.Solutions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -263,8 +260,16 @@ public class VehicleRoutingAlgorithm {
             // Emit acceptance decision event
             if (hasEventListeners() && discoveredSolution != null) {
                 double threshold = strategy.getSolutionAcceptor().getCurrentThreshold();
+                Map<String, Double> oldBreakdown = null;
+                Map<String, Double> newBreakdown = null;
+                if (objectiveFunction != null) {
+                    if (bestEver != null) {
+                        oldBreakdown = objectiveFunction.getCostBreakdown(bestEver);
+                    }
+                    newBreakdown = objectiveFunction.getCostBreakdown(discoveredSolution.getSolution());
+                }
                 emit(new AcceptanceDecision(iteration, System.currentTimeMillis(), oldBestCost, newSolutionCost,
-                        accepted, strategy.getId(), isNewBest, threshold));
+                        accepted, strategy.getId(), isNewBest, threshold, oldBreakdown, newBreakdown));
             }
 
             selectedStrategy(discoveredSolution, problem, solutions);

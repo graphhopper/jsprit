@@ -17,17 +17,21 @@
  */
 package com.graphhopper.jsprit.core.algorithm.listener.events;
 
+import java.util.Map;
+
 /**
  * Event emitted when a solution acceptance decision is made.
  *
- * @param iteration  The iteration number
- * @param timestamp  When the event occurred
- * @param oldCost    The cost of the previous solution
- * @param newCost    The cost of the new solution
- * @param accepted   Whether the new solution was accepted
- * @param strategyId The ID of the search strategy that produced this solution
- * @param isNewBest  Whether this is a new best solution overall
- * @param threshold  The acceptance threshold at this iteration (for Schrimpf acceptance)
+ * @param iteration        The iteration number
+ * @param timestamp        When the event occurred
+ * @param oldCost          The cost of the previous solution
+ * @param newCost          The cost of the new solution
+ * @param accepted         Whether the new solution was accepted
+ * @param strategyId       The ID of the search strategy that produced this solution
+ * @param isNewBest        Whether this is a new best solution overall
+ * @param threshold        The acceptance threshold at this iteration (for Schrimpf acceptance)
+ * @param oldCostBreakdown Cost breakdown by component for the old solution (null if not available)
+ * @param newCostBreakdown Cost breakdown by component for the new solution (null if not available)
  */
 public record AcceptanceDecision(
         int iteration,
@@ -37,6 +41,8 @@ public record AcceptanceDecision(
         boolean accepted,
         String strategyId,
         boolean isNewBest,
-        double threshold
+        double threshold,
+        Map<String, Double> oldCostBreakdown,
+        Map<String, Double> newCostBreakdown
 ) implements AlgorithmEvent {
 }
