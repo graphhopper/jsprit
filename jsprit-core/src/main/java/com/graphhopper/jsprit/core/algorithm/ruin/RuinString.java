@@ -181,7 +181,9 @@ public final class RuinString extends AbstractRuinStrategy {
 
 
     private void ruinRouteWithStringRuin(VehicleRoute seedRoute, Job prevJob, Set<Job> unassignedJobs) {
-        int stringLength = lMin + random.nextInt(lMax - lMin);
+        int stringLength;
+        if (lMin == lMax) stringLength = lMin;
+        else stringLength = lMin + random.nextInt(lMax - lMin);
         stringLength = Math.min(stringLength, seedRoute.getActivities().size());
         List<AbstractActivity> acts = vrp.getActivities(prevJob);
         AbstractActivity randomSeedAct = RandomUtils.nextItem(acts, random);
