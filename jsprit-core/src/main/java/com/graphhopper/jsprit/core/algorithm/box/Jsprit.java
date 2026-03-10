@@ -186,6 +186,8 @@ public class Jsprit {
 
         private Map<SearchStrategy, Double> customStrategies = new HashMap<>();
 
+        private List<StrategyComponents> strategyComponents = new ArrayList<>();
+
         private VehicleFleetManager fleetManager = null;
 
         private JobFilter jobFilter = null;
@@ -275,6 +277,21 @@ public class Jsprit {
 
         public Builder addSearchStrategy(SearchStrategy searchStrategy, double weight) {
             customStrategies.put(searchStrategy, weight);
+            return this;
+        }
+
+        /**
+         * Adds a custom search strategy by specifying only the ruin and insertion components.
+         * The strategy will be assembled using Jsprit's shared acceptor and objective function.
+         *
+         * @param name      the strategy name/id
+         * @param ruin      the ruin strategy
+         * @param insertion the insertion strategy
+         * @param weight    the probability weight for this strategy
+         * @return builder for chaining
+         */
+        public Builder addSearchStrategy(String name, RuinStrategy ruin, InsertionStrategy insertion, double weight) {
+            strategyComponents.add(new StrategyComponents(name, ruin, insertion, weight));
             return this;
         }
 
@@ -372,6 +389,12 @@ public class Jsprit {
 
     }
 
+    /**
+     * Holds the components for a custom search strategy that will be assembled
+     * with the shared acceptor and objective function.
+     */
+    record StrategyComponents(String name, RuinStrategy ruin, InsertionStrategy insertion, double weight) {}
+
     static class RuinShareFactoryImpl implements RuinShareFactory
 
     {
@@ -434,6 +457,8 @@ public class Jsprit {
 
     private final Map<SearchStrategy, Double> customStrategies = new HashMap<>();
 
+    private final List<StrategyComponents> strategyComponents = new ArrayList<>();
+
     private final JobInsertionCostsCalculatorFactory serviceCalculatorFactory;
 
     private final JobInsertionCostsCalculatorFactory shipmentCalculatorFactory;
@@ -457,6 +482,7 @@ public class Jsprit {
         regretScorer = builder.regretScorer;
         regretScoringFunction = builder.regretScoringFunction;
         customStrategies.putAll(builder.customStrategies);
+        strategyComponents.addAll(builder.strategyComponents);
         vehicleFleetManager = builder.fleetManager;
     }
 
@@ -817,6 +843,13 @@ public class Jsprit {
 
         for (SearchStrategy customStrategy : customStrategies.keySet()) {
             prettyBuilder.withStrategy(customStrategy, customStrategies.get(customStrategy));
+        }
+
+        // Assemble strategies from components using the shared acceptor and objective function
+        for (StrategyComponents sc : strategyComponents) {
+            SearchStrategy strategy = new SearchStrategy(sc.name(), new SelectBest(), acceptor, objectiveFunction);
+            strategy.addModule(configureModule(new RuinAndRecreateModule(sc.name(), sc.insertion(), sc.ruin())));
+            prettyBuilder.withStrategy(strategy, sc.weight());
         }
 
         String constructionMethod = getProperty(Parameter.CONSTRUCTION.toString());
