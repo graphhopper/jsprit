@@ -106,6 +106,9 @@
                 <version>3.2.5</version>
                 <configuration>
                     <argLine>-Xmx100m -Xms100m</argLine>
+                	<parallel>classes</parallel>
+                	<useUnlimitedThreads>true</useUnlimitedThreads>
+
                 </configuration>
             </plugin>
 
