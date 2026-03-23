@@ -48,6 +48,10 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
     private RegretScoringFunction regretScoringFunction;
 
+    private RegretKScoringFunction regretKScoringFunction;
+
+    private int regretK = 2;
+
     private final JobInsertionCostsCalculator insertionCostsCalculator;
 
     /**
@@ -63,6 +67,14 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
 
     public void setRegretScoringFunction(RegretScoringFunction regretScoringFunction) {
         this.regretScoringFunction = regretScoringFunction;
+    }
+
+    public void setRegretKScoringFunction(RegretKScoringFunction regretKScoringFunction) {
+        this.regretKScoringFunction = regretKScoringFunction;
+    }
+
+    public void setRegretK(int k) {
+        this.regretK = k;
     }
 
     public RegretInsertionConcurrent(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, ExecutorService executorService) {
@@ -135,8 +147,13 @@ public class RegretInsertionConcurrent extends AbstractInsertionStrategy {
     private ScoredJob calculateBestJob(final Collection<VehicleRoute> routes, Collection<Job> unassignedJobs, List<ScoredJob> badJobList) {
         ScoredJob bestScoredJob = null;
         List<Callable<ScoredJob>> tasks = new ArrayList<>();
+        final boolean useKBest = regretKScoringFunction != null && regretK != 2;
         for (final Job unassignedJob : unassignedJobs) {
-            tasks.add(() -> Scorer.scoreUnassignedJob(routes, unassignedJob, insertionCostsCalculator, regretScoringFunction));
+            if (useKBest) {
+                tasks.add(() -> Scorer.scoreUnassignedJobWithKBest(routes, unassignedJob, insertionCostsCalculator, regretKScoringFunction, regretK));
+            } else {
+                tasks.add(() -> Scorer.scoreUnassignedJob(routes, unassignedJob, insertionCostsCalculator, regretScoringFunction));
+            }
         }
 
         try {

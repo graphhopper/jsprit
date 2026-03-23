@@ -45,9 +45,21 @@ public class RegretInsertion extends AbstractInsertionStrategy {
 
     private RegretScoringFunction regretScoringFunction;
 
+    private RegretKScoringFunction regretKScoringFunction;
+
+    private int regretK = 2;
+
 
     public void setRegretScoringFunction(RegretScoringFunction regretScoringFunction) {
         this.regretScoringFunction = regretScoringFunction;
+    }
+
+    public void setRegretKScoringFunction(RegretKScoringFunction regretKScoringFunction) {
+        this.regretKScoringFunction = regretKScoringFunction;
+    }
+
+    public void setRegretK(int k) {
+        this.regretK = k;
     }
 
     /**
@@ -134,7 +146,14 @@ public class RegretInsertion extends AbstractInsertionStrategy {
     private ScoredJob getBestScoredUnassignedJob(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs, List<ScoredJob> badJobs) {
         ScoredJob bestScoredJob = null;
         for (Job unassignedJob : unassignedJobs) {
-            ScoredJob scoredJob = Scorer.scoreUnassignedJob(routes, unassignedJob, insertionCostsCalculator, regretScoringFunction);
+            ScoredJob scoredJob;
+            if (regretKScoringFunction != null && regretK != 2) {
+                // Use k-best scoring
+                scoredJob = Scorer.scoreUnassignedJobWithKBest(routes, unassignedJob, insertionCostsCalculator, regretKScoringFunction, regretK);
+            } else {
+                // Use legacy 2-best scoring
+                scoredJob = Scorer.scoreUnassignedJob(routes, unassignedJob, insertionCostsCalculator, regretScoringFunction);
+            }
             if (scoredJob instanceof ScoredJob.BadJob) {
                 badJobs.add(scoredJob);
                 continue;
