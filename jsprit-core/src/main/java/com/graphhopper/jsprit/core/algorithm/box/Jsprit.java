@@ -128,11 +128,6 @@ public class Jsprit {
         RUIN_WORST_NOISE_LEVEL("worst.noise_level"),
         RUIN_WORST_NOISE_PROB("worst.noise_prob"),
         FAST_REGRET("regret.fast"),
-        REGRET_K("regret.k"),
-        REGRET_K_STRATEGY("regret.k.strategy"),
-        SPATIAL_FILTER("regret.spatial_filter"),
-        SPATIAL_FILTER_K("regret.spatial_filter_k"),
-        SPATIAL_FILTER_LEARNING_ROUNDS("regret.spatial_filter_learning_rounds"),
         MAX_TRANSPORT_COSTS("max_transport_costs"),
         CONSTRUCTION("construction"),
         BREAK_SCHEDULING("break_scheduling"),
@@ -271,11 +266,6 @@ public class Jsprit {
             defaults.put(Parameter.RUIN_WORST_NOISE_PROB.toString(), String.valueOf(0.2));
             defaults.put(Parameter.VEHICLE_SWITCH.toString(), String.valueOf(true));
             defaults.put(Parameter.FAST_REGRET.toString(), String.valueOf(false));
-            defaults.put(Parameter.REGRET_K.toString(), "2");
-            defaults.put(Parameter.REGRET_K_STRATEGY.toString(), "sum");
-            defaults.put(Parameter.SPATIAL_FILTER.toString(), String.valueOf(false));
-            defaults.put(Parameter.SPATIAL_FILTER_K.toString(), "5");
-            defaults.put(Parameter.SPATIAL_FILTER_LEARNING_ROUNDS.toString(), "50");
             defaults.put(Parameter.BREAK_SCHEDULING.toString(), String.valueOf(true));
             defaults.put(Parameter.CONSTRUCTION.toString(), Construction.REGRET_INSERTION.toString());
 
@@ -465,10 +455,6 @@ public class Jsprit {
 
     private RegretScoringFunction regretScoringFunction;
 
-    private RegretKScoringFunction regretKScoringFunction;
-
-    private int regretK;
-
     private final Map<SearchStrategy, Double> customStrategies = new HashMap<>();
 
     private final List<StrategyComponents> strategyComponents = new ArrayList<>();
@@ -507,22 +493,6 @@ public class Jsprit {
         if (regretScoringFunction == null) {
             regretScoringFunction = new DefaultRegretScoringFunction(regretScorer);
         }
-
-        // Parse regret-k configuration
-        String kStr = getProperty(Parameter.REGRET_K.toString());
-        if (kStr != null && !kStr.isEmpty()) {
-            if (kStr.equalsIgnoreCase("all") || kStr.equals("-1")) {
-                regretK = -1; // -1 means all
-            } else {
-                regretK = Integer.parseInt(kStr);
-            }
-        } else {
-            regretK = 2; // default
-        }
-
-        // Create regret-k scoring function
-        String strategyStr = getProperty(Parameter.REGRET_K_STRATEGY.toString());
-        regretKScoringFunction = RegretKScoringFunctionFactory.create(strategyStr, regretK, regretScorer);
     }
 
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp) {
@@ -662,15 +632,6 @@ public class Jsprit {
         AbstractInsertionStrategy regret;
 
         boolean fastRegret = Boolean.parseBoolean(getProperty(Parameter.FAST_REGRET.toString()));
-
-        // Create adaptive spatial filter for fast regret insertion
-        AdaptiveSpatialFilter spatialFilter = null;
-        if (fastRegret && toBoolean(getProperty(Parameter.SPATIAL_FILTER.toString()))) {
-            int spatialFilterK = toInteger(getProperty(Parameter.SPATIAL_FILTER_K.toString()));
-            int spatialFilterLearningRounds = toInteger(getProperty(Parameter.SPATIAL_FILTER_LEARNING_ROUNDS.toString()));
-            spatialFilter = new AdaptiveSpatialFilter(spatialFilterLearningRounds, spatialFilterK);
-        }
-
         if (es != null) {
             if (fastRegret) {
                 RegretInsertionConcurrentFast regretInsertion = (RegretInsertionConcurrentFast) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
@@ -684,10 +645,7 @@ public class Jsprit {
                         .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
                     .build();
                 regretInsertion.setRegretScoringFunction(regretScoringFunction);
-                regretInsertion.setRegretKScoringFunction(regretKScoringFunction);
-                regretInsertion.setRegretK(regretK);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
-                regretInsertion.setSpatialFilter(spatialFilter);
                 regret = regretInsertion;
             }
             else {
@@ -701,8 +659,6 @@ public class Jsprit {
                         .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
                     .build();
                 regretInsertion.setRegretScoringFunction(regretScoringFunction);
-                regretInsertion.setRegretKScoringFunction(regretKScoringFunction);
-                regretInsertion.setRegretK(regretK);
                 regret = regretInsertion;
             }
         } else {
@@ -717,10 +673,7 @@ public class Jsprit {
                         .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
                     .build();
                 regretInsertion.setRegretScoringFunction(regretScoringFunction);
-                regretInsertion.setRegretKScoringFunction(regretKScoringFunction);
-                regretInsertion.setRegretK(regretK);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
-                regretInsertion.setSpatialFilter(spatialFilter);
                 regret = regretInsertion;
             }
             else{
@@ -733,8 +686,6 @@ public class Jsprit {
                         .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
                         .build();
                 regretInsertion.setRegretScoringFunction(regretScoringFunction);
-                regretInsertion.setRegretKScoringFunction(regretKScoringFunction);
-                regretInsertion.setRegretK(regretK);
                 regret = regretInsertion;
             }
         }

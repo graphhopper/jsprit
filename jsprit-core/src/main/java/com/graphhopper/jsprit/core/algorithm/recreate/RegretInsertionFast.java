@@ -44,10 +44,6 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
 
     private RegretScoringFunction regretScoringFunction;
 
-    private RegretKScoringFunction regretKScoringFunction;
-
-    private int regretK = 2;
-
     private final JobInsertionCostsCalculator insertionCostsCalculator;
 
     private final VehicleFleetManager fleetManager;
@@ -57,8 +53,6 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
     private boolean switchAllowed = true;
 
     private DependencyType[] dependencyTypes = null;
-
-    private AdaptiveSpatialFilter spatialFilter = null;
 
     public RegretInsertionFast(JobInsertionCostsCalculator jobInsertionCalculator, VehicleRoutingProblem vehicleRoutingProblem, VehicleFleetManager fleetManager) {
         super(vehicleRoutingProblem);
@@ -84,28 +78,12 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
         this.regretScoringFunction = regretScoringFunction;
     }
 
-    public void setRegretKScoringFunction(RegretKScoringFunction regretKScoringFunction) {
-        this.regretKScoringFunction = regretKScoringFunction;
-    }
-
-    public void setRegretK(int k) {
-        this.regretK = k;
-    }
-
     public void setSwitchAllowed(boolean switchAllowed) {
         this.switchAllowed = switchAllowed;
     }
 
     public void setDependencyTypes(DependencyType[] dependencyTypes) {
         this.dependencyTypes = dependencyTypes;
-    }
-
-    public void setSpatialFilter(AdaptiveSpatialFilter spatialFilter) {
-        this.spatialFilter = spatialFilter;
-    }
-
-    public AdaptiveSpatialFilter getSpatialFilter() {
-        return spatialFilter;
     }
 
     private Set<String> getInitialVehicleIds(VehicleRoutingProblem vehicleRoutingProblem) {
@@ -131,26 +109,23 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
     public Collection<Job> insertUnassignedJobs(Collection<VehicleRoute> routes, Collection<Job> unassignedJobs) {
         List<Job> badJobs = new ArrayList<>(unassignedJobs.size());
         Set<Job> jobs = new LinkedHashSet<>(unassignedJobs);
-        // Use BoundedInsertionQueue instead of TreeSet - O(R) per job instead of O(n*R)
-        BoundedInsertionQueue[] queues = new BoundedInsertionQueue[vrp.getJobs().values().size() + 2];
+        TreeSet<VersionedInsertionData>[] priorityQueues = new TreeSet[vrp.getJobs().values().size() + 2];
         VehicleRoute lastModified = null;
         boolean firstRun = true;
+        int updateRound = 0;
+        Map<VehicleRoute, Integer> updates = new HashMap<>();
         while (!jobs.isEmpty()) {
             List<ScoredJob> badJobList = new ArrayList<>();
             if(!firstRun && lastModified == null) throw new IllegalStateException("last modified route is null. this should not be.");
             if(firstRun){
-                updateInsertionData(queues, routes, jobs, firstRun, lastModified);
+                updateInsertionData(priorityQueues, routes, jobs, updateRound, firstRun, lastModified, updates);
                 firstRun = false;
             }
             else{
-                updateInsertionData(queues, routes, jobs, firstRun, lastModified);
+                updateInsertionData(priorityQueues, routes, jobs, updateRound, firstRun, lastModified, updates);
             }
-            ScoredJob bestScoredJob;
-            if (regretKScoringFunction != null && regretK != 2) {
-                bestScoredJob = InsertionDataUpdater.getBestWithKBounded(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, regretKScoringFunction, regretK, queues, jobs, badJobList, vrp);
-            } else {
-                bestScoredJob = InsertionDataUpdater.getBestBounded(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, regretScoringFunction, queues, jobs, badJobList, vrp);
-            }
+            updateRound++;
+            ScoredJob bestScoredJob = InsertionDataUpdater.getBest(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, regretScoringFunction, priorityQueues, updates, jobs, badJobList, vrp);
             if (bestScoredJob != null) {
                 if (bestScoredJob.isNewRoute()) {
                     routes.add(bestScoredJob.getRoute());
@@ -170,29 +145,29 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
         return badJobs;
     }
 
-    private void updateInsertionData(BoundedInsertionQueue[] queues, Collection<VehicleRoute> routes, Collection<Job> unassignedJobs, boolean firstRun, VehicleRoute lastModified) {
+    private void updateInsertionData(TreeSet<VersionedInsertionData>[] priorityQueues, Collection<VehicleRoute> routes, Collection<Job> unassignedJobs, int updateRound, boolean firstRun, VehicleRoute lastModified, Map<VehicleRoute, Integer> updates) {
         for (Job unassignedJob : unassignedJobs) {
             int jobIndex = vrp.getJobIndex(unassignedJob);
-            if (queues[jobIndex] == null) {
-                queues[jobIndex] = new BoundedInsertionQueue();
+            if (priorityQueues[jobIndex] == null) {
+                priorityQueues[jobIndex] = new TreeSet<>(InsertionDataUpdater.getComparator());
             }
             if(firstRun) {
-                // First run: calculate insertions for all routes with optional spatial filtering
-                InsertionDataUpdater.updateBoundedWithFilter(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, queues[jobIndex], unassignedJob, routes, spatialFilter);
+                InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[jobIndex], updateRound, unassignedJob, routes);
+                for(VehicleRoute r : routes) updates.put(r,updateRound);
             }
             else{
                 if (dependencyTypes == null || dependencyTypes[jobIndex] == null) {
-                    // Only update the modified route - no spatial filtering needed for single route
-                    InsertionDataUpdater.updateBounded(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, queues[jobIndex], unassignedJob, Collections.singletonList(lastModified));
+                    InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[jobIndex], updateRound, unassignedJob, Collections.singletonList(lastModified));
+                    updates.put(lastModified,updateRound);
                 }
                 else {
                     DependencyType dependencyType = dependencyTypes[jobIndex];
                     if (dependencyType.equals(DependencyType.INTER_ROUTE) || dependencyType.equals(DependencyType.INTRA_ROUTE)) {
-                        // Dependencies require updating all routes - use spatial filtering
-                        InsertionDataUpdater.updateBoundedWithFilter(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, queues[jobIndex], unassignedJob, routes, spatialFilter);
+                        InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[jobIndex], updateRound, unassignedJob, routes);
+                        for(VehicleRoute r : routes) updates.put(r,updateRound);
                     } else {
-                        // Only update the modified route - no spatial filtering needed for single route
-                        InsertionDataUpdater.updateBounded(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, queues[jobIndex], unassignedJob, Collections.singletonList(lastModified));
+                        InsertionDataUpdater.update(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, priorityQueues[jobIndex], updateRound, unassignedJob, Collections.singletonList(lastModified));
+                        updates.put(lastModified,updateRound);
                     }
                 }
             }
