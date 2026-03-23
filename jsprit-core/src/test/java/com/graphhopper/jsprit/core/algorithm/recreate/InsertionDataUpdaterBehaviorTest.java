@@ -413,6 +413,144 @@ class InsertionDataUpdaterBehaviorTest {
         }
     }
 
+    @Nested
+    @DisplayName("BoundedInsertionQueue Stale Entry Tests")
+    class BoundedInsertionQueueStaleEntryTests {
+
+        /**
+         * This is the CRITICAL test for the core regret insertion optimization.
+         * <p>
+         * When a job is inserted into a route, the insertion costs for OTHER jobs
+         * into that route change (usually increase due to reduced capacity/time).
+         * The old insertion data becomes STALE and must be replaced.
+         * <p>
+         * The original TreeSet implementation used versioning to handle this:
+         * - Each update round incremented a version counter
+         * - Only entries with the current version were considered valid
+         * <p>
+         * The BoundedInsertionQueue optimization must achieve the same behavior
+         * by ALWAYS replacing entries for a route, even when the new cost is higher.
+         * <p>
+         * Without this behavior, the algorithm uses stale (outdated) costs when
+         * computing regret values, leading to suboptimal job selection.
+         */
+        @Test
+        @DisplayName("Must replace stale entry even when new cost is HIGHER")
+        void mustReplaceStaleEntryEvenWhenNewCostIsHigher() {
+            BoundedInsertionQueue queue = new BoundedInsertionQueue();
+
+            // Create a mock route (using VehicleRoute.emptyRoute() as a stand-in)
+            com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute route =
+                    com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute.emptyRoute();
+
+            // Initial insertion: job can be inserted with cost 10
+            InsertionData initialData = new InsertionData(10.0, 0, 0, null, null);
+            queue.addOrReplace(initialData, route);
+
+            assertEquals(10.0, queue.getBest().getCost(), 0.001,
+                    "Initial cost should be 10.0");
+
+            // Simulate route modification: another job was inserted into this route
+            // Now the same job has a HIGHER insertion cost (e.g., due to capacity constraints)
+            InsertionData updatedData = new InsertionData(25.0, 0, 0, null, null);
+            boolean replaced = queue.addOrReplace(updatedData, route);
+
+            // CRITICAL: The entry MUST be replaced even though cost is higher
+            // The old entry is STALE - it represents outdated route state
+            assertTrue(replaced, "Entry should be replaced even when new cost is higher");
+            assertEquals(25.0, queue.getBest().getCost(), 0.001,
+                    "Queue should contain the NEW (higher) cost, not the stale old cost");
+            assertEquals(1, queue.size(),
+                    "Queue should still have exactly one entry for the route");
+        }
+
+        @Test
+        @DisplayName("Replace stale entry maintains correct sorting order")
+        void replaceStaleEntryMaintainsCorrectSorting() {
+            BoundedInsertionQueue queue = new BoundedInsertionQueue();
+
+            com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute route1 =
+                    com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute.emptyRoute();
+            com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute route2 =
+                    com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute.Builder
+                            .newInstance(VehicleImpl.Builder.newInstance("v1")
+                                    .setStartLocation(Location.newInstance(0, 0)).build())
+                            .build();
+
+            // Add entries: route1=10, route2=20
+            queue.addOrReplace(new InsertionData(10.0, 0, 0, null, null), route1);
+            queue.addOrReplace(new InsertionData(20.0, 0, 0, null, null), route2);
+
+            assertEquals(10.0, queue.getBest().getCost(), 0.001);
+
+            // Update route1 with higher cost (simulating route modification)
+            queue.addOrReplace(new InsertionData(30.0, 0, 0, null, null), route1);
+
+            // Now route2 should be best (cost 20), route1 is worst (cost 30)
+            assertEquals(20.0, queue.getBest().getCost(), 0.001,
+                    "Best should now be route2 with cost 20");
+            assertEquals(route2, queue.getBest().getRoute());
+        }
+
+        @Test
+        @DisplayName("Stale entry replacement works in regret calculation scenario")
+        void staleEntryReplacementWorksInRegretScenario() {
+            BoundedInsertionQueue queue = new BoundedInsertionQueue();
+
+            // Create two distinct routes
+            com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute routeA =
+                    com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute.emptyRoute();
+            com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute routeB =
+                    com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute.Builder
+                            .newInstance(VehicleImpl.Builder.newInstance("v1")
+                                    .setStartLocation(Location.newInstance(0, 0)).build())
+                            .build();
+
+            // Initial state: routeA=5 (best), routeB=15 (second best)
+            // Regret = 15 - 5 = 10
+            queue.addOrReplace(new InsertionData(5.0, 0, 0, null, null), routeA);
+            queue.addOrReplace(new InsertionData(15.0, 0, 0, null, null), routeB);
+
+            double initialBest = queue.getBest().getCost();
+            double initialSecond = queue.getSecondBest().getCost();
+            double initialRegret = initialSecond - initialBest;
+            assertEquals(10.0, initialRegret, 0.001, "Initial regret should be 10");
+
+            // After inserting a job into routeA, costs change
+            // routeA now has cost 20 (worse), routeB unchanged at 15
+            // New correct regret = 20 - 15 = 5
+            queue.addOrReplace(new InsertionData(20.0, 0, 0, null, null), routeA);
+
+            double newBest = queue.getBest().getCost();
+            double newSecond = queue.getSecondBest().getCost();
+            double newRegret = newSecond - newBest;
+
+            assertEquals(15.0, newBest, 0.001, "Best should now be routeB with cost 15");
+            assertEquals(20.0, newSecond, 0.001, "Second should now be routeA with cost 20");
+            assertEquals(5.0, newRegret, 0.001, "New regret should be 5");
+        }
+
+        @Test
+        @DisplayName("NoInsertionFound should not replace valid entry")
+        void noInsertionFoundShouldNotReplaceValidEntry() {
+            BoundedInsertionQueue queue = new BoundedInsertionQueue();
+
+            com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute route =
+                    com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute.emptyRoute();
+
+            // Add valid entry
+            queue.addOrReplace(new InsertionData(10.0, 0, 0, null, null), route);
+            assertEquals(1, queue.size());
+
+            // Try to add NoInsertionFound - should be rejected
+            boolean added = queue.addOrReplace(InsertionData.createEmptyInsertionData(), route);
+
+            assertFalse(added, "NoInsertionFound should be rejected");
+            assertEquals(1, queue.size(), "Queue should still have the valid entry");
+            assertEquals(10.0, queue.getBest().getCost(), 0.001);
+        }
+    }
+
     // Helper methods to create test problems
 
     private VehicleRoutingProblem createFourJobTwoVehicleProblem() {

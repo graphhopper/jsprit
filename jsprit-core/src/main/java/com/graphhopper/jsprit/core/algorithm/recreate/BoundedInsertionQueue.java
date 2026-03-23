@@ -136,16 +136,13 @@ class BoundedInsertionQueue {
         // Check if we already have an entry for this route
         Entry existingForRoute = byRoute.get(route);
         if (existingForRoute != null) {
-            // Replace if new entry is better (lower cost)
-            if (newEntry.getCost() < existingForRoute.getCost()) {
-                sorted.remove(existingForRoute);
-                byRoute.put(route, newEntry);
-                sorted.add(newEntry);
-                enforceMaxSize();
-                return true;
-            }
-            // Keep existing entry if it's better or equal
-            return false;
+            // Always replace - the old entry is stale after route modification
+            // (This replaces the versioning system from the original TreeSet approach)
+            sorted.remove(existingForRoute);
+            byRoute.put(route, newEntry);
+            sorted.add(newEntry);
+            enforceMaxSize();
+            return true;
         }
 
         // No existing entry for this route
