@@ -52,11 +52,13 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
         double latestVehicleArrival = iFacts.getNewVehicle().getLatestArrival();
         Double latestArrTimeAtNextAct;
         Location prevLocation = prevAct.getLocation();
-        if (prevAct instanceof ActWithoutStaticLocation) ((ActWithoutStaticLocation) prevAct).getPreviousLocation();
+        if (prevAct instanceof ActWithoutStaticLocation)
+            prevLocation = ((ActWithoutStaticLocation) prevAct).getPreviousLocation();
         Location newLocation = newAct.getLocation();
         if (newAct instanceof ActWithoutStaticLocation) newLocation = prevLocation;
         Location nextLocation = nextAct.getLocation();
-        if (nextAct instanceof ActWithoutStaticLocation) ((ActWithoutStaticLocation) nextAct).getNextLocation();
+        if (nextAct instanceof ActWithoutStaticLocation)
+            nextLocation = ((ActWithoutStaticLocation) nextAct).getNextLocation();
         if (nextAct instanceof End) {
             latestArrTimeAtNextAct = latestVehicleArrival;
             nextLocation = iFacts.getNewVehicle().getEndLocation();

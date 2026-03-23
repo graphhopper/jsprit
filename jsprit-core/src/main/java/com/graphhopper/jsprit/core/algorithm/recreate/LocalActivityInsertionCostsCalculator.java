@@ -61,11 +61,13 @@ public class LocalActivityInsertionCostsCalculator implements ActivityInsertionC
     @Override
     public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
         Location prevLocation = prevAct.getLocation();
-        if (prevAct instanceof ActWithoutStaticLocation) ((ActWithoutStaticLocation) prevAct).getPreviousLocation();
+        if (prevAct instanceof ActWithoutStaticLocation)
+            prevLocation = ((ActWithoutStaticLocation) prevAct).getPreviousLocation();
         Location newLocation = newAct.getLocation();
         if (newAct instanceof ActWithoutStaticLocation) newLocation = prevLocation;
         Location nextLocation = nextAct.getLocation();
-        if (nextAct instanceof ActWithoutStaticLocation) ((ActWithoutStaticLocation) nextAct).getNextLocation();
+        if (nextAct instanceof ActWithoutStaticLocation)
+            nextLocation = ((ActWithoutStaticLocation) nextAct).getNextLocation();
 
         double tp_costs_prevAct_newAct = routingCosts.getTransportCost(prevLocation, newLocation, depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevLocation, newLocation, depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
