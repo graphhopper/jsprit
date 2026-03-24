@@ -276,13 +276,8 @@ class ShipmentInsertionCalculatorTest {
         List<AbstractActivity> activities = new ArrayList<AbstractActivity>();
         activities.add(new PickupService(service));
         when(activityFactory.createActivities(service)).thenReturn(activities);
-        JobCalculatorSelector switcher = new JobCalculatorSelector();
         ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
-        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
-        switcher.put(Pickup.class, serviceInsertionCalc);
-        switcher.put(Service.class, serviceInsertionCalc);
-        switcher.put(Shipment.class, insertionCalculator);
-        InsertionData iData = switcher.getInsertionData(route, service, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
+        InsertionData iData = serviceInsertionCalc.getInsertionData(route, service, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
         // routeActVisitor.visit(route);
         assertEquals(3, iData.getDeliveryInsertionIndex());
     }

@@ -55,12 +55,6 @@ public class BestInsertionBuilder {
 
     private int nuOfThreads;
 
-    private double timeSlice;
-
-    private int nNeighbors;
-
-    private boolean timeScheduling = false;
-
     private boolean allowVehicleSwitch = true;
 
     private boolean addDefaultCostCalc = true;
@@ -155,9 +149,6 @@ public class BestInsertionBuilder {
         calcBuilder.setActivityInsertionCostsCalculator(actInsertionCostsCalculator);
         if (considerFixedCosts) {
             calcBuilder.considerFixedCosts(weightOfFixedCosts);
-        }
-        if (timeScheduling) {
-            calcBuilder.experimentalTimeScheduler(timeSlice, nNeighbors);
         }
         calcBuilder.setAllowVehicleSwitch(allowVehicleSwitch);
         JobInsertionCostsCalculator jobInsertions = calcBuilder.build();

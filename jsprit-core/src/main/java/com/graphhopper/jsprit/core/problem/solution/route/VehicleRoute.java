@@ -466,6 +466,16 @@ public class VehicleRoute {
     }
 
     /**
+     * Returns true if this route has a vehicle assigned.
+     * Use this instead of {@code route.getVehicle() instanceof VehicleImpl.NoVehicle} checks.
+     *
+     * @return true if a vehicle is assigned, false otherwise
+     */
+    public boolean hasVehicle() {
+        return !(vehicle instanceof VehicleImpl.NoVehicle);
+    }
+
+    /**
      * Returns start-activity of this route.
      *
      * @return start

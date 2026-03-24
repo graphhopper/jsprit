@@ -38,6 +38,20 @@ public class InsertionData {
             super(Double.MAX_VALUE, NO_INDEX, NO_INDEX, null, null);
         }
 
+        @Override
+        public boolean isFound() {
+            return false;
+        }
+    }
+
+    /**
+     * Returns true if this represents a valid insertion, false if no insertion was found.
+     * Use this instead of {@code instanceof NoInsertionFound} checks.
+     *
+     * @return true if insertion is valid, false otherwise
+     */
+    public boolean isFound() {
+        return true;
     }
 
     private static InsertionData noInsertion = new NoInsertionFound();

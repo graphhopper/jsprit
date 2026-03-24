@@ -30,6 +30,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -58,15 +60,15 @@ class CalcVehicleTypeDependentServiceInsertionTest {
         when(veh1.getStartLocation()).thenReturn(Location.newInstance("loc1"));
         when(veh2.getStartLocation()).thenReturn(Location.newInstance("loc2"));
         fleetManager = mock(VehicleFleetManager.class);
-        service = mock(Service.class);
+        service = Service.Builder.newInstance("testService")
+                .setLocation(Location.newInstance("serviceLoc"))
+                .build();
         vehicleRoute = mock(VehicleRoute.class);
         when(fleetManager.getAvailableVehicles()).thenReturn(Arrays.asList(veh1, veh2));
         VehicleType type = mock(VehicleType.class);
         when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 10).build());
         when(veh1.getType()).thenReturn(type);
         when(veh2.getType()).thenReturn(type);
-        when(service.getSize()).thenReturn(Capacity.Builder.newInstance().build());
-        when(service.getTimeWindow()).thenReturn(TimeWindow.newInstance(0.0, Double.MAX_VALUE));
         when(vehicleRoute.getDriver()).thenReturn(null);
         when(vehicleRoute.getVehicle()).thenReturn(VehicleImpl.createNoVehicle());
     }
@@ -82,7 +84,9 @@ class CalcVehicleTypeDependentServiceInsertionTest {
         when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, 10.0)).thenReturn(iDataVeh2);
         VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
         when(vrp.getInitialVehicleRoutes()).thenReturn(Collections.<VehicleRoute>emptyList());
-        VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(vrp, fleetManager, calc);
+        Map<Class<? extends com.graphhopper.jsprit.core.problem.job.Job>, JobInsertionCostsCalculator> calculators = new LinkedHashMap<>();
+        calculators.put(Service.class, calc);
+        VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(vrp, fleetManager, calculators);
         InsertionData iData = insertion.getInsertionData(vehicleRoute, service, null, 0.0, null, Double.MAX_VALUE);
         assertThat(iData.getSelectedVehicle(), is(veh1));
     }
@@ -98,7 +102,9 @@ class CalcVehicleTypeDependentServiceInsertionTest {
         when(calc.getInsertionData(vehicleRoute, service, veh2, veh2.getEarliestDeparture(), null, 20.0)).thenReturn(iDataVeh2);
         VehicleRoutingProblem vrp = mock(VehicleRoutingProblem.class);
         when(vrp.getInitialVehicleRoutes()).thenReturn(Collections.<VehicleRoute>emptyList());
-        VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(vrp, fleetManager, calc);
+        Map<Class<? extends com.graphhopper.jsprit.core.problem.job.Job>, JobInsertionCostsCalculator> calculators = new LinkedHashMap<>();
+        calculators.put(Service.class, calc);
+        VehicleTypeDependentJobInsertionCalculator insertion = new VehicleTypeDependentJobInsertionCalculator(vrp, fleetManager, calculators);
         InsertionData iData = insertion.getInsertionData(vehicleRoute, service, null, 0.0, null, Double.MAX_VALUE);
         assertThat(iData.getSelectedVehicle(), is(veh2));
     }

@@ -134,13 +134,8 @@ class ServiceInsertionAndLoadConstraintsTest {
         ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
         constraintManager.addLoadConstraint();
         stateManager.informInsertionStarts(Arrays.asList(route), null);
-        JobCalculatorSelector switcher = new JobCalculatorSelector();
         ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
-        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
-        switcher.put(Pickup.class, serviceInsertionCalc);
-        switcher.put(Delivery.class, serviceInsertionCalc);
-        switcher.put(Shipment.class, insertionCalculator);
-        InsertionData iData = switcher.getInsertionData(route, pickup, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
+        InsertionData iData = serviceInsertionCalc.getInsertionData(route, pickup, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
         assertEquals(1, iData.getDeliveryInsertionIndex());
     }
 }
