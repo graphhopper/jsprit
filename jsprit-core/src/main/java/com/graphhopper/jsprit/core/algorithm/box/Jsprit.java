@@ -105,6 +105,54 @@ public class Jsprit {
         }
     }
 
+    /**
+     * Ruin operators for independent selection mode.
+     * These allow setting weights for individual ruin operators independently
+     * of insertion operators.
+     */
+    public enum RuinOperator {
+        RADIAL("ruin.radial"),
+        RANDOM("ruin.random"),
+        WORST("ruin.worst"),
+        CLUSTER_DBSCAN("ruin.cluster_dbscan"),
+        CLUSTER_KRUSKAL("ruin.cluster_kruskal"),
+        STRING("ruin.string"),
+        TIME_RELATED("ruin.time_related");
+
+        String name;
+
+        RuinOperator(String name) {
+            this.name = name;
+        }
+
+        public String toString() {
+            return name;
+        }
+    }
+
+    /**
+     * Insertion operators for independent selection mode.
+     * These allow setting weights for individual insertion operators independently
+     * of ruin operators.
+     */
+    public enum InsertionOperator {
+        BEST("insertion.best"),
+        CHEAPEST("insertion.cheapest"),
+        REGRET_2("insertion.regret_2"),
+        REGRET_3("insertion.regret_3"),
+        POSITION_REGRET_3("insertion.position_regret_3");
+
+        String name;
+
+        InsertionOperator(String name) {
+            this.name = name;
+        }
+
+        public String toString() {
+            return name;
+        }
+    }
+
     public enum Parameter {
 
         FIXED_COST_PARAM("fixed_cost_param"), VEHICLE_SWITCH("vehicle_switch"), REGRET_TIME_WINDOW_SCORER("regret.tw_scorer"),
@@ -242,6 +290,8 @@ public class Jsprit {
             defaults.put(Strategy.CLUSTER_REGRET.toString(), "1.");
             defaults.put(Strategy.CLUSTER_CHEAPEST.toString(), "0.");
 
+            // Kruskal cluster ruin - disabled by default (use DBSCAN)
+            defaults.put(RuinOperator.CLUSTER_KRUSKAL.toString(), "0.");
 
             defaults.put(Parameter.FIXED_COST_PARAM.toString(), "0.");
             defaults.put(Parameter.VEHICLE_SWITCH.toString(), "true");
@@ -338,6 +388,16 @@ public class Jsprit {
 
         public Builder setProperty(Strategy strategy, String value) {
             setProperty(strategy.toString(), value);
+            return this;
+        }
+
+        public Builder setProperty(RuinOperator ruinOperator, String value) {
+            setProperty(ruinOperator.toString(), value);
+            return this;
+        }
+
+        public Builder setProperty(InsertionOperator insertionOperator, String value) {
+            setProperty(insertionOperator.toString(), value);
             return this;
         }
 
@@ -638,8 +698,18 @@ public class Jsprit {
         clusters.setRandom(random);
         clusters.setJobFilter(jobFilter);
         clusters.setRuinShareFactory(new RuinShareFactoryImpl(
-            toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
-                toInteger(properties.getProperty(Parameter.WORST_MAX_SHARE.toString())),
+                toInteger(properties.getProperty(Parameter.CLUSTER_MIN_SHARE.toString())),
+                toInteger(properties.getProperty(Parameter.CLUSTER_MAX_SHARE.toString())),
+                random)
+        );
+
+        // Kruskal MST-based cluster ruin (ranked #2 in Voigt 2025)
+        final RuinKruskalClusters kruskalClusters = new RuinKruskalClusters(vrp, (int) (vrp.getJobs().values().size() * 0.5), jobNeighborhoods);
+        kruskalClusters.setRandom(random);
+        kruskalClusters.setJobFilter(jobFilter);
+        kruskalClusters.setRuinShareFactory(new RuinShareFactoryImpl(
+                toInteger(properties.getProperty(Parameter.CLUSTER_MIN_SHARE.toString())),
+                toInteger(properties.getProperty(Parameter.CLUSTER_MAX_SHARE.toString())),
                 random)
         );
 
@@ -836,6 +906,13 @@ public class Jsprit {
         final SearchStrategy clustersBest = new SearchStrategy(Strategy.CLUSTER_BEST.toString(), new SelectBest(), acceptor, objectiveFunction);
         clustersBest.addModule(configureModule(new RuinAndRecreateModule(Strategy.CLUSTER_BEST.toString(), best, clusters)));
 
+        // Kruskal cluster strategies
+        final SearchStrategy kruskalClustersRegret = new SearchStrategy("cluster_kruskal_regret", new SelectBest(), acceptor, objectiveFunction);
+        kruskalClustersRegret.addModule(configureModule(new RuinAndRecreateModule("cluster_kruskal_regret", regret, kruskalClusters)));
+
+        final SearchStrategy kruskalClustersBest = new SearchStrategy("cluster_kruskal_best", new SelectBest(), acceptor, objectiveFunction);
+        kruskalClustersBest.addModule(configureModule(new RuinAndRecreateModule("cluster_kruskal_best", best, kruskalClusters)));
+
         SearchStrategy stringRegret = new SearchStrategy(Strategy.STRING_REGRET.toString(), new SelectBest(), acceptor, objectiveFunction);
         stringRegret.addModule(configureModule(new RuinAndRecreateModule(Strategy.STRING_REGRET.toString(), regret, stringRuin)));
 
@@ -884,9 +961,16 @@ public class Jsprit {
 
             .withStrategy(clustersRegret, toDouble(getProperty(Strategy.CLUSTER_REGRET.toString())))
             .withStrategy(clustersBest, toDouble(getProperty(Strategy.CLUSTER_BEST.toString())))
-                .withStrategy(clustersCheapest, toDouble(getProperty(Strategy.CLUSTER_CHEAPEST.toString())))
+                .withStrategy(clustersCheapest, toDouble(getProperty(Strategy.CLUSTER_CHEAPEST.toString())));
 
-            .withStrategy(stringBest, toDouble(getProperty(Strategy.STRING_BEST.toString())))
+        // Add Kruskal cluster strategies (weight split: 70% regret, 30% best)
+        double kruskalWeight = toDouble(getProperty(RuinOperator.CLUSTER_KRUSKAL.toString()));
+        if (kruskalWeight > 0) {
+            prettyBuilder.withStrategy(kruskalClustersRegret, kruskalWeight * 0.7)
+                    .withStrategy(kruskalClustersBest, kruskalWeight * 0.3);
+        }
+
+        prettyBuilder.withStrategy(stringBest, toDouble(getProperty(Strategy.STRING_BEST.toString())))
                 .withStrategy(stringRegret, toDouble(getProperty(Strategy.STRING_REGRET.toString())))
                 .withStrategy(stringCheapest, toDouble(getProperty(Strategy.STRING_CHEAPEST.toString())));
 
