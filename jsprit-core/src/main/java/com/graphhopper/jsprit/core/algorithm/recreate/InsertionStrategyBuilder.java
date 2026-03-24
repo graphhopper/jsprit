@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutorService;
 public class InsertionStrategyBuilder {
 
     public enum Strategy {
-        REGRET, BEST, CHEAPEST
+        REGRET, BEST, CHEAPEST, POSITION_BASED_REGRET, POSITION_BASED_REGRET_FAST
     }
 
     private final VehicleRoutingProblem vrp;
@@ -68,6 +68,10 @@ public class InsertionStrategyBuilder {
     private Strategy strategy = Strategy.BEST;
 
     private boolean isFastRegret = false;
+
+    private int positionBasedRegretK = 2;
+
+    private int topRoutesToExpand = 3;
 
     private JobInsertionCostsCalculatorFactory shipmentInsertionCalculatorFactory;
 
@@ -130,6 +134,24 @@ public class InsertionStrategyBuilder {
         return this;
     }
 
+    /**
+     * Sets the number of positions to consider for position-based regret.
+     * @param k number of positions (-1 or Integer.MAX_VALUE for all positions)
+     */
+    public InsertionStrategyBuilder setPositionBasedRegretK(int k) {
+        this.positionBasedRegretK = k;
+        return this;
+    }
+
+    /**
+     * Sets the number of top routes to expand for position-level analysis in fast mode.
+     * Routes beyond this count are only considered at route-level (best position only).
+     * @param m number of routes to expand (default: 3)
+     */
+    public InsertionStrategyBuilder setTopRoutesToExpand(int m) {
+        this.topRoutesToExpand = m;
+        return this;
+    }
 
     public InsertionStrategyBuilder setLocalLevel() {
         local = true;
@@ -241,6 +263,18 @@ public class InsertionStrategyBuilder {
                 }
 
             }
+        } else if (strategy.equals(Strategy.POSITION_BASED_REGRET)) {
+            PositionBasedRegretInsertion positionBased = new PositionBasedRegretInsertion(costCalculator, vrp);
+            positionBased.setK(positionBasedRegretK);
+            positionBased.setRandom(random);
+            insertion = positionBased;
+        } else if (strategy.equals(Strategy.POSITION_BASED_REGRET_FAST)) {
+            PositionBasedRegretInsertionFast positionBasedFast = new PositionBasedRegretInsertionFast(costCalculator, vrp, fleetManager);
+            positionBasedFast.setRegretK(positionBasedRegretK);
+            positionBasedFast.setTopRoutesToExpand(topRoutesToExpand);
+            positionBasedFast.setSwitchAllowed(allowVehicleSwitch);
+            positionBasedFast.setRandom(random);
+            insertion = positionBasedFast;
         } else throw new IllegalStateException("you should never get here");
         for (InsertionListener l : iListeners) insertion.addListener(l);
         return insertion;

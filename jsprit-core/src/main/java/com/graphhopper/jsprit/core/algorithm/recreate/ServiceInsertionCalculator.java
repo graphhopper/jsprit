@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Calculator that calculates the best insertion position for a {@link Service}.
@@ -194,5 +195,115 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         return insertionData;
     }
 
+    /**
+     * Returns all feasible insertion positions for a service in the route.
+     * Used for position-based regret calculation.
+     */
+    @Override
+    public List<InsertionData> getAllInsertionPositions(final VehicleRoute currentRoute, final Job jobToInsert,
+            final Vehicle newVehicle, double newVehicleDepartureTime, final Driver newDriver) {
+
+        List<InsertionData> allPositions = new ArrayList<>();
+
+        JobInsertionContext insertionContext = new JobInsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
+        Service service = (Service) jobToInsert;
+
+        TourActivity deliveryAct2Insert = activityFactory.createActivities(service).get(0);
+        insertionContext.getAssociatedActivities().add(deliveryAct2Insert);
+
+        // Check hard constraints at route level
+        InsertionData noInsertion = checkRouteConstraints(insertionContext, constraintManager);
+        if (noInsertion != null) {
+            return allPositions; // Empty list - route constraints not satisfied
+        }
+
+        Collection<HardConstraint> failedActivityConstraints = new ArrayList<>();
+
+        // Calculate route-level costs (same for all positions)
+        InsertionCostBreakdown routeBreakdown = constraintManager.getRouteCostsBreakdown(insertionContext);
+        double additionalICostsAtRouteLevel = routeBreakdown.getTotal();
+
+        double accessEgressCosts = additionalAccessEgressCalculator.getCosts(insertionContext);
+        if (accessEgressCosts != 0) {
+            routeBreakdown.add("AccessEgress", accessEgressCosts);
+        }
+        additionalICostsAtRouteLevel += accessEgressCosts;
+
+        // Generate start and end for new vehicle
+        Start start = new Start(newVehicle.getStartLocation(), newVehicle.getEarliestDeparture(), Double.MAX_VALUE);
+        start.setEndTime(newVehicleDepartureTime);
+        End end = new End(newVehicle.getEndLocation(), 0.0, newVehicle.getLatestArrival());
+
+        TourActivity prevAct = start;
+        double prevActStartTime = newVehicleDepartureTime;
+        int actIndex = 0;
+        Iterator<TourActivity> activityIterator = currentRoute.getActivities().iterator();
+        boolean tourEnd = false;
+
+        while (!tourEnd) {
+            TourActivity nextAct;
+            if (activityIterator.hasNext()) {
+                nextAct = activityIterator.next();
+            } else {
+                nextAct = end;
+                tourEnd = true;
+            }
+
+            boolean notFulfilledBreak = true;
+            for (TimeWindow timeWindow : service.getTimeWindows()) {
+                deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
+                deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
+                ActivityContext activityContext = new ActivityContext();
+                activityContext.setInsertionIndex(actIndex);
+                insertionContext.setActivityContext(activityContext);
+
+                ConstraintsStatus status = fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct,
+                        prevActStartTime, failedActivityConstraints, constraintManager);
+
+                if (status.equals(ConstraintsStatus.FULFILLED)) {
+                    // Calculate costs for this position
+                    InsertionCostBreakdown actBreakdown = constraintManager.getActivityCostsBreakdown(
+                            insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
+                    double additionalICostsAtActLevel = actBreakdown.getTotal();
+                    double additionalTransportationCosts = activityInsertionCostsCalculator.getCosts(
+                            insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
+                    double totalCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
+
+                    // Create InsertionData for this position
+                    InsertionData insertionData = new InsertionData(totalCost, InsertionData.NO_INDEX, actIndex, newVehicle, newDriver);
+
+                    // Build complete breakdown
+                    InsertionCostBreakdown breakdown = new InsertionCostBreakdown();
+                    breakdown.merge(routeBreakdown);
+                    breakdown.merge(actBreakdown);
+                    breakdown.add("ActivityInsertion", additionalTransportationCosts);
+                    insertionData.setCostBreakdown(breakdown);
+
+                    // Create fresh activity for this position's events
+                    TourActivity actForPosition = activityFactory.createActivities(service).get(0);
+                    actForPosition.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
+                    actForPosition.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
+                    insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, actForPosition, actIndex));
+                    insertionData.getEvents().add(new SwitchVehicle(currentRoute, newVehicle, newVehicleDepartureTime));
+                    insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
+
+                    allPositions.add(insertionData);
+                    notFulfilledBreak = false;
+                } else if (status.equals(ConstraintsStatus.NOT_FULFILLED)) {
+                    notFulfilledBreak = false;
+                }
+            }
+            if (notFulfilledBreak) break;
+
+            double nextActArrTime = prevActStartTime + transportCosts.getTransportTime(
+                    prevAct.getLocation(), nextAct.getLocation(), prevActStartTime, newDriver, newVehicle);
+            prevActStartTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime())
+                    + activityCosts.getActivityDuration(prevAct, nextAct, nextActArrTime, newDriver, newVehicle);
+            prevAct = nextAct;
+            actIndex++;
+        }
+
+        return allPositions;
+    }
 
 }
