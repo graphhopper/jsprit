@@ -26,11 +26,13 @@ import com.graphhopper.jsprit.core.algorithm.acceptor.SchrimpfAcceptance;
 import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmEndsListener;
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
+import com.graphhopper.jsprit.core.algorithm.module.IndependentRuinAndRecreateModule;
 import com.graphhopper.jsprit.core.algorithm.module.RuinAndRecreateModule;
 import com.graphhopper.jsprit.core.algorithm.recreate.*;
 import com.graphhopper.jsprit.core.algorithm.ruin.*;
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceAndShipmentDistance;
 import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
+import com.graphhopper.jsprit.core.algorithm.selector.WeightedOperatorSelector;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
@@ -249,6 +251,19 @@ public class Jsprit {
 
         private JobInsertionCostsCalculatorFactory shipmentCalculatorFactory = null;
 
+        // Independent operator selection
+        private final List<WeightedOperator<InsertionOperatorFactory>> insertionOperators = new ArrayList<>();
+        private final List<WeightedOperator<RuinOperatorFactory>> ruinOperators = new ArrayList<>();
+        private final Set<String> explicitlySetStrategies = new HashSet<>();
+
+        /**
+         * Weighted operator holder.
+         */
+        record WeightedOperator<T>(T factory, double weight, String name) {
+            WeightedOperator(T factory, double weight) {
+                this(factory, weight, null);
+            }
+        }
 
         public static Builder newInstance(VehicleRoutingProblem vrp) {
             return new Builder(vrp);
@@ -387,6 +402,7 @@ public class Jsprit {
         }
 
         public Builder setProperty(Strategy strategy, String value) {
+            explicitlySetStrategies.add(strategy.toString());
             setProperty(strategy.toString(), value);
             return this;
         }
@@ -453,7 +469,116 @@ public class Jsprit {
             return this;
         }
 
+        /**
+         * Adds an insertion operator with the specified weight.
+         *
+         * <p>When insertion operators are registered, they are selected independently
+         * of ruin operators during each iteration. This allows fine-grained control
+         * over the search strategy composition.</p>
+         *
+         * <p>Example:</p>
+         * <pre>
+         * Jsprit.Builder.newInstance(vrp)
+         *     .addInsertionOperator(0.7, Insertion.regretFast())  // Fast, filtered
+         *     .addInsertionOperator(0.3, Insertion.regret())       // Thorough, no filter
+         *     .buildAlgorithm();
+         * </pre>
+         *
+         * @param weight  the selection weight (higher = more likely to be selected)
+         * @param factory the insertion operator factory
+         * @return this builder for chaining
+         * @see Insertion
+         */
+        public Builder addInsertionOperator(double weight, InsertionOperatorFactory factory) {
+            insertionOperators.add(new WeightedOperator<>(factory, weight, factory.getName()));
+            return this;
+        }
+
+        /**
+         * Adds an insertion operator with a name for identification.
+         *
+         * @param weight  the selection weight
+         * @param factory the insertion operator factory
+         * @param name    the operator name (for logging/debugging)
+         * @return this builder for chaining
+         */
+        public Builder addInsertionOperator(double weight, InsertionOperatorFactory factory, String name) {
+            insertionOperators.add(new WeightedOperator<>(factory, weight, name));
+            return this;
+        }
+
+        /**
+         * Adds a ruin operator with the specified weight.
+         *
+         * <p>When ruin operators are registered, they are selected independently
+         * of insertion operators during each iteration.</p>
+         *
+         * <p>Example:</p>
+         * <pre>
+         * Jsprit.Builder.newInstance(vrp)
+         *     .addRuinOperator(0.3, Ruin.random(0.3))
+         *     .addRuinOperator(0.3, Ruin.radial(0.3))
+         *     .addRuinOperator(0.2, Ruin.cluster())
+         *     .addRuinOperator(0.2, Ruin.kruskalCluster())
+         *     .buildAlgorithm();
+         * </pre>
+         *
+         * @param weight  the selection weight (higher = more likely to be selected)
+         * @param factory the ruin operator factory
+         * @return this builder for chaining
+         * @see Ruin
+         */
+        public Builder addRuinOperator(double weight, RuinOperatorFactory factory) {
+            ruinOperators.add(new WeightedOperator<>(factory, weight, factory.getName()));
+            return this;
+        }
+
+        /**
+         * Adds a ruin operator with a name for identification.
+         *
+         * @param weight  the selection weight
+         * @param factory the ruin operator factory
+         * @param name    the operator name (for logging/debugging)
+         * @return this builder for chaining
+         */
+        public Builder addRuinOperator(double weight, RuinOperatorFactory factory, String name) {
+            ruinOperators.add(new WeightedOperator<>(factory, weight, name));
+            return this;
+        }
+
+        /**
+         * Returns true if independent operator selection mode is enabled.
+         * This is the case when either insertion or ruin operators have been registered.
+         */
+        public boolean isIndependentOperatorMode() {
+            return !insertionOperators.isEmpty() || !ruinOperators.isEmpty();
+        }
+
         public VehicleRoutingAlgorithm buildAlgorithm() {
+            // Validate: cannot mix independent operators with explicit coupled strategy weights
+            if (isIndependentOperatorMode() && !explicitlySetStrategies.isEmpty()) {
+                throw new IllegalStateException(
+                    "Cannot mix independent operator selection (addInsertionOperator/addRuinOperator) " +
+                    "with coupled strategy weights (setProperty(Strategy.*)). " +
+                    "Explicitly set strategies: " + explicitlySetStrategies + ". " +
+                    "Use one approach or the other, not both."
+                );
+            }
+            // Validate: independent mode requires both insertion and ruin operators
+            if (!insertionOperators.isEmpty() && ruinOperators.isEmpty()) {
+                throw new IllegalStateException(
+                    "Independent mode requires at least one ruin operator. " +
+                    "Add ruin operators with addRuinOperator(), e.g.: " +
+                    ".addRuinOperator(0.5, Ruin.radial(0.3))"
+                );
+            }
+            if (!ruinOperators.isEmpty() && insertionOperators.isEmpty()) {
+                throw new IllegalStateException(
+                    "Independent mode requires at least one insertion operator. " +
+                    "Add insertion operators with addInsertionOperator(), e.g.: " +
+                    ".addInsertionOperator(0.5, Insertion.regret())"
+                );
+            }
             return new Jsprit(this).create(vrp);
         }
 
@@ -539,6 +664,10 @@ public class Jsprit {
 
     private VehicleFleetManager vehicleFleetManager;
 
+    // Independent operator selection
+    private final List<Builder.WeightedOperator<InsertionOperatorFactory>> insertionOperators;
+    private final List<Builder.WeightedOperator<RuinOperatorFactory>> ruinOperators;
+
     private Jsprit(Builder builder) {
         this.stateManager = builder.stateManager;
         this.constraintManager = builder.constraintManager;
@@ -558,6 +687,8 @@ public class Jsprit {
         customStrategies.putAll(builder.customStrategies);
         strategyComponents.addAll(builder.strategyComponents);
         vehicleFleetManager = builder.fleetManager;
+        this.insertionOperators = new ArrayList<>(builder.insertionOperators);
+        this.ruinOperators = new ArrayList<>(builder.ruinOperators);
     }
 
     private void ini(VehicleRoutingProblem vrp) {
@@ -943,46 +1074,111 @@ public class Jsprit {
         if (addCoreConstraints) {
             prettyBuilder.addCoreStateAndConstraintStuff();
         }
-        prettyBuilder.withStrategy(radialRegret, toDouble(getProperty(Strategy.RADIAL_REGRET.toString())))
-            .withStrategy(radialBest, toDouble(getProperty(Strategy.RADIAL_BEST.toString())))
-                .withStrategy(radialCheapest, toDouble(getProperty(Strategy.RADIAL_CHEAPEST.toString())))
 
-            .withStrategy(timeRelatedBest, toDouble(getProperty(Strategy.TIME_RELATED_BEST.toString())))
-            .withStrategy(timeRelatedRegret, toDouble(getProperty(Strategy.TIME_RELATED_REGRET.toString())))
-                .withStrategy(timeRelatedCheapest, toDouble(getProperty(Strategy.TIME_RELATED_CHEAPEST.toString())))
+        // Check if using independent operator selection mode
+        boolean independentMode = !insertionOperators.isEmpty() || !ruinOperators.isEmpty();
 
-            .withStrategy(randomBest, toDouble(getProperty(Strategy.RANDOM_BEST.toString())))
-            .withStrategy(randomRegret, toDouble(getProperty(Strategy.RANDOM_REGRET.toString())))
-                .withStrategy(randomCheapest, toDouble(getProperty(Strategy.RANDOM_CHEAPEST.toString())))
+        // Add default coupled strategies only when NOT in independent mode
+        if (!independentMode) {
+            prettyBuilder.withStrategy(radialRegret, toDouble(getProperty(Strategy.RADIAL_REGRET.toString())))
+                .withStrategy(radialBest, toDouble(getProperty(Strategy.RADIAL_BEST.toString())))
+                    .withStrategy(radialCheapest, toDouble(getProperty(Strategy.RADIAL_CHEAPEST.toString())))
 
-            .withStrategy(worstBest, toDouble(getProperty(Strategy.WORST_BEST.toString())))
-            .withStrategy(worstRegret, toDouble(getProperty(Strategy.WORST_REGRET.toString())))
-                .withStrategy(worstCheapest, toDouble(getProperty(Strategy.WORST_CHEAPEST.toString())))
+                .withStrategy(timeRelatedBest, toDouble(getProperty(Strategy.TIME_RELATED_BEST.toString())))
+                .withStrategy(timeRelatedRegret, toDouble(getProperty(Strategy.TIME_RELATED_REGRET.toString())))
+                    .withStrategy(timeRelatedCheapest, toDouble(getProperty(Strategy.TIME_RELATED_CHEAPEST.toString())))
 
-            .withStrategy(clustersRegret, toDouble(getProperty(Strategy.CLUSTER_REGRET.toString())))
-            .withStrategy(clustersBest, toDouble(getProperty(Strategy.CLUSTER_BEST.toString())))
-                .withStrategy(clustersCheapest, toDouble(getProperty(Strategy.CLUSTER_CHEAPEST.toString())));
+                .withStrategy(randomBest, toDouble(getProperty(Strategy.RANDOM_BEST.toString())))
+                .withStrategy(randomRegret, toDouble(getProperty(Strategy.RANDOM_REGRET.toString())))
+                    .withStrategy(randomCheapest, toDouble(getProperty(Strategy.RANDOM_CHEAPEST.toString())))
 
-        // Add Kruskal cluster strategies (weight split: 70% regret, 30% best)
-        double kruskalWeight = toDouble(getProperty(RuinOperator.CLUSTER_KRUSKAL.toString()));
-        if (kruskalWeight > 0) {
-            prettyBuilder.withStrategy(kruskalClustersRegret, kruskalWeight * 0.7)
-                    .withStrategy(kruskalClustersBest, kruskalWeight * 0.3);
+                .withStrategy(worstBest, toDouble(getProperty(Strategy.WORST_BEST.toString())))
+                .withStrategy(worstRegret, toDouble(getProperty(Strategy.WORST_REGRET.toString())))
+                    .withStrategy(worstCheapest, toDouble(getProperty(Strategy.WORST_CHEAPEST.toString())))
+
+                .withStrategy(clustersRegret, toDouble(getProperty(Strategy.CLUSTER_REGRET.toString())))
+                .withStrategy(clustersBest, toDouble(getProperty(Strategy.CLUSTER_BEST.toString())))
+                    .withStrategy(clustersCheapest, toDouble(getProperty(Strategy.CLUSTER_CHEAPEST.toString())));
+
+            // Add Kruskal cluster strategies (weight split: 70% regret, 30% best)
+            double kruskalWeight = toDouble(getProperty(RuinOperator.CLUSTER_KRUSKAL.toString()));
+            if (kruskalWeight > 0) {
+                prettyBuilder.withStrategy(kruskalClustersRegret, kruskalWeight * 0.7)
+                        .withStrategy(kruskalClustersBest, kruskalWeight * 0.3);
+            }
+
+            prettyBuilder.withStrategy(stringBest, toDouble(getProperty(Strategy.STRING_BEST.toString())))
+                    .withStrategy(stringRegret, toDouble(getProperty(Strategy.STRING_REGRET.toString())))
+                    .withStrategy(stringCheapest, toDouble(getProperty(Strategy.STRING_CHEAPEST.toString())));
         }
 
-        prettyBuilder.withStrategy(stringBest, toDouble(getProperty(Strategy.STRING_BEST.toString())))
-                .withStrategy(stringRegret, toDouble(getProperty(Strategy.STRING_REGRET.toString())))
-                .withStrategy(stringCheapest, toDouble(getProperty(Strategy.STRING_CHEAPEST.toString())));
-
+        // Custom strategies are always added (both modes)
         for (SearchStrategy customStrategy : customStrategies.keySet()) {
             prettyBuilder.withStrategy(customStrategy, customStrategies.get(customStrategy));
         }
 
-        // Assemble strategies from components using the shared acceptor and objective function
+        // Strategy components are always added (both modes)
         for (StrategyComponents sc : strategyComponents) {
             SearchStrategy strategy = new SearchStrategy(sc.name(), new SelectBest(), acceptor, objectiveFunction);
             strategy.addModule(configureModule(new RuinAndRecreateModule(sc.name(), sc.insertion(), sc.ruin())));
             prettyBuilder.withStrategy(strategy, sc.weight());
+        }
+
+        // Independent operator selection mode
+        if (independentMode) {
+            // Create context for operator factories
+            InsertionOperatorFactory.Context insertionContext = new InsertionOperatorFactory.Context(
+                vrp, vehicleFleetManager, stateManager, constraintManager,
+                activityInsertion, regretScorer,
+                random, es, noThreads != null ? noThreads : 1
+            );
+
+            RuinOperatorFactory.Context ruinContext = new RuinOperatorFactory.Context(
+                vrp, stateManager, jobNeighborhoods, maxCosts, random
+            );
+
+            // Build insertion selector
+            WeightedOperatorSelector<InsertionStrategy> insertionSelector = new WeightedOperatorSelector<>(random);
+            if (!insertionOperators.isEmpty()) {
+                for (Builder.WeightedOperator<InsertionOperatorFactory> op : insertionOperators) {
+                    InsertionStrategy insertionStrat = op.factory().create(insertionContext);
+                    insertionSelector.add(insertionStrat, op.weight(), op.name());
+                }
+            } else {
+                // Default to regret insertion if no custom insertions specified
+                insertionSelector.add(regret, 1.0, "regret");
+            }
+
+            // Build ruin selector
+            WeightedOperatorSelector<RuinStrategy> ruinSelector = new WeightedOperatorSelector<>(random);
+            if (!ruinOperators.isEmpty()) {
+                for (Builder.WeightedOperator<RuinOperatorFactory> op : ruinOperators) {
+                    RuinStrategy ruinStrategy = op.factory().create(ruinContext);
+                    ruinSelector.add(ruinStrategy, op.weight(), op.name());
+                }
+            } else {
+                // Default to random ruin if no custom ruins specified
+                ruinSelector.add(randomForRegret, 1.0, "random");
+            }
+
+            // Create and configure the independent module
+            IndependentRuinAndRecreateModule independentModule = new IndependentRuinAndRecreateModule(
+                "independent", insertionSelector, ruinSelector
+            );
+            independentModule.setRandom(random);
+            independentModule.setMinUnassignedJobsToBeReinserted(
+                Integer.valueOf(properties.getProperty(Parameter.MIN_UNASSIGNED.toString()))
+            );
+            independentModule.setProportionOfUnassignedJobsToBeReinserted(
+                Double.valueOf(properties.getProperty(Parameter.PROPORTION_UNASSIGNED.toString()))
+            );
+
+            // Create the independent strategy with high weight
+            SearchStrategy independentStrategy = new SearchStrategy(
+                "independent", new SelectBest(), acceptor, objectiveFunction
+            );
+            independentStrategy.addModule(independentModule);
+            prettyBuilder.withStrategy(independentStrategy, 1.0);
         }
 
         String constructionMethod = getProperty(Parameter.CONSTRUCTION.toString());

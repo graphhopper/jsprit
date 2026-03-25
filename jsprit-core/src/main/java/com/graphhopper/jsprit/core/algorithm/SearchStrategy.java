@@ -138,13 +138,20 @@ public class SearchStrategy {
         VehicleRoutingProblemSolution solution = solutionSelector.selectSolution(solutions);
         if (solution == null) throw new IllegalStateException(getErrMsg());
         VehicleRoutingProblemSolution lastSolution = VehicleRoutingProblemSolution.copyOf(solution);
+        String dynamicStrategyId = null;
         for (SearchStrategyModule module : searchStrategyModules) {
             lastSolution = module.runAndGetSolution(lastSolution);
+            // Check if module provides a dynamic strategy ID
+            if (module instanceof DynamicStrategyIdProvider provider) {
+                dynamicStrategyId = provider.getLastExecutionStrategyId();
+            }
         }
         double costs = solutionCostCalculator.getCosts(lastSolution);
         lastSolution.setCost(costs);
         boolean solutionAccepted = solutionAcceptor.acceptSolution(solutions, lastSolution);
-        return new DiscoveredSolution(lastSolution, solutionAccepted, getId());
+        // Use dynamic ID if available, otherwise fall back to static ID
+        String strategyId = dynamicStrategyId != null ? dynamicStrategyId : getId();
+        return new DiscoveredSolution(lastSolution, solutionAccepted, strategyId);
     }
 
     private String getErrMsg() {
