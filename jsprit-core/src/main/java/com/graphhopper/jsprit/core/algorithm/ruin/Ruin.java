@@ -72,6 +72,31 @@ public final class Ruin {
     }
 
     /**
+     * Random ruin with fraction-based scaling and absolute bounds.
+     *
+     * <p>Calculates share as {@code numJobs * fraction}, then clamps between bounds.</p>
+     *
+     * @param minFraction minimum fraction of jobs to remove
+     * @param maxFraction maximum fraction of jobs to remove
+     * @param minBound absolute minimum jobs to remove (floor)
+     * @param maxBound absolute maximum jobs to remove (ceiling)
+     * @return factory for random ruin
+     */
+    public static RuinOperatorFactory random(double minFraction, double maxFraction, int minBound, int maxBound) {
+        return RuinOperatorFactory.named("random", ctx -> {
+            int numJobs = ctx.vrp().getJobs().size();
+            int minShare = Math.min(maxBound, Math.max(minBound, (int) (numJobs * minFraction)));
+            int maxShare = Math.min(maxBound, Math.max(minBound, (int) (numJobs * maxFraction)));
+            maxShare = Math.max(minShare, maxShare);
+
+            RuinRandom ruin = new RuinRandom(ctx.vrp(), 0.5);
+            ruin.setRandom(ctx.random());
+            ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
+            return ruin;
+        });
+    }
+
+    /**
      * Radial ruin that removes nearby jobs.
      *
      * <p>Selects a random job and removes it along with its nearest neighbors.</p>
@@ -101,6 +126,29 @@ public final class Ruin {
             ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
             return ruin;
         };
+    }
+
+    /**
+     * Radial ruin with fraction-based scaling and absolute bounds.
+     *
+     * @param minFraction minimum fraction of jobs to remove
+     * @param maxFraction maximum fraction of jobs to remove
+     * @param minBound absolute minimum jobs to remove (floor)
+     * @param maxBound absolute maximum jobs to remove (ceiling)
+     * @return factory for radial ruin
+     */
+    public static RuinOperatorFactory radial(double minFraction, double maxFraction, int minBound, int maxBound) {
+        return RuinOperatorFactory.named("radial", ctx -> {
+            int numJobs = ctx.vrp().getJobs().size();
+            int minShare = Math.min(maxBound, Math.max(minBound, (int) (numJobs * minFraction)));
+            int maxShare = Math.min(maxBound, Math.max(minBound, (int) (numJobs * maxFraction)));
+            maxShare = Math.max(minShare, maxShare);
+
+            RuinRadialDynamic ruin = new RuinRadialDynamic(ctx.vrp(), numJobs);
+            ruin.setRandom(ctx.random());
+            ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
+            return ruin;
+        });
     }
 
     /**
@@ -135,6 +183,29 @@ public final class Ruin {
     }
 
     /**
+     * Cluster ruin with fraction-based scaling and absolute bounds.
+     *
+     * @param minFraction minimum fraction of jobs to remove
+     * @param maxFraction maximum fraction of jobs to remove
+     * @param minBound absolute minimum jobs to remove (floor)
+     * @param maxBound absolute maximum jobs to remove (ceiling)
+     * @return factory for cluster ruin
+     */
+    public static RuinOperatorFactory cluster(double minFraction, double maxFraction, int minBound, int maxBound) {
+        return RuinOperatorFactory.named("cluster", ctx -> {
+            int numJobs = ctx.vrp().getJobs().size();
+            int minShare = Math.min(maxBound, Math.max(minBound, (int) (numJobs * minFraction)));
+            int maxShare = Math.min(maxBound, Math.max(minBound, (int) (numJobs * maxFraction)));
+            maxShare = Math.max(minShare, maxShare);
+
+            RuinClusters ruin = new RuinClusters(ctx.vrp(), numJobs, ctx.jobNeighborhoods());
+            ruin.setRandom(ctx.random());
+            ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
+            return ruin;
+        });
+    }
+
+    /**
      * Kruskal MST-based cluster ruin (ranked #2 in Voigt 2025).
      *
      * <p>Uses minimum spanning tree to identify clusters of related jobs
@@ -164,6 +235,29 @@ public final class Ruin {
             ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
             return ruin;
         };
+    }
+
+    /**
+     * Kruskal cluster ruin with fraction-based scaling and absolute bounds.
+     *
+     * @param minFraction minimum fraction of jobs to remove
+     * @param maxFraction maximum fraction of jobs to remove
+     * @param minBound absolute minimum jobs to remove (floor)
+     * @param maxBound absolute maximum jobs to remove (ceiling)
+     * @return factory for Kruskal cluster ruin
+     */
+    public static RuinOperatorFactory kruskalCluster(double minFraction, double maxFraction, int minBound, int maxBound) {
+        return RuinOperatorFactory.named("kruskal", ctx -> {
+            int numJobs = ctx.vrp().getJobs().size();
+            int minShare = Math.min(maxBound, Math.max(minBound, (int) (numJobs * minFraction)));
+            int maxShare = Math.min(maxBound, Math.max(minBound, (int) (numJobs * maxFraction)));
+            maxShare = Math.max(minShare, maxShare);
+
+            RuinKruskalClusters ruin = new RuinKruskalClusters(ctx.vrp(), numJobs, ctx.jobNeighborhoods());
+            ruin.setRandom(ctx.random());
+            ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
+            return ruin;
+        });
     }
 
     /**
@@ -210,6 +304,39 @@ public final class Ruin {
 
             return ruin;
         };
+    }
+
+    /**
+     * Worst ruin with fraction-based scaling and absolute bounds.
+     *
+     * @param minFraction minimum fraction of jobs to remove
+     * @param maxFraction maximum fraction of jobs to remove
+     * @param minBound absolute minimum jobs to remove (floor)
+     * @param maxBound absolute maximum jobs to remove (ceiling)
+     * @return factory for worst ruin
+     */
+    public static RuinOperatorFactory worst(double minFraction, double maxFraction, int minBound, int maxBound) {
+        return RuinOperatorFactory.named("worst", ctx -> {
+            int numJobs = ctx.vrp().getJobs().size();
+            int minShare = Math.min(maxBound, Math.max(minBound, (int) (numJobs * minFraction)));
+            int maxShare = Math.min(maxBound, Math.max(minBound, (int) (numJobs * maxFraction)));
+            maxShare = Math.max(minShare, maxShare);
+
+            RuinWorst ruin = new RuinWorst(ctx.vrp(), numJobs);
+            ruin.setRandom(ctx.random());
+            ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
+
+            // Default noise settings
+            double maxCosts = ctx.maxTransportCosts();
+            ruin.setNoiseMaker(() -> {
+                if (ctx.random().nextDouble() < 0.2) {
+                    return 0.15 * maxCosts * ctx.random().nextDouble();
+                }
+                return 0.0;
+            });
+
+            return ruin;
+        });
     }
 
     /**
@@ -270,6 +397,29 @@ public final class Ruin {
             ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
             return ruin;
         };
+    }
+
+    /**
+     * Time-related ruin with fraction-based scaling and absolute bounds.
+     *
+     * @param minFraction minimum fraction of jobs to remove
+     * @param maxFraction maximum fraction of jobs to remove
+     * @param minBound absolute minimum jobs to remove (floor)
+     * @param maxBound absolute maximum jobs to remove (ceiling)
+     * @return factory for time-related ruin
+     */
+    public static RuinOperatorFactory timeRelated(double minFraction, double maxFraction, int minBound, int maxBound) {
+        return RuinOperatorFactory.named("timeRelated", ctx -> {
+            int numJobs = ctx.vrp().getJobs().size();
+            int minShare = Math.min(maxBound, Math.max(minBound, (int) (numJobs * minFraction)));
+            int maxShare = Math.min(maxBound, Math.max(minBound, (int) (numJobs * maxFraction)));
+            maxShare = Math.max(minShare, maxShare);
+
+            RuinTimeRelated ruin = new RuinTimeRelated(ctx.vrp());
+            ruin.setRandom(ctx.random());
+            ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
+            return ruin;
+        });
     }
 
     /**
