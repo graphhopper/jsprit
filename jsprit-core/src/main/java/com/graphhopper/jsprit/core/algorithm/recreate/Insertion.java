@@ -60,7 +60,7 @@ public final class Insertion {
      * @return factory for fast regret insertion
      */
     public static InsertionOperatorFactory regretFast(int k, int spatialFilterK, boolean affectedJobTracking) {
-        return ctx -> {
+        return InsertionOperatorFactory.named("regretFast", ctx -> {
             InsertionStrategyBuilder builder = new InsertionStrategyBuilder(
                 ctx.vrp(), ctx.fleetManager(), ctx.stateManager(), ctx.constraintManager())
                 .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
@@ -101,7 +101,7 @@ public final class Insertion {
             }
 
             return strategy;
-        };
+        });
     }
 
     /**
@@ -123,7 +123,7 @@ public final class Insertion {
      * @return factory for regret-k insertion
      */
     public static InsertionOperatorFactory regret(int k) {
-        return ctx -> {
+        return InsertionOperatorFactory.named("regret", ctx -> {
             InsertionStrategyBuilder builder = new InsertionStrategyBuilder(
                 ctx.vrp(), ctx.fleetManager(), ctx.stateManager(), ctx.constraintManager())
                 .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
@@ -158,7 +158,7 @@ public final class Insertion {
             }
 
             return strategy;
-        };
+        });
     }
 
     /**
@@ -229,7 +229,7 @@ public final class Insertion {
      * @return factory for position-based regret insertion
      */
     public static InsertionOperatorFactory positionRegret(int k, int topRoutesToExpand) {
-        return ctx -> {
+        return InsertionOperatorFactory.named("positionRegret", ctx -> {
             InsertionStrategyBuilder builder = new InsertionStrategyBuilder(
                 ctx.vrp(), ctx.fleetManager(), ctx.stateManager(), ctx.constraintManager())
                 .setInsertionStrategy(InsertionStrategyBuilder.Strategy.POSITION_BASED_REGRET_FAST)
@@ -239,6 +239,6 @@ public final class Insertion {
                 .setRandom(ctx.random());
 
             return builder.build();
-        };
+        });
     }
 }
