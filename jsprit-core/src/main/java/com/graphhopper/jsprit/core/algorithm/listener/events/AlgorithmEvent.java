@@ -25,13 +25,13 @@ package com.graphhopper.jsprit.core.algorithm.listener.events;
  * <p>
  * Events are organized into categories:
  * - Iteration lifecycle: {@link IterationStarted}, {@link IterationCompleted}
- * - Strategy selection: {@link StrategySelected}
+ * - Strategy selection: {@link StrategySelected}, {@link StrategyExecuted}
  * - Ruin phase: {@link RuinStarted}, {@link JobRemoved}, {@link RuinCompleted}
  * - Recreate phase: {@link RecreateStarted}, {@link InsertionEvaluated}, {@link JobInserted}, {@link JobUnassigned}, {@link RecreateCompleted}
  * - Acceptance: {@link AcceptanceDecision}
  */
 public sealed interface AlgorithmEvent
-        permits IterationStarted, StrategySelected, IterationCompleted,
+        permits IterationStarted, StrategySelected, StrategyExecuted, IterationCompleted,
         RuinStarted, JobRemoved, RuinCompleted,
         RecreateStarted, InsertionEvaluated, JobInserted, JobUnassigned, RecreateCompleted,
         AcceptanceDecision {

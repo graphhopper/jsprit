@@ -250,6 +250,12 @@ public class VehicleRoutingAlgorithm {
                 emit(new StrategySelected(iteration, System.currentTimeMillis(), strategy.getId()));
             }
             DiscoveredSolution discoveredSolution = strategy.run(problem, solutions);
+
+            // Emit strategy executed event after the strategy runs with the dynamic strategy ID
+            if (hasEventListeners() && discoveredSolution != null) {
+                emit(new StrategyExecuted(iteration, System.currentTimeMillis(), discoveredSolution.getStrategyId()));
+            }
+
             if (logger.isTraceEnabled()) log(discoveredSolution);
             double oldBestCost = bestEver != null ? bestEver.getCost() : Double.MAX_VALUE;
             VehicleRoutingProblemSolution oldBestSolution = bestEver; // Capture before update
