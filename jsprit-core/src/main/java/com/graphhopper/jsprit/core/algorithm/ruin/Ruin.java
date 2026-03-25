@@ -59,7 +59,7 @@ public final class Ruin {
      * @return factory for random ruin
      */
     public static RuinOperatorFactory random(double minFraction, double maxFraction) {
-        return ctx -> {
+        return RuinOperatorFactory.named("random", ctx -> {
             int numJobs = ctx.vrp().getJobs().size();
             int minShare = Math.max(1, (int) (numJobs * minFraction));
             int maxShare = Math.max(minShare, (int) (numJobs * maxFraction));
@@ -68,7 +68,7 @@ public final class Ruin {
             ruin.setRandom(ctx.random());
             ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
             return ruin;
-        };
+        });
     }
 
     /**
@@ -116,7 +116,7 @@ public final class Ruin {
      * @return factory for radial ruin
      */
     public static RuinOperatorFactory radial(double minFraction, double maxFraction) {
-        return ctx -> {
+        return RuinOperatorFactory.named("radial", ctx -> {
             int numJobs = ctx.vrp().getJobs().size();
             int minShare = Math.max(1, (int) (numJobs * minFraction));
             int maxShare = Math.max(minShare, (int) (numJobs * maxFraction));
@@ -125,7 +125,7 @@ public final class Ruin {
             ruin.setRandom(ctx.random());
             ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
             return ruin;
-        };
+        });
     }
 
     /**
@@ -170,7 +170,7 @@ public final class Ruin {
      * @return factory for cluster ruin
      */
     public static RuinOperatorFactory cluster(double minFraction, double maxFraction) {
-        return ctx -> {
+        return RuinOperatorFactory.named("cluster", ctx -> {
             int numJobs = ctx.vrp().getJobs().size();
             int minShare = Math.max(1, (int) (numJobs * minFraction));
             int maxShare = Math.max(minShare, (int) (numJobs * maxFraction));
@@ -179,7 +179,7 @@ public final class Ruin {
             ruin.setRandom(ctx.random());
             ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
             return ruin;
-        };
+        });
     }
 
     /**
@@ -225,7 +225,7 @@ public final class Ruin {
      * @return factory for Kruskal cluster ruin
      */
     public static RuinOperatorFactory kruskalCluster(double minFraction, double maxFraction) {
-        return ctx -> {
+        return RuinOperatorFactory.named("kruskal", ctx -> {
             int numJobs = ctx.vrp().getJobs().size();
             int minShare = Math.max(1, (int) (numJobs * minFraction));
             int maxShare = Math.max(minShare, (int) (numJobs * maxFraction));
@@ -234,7 +234,7 @@ public final class Ruin {
             ruin.setRandom(ctx.random());
             ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
             return ruin;
-        };
+        });
     }
 
     /**
@@ -284,7 +284,7 @@ public final class Ruin {
      */
     public static RuinOperatorFactory worst(double minFraction, double maxFraction,
                                             double noiseLevel, double noiseProbability) {
-        return ctx -> {
+        return RuinOperatorFactory.named("worst", ctx -> {
             int numJobs = ctx.vrp().getJobs().size();
             int minShare = Math.max(1, (int) (numJobs * minFraction));
             int maxShare = Math.max(minShare, (int) (numJobs * maxFraction));
@@ -303,7 +303,7 @@ public final class Ruin {
             });
 
             return ruin;
-        };
+        });
     }
 
     /**
@@ -360,13 +360,13 @@ public final class Ruin {
      * @return factory for string ruin
      */
     public static RuinOperatorFactory string(int kMin, int kMax, int lMin, int lMax) {
-        return ctx -> {
+        return RuinOperatorFactory.named("string", ctx -> {
             RuinString ruin = new RuinString(ctx.vrp(), ctx.jobNeighborhoods());
             ruin.setNoRoutes(kMin, kMax);
             ruin.setStringLength(lMin, lMax);
             ruin.setRandom(ctx.random());
             return ruin;
-        };
+        });
     }
 
     /**
@@ -387,7 +387,7 @@ public final class Ruin {
      * @return factory for time-related ruin
      */
     public static RuinOperatorFactory timeRelated(double minFraction, double maxFraction) {
-        return ctx -> {
+        return RuinOperatorFactory.named("timeRelated", ctx -> {
             int numJobs = ctx.vrp().getJobs().size();
             int minShare = Math.max(1, (int) (numJobs * minFraction));
             int maxShare = Math.max(minShare, (int) (numJobs * maxFraction));
@@ -396,7 +396,7 @@ public final class Ruin {
             ruin.setRandom(ctx.random());
             ruin.setRuinShareFactory(new VariableRuinShareFactory(minShare, maxShare, ctx.random()));
             return ruin;
-        };
+        });
     }
 
     /**
