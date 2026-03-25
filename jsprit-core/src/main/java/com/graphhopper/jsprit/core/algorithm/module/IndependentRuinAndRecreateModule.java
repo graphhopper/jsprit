@@ -184,15 +184,15 @@ public class IndependentRuinAndRecreateModule implements SearchStrategyModule, D
     /**
      * Returns the strategy ID for the last execution, reflecting which operators were selected.
      *
-     * <p>Format: "independent:{ruinName}+{insertionName}"</p>
+     * <p>Format: "{ruinName}+{insertionName}"</p>
      *
-     * @return the dynamic strategy ID, e.g., "independent:radial+regretFast"
+     * @return the dynamic strategy ID, e.g., "radial+regretFast"
      */
     @Override
     public String getLastExecutionStrategyId() {
         String ruinName = ruinSelector.getLastSelectedName();
         String insertionName = insertionSelector.getLastSelectedName();
-        return moduleName + ":" + ruinName + "+" + insertionName;
+        return ruinName + "+" + insertionName;
     }
 
     @Override

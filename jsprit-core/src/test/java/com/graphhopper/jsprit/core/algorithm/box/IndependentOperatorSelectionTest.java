@@ -368,8 +368,8 @@ class IndependentOperatorSelectionTest {
         assertTrue(events.stream().anyMatch(e -> e.startsWith("iterationEnds:")),
             "IterationEndsListener should fire");
 
-        // Verify strategy selected listeners fired with dynamic IDs
-        assertTrue(events.stream().anyMatch(e -> e.startsWith("strategySelected:independent")),
+        // Verify strategy selected listeners fired with dynamic IDs (format: {ruin}+{insertion})
+        assertTrue(events.stream().anyMatch(e -> e.startsWith("strategySelected:") && e.contains("+")),
             "StrategySelectedListener should receive dynamic IDs");
 
         // Verify ruin listeners fired
@@ -412,20 +412,20 @@ class IndependentOperatorSelectionTest {
         // Should have received strategy IDs for each iteration
         assertEquals(20, receivedStrategyIds.size());
 
-        // All IDs should follow the pattern "independent:{ruin}+{insertion}"
+        // All IDs should follow the pattern "{ruin}+{insertion}"
         for (String id : receivedStrategyIds) {
-            assertTrue(id.startsWith("independent:"),
-                "Strategy ID should start with module name: " + id);
             assertTrue(id.contains("+"),
                 "Strategy ID should contain '+' separator: " + id);
 
             // Should contain one of the ruin operators
-            assertTrue(id.contains("random") || id.contains("radial"),
-                "Strategy ID should contain ruin operator name: " + id);
+            String ruinPart = id.split("\\+")[0];
+            assertTrue(ruinPart.equals("random") || ruinPart.equals("radial"),
+                "Strategy ID should start with ruin operator name: " + id);
 
             // Should contain one of the insertion operators
-            assertTrue(id.contains("regretFast") || id.contains("regretThorough"),
-                "Strategy ID should contain insertion operator name: " + id);
+            String insertionPart = id.split("\\+")[1];
+            assertTrue(insertionPart.equals("regretFast") || insertionPart.equals("regretThorough"),
+                "Strategy ID should end with insertion operator name: " + id);
         }
 
         // With random seed 42, we should see variety in selections
