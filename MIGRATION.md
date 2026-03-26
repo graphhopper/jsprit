@@ -43,11 +43,37 @@ If you have tests extending jsprit test classes:
 
 ### Index Management
 
-Indices are now fully managed by VRP and assigned automatically when building the problem. If you were using reflection or internal APIs to access indices, note that:
+**Why this changed:** Previously, indices were stored on Job and Vehicle objects. This caused problems when you needed to solve variations of a problem - for example, testing different fleet configurations or job subsets. Reusing Job objects across multiple VRPs led to index conflicts, forcing you to recreate all objects from scratch for each variation.
 
-- `Job.getIndex()` and `Vehicle.getIndex()` are deprecated
-- Indices are assigned automatically when calling `VehicleRoutingProblem.Builder.build()`
-- For most users, this is a non-breaking internal change
+**What's new:** Each VRP now manages its own indices internally. When you call `build()`, indices are assigned automatically (0 to n-1). The same Job or Vehicle objects can be safely reused across multiple VRP instances.
+
+**Example - solving problem variations:**
+```java
+// Define jobs once
+Service job1 = Service.Builder.newInstance("job1").setLocation(loc1).build();
+Service job2 = Service.Builder.newInstance("job2").setLocation(loc2).build();
+
+// Create different problem variations reusing the same jobs
+VehicleRoutingProblem vrp1 = VehicleRoutingProblem.Builder.newInstance()
+    .addJob(job1).addJob(job2)
+    .addVehicle(smallFleet)
+    .build();
+
+VehicleRoutingProblem vrp2 = VehicleRoutingProblem.Builder.newInstance()
+    .addJob(job1).addJob(job2)
+    .addVehicle(largeFleet)  // Different fleet
+    .build();
+
+// Solve both independently - no index conflicts
+```
+
+**Retrieving indices:** Use the VRP instance to get indices:
+```java
+int jobIndex = vrp.getJobIndex(job);
+int vehicleIndex = vrp.getVehicleIndex(vehicle);
+```
+
+**Impact:** For most users, this is transparent. `Job.getIndex()` and `Vehicle.getIndex()` are deprecated but still work (returning the index from the last VRP they were added to).
 
 ---
 
