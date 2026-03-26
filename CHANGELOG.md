@@ -1,5 +1,134 @@
-Change-log
-==========
+# Changelog
+
+All notable changes to jsprit will be documented in this file.
+
+## [2.0.0] - Unreleased
+
+### Breaking Changes
+
+- **Java 21 required** - Minimum Java version is now 21 (was 8)
+- **JUnit 5** - Test framework upgraded from JUnit 4 to JUnit 5
+- **Index management** - Job and Vehicle indices are now managed by VRP, not mutable on objects
+  - `Job.setIndex()` and `Vehicle.setIndex()` are deprecated
+  - Indices are assigned automatically when building VRP
+
+### Added
+
+#### New API: Independent Operator Selection
+Select ruin and insertion operators independently with weights:
+```java
+Jsprit.Builder.newInstance(vrp)
+    .addRuinOperator(0.3, Ruin.radial(0.3, 0.5, 10, 70))
+    .addRuinOperator(0.3, Ruin.random(0.3, 0.5, 10, 70))
+    .addRuinOperator(0.2, Ruin.kruskalCluster())
+    .addInsertionOperator(0.7, Insertion.regretFast())
+    .addInsertionOperator(0.3, Insertion.best())
+    .buildAlgorithm();
+```
+
+#### Ruin Strategies
+- `Ruin.random()` - Random job removal
+- `Ruin.radial()` - Remove nearby jobs
+- `Ruin.worst()` - Remove jobs with highest removal benefit
+- `Ruin.cluster()` - DBSCAN-based cluster removal
+- `Ruin.kruskalCluster()` - MST-based cluster removal (new)
+- `Ruin.string()` - Remove sequences from routes
+- `Ruin.timeRelated()` - Remove jobs with similar time windows
+- All ruin factories support bounded fractions: `Ruin.random(0.3, 0.5, 10, 70)`
+  (30-50% of jobs, clamped to [10, 70])
+
+#### Insertion Strategies
+- `Insertion.regretFast()` - Fast regret-2 insertion
+- `Insertion.regret()` - Standard regret without optimizations
+- `Insertion.best()` - Greedy best insertion
+- `Insertion.cheapest()` - Cheapest insertion
+- `Insertion.positionRegret()` - Position-based regret (experimental)
+
+#### Algorithm Event System
+New observability system for monitoring algorithm execution:
+```java
+algorithm.addListener(new AlgorithmEventAdapter() {
+    @Override
+    public void onEvent(AlgorithmEvent event) {
+        switch (event) {
+            case IterationStarted e -> log("Iteration " + e.iteration());
+            case StrategyExecuted e -> log("Strategy: " + e.strategyId());
+            case JobInserted e -> log("Inserted: " + e.jobId());
+            // ... more events
+        }
+    }
+});
+```
+
+Events: `IterationStarted`, `IterationCompleted`, `StrategySelected`, `StrategyExecuted`,
+`RuinStarted`, `RuinCompleted`, `JobRemoved`, `RecreateStarted`, `RecreateCompleted`,
+`JobInserted`, `JobUnassigned`, `InsertionEvaluated`, `AcceptanceDecision`
+
+#### SolutionSpec for Declarative Initial Solutions
+```java
+SolutionSpec spec = SolutionSpec.builder()
+    .addRoute("vehicle1", "job1", "job2", "job3")
+    .addRoute("vehicle2", "job4", "job5")
+    .build();
+
+Jsprit.Builder.newInstance(vrp)
+    .addInitialSolution(spec)
+    .buildAlgorithm();
+```
+
+#### Other Additions
+- `Job.Type` enum to replace instanceof checks
+- Setup time support in activity duration calculations
+- Soft constraints now accessible via API
+- Cost breakdown in `AcceptanceDecision` event
+- En-route pickup and delivery support
+
+### Changed
+
+- Regret insertion expanded to regret-k (configurable k value)
+- Improved performance through route indexing with Trove maps
+- RuinRadial now operates on activities in current solution
+- Optimized array operations in StateManager
+- Better memory footprint for insertion calculations
+
+### Fixed
+
+- Time window bug in certain edge cases
+- Vehicle switch feasibility check
+- Removal bug in open deliveries
+- Empty queue handling in insertion
+- MaxDistance relatedness calculation in RuinTimeRelated
+- Total operation time calculation in SolutionAnalyser
+- DBSCAN fallback when returning empty clusters
+
+### Deprecated
+
+- `considerFixedCosts()` methods - use objective function instead
+- `Job.getIndex()` / `Job.setIndex()` - indices managed by VRP
+- `Vehicle.getIndex()` / `Vehicle.setIndex()` - indices managed by VRP
+- `CalculationUtils` class
+- `RuinRadialMultipleCenters` - use `Ruin.radial()` instead
+- `InsertionBuilder` - use `InsertionStrategyBuilder` instead
+- `ServiceInsertionOnRouteLevelCalculator`
+- `RouteLevelActivityInsertionCostsEstimator`
+
+### Experimental Features
+
+These features are available but may change in future releases:
+- Spatial filtering in regret insertion (`Insertion.regretFast(k, spatialFilterK, tracking)`)
+- Affected-job tracking optimization
+- Position-based regret insertion (`Insertion.positionRegret()`)
+
+---
+
+## [1.8] - 2020-04-01
+
+Last stable release before 2.0. See [GitHub releases](https://github.com/graphhopper/jsprit/releases/tag/v1.8).
+
+---
+
+## Previous Releases
+
 **v1.7.3** @ 2019-04-10
 
 **v1.7.2** @ 2017-06-08
@@ -12,215 +141,34 @@ Change-log
 - see [Whats new](https://github.com/graphhopper/jsprit/blob/master/WHATS_NEW.md)
 
 **v1.6.2** @ 2016-02-02
-
-new features:
 - driver breaks
 - multiple time windows
 - consideration of waiting times
 - fast regret
 - a number of internal improvements
 
-- [detailed changelog ](https://rawgit.com/jsprit/misc-rep/master/changelog_1.6.1_1.6.2.html)
-
 **v1.6.1** @ 2015-08-10
-- feature [#165](https://github.com/jsprit/jsprit/issues/156)
-- feature [#169](https://github.com/jsprit/jsprit/issues/159)
-- bugfix [#154](https://github.com/jsprit/jsprit/issues/154)
-- bugfix [#155](https://github.com/jsprit/jsprit/issues/155)
-- bugfix [#158](https://github.com/jsprit/jsprit/issues/158)
-- bugfix [#164](https://github.com/jsprit/jsprit/issues/164)
-- bugfix [#165](https://github.com/jsprit/jsprit/issues/165)
-
-- [detailed changelog ](https://rawgit.com/jsprit/misc-rep/master/changelog_1.6_to_1.6.1.html)
-
 
 **v1.6** @ 2015-03-12
-<b>! Break change !</b>
-
-new features: see [Whats new](https://github.com/jsprit/jsprit/blob/master/WHATS_NEW.md)
-
-- [detailed changelog ](https://github.com/jsprit/misc-rep/blob/master/changelog_1.5_to_1.6.txt)
 
 **v1.5** @ 2014-12-12
-<b>! Break change !</b>
-
-It only breaks your code if you already build your algorithm from scratch since strategies now need to have unique ids. just add a unique id to the SearchStrategy constructor.
-
-new features: see [Whats new](https://github.com/jsprit/jsprit/blob/master/WHATS_NEW.md)
-
-- [detailed changelog](https://github.com/jsprit/misc-rep/blob/master/changelog_1.4.2_to_1.5.txt)
 
 **v1.4.2** @ 2014-10-14
 
-new feature: core.analysis.SolutionAnalyser
-
 **v1.4.1** @ 2014-09-25
-- bugfix [#131](https://github.com/jsprit/jsprit/issues/131)
-- bugfix [#134](https://github.com/jsprit/jsprit/issues/134)
 
 **v1.4** @ 2014-09-08
 
-<b>! Break change !</b>
-
-- [detailed changelog](https://github.com/jsprit/misc-rep/blob/master/changelog_1.3.1_to_1.4.txt)
-- migrated from log4j1x to log4j2 (if you do not use Maven, see how the dependencies changed: [https://github.com/jsprit/jsprit/wiki/jsprit-core](https://github.com/jsprit/jsprit/wiki/jsprit-core)
-- new feature: skills can now be included easily (see for example https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/SolomonWithSkillsExample.java)
-- new feature: unassigned job list
-- countless improvements of javadocs
-
-<em>jsprit-core</em>
-- renaming of core.problem.constraint.HardActivityStateLevelConstraint into HardActivityConstraint
-- renaming of core.problem.constraint.HardRouteStateLevelConstraint into HardRouteConstraint
-- StateFactory.createId(String name) moved to core.algorithm.state.StateManager.createStateId(String name)
-- StateFactory moved from core.problem.solution.route.state.StateFactory to core.algorithm.state.InternalStates
-- StateId moved from core.problem.route.state.StateFactory.StateId to core.algorithm.state.StateId
-- StateFactory.createId(String name) is not accessible anymore
-- constructor new StateManager(VehicleRoutingTransportCosts costs) does not exist anymore, but is new StateManager(VehicleRoutingProblem vrp)
-- StateManager.addDefault... methods do not exists anymore. Client must now decide what to do when state does not exist.
-- deprecated core.problem.VehicleRoutingProblem.Builder.addVehicle(Vehicle v) and added core.problem.VehicleRoutingProblem.Builder.addVehicle(AbstractVehicle v)
-- deprecated core.problem.VehicleRoutingProblem.Builder.addJob(Job j) and added core.problem.VehicleRoutingProblem.Builder.addJob(AbstractJob j)
-- <b>this [example](https://github.com/jsprit/jsprit/blob/master/jsprit-examples/src/main/java/jsprit/examples/MultipleProductsWithLoadConstraintExample.java) might make migrating from v1.3.1 to v1.4 easier (since both versions are implemented - v1.3.1 was commented out) </b>
-
-- bugfix [#107](https://github.com/jsprit/jsprit/issues/107)
-- bugfix [#109](https://github.com/jsprit/jsprit/issues/109)
-- bugfix [#111](https://github.com/jsprit/jsprit/issues/111)
-- bugfix [#112](https://github.com/jsprit/jsprit/issues/112)
-- bugfix [#114](https://github.com/jsprit/jsprit/issues/114)
-- bugfix [#126](https://github.com/jsprit/jsprit/issues/126)
-- bugfix [#128](https://github.com/jsprit/jsprit/issues/128)
-
 **v1.3.1** @ 2014-06-14
 
-<em>jsprit-core</em>
-- bugfix [#104](https://github.com/jsprit/jsprit/issues/104)
-- bugfix [#105](https://github.com/jsprit/jsprit/issues/105)
-
 **v1.3.0** @ 2014-05-19
-- [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.2.0_to_1.3.0.txt)
-- removed deprecated code (that had been deprecated before v1.2.0) which is definitely a break change (see details above)
-
-<em>jsprit-analysis</em>
-- redesigned analysis.toolbox.Plotter - it now always shows first activity as small triangle (no annotation that does not scale anymore)
-- added analysis.toolbox.ComputationalLaboratory to conduct various sensitivity studies concurrently
-- added analysis.toolbox.XYLineChartBuilder to simplify chart creation of n XYLines
-- bugfix [#59](https://github.com/jsprit/jsprit/issues/59)
-
-<em>jsprit-core</em>
-- added a number of unit- and integration-test to better guarantee/protect functionality
-- added feature: algorithm maximizes/minimizes whatever constraints and custom objective suggest, i.e.constraints and custom objective function can now be easily defined
-and considered by the meta-heuristic [#57](https://github.com/jsprit/jsprit/issues/57), [#72](https://github.com/jsprit/jsprit/issues/72)
-- added feature: initial loads can now be defined [#87](https://github.com/jsprit/jsprit/issues/87)
-- bugfix [#84](https://github.com/jsprit/jsprit/issues/84)
-- bugfix [#91](https://github.com/jsprit/jsprit/issues/91)
-- bugfix [#92](https://github.com/jsprit/jsprit/issues/92)
-- bugfix [#95](https://github.com/jsprit/jsprit/issues/95)
-- bugfix [#96](https://github.com/jsprit/jsprit/issues/96)
-- bugfix [#98](https://github.com/jsprit/jsprit/issues/98)
-
-
-
 
 **v1.2.0** @ 2014-03-06
 
-- [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.1.1_to_1.2.0.txt) (containing added and deprecated methods and classes)
-
-<em>jsprit-core:</em>
-- added feature: multiple capacity dimensions ([#55](https://github.com/jsprit/jsprit/issues/55))
-- added feature: different start and end locations of routes ([#74](https://github.com/jsprit/jsprit/issues/74))
-- added a number of unit-tests
-- reworked StateManager to deal with any state-object
-- VrpXMLReader$ServiceBuilderFactory: Parameter 3 of 'public Service$Builder createBuilder(java.lang.String, java.lang.String, int)' has changed its type to java.lang.Integer
-- Job: Method 'public Capacity getSize()' has been added to an interface <b>[potential Break Change]</b>
-- Service$Builder: Removed field demand
-- ServiceActivity: Removed field capacityDemand
-- TourActivity: Method 'public Capacity getSize()'  has been added to an interface <b>[potential Break Change]</b>
-- RouteAndActivityStateGetter: Method 'public java.lang.Object getActivityState(TourActivity, StateFactory$StateId, java.lang.Class)' has been added to an interface <b>[potential Break Change]</b>
-- RouteAndActivityStateGetter: Method 'public java.lang.Object getRouteState(VehicleRoute, StateFactory$StateId, java.lang.Class)' has been added to an interface <b>[potential Break Change]</b>
-- Vehicle: Method 'public Coordinate getEndLocationCoordinate()' has been added to an interface <b>[potential Break Change]</b>
-- Vehicle: Method 'public java.lang.String getEndLocationId()' has been added to an interface <b>[potential Break Change]</b>
-- Vehicle: Method 'public Coordinate getStartLocationCoordinate()' has been added to an interface <b>[potential Break Change]</b>
-- Vehicle: Method 'public java.lang.String getStartLocationId()' has been added to an interface <b>[potential Break Change]</b>
-- VehicleFleetManager: Method 'public java.util.Collection getAvailableVehicles(Vehicle)' has been added to an interface <b>[potential Break Change]</b>
-- VehicleType: Method 'public Capacity getCapacityDimensions()' has been added to an interface <b>[potential Break Change]</b>
-- jsprit.core.util.VrpVerifier: Class jsprit.core.util.VrpVerifier removed <b>[potential Break Change]</b>
-
-
-
 **v1.1.1** @ 2014-01-31
-
-<em>jsprit-core:</em>
-- fixed bug: [#80](https://github.com/jsprit/jsprit/issues/80)
-- added new package reporting with basic reporting
 
 **v1.1.0** @ 2014-01-27
 
-- [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_1.0.0_to_1.1.0.txt)
+**v1.0.0** @ 2013-11-26
 
-<em>jsprit-core:</em>
-- added javadocs (VehicleRoutingProblem and classes in package vehicle. and job.)
-- added unit-tests (for classes in package vehicle., job. and io.)
-- deprecated methods in VehicleRoutingProblem, VehicleTypeImpl, VehicleImpl
-- added func in VehicleRoutingProblem.Builder (.addPenaltyVehicle(...) methods)
-- added feature: open-routes ([#54](https://github.com/jsprit/jsprit/issues/54))
-- added func in VehicleImpl and VehicleImpl.Builder (.setReturnToDepot(...), isReturnToDepot())
-- added feature: prohibit vehicles to take over entire route ([#70](https://github.com/jsprit/jsprit/issues/70))
-- fixed bug: [#58](https://github.com/jsprit/jsprit/issues/58),[#76](https://github.com/jsprit/jsprit/issues/76)-[#79](https://github.com/jsprit/jsprit/issues/79)
-- added abstract class AbstractForwardVehicleRoutingCosts
-- inspected and removed all warnings
-- visibility of methods activity.Start.get/setCoordinate(...) decreased from public to package <b>[potential Break Change]</b>
-- visibility of methods activity.End.get/setCoordinate(...) decreased from public to package <b>[potential Break Change]</b>
-- method isReturnToDepot() has been added to interface Vehicle <b>[potential Break Change]</b>
-- visibility of constructor VehicleImpl.Builder decreased from public to private <b>[potential Break Change]</b>
-
-<em>jsprit-analysis:</em>
-- added GraphStreamViewer
-- inspected and removed all warnings
-
-<em>jsprit-example:</em>
-- added BicycleMessenger
-- enriched examples with GraphStreamViewer
-- inspected and removed all warnings
-
-<em>jsprit-instance:</em>
-- added VrphGoldenReader (plus instances to bechmark VRPH)
-- inspected and removed all warnings
-
-
-
-**v1.0.0** @ 2013-11-26 (break change)
-
-- re-organized API
-- new package names: jsprit.&lt;module&gt;.&lt;folder(s)&gt;
-- most of the breaks can be fixed by (re-)organizing imports
-- however the following breaks have to be fixed manually:
-- SolutionPrinter.<del>print(solution, Print.VERBOSE)</del> --> use .print(solution) instead
-- VehicleRoute: <del>getCosts()</del>, <del>getCostCalculator()</del>
-- TimeBreaker --> TimeTermination, VariationCoefficentBreaker --> ...Termination, Iteration...Breaker --> ...Termination
-- VehicleRoutingAlgorithm: setPrematureBreaker(...) --> setPrematureTermination(...)
-- util.<del>Counter</del>
-- [detailed changelog](https://github.com/jsprit/misc-rep/raw/master/changelog_0.0.5_to_1.0.0.txt)
-
-**v0.0.5** @ 2013-11-22
-
-- more memory-efficient RadialRuin (issue #53)
-- bug fix (issue #51)
-
-**v0.0.4** @ 2013-10-17
-
-- a number of internal improvements
-- license change from GPLv2 to LGPLv3
-- add premature algorithm termination: PrematureAlgorithmBreaker.java and its implementations
-- searchStrategy.java: public SearchStrategy(SolutionSelector,SolutionAcceptor) --> public SearchStratgy(SolutionSelector,SolutionAcceptor,SolutionCostCalculator)
-- searchStrategy.java: public boolean run(...) --> public DiscoveredSolution run(...)
-- vehicleImpl.VehicleType.Builder --> VehicleTypeImpl.Builder
-- vehicleImpl.VehicleBuilder --> VehicleImpl.Builder
-
-**v0.0.3** @ 2013-06-04
-
-- bug fix - access resources in jar
-
-**v0.0.2** @ 2013-06-03
-
-- bug fix - access resources in jar
-
-**v0.0.1** @ 2013-06-02
+For detailed changelogs of older versions, see [GitHub releases](https://github.com/graphhopper/jsprit/releases).

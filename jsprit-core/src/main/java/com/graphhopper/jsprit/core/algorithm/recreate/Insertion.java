@@ -39,24 +39,27 @@ public final class Insertion {
     private Insertion() {}
 
     /**
-     * Fast regret insertion with spatial filtering and affected-job tracking.
+     * Fast regret insertion (regret-2).
      *
-     * <p>Optimized for speed while maintaining good solution quality.
-     * Uses spatial filtering to limit route candidates and affected-job tracking
-     * to minimize recalculations.</p>
+     * <p>Default configuration with no experimental optimizations.
+     * For experimental spatial filtering and affected-job tracking,
+     * use {@link #regretFast(int, int, boolean)}.</p>
      *
      * @return factory for fast regret insertion
      */
     public static InsertionOperatorFactory regretFast() {
-        return InsertionOperatorFactory.named("regretFast", regretFast(2, 5, true));
+        return InsertionOperatorFactory.named("regretFast", regretFast(2, 0, false));
     }
 
     /**
      * Fast regret-k insertion with configurable parameters.
      *
+     * <p><b>Experimental:</b> Spatial filtering and affected-job tracking are
+     * experimental optimizations that may change in future releases.</p>
+     *
      * @param k regret-k parameter (2 for regret-2, 3 for regret-3, etc.)
-     * @param spatialFilterK number of nearest routes to consider (0 to disable)
-     * @param affectedJobTracking whether to use affected-job tracking
+     * @param spatialFilterK number of nearest routes to consider (0 to disable filtering)
+     * @param affectedJobTracking whether to use affected-job tracking (experimental)
      * @return factory for fast regret insertion
      */
     public static InsertionOperatorFactory regretFast(int k, int spatialFilterK, boolean affectedJobTracking) {
@@ -212,6 +215,9 @@ public final class Insertion {
     /**
      * Position-based regret insertion (fast version).
      *
+     * <p><b>Experimental:</b> This insertion strategy is experimental and
+     * may change in future releases.</p>
+     *
      * <p>Considers all insertion positions across routes, not just the best
      * position per route. More accurate regret calculation but slower.</p>
      *
@@ -223,6 +229,9 @@ public final class Insertion {
 
     /**
      * Position-based regret insertion with configurable parameters.
+     *
+     * <p><b>Experimental:</b> This insertion strategy is experimental and
+     * may change in future releases.</p>
      *
      * @param k regret-k parameter
      * @param topRoutesToExpand number of top routes to expand to position level
