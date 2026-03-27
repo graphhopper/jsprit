@@ -1,0 +1,44 @@
+name: Publish to Maven Central
+
+on:
+  push:
+    tags:
+      - '**'
+
+jobs:
+  maven-central-publish:
+    if: github.repository_owner == 'graphhopper'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Cache Maven artifacts
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build and test
+        run: mvn clean verify -B
+
+      - name: Set version from tag
+        run: mvn versions:set -DnewVersion=$GITHUB_REF_NAME -DgenerateBackupPoms=false -B
+
+      - name: Publish to Maven Central
+        run: mvn deploy -P release -DskipTests=true -B
+        env:
+          MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
