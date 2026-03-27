@@ -34,7 +34,7 @@ jobs:
         run: mvn clean verify -B
 
       - name: Set version from tag
-        run: mvn versions:set -DnewVersion=$GITHUB_REF_NAME -DgenerateBackupPoms=false -B
+        run: mvn versions:set -DnewVersion=${GITHUB_REF_NAME#v} -DgenerateBackupPoms=false -B
 
       - name: Publish to Maven Central
         run: mvn deploy -P release -DskipTests=true -B
