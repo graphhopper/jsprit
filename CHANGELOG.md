@@ -2,7 +2,7 @@
 
 All notable changes to jsprit will be documented in this file.
 
-## [2.0.0] - Unreleased
+## [2.0.0] - 2026-03-27
 
 ### Breaking Changes
 
