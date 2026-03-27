@@ -37,7 +37,7 @@ jobs:
         run: mvn versions:set -DnewVersion=$GITHUB_REF_NAME -DgenerateBackupPoms=false -B
 
       - name: Publish to Maven Central
-        run: mvn deploy -P release -DskipTests=true -B
+        run: mvn deploy -P release -DskipTests=true -Dgpg.passphrase=$GPG_PASSPHRASE -B
         env:
           MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN }}
