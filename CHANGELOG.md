@@ -27,22 +27,50 @@ Jsprit.Builder.newInstance(vrp)
 ```
 
 #### Ruin Strategies
-- `Ruin.random()` - Random job removal
-- `Ruin.radial()` - Remove nearby jobs
-- `Ruin.worst()` - Remove jobs with highest removal benefit
-- `Ruin.cluster()` - DBSCAN-based cluster removal
-- `Ruin.kruskalCluster()` - MST-based cluster removal (new)
-- `Ruin.string()` - Remove sequences from routes
-- `Ruin.timeRelated()` - Remove jobs with similar time windows
-- All ruin factories support bounded fractions: `Ruin.random(0.3, 0.5, 10, 70)`
-  (30-50% of jobs, clamped to [10, 70])
+
+- **`Ruin.random()`** - Removes jobs randomly. Simple baseline strategy that provides
+  good diversification. Use as a complement to more targeted strategies.
+
+- **`Ruin.radial()`** - Removes jobs that are geographically close to a randomly
+  selected center job. Good for problems where nearby jobs should be served together.
+
+- **`Ruin.worst()`** - Removes jobs with the highest removal benefit (most expensive
+  to serve). Helps eliminate costly detours and improve solution quality.
+
+- **`Ruin.cluster()`** - Uses DBSCAN clustering to identify groups of nearby jobs,
+  then removes entire clusters. Effective for problems with natural geographic clusters.
+
+- **`Ruin.kruskalCluster()`** - Builds a minimum spanning tree (MST) using Kruskal's
+  algorithm based on job distances, then cuts edges to form clusters for removal.
+  Often more robust than DBSCAN as it doesn't require parameter tuning. **(new in 2.0)**
+
+- **`Ruin.string()`** - Removes sequences of consecutive jobs from routes. Preserves
+  route structure while creating reinsertion opportunities. Good for problems with
+  sequence-dependent constraints.
+
+- **`Ruin.timeRelated()`** - Removes jobs with similar time windows. Helps rebalance
+  workload across vehicles when time constraints are tight.
+
+- **Bounded fractions**: All ruin strategies support bounded share configuration:
+  `Ruin.random(0.3, 0.5, 10, 70)` removes 30-50% of jobs, clamped to [10, 70].
 
 #### Insertion Strategies
-- `Insertion.regretFast()` - Fast regret-2 insertion
-- `Insertion.regret()` - Standard regret without optimizations
-- `Insertion.best()` - Greedy best insertion
-- `Insertion.cheapest()` - Cheapest insertion
-- `Insertion.positionRegret()` - Position-based regret (experimental)
+
+- **`Insertion.regretFast()`** - Fast regret-2 insertion with optimizations. Prioritizes
+  jobs that would become much more expensive if not inserted now. Good balance of
+  quality and speed. **(recommended default)**
+
+- **`Insertion.regret(k)`** - Standard regret-k insertion. Higher k values (3, 4, ...)
+  consider more alternative routes but are slower. Use for higher quality solutions.
+
+- **`Insertion.best()`** - Greedy insertion that always picks the globally cheapest
+  insertion. Fast but may miss opportunities that regret would catch.
+
+- **`Insertion.cheapest()`** - True best insertion from VRP literature. Similar to
+  best() but with different tie-breaking behavior.
+
+- **`Insertion.positionRegret()`** - Considers regret across all insertion positions,
+  not just best position per route. More accurate but slower. **(experimental)**
 
 #### Algorithm Event System
 New observability system for monitoring algorithm execution:
