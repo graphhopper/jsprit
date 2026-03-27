@@ -22,13 +22,6 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
-      - name: Debug GPG keys
-        run: |
-          echo "Listing GPG keys:"
-          gpg --list-keys
-          echo "Listing secret keys:"
-          gpg --list-secret-keys
-
       - name: Cache Maven artifacts
         uses: actions/cache@v4
         with:

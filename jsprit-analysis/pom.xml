@@ -24,6 +24,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jsprit-analysis</artifactId>
+    <name>jsprit-analysis</name>
     <packaging>jar</packaging>
 
     <dependencies>
