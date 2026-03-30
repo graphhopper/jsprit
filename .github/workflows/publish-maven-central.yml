@@ -3,11 +3,12 @@ name: Publish to Maven Central
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'  # Only stable releases (v1.2.3), not betas (v1.2.3-beta1)
+      - 'v*.*.*'  # Triggers on version tags, job condition filters to stable only
 
 jobs:
   maven-central-publish:
-    if: github.repository_owner == 'graphhopper'
+    # Only publish stable releases (no hyphen in tag name like -beta, -RC, etc.)
+    if: github.repository_owner == 'graphhopper' && !contains(github.ref_name, '-')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
