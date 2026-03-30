@@ -3,7 +3,7 @@ name: Publish to Maven Central
 on:
   push:
     tags:
-      - '**'
+      - 'v[0-9]+.[0-9]+.[0-9]+'  # Only stable releases (v1.2.3), not betas (v1.2.3-beta1)
 
 jobs:
   maven-central-publish:
