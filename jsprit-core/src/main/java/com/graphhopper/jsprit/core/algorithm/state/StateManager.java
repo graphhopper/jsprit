@@ -339,12 +339,13 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
                 throw getClassCastException(e, stateId, type.toString(), routeStatesArr[getVehicleIndex(route.getVehicle())][stateId.getIndex()].getClass().toString());
             }
         } else {
-            try {
-                if (routeStateMap.containsKey(route)) {
-                    state = type.cast(routeStateMap.get(route)[stateId.getIndex()]);
+            Object[] states = routeStateMap.get(route);
+            if (states != null) {
+                try {
+                    state = type.cast(states[stateId.getIndex()]);
+                } catch (ClassCastException e) {
+                    throw getClassCastException(e, stateId, type.toString(), states[stateId.getIndex()].getClass().toString());
                 }
-            } catch (ClassCastException e) {
-                throw getClassCastException(e, stateId, type.toString(), routeStateMap.get(route)[stateId.getIndex()].getClass().toString());
             }
         }
         return state;
@@ -360,9 +361,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      */
     @SuppressWarnings("UnusedDeclaration")
     public boolean hasRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId) {
-        if (!vehicleDependentRouteStateMap.containsKey(route)) return false;
-        return vehicleDependentRouteStateMap.get(route)[getTypeKeyIndex(vehicle)][stateId.getIndex()] != null;
-//        return vehicle_dependent_route_states[route.getActivities().get(0).getIndex()][vehicle.getVehicleTypeIdentifier().getIndex()][stateId.getIndex()] != null;
+        Object[][] states = vehicleDependentRouteStateMap.get(route);
+        if (states == null) return false;
+        return states[getTypeKeyIndex(vehicle)][stateId.getIndex()] != null;
     }
 
     /**
@@ -389,12 +390,13 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
                 throw getClassCastException(e, stateId, type.toString(), vehicleDependentRouteStatesArr[getVehicleIndex(route.getVehicle())][typeKeyIndex][stateId.getIndex()].getClass().toString());
             }
         } else {
-            try {
-                if (vehicleDependentRouteStateMap.containsKey(route)) {
-                    state = type.cast(vehicleDependentRouteStateMap.get(route)[typeKeyIndex][stateId.getIndex()]);
+            Object[][] states = vehicleDependentRouteStateMap.get(route);
+            if (states != null) {
+                try {
+                    state = type.cast(states[typeKeyIndex][stateId.getIndex()]);
+                } catch (ClassCastException e) {
+                    throw getClassCastException(e, stateId, type.toString(), states[typeKeyIndex][stateId.getIndex()].getClass().toString());
                 }
-            } catch (ClassCastException e) {
-                throw getClassCastException(e, stateId, type.toString(), vehicleDependentRouteStateMap.get(route)[typeKeyIndex][stateId.getIndex()].getClass().toString());
             }
         }
         return state;
@@ -491,10 +493,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         if (isIndexedBased) {
             routeStatesArr[getVehicleIndex(route.getVehicle())][stateId.getIndex()] = state;
         } else {
-            if (!routeStateMap.containsKey(route)) {
-                routeStateMap.put(route, new Object[stateIndexCounter]);
-            }
-            routeStateMap.get(route)[stateId.getIndex()] = state;
+            routeStateMap.computeIfAbsent(route, k -> new Object[stateIndexCounter])[stateId.getIndex()] = state;
         }
     }
 
@@ -504,12 +503,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         if (isIndexedBased) {
             vehicleDependentRouteStatesArr[getVehicleIndex(route.getVehicle())][typeKeyIndex][stateId.getIndex()] = state;
         } else {
-            if (!vehicleDependentRouteStateMap.containsKey(route)) {
-                vehicleDependentRouteStateMap.put(route, new Object[nuVehicleTypeKeys][stateIndexCounter]);
-            }
-            vehicleDependentRouteStateMap.get(route)[typeKeyIndex][stateId.getIndex()] = state;
+            vehicleDependentRouteStateMap.computeIfAbsent(route, k -> new Object[nuVehicleTypeKeys][stateIndexCounter])[typeKeyIndex][stateId.getIndex()] = state;
         }
-
     }
 
     /**
