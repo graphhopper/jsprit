@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
@@ -91,8 +92,10 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
 
         JobInsertionContext insertionContext = new JobInsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
         Shipment shipment = (Shipment) jobToInsert;
-        TourActivity pickupShipment = activityFactory.createActivities(shipment).get(0);
-        TourActivity deliverShipment = activityFactory.createActivities(shipment).get(1);
+        // Call createActivities once and cache both activities
+        List<AbstractActivity> shipmentActivities = activityFactory.createActivities(shipment);
+        TourActivity pickupShipment = (TourActivity) shipmentActivities.get(0);
+        TourActivity deliverShipment = (TourActivity) shipmentActivities.get(1);
         insertionContext.getAssociatedActivities().add(pickupShipment);
         insertionContext.getAssociatedActivities().add(deliverShipment);
 
@@ -139,6 +142,9 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         int activitiesSize = activities.size();
 
         List<HardConstraint> failedActivityConstraints = new ArrayList<>();
+        // Reuse ActivityContext instances - safe because they're method-local
+        ActivityContext pickupActivityContext = new ActivityContext();
+        ActivityContext deliveryActivityContext = new ActivityContext();
         while (!tourEnd) {
             TourActivity nextAct;
             if (i < activitiesSize) {
@@ -153,9 +159,8 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
             for(TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows()) {
                 pickupShipment.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
                 pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
-                ActivityContext activityContext = new ActivityContext();
-                activityContext.setInsertionIndex(i);
-                insertionContext.setActivityContext(activityContext);
+                pickupActivityContext.setInsertionIndex(i);
+                insertionContext.setActivityContext(pickupActivityContext);
                 ConstraintsStatus pickupShipmentConstraintStatus = fulfilled(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime, failedActivityConstraints, constraintManager);
                 if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)) {
                     pickupInsertionNotFulfilledBreak = false;
@@ -206,9 +211,8 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                     for (TimeWindow deliveryTimeWindow : shipment.getDeliveryTimeWindows()) {
                         deliverShipment.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());
                         deliverShipment.setTheoreticalLatestOperationStartTime(deliveryTimeWindow.getEnd());
-                        ActivityContext activityContext_ = new ActivityContext();
-                        activityContext_.setInsertionIndex(j);
-                        insertionContext.setActivityContext(activityContext_);
+                        deliveryActivityContext.setInsertionIndex(j);
+                        insertionContext.setActivityContext(deliveryActivityContext);
                         ConstraintsStatus deliverShipmentConstraintStatus = fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop, failedActivityConstraints, constraintManager);
                         if (deliverShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)) {
                             InsertionCostBreakdown deliveryActBreakdown = constraintManager.getActivityCostsBreakdown(
@@ -291,8 +295,10 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
 
         JobInsertionContext insertionContext = new JobInsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
         Shipment shipment = (Shipment) jobToInsert;
-        TourActivity pickupShipment = activityFactory.createActivities(shipment).get(0);
-        TourActivity deliverShipment = activityFactory.createActivities(shipment).get(1);
+        // Call createActivities once and cache both activities
+        List<AbstractActivity> shipmentActivities = activityFactory.createActivities(shipment);
+        TourActivity pickupShipment = (TourActivity) shipmentActivities.get(0);
+        TourActivity deliverShipment = (TourActivity) shipmentActivities.get(1);
         insertionContext.getAssociatedActivities().add(pickupShipment);
         insertionContext.getAssociatedActivities().add(deliverShipment);
 
@@ -325,6 +331,9 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         int activitiesSize = activities.size();
 
         List<HardConstraint> failedActivityConstraints = new ArrayList<>();
+        // Reuse ActivityContext instances - safe because they're method-local
+        ActivityContext pickupActivityContext = new ActivityContext();
+        ActivityContext deliveryActivityContext = new ActivityContext();
 
         while (!tourEnd) {
             TourActivity nextAct;
@@ -339,9 +348,8 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
             for (TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows()) {
                 pickupShipment.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
                 pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
-                ActivityContext activityContext = new ActivityContext();
-                activityContext.setInsertionIndex(i);
-                insertionContext.setActivityContext(activityContext);
+                pickupActivityContext.setInsertionIndex(i);
+                insertionContext.setActivityContext(pickupActivityContext);
 
                 ConstraintsStatus pickupStatus = fulfilled(insertionContext, prevAct, pickupShipment, nextAct,
                         prevActEndTime, failedActivityConstraints, constraintManager);
@@ -389,9 +397,8 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                     for (TimeWindow deliveryTimeWindow : shipment.getDeliveryTimeWindows()) {
                         deliverShipment.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());
                         deliverShipment.setTheoreticalLatestOperationStartTime(deliveryTimeWindow.getEnd());
-                        ActivityContext activityContext_ = new ActivityContext();
-                        activityContext_.setInsertionIndex(j);
-                        insertionContext.setActivityContext(activityContext_);
+                        deliveryActivityContext.setInsertionIndex(j);
+                        insertionContext.setActivityContext(deliveryActivityContext);
 
                         ConstraintsStatus deliveryStatus = fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment,
                                 nextAct_deliveryLoop, prevActEndTime_deliveryLoop, failedActivityConstraints, constraintManager);

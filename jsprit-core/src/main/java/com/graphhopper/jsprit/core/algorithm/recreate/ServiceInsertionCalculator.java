@@ -136,6 +136,8 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         int actIndex = 0;
         Iterator<TourActivity> activityIterator = currentRoute.getActivities().iterator();
         boolean tourEnd = false;
+        // Reuse single ActivityContext instance - safe because it's method-local
+        ActivityContext activityContext = new ActivityContext();
         while(!tourEnd){
             TourActivity nextAct;
             if(activityIterator.hasNext()) nextAct = activityIterator.next();
@@ -147,7 +149,6 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
 			for(TimeWindow timeWindow : service.getTimeWindows()) {
                 deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
                 deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
-                ActivityContext activityContext = new ActivityContext();
                 activityContext.setInsertionIndex(actIndex);
                 insertionContext.setActivityContext(activityContext);
                 ConstraintsStatus status = fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime, failedActivityConstraints, constraintManager);
@@ -239,6 +240,8 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         int actIndex = 0;
         Iterator<TourActivity> activityIterator = currentRoute.getActivities().iterator();
         boolean tourEnd = false;
+        // Reuse single ActivityContext instance - safe because it's method-local
+        ActivityContext activityContext = new ActivityContext();
 
         while (!tourEnd) {
             TourActivity nextAct;
@@ -253,7 +256,6 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
             for (TimeWindow timeWindow : service.getTimeWindows()) {
                 deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
                 deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
-                ActivityContext activityContext = new ActivityContext();
                 activityContext.setInsertionIndex(actIndex);
                 insertionContext.setActivityContext(activityContext);
 
