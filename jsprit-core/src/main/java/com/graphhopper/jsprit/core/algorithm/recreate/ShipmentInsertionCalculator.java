@@ -22,8 +22,6 @@ import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
 import com.graphhopper.jsprit.core.problem.constraint.HardConstraint;
-import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
-import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -49,10 +47,6 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
 
     private final ConstraintManager constraintManager;
 
-    private final SoftRouteConstraint softRouteConstraint;
-
-    private final SoftActivityConstraint softActivityConstraint;
-
     private final ActivityInsertionCostsCalculator activityInsertionCostsCalculator;
 
     private final VehicleRoutingTransportCosts transportCosts;
@@ -69,8 +63,6 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         super();
         this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
         this.constraintManager = constraintManager;
-        this.softActivityConstraint = constraintManager;
-        this.softRouteConstraint = constraintManager;
         this.transportCosts = routingCosts;
         this.activityCosts = activityCosts;
         additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
@@ -116,8 +108,8 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         Shipment shipment = (Shipment) jobToInsert;
         // Call createActivities once and cache both activities
         List<AbstractActivity> shipmentActivities = activityFactory.createActivities(shipment);
-        TourActivity pickupShipment = (TourActivity) shipmentActivities.get(0);
-        TourActivity deliverShipment = (TourActivity) shipmentActivities.get(1);
+        TourActivity pickupShipment = shipmentActivities.get(0);
+        TourActivity deliverShipment = shipmentActivities.get(1);
         insertionContext.getAssociatedActivities().add(pickupShipment);
         insertionContext.getAssociatedActivities().add(deliverShipment);
 

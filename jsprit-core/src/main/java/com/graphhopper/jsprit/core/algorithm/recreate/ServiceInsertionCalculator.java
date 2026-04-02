@@ -21,8 +21,6 @@ import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
 import com.graphhopper.jsprit.core.problem.constraint.HardConstraint;
-import com.graphhopper.jsprit.core.problem.constraint.SoftActivityConstraint;
-import com.graphhopper.jsprit.core.problem.constraint.SoftRouteConstraint;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -53,10 +51,6 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceInsertionCalculator.class);
 
-    private final SoftRouteConstraint softRouteConstraint;
-
-    private final SoftActivityConstraint softActivityConstraint;
-
     private final VehicleRoutingTransportCosts transportCosts;
 
     private final VehicleRoutingActivityCosts activityCosts;
@@ -74,8 +68,6 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         this.transportCosts = routingCosts;
         this.activityCosts = activityCosts;
         this.constraintManager = constraintManager;
-        softActivityConstraint = constraintManager;
-        softRouteConstraint = constraintManager;
         this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
         additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
         this.activityFactory = activityFactory;
@@ -97,7 +89,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         Service service = (Service) jobToInsert;
         int insertionIndex = InsertionData.NO_INDEX;
 
-        TourActivity deliveryAct2Insert = activityFactory.createActivities(service).get(0);
+        TourActivity deliveryAct2Insert = activityFactory.createActivities(service).getFirst();
         insertionContext.getAssociatedActivities().add(deliveryAct2Insert);
 
         /*
@@ -209,7 +201,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         JobInsertionContext insertionContext = new JobInsertionContext(currentRoute, jobToInsert, newVehicle, newDriver, newVehicleDepartureTime);
         Service service = (Service) jobToInsert;
 
-        TourActivity deliveryAct2Insert = activityFactory.createActivities(service).get(0);
+        TourActivity deliveryAct2Insert = activityFactory.createActivities(service).getFirst();
         insertionContext.getAssociatedActivities().add(deliveryAct2Insert);
 
         // Check hard constraints at route level
@@ -282,7 +274,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
                     insertionData.setCostBreakdown(breakdown);
 
                     // Create fresh activity for this position's events
-                    TourActivity actForPosition = activityFactory.createActivities(service).get(0);
+                    TourActivity actForPosition = activityFactory.createActivities(service).getFirst();
                     actForPosition.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
                     actForPosition.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
                     insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, actForPosition, actIndex));
