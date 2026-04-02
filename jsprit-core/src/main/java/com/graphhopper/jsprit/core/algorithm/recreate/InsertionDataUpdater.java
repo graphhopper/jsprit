@@ -226,9 +226,11 @@ class InsertionDataUpdater {
     }
 
     /**
-     * Updates a BoundedInsertionQueue with adaptive spatial filtering.
-     * During learning phase, computes both filtered and full results for comparison.
-     * After learning, applies filtering based on learned effectiveness.
+     * Updates insertion data for a job using route filtering.
+     * <p>
+     * Uses {@link InsertionRouteFilter#filterRoutes} to select routes to evaluate.
+     * If filtering is disabled or filter is null, evaluates all routes.
+     * Falls back to full search if filtering finds no feasible insertions.
      *
      * @param addAllAvailable          whether to consider all available vehicles
      * @param initialVehicleIds        IDs of vehicles from initial routes
@@ -237,70 +239,32 @@ class InsertionDataUpdater {
      * @param queue                    the bounded queue to update
      * @param unassignedJob            the job to calculate insertions for
      * @param routes                   all routes to potentially consider
-     * @param filter                   the adaptive spatial filter
+     * @param filter                   the route filter (may be null)
      */
     static void updateBoundedWithFilter(boolean addAllAvailable, Set<String> initialVehicleIds, VehicleFleetManager fleetManager,
                                         JobInsertionCostsCalculator insertionCostsCalculator, BoundedInsertionQueue queue,
-                                        Job unassignedJob, Collection<VehicleRoute> routes, AdaptiveSpatialFilter filter) {
-        if (filter == null) {
+                                        Job unassignedJob, Collection<VehicleRoute> routes, InsertionRouteFilter filter) {
+        if (filter == null || !filter.isFilteringEnabled()) {
             updateBounded(addAllAvailable, initialVehicleIds, fleetManager, insertionCostsCalculator, queue, unassignedJob, routes);
             return;
         }
 
-        AdaptiveSpatialFilter.FilterResult filterResult = filter.getRelevantRoutes(unassignedJob, routes);
+        Collection<VehicleRoute> filteredRoutes = filter.filterRoutes(unassignedJob, routes);
 
-        if (filterResult.needsComparison()) {
-            // Learning/validation mode: compute both filtered and full
-            List<VehicleRoute> nearRoutes = filter.getNearestRoutes(unassignedJob, routes, filter.getK());
-
-            // Compute best insertion from filtered routes
-            InsertionData filteredBest = null;
-            VehicleRoute filteredRoute = null;
-            for (VehicleRoute route : nearRoutes) {
-                InsertionData best = computeBestInsertionForRoute(addAllAvailable, initialVehicleIds, fleetManager,
-                        insertionCostsCalculator, route, unassignedJob);
-                if (best != null && (filteredBest == null || best.getInsertionCost() < filteredBest.getInsertionCost())) {
-                    filteredBest = best;
-                    filteredRoute = route;
-                }
+        // Update queue with filtered routes
+        for (VehicleRoute route : filteredRoutes) {
+            InsertionData best = computeBestInsertionForRoute(addAllAvailable, initialVehicleIds, fleetManager,
+                    insertionCostsCalculator, route, unassignedJob);
+            if (best != null) {
+                queue.addOrReplace(best, route);
+            } else {
+                queue.remove(route);
             }
+        }
 
-            // Compute best insertion from all routes
-            InsertionData fullBest = null;
-            VehicleRoute fullRoute = null;
-            for (VehicleRoute route : routes) {
-                InsertionData best = computeBestInsertionForRoute(addAllAvailable, initialVehicleIds, fleetManager,
-                        insertionCostsCalculator, route, unassignedJob);
-                if (best != null && (fullBest == null || best.getInsertionCost() < fullBest.getInsertionCost())) {
-                    fullBest = best;
-                    fullRoute = route;
-                }
-            }
-
-            // Record comparison for learning
-            filter.recordComparison(filteredBest, filteredRoute, fullBest, fullRoute);
-
-            // Use full results and update queue
+        // If filtering found nothing, fall back to full search
+        if (queue.isEmpty()) {
             updateBounded(addAllAvailable, initialVehicleIds, fleetManager, insertionCostsCalculator, queue, unassignedJob, routes);
-        } else {
-            // Production mode with filtering or full search
-            Collection<VehicleRoute> routesToUse = filterResult.getRoutes();
-
-            // Update queue with selected routes
-            for (VehicleRoute route : routesToUse) {
-                InsertionData best = computeBestInsertionForRoute(addAllAvailable, initialVehicleIds, fleetManager,
-                        insertionCostsCalculator, route, unassignedJob);
-                if (best != null) {
-                    queue.addOrReplace(best, route);
-                } else {
-                    queue.remove(route);
-                }
-            }
-
-            // If filtering was applied and found nothing, fall back to full search
-            if (filterResult.wasFiltered() && queue.isEmpty()) {
-                updateBounded(addAllAvailable, initialVehicleIds, fleetManager, insertionCostsCalculator, queue, unassignedJob, routes);
-            }
         }
     }
 

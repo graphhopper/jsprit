@@ -63,7 +63,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
 
     private DependencyType[] dependencyTypes = null;
 
-    private AdaptiveSpatialFilter spatialFilter = null;
+    private InsertionRouteFilter routeFilter = null;
 
 
     /**
@@ -120,12 +120,12 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
         this.dependencyTypes = dependencyTypes;
     }
 
-    public void setSpatialFilter(AdaptiveSpatialFilter spatialFilter) {
-        this.spatialFilter = spatialFilter;
+    public void setRouteFilter(InsertionRouteFilter routeFilter) {
+        this.routeFilter = routeFilter;
     }
 
-    public AdaptiveSpatialFilter getSpatialFilter() {
-        return spatialFilter;
+    public InsertionRouteFilter getRouteFilter() {
+        return routeFilter;
     }
 
 
@@ -234,7 +234,7 @@ public class RegretInsertionConcurrentFast extends AbstractInsertionStrategy {
     private void makeCallables(List<Callable<Void>> tasks, boolean updateAll, final BoundedInsertionQueue queue, final Job unassignedJob, final Collection<VehicleRoute> routes, final VehicleRoute lastModified) {
         if(updateAll) {
             // Use spatial filtering when updating all routes
-            final AdaptiveSpatialFilter filter = this.spatialFilter;
+            final InsertionRouteFilter filter = this.routeFilter;
             tasks.add(() -> {
                 InsertionDataUpdater.updateBoundedWithFilter(switchAllowed, initialVehicleIds, fleetManager, insertionCostsCalculator, queue, unassignedJob, routes, filter);
                 return null;

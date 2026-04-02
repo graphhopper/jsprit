@@ -40,8 +40,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
@@ -64,6 +63,8 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
 
     private final AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
+    private InsertionPositionFilter positionFilter;
+
     public ShipmentInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, ConstraintManager constraintManager, JobActivityFactory jobActivityFactory) {
         super();
         this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
@@ -75,6 +76,27 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
         this.activityFactory = jobActivityFactory;
         LOGGER.debug("initialise {}", this);
+    }
+
+    /**
+     * Sets the position filter for reducing position evaluations.
+     * <p>
+     * Position filtering selects a subset of candidate positions to evaluate
+     * for shipment pickup and delivery, reducing the O(p²) complexity.
+     *
+     * @param filter the position filter, or null to disable filtering
+     */
+    public void setPositionFilter(InsertionPositionFilter filter) {
+        this.positionFilter = filter;
+    }
+
+    /**
+     * Gets the position filter.
+     *
+     * @return the position filter, or null if not set
+     */
+    public InsertionPositionFilter getPositionFilter() {
+        return positionFilter;
     }
 
     @Override
@@ -131,13 +153,6 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
 
         ActivityContext pickupContext = new ActivityContext();
 
-        TourActivity prevAct = start;
-        double prevActEndTime = newVehicleDepartureTime;
-
-        //loops
-        int i = 0;
-        boolean tourEnd = false;
-        //pickupShipmentLoop
         List<TourActivity> activities = currentRoute.getTourActivities().getActivities();
         int activitiesSize = activities.size();
 
@@ -145,6 +160,18 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         // Reuse ActivityContext instances - safe because they're method-local
         ActivityContext pickupActivityContext = new ActivityContext();
         ActivityContext deliveryActivityContext = new ActivityContext();
+
+        // Get filtered positions
+        Set<Integer> filteredPickupPositions = getFilteredPickupPositions(shipment, currentRoute, activities);
+        boolean useCachedTiming = canUseCachedTiming(currentRoute, newVehicle, newVehicleDepartureTime);
+        boolean timingRequired = isTimingRequired();
+
+        // Pickup loop - iterate through positions, evaluating only filtered ones
+        TourActivity prevAct = start;
+        double prevActEndTime = newVehicleDepartureTime;
+        int i = 0;
+        boolean tourEnd = false;
+
         while (!tourEnd) {
             TourActivity nextAct;
             if (i < activitiesSize) {
@@ -153,10 +180,37 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                 nextAct = end;
                 tourEnd = true;
             }
+
+            // Check if we should evaluate this pickup position
+            boolean shouldEvaluatePickup = (filteredPickupPositions == null || filteredPickupPositions.contains(i));
+
+            // If using cached timing and filtering, we can jump directly
+            if (useCachedTiming && filteredPickupPositions != null && !shouldEvaluatePickup) {
+                // Skip this position entirely - timing is cached on activities
+                i++;
+                continue;
+            }
+
+            // If timing is required and we can't use cached timing, we must track it even for skipped positions
+            if (!shouldEvaluatePickup) {
+                // Update timing but don't evaluate
+                double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActEndTime, newDriver, newVehicle);
+                prevActEndTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(prevAct, nextAct, nextActArrTime, newDriver, newVehicle);
+                prevAct = nextAct;
+                i++;
+                continue;
+            }
+
+            // If using cached timing, get timing from previous activity
+            if (useCachedTiming && i > 0 && !activities.isEmpty()) {
+                prevAct = activities.get(i - 1);
+                prevActEndTime = activities.get(i - 1).getEndTime();
+            }
+
             LOGGER.trace("Evaluating pickup at position {}", i);
 
             boolean pickupInsertionNotFulfilledBreak = true;
-            for(TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows()) {
+            for (TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows()) {
                 pickupShipment.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
                 pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
                 pickupActivityContext.setInsertionIndex(i);
@@ -165,10 +219,9 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                 if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)) {
                     pickupInsertionNotFulfilledBreak = false;
                     continue;
-                } else if(pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)) {
+                } else if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)) {
                     continue;
-                }
-                else if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)) {
+                } else if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)) {
                     pickupInsertionNotFulfilledBreak = false;
                 }
                 InsertionCostBreakdown pickupActBreakdown = constraintManager.getActivityCostsBreakdown(
@@ -191,10 +244,10 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                     continue;
                 }
 
-			/*
-            --------------------------------
-			 */
-                //deliverShipmentLoop
+                // Get filtered delivery positions for this pickup position
+                Set<Integer> filteredDeliveryPositions = getFilteredDeliveryPositions(shipment, currentRoute, activities, i);
+
+                // Delivery loop - must iterate sequentially for timing, but only evaluate filtered positions
                 int j = i;
                 boolean tourEnd_deliveryLoop = false;
                 while (!tourEnd_deliveryLoop) {
@@ -205,59 +258,68 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                         nextAct_deliveryLoop = end;
                         tourEnd_deliveryLoop = true;
                     }
-                    LOGGER.trace("Evaluating delivery at position {}", j);
 
-                    boolean deliveryInsertionNotFulfilledBreak = true;
-                    for (TimeWindow deliveryTimeWindow : shipment.getDeliveryTimeWindows()) {
-                        deliverShipment.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());
-                        deliverShipment.setTheoreticalLatestOperationStartTime(deliveryTimeWindow.getEnd());
-                        deliveryActivityContext.setInsertionIndex(j);
-                        insertionContext.setActivityContext(deliveryActivityContext);
-                        ConstraintsStatus deliverShipmentConstraintStatus = fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop, failedActivityConstraints, constraintManager);
-                        if (deliverShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)) {
-                            InsertionCostBreakdown deliveryActBreakdown = constraintManager.getActivityCostsBreakdown(
-                                    insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
-                            double additionalDeliveryICosts = deliveryActBreakdown.getTotal();
-                            double deliveryAIC = calculate(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
-                            double totalActivityInsertionCosts = pickupAIC + deliveryAIC
-                                + additionalICostsAtRouteLevel + additionalPickupICosts + additionalDeliveryICosts;
-                            LOGGER.trace("Position cost: {}, feasible: {}", totalActivityInsertionCosts, true);
+                    // Check if we should evaluate this delivery position
+                    boolean shouldEvaluateDelivery = (filteredDeliveryPositions == null || filteredDeliveryPositions.contains(j));
 
-                            if (totalActivityInsertionCosts < bestCost) {
-                                bestCost = totalActivityInsertionCosts;
-                                pickupInsertionIndex = i;
-                                deliveryInsertionIndex = j;
-                                bestPickupTimeWindow = pickupTimeWindow;
-                                bestDeliveryTimeWindow = deliveryTimeWindow;
-                                // Build complete breakdown for this position
-                                bestBreakdown = new InsertionCostBreakdown();
-                                bestBreakdown.merge(routeBreakdown);
-                                bestBreakdown.merge(pickupActBreakdown);
-                                bestBreakdown.merge(deliveryActBreakdown);
-                                bestBreakdown.add("PickupInsertion", pickupAIC);
-                                bestBreakdown.add("DeliveryInsertion", deliveryAIC);
+                    if (shouldEvaluateDelivery) {
+                        LOGGER.trace("Evaluating delivery at position {}", j);
+
+                        boolean deliveryInsertionNotFulfilledBreak = true;
+                        for (TimeWindow deliveryTimeWindow : shipment.getDeliveryTimeWindows()) {
+                            deliverShipment.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());
+                            deliverShipment.setTheoreticalLatestOperationStartTime(deliveryTimeWindow.getEnd());
+                            deliveryActivityContext.setInsertionIndex(j);
+                            insertionContext.setActivityContext(deliveryActivityContext);
+                            ConstraintsStatus deliverShipmentConstraintStatus = fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop, failedActivityConstraints, constraintManager);
+                            if (deliverShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)) {
+                                InsertionCostBreakdown deliveryActBreakdown = constraintManager.getActivityCostsBreakdown(
+                                        insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
+                                double additionalDeliveryICosts = deliveryActBreakdown.getTotal();
+                                double deliveryAIC = calculate(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
+                                double totalActivityInsertionCosts = pickupAIC + deliveryAIC
+                                        + additionalICostsAtRouteLevel + additionalPickupICosts + additionalDeliveryICosts;
+                                LOGGER.trace("Position cost: {}, feasible: {}", totalActivityInsertionCosts, true);
+
+                                if (totalActivityInsertionCosts < bestCost) {
+                                    bestCost = totalActivityInsertionCosts;
+                                    pickupInsertionIndex = i;
+                                    deliveryInsertionIndex = j;
+                                    bestPickupTimeWindow = pickupTimeWindow;
+                                    bestDeliveryTimeWindow = deliveryTimeWindow;
+                                    // Build complete breakdown for this position
+                                    bestBreakdown = new InsertionCostBreakdown();
+                                    bestBreakdown.merge(routeBreakdown);
+                                    bestBreakdown.merge(pickupActBreakdown);
+                                    bestBreakdown.merge(deliveryActBreakdown);
+                                    bestBreakdown.add("PickupInsertion", pickupAIC);
+                                    bestBreakdown.add("DeliveryInsertion", deliveryAIC);
+                                }
+                                deliveryInsertionNotFulfilledBreak = false;
+                            } else if (deliverShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)) {
+                                LOGGER.trace("Position cost: {}, feasible: {}", -1, false);
+                                deliveryInsertionNotFulfilledBreak = false;
                             }
-                            deliveryInsertionNotFulfilledBreak = false;
-                        } else if (deliverShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)) {
+                        }
+                        if (deliveryInsertionNotFulfilledBreak) {
                             LOGGER.trace("Position cost: {}, feasible: {}", -1, false);
-                            deliveryInsertionNotFulfilledBreak = false;
+                            break;
                         }
                     }
-                    if (deliveryInsertionNotFulfilledBreak) {
-                        LOGGER.trace("Position cost: {}, feasible: {}", -1, false);
-                        break;
+
+                    // Always update timing for delivery loop (needed for subsequent positions)
+                    if (timingRequired) {
+                        double nextActArrTime = prevActEndTime_deliveryLoop + transportCosts.getTransportTime(prevAct_deliveryLoop.getLocation(), nextAct_deliveryLoop.getLocation(), prevActEndTime_deliveryLoop, newDriver, newVehicle);
+                        prevActEndTime_deliveryLoop = Math.max(nextActArrTime, nextAct_deliveryLoop.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(prevAct_deliveryLoop, nextAct_deliveryLoop, nextActArrTime, newDriver, newVehicle);
+                        prevAct_deliveryLoop = nextAct_deliveryLoop;
                     }
-                    //update prevAct and endTime
-                    double nextActArrTime = prevActEndTime_deliveryLoop + transportCosts.getTransportTime(prevAct_deliveryLoop.getLocation(), nextAct_deliveryLoop.getLocation(), prevActEndTime_deliveryLoop, newDriver, newVehicle);
-                    prevActEndTime_deliveryLoop = Math.max(nextActArrTime, nextAct_deliveryLoop.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(prevAct_deliveryLoop, nextAct_deliveryLoop, nextActArrTime, newDriver, newVehicle);
-                    prevAct_deliveryLoop = nextAct_deliveryLoop;
                     j++;
                 }
             }
-            if(pickupInsertionNotFulfilledBreak){
+            if (pickupInsertionNotFulfilledBreak) {
                 break;
             }
-            //update prevAct and endTime
+            // Update timing for pickup loop
             double nextActArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevActEndTime, newDriver, newVehicle);
             prevActEndTime = Math.max(nextActArrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + activityCosts.getActivityDuration(prevAct, nextAct, nextActArrTime, newDriver, newVehicle);
             prevAct = nextAct;
@@ -280,6 +342,57 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
 
     private double calculate(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double departureTimeAtPrevAct) {
         return activityInsertionCostsCalculator.getCosts(iFacts, prevAct, nextAct, newAct, departureTimeAtPrevAct);
+    }
+
+    /**
+     * Gets filtered pickup positions using the position filter, or null to evaluate all.
+     */
+    private Set<Integer> getFilteredPickupPositions(Shipment shipment, VehicleRoute route, List<TourActivity> activities) {
+        if (positionFilter == null || !positionFilter.isFilteringEnabled()) {
+            return null;  // No filtering
+        }
+        List<Integer> filtered = positionFilter.filterPickupPositions(shipment, route, activities);
+        return filtered != null ? new HashSet<>(filtered) : null;
+    }
+
+    /**
+     * Gets filtered delivery positions using the position filter, or null to evaluate all.
+     */
+    private Set<Integer> getFilteredDeliveryPositions(Shipment shipment, VehicleRoute route, List<TourActivity> activities, int pickupPos) {
+        if (positionFilter == null || !positionFilter.isFilteringEnabled()) {
+            return null;  // No filtering
+        }
+        List<Integer> filtered = positionFilter.filterDeliveryPositions(shipment, route, activities, pickupPos);
+        return filtered != null ? new HashSet<>(filtered) : null;
+    }
+
+    /**
+     * Checks if cached timing from route activities can be used.
+     * This is valid when the vehicle and departure time match the route.
+     */
+    private boolean canUseCachedTiming(VehicleRoute route, Vehicle newVehicle, double newDepartureTime) {
+        if (route.isEmpty()) {
+            return true;
+        }
+        Vehicle routeVehicle = route.getVehicle();
+        if (routeVehicle.equals(newVehicle)) {
+            return true;
+        }
+        return route.getDepartureTime() == newDepartureTime &&
+                Objects.equals(routeVehicle.getType(), newVehicle.getType()) &&
+                Objects.equals(routeVehicle.getStartLocation(), newVehicle.getStartLocation()) &&
+                Objects.equals(routeVehicle.getEndLocation(), newVehicle.getEndLocation());
+    }
+
+    /**
+     * Checks if timing propagation is required for constraint checking.
+     * Returns true unless the filter explicitly says timing is not required.
+     */
+    private boolean isTimingRequired() {
+        if (positionFilter == null) {
+            return true;
+        }
+        return positionFilter.isTimingRequired();
     }
 
     /**

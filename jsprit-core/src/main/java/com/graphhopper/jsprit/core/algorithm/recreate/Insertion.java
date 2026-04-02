@@ -84,7 +84,7 @@ public final class Insertion {
                 regret.setAffectedJobTrackingEnabled(affectedJobTracking);
 
                 if (spatialFilterK > 0) {
-                    regret.setSpatialFilter(new AdaptiveSpatialFilter(0, spatialFilterK));
+                    regret.setRouteFilter(new AdaptiveSpatialFilter(spatialFilterK));
                 }
 
                 if (ctx.scoringFunction() != null) {
@@ -95,7 +95,7 @@ public final class Insertion {
                 regret.setDependencyTypes(ctx.constraintManager().getDependencyTypes());
 
                 if (spatialFilterK > 0) {
-                    regret.setSpatialFilter(new AdaptiveSpatialFilter(0, spatialFilterK));
+                    regret.setRouteFilter(new AdaptiveSpatialFilter(spatialFilterK));
                 }
 
                 if (ctx.scoringFunction() != null) {
@@ -145,7 +145,7 @@ public final class Insertion {
                 regret.setRegretK(k);
                 regret.setDependencyTypes(ctx.constraintManager().getDependencyTypes());
                 regret.setAffectedJobTrackingEnabled(false);
-                regret.setSpatialFilter(null);
+                regret.setRouteFilter(null);
 
                 if (ctx.scoringFunction() != null) {
                     regret.setScoringFunction(ctx.scoringFunction());
@@ -153,7 +153,7 @@ public final class Insertion {
             } else if (strategy instanceof RegretInsertionConcurrentFast regret) {
                 regret.setRegretK(k);
                 regret.setDependencyTypes(ctx.constraintManager().getDependencyTypes());
-                regret.setSpatialFilter(null);
+                regret.setRouteFilter(null);
 
                 if (ctx.scoringFunction() != null) {
                     regret.setScoringFunction(ctx.scoringFunction());

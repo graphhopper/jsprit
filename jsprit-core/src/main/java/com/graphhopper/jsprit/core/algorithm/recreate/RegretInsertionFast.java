@@ -63,7 +63,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
 
     private DependencyType[] dependencyTypes = null;
 
-    private AdaptiveSpatialFilter spatialFilter = null;
+    private InsertionRouteFilter routeFilter = null;
 
     private boolean affectedJobTrackingEnabled = true;
 
@@ -107,12 +107,12 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
         this.dependencyTypes = dependencyTypes;
     }
 
-    public void setSpatialFilter(AdaptiveSpatialFilter spatialFilter) {
-        this.spatialFilter = spatialFilter;
+    public void setRouteFilter(InsertionRouteFilter routeFilter) {
+        this.routeFilter = routeFilter;
     }
 
-    public AdaptiveSpatialFilter getSpatialFilter() {
-        return spatialFilter;
+    public InsertionRouteFilter getRouteFilter() {
+        return routeFilter;
     }
 
     /**
@@ -234,19 +234,19 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
                 queues[jobIndex] = new BoundedInsertionQueue();
             }
 
-            // Calculate insertions for all routes with optional spatial filtering
+            // Calculate insertions for all routes with optional route filtering
             InsertionDataUpdater.updateBoundedWithFilter(switchAllowed, initialVehicleIds, fleetManager,
-                insertionCostsCalculator, queues[jobIndex], unassignedJob, routes, spatialFilter);
+                    insertionCostsCalculator, queues[jobIndex], unassignedJob, routes, routeFilter);
 
             // Update tracker with initial state
             if (tracker != null) {
                 tracker.updateJobTracking(unassignedJob, queues[jobIndex]);
-                // Register spatial neighborhood if spatial filter is active
-                if (spatialFilter != null && spatialFilter.isFilteringEnabled()) {
-                    List<VehicleRoute> nearRoutes = spatialFilter.getNearestRoutes(unassignedJob, routes, spatialFilter.getK());
+                // Register spatial neighborhood if route filter is active
+                if (routeFilter != null && routeFilter.isFilteringEnabled()) {
+                    Collection<VehicleRoute> nearRoutes = routeFilter.filterRoutes(unassignedJob, routes);
                     tracker.registerSpatialNeighborhood(unassignedJob, nearRoutes);
                 } else {
-                    // No spatial filtering - all routes are neighbors
+                    // No route filtering - all routes are neighbors
                     tracker.registerSpatialNeighborhood(unassignedJob, routes);
                 }
             }
@@ -281,7 +281,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
                 if (dependencyType.equals(DependencyType.INTER_ROUTE) || dependencyType.equals(DependencyType.INTRA_ROUTE)) {
                     // Dependencies require updating all routes
                     InsertionDataUpdater.updateBoundedWithFilter(switchAllowed, initialVehicleIds, fleetManager,
-                        insertionCostsCalculator, queues[jobIndex], unassignedJob, routes, spatialFilter);
+                            insertionCostsCalculator, queues[jobIndex], unassignedJob, routes, routeFilter);
                     tracker.updateJobTracking(unassignedJob, queues[jobIndex]);
                     continue;
                 }
@@ -328,7 +328,7 @@ public class RegretInsertionFast extends AbstractInsertionStrategy {
                 if (dependencyType.equals(DependencyType.INTER_ROUTE) || dependencyType.equals(DependencyType.INTRA_ROUTE)) {
                     // Dependencies require updating all routes
                     InsertionDataUpdater.updateBoundedWithFilter(switchAllowed, initialVehicleIds, fleetManager,
-                        insertionCostsCalculator, queues[jobIndex], unassignedJob, routes, spatialFilter);
+                            insertionCostsCalculator, queues[jobIndex], unassignedJob, routes, routeFilter);
                 } else {
                     // Only update the modified route
                     InsertionDataUpdater.updateBounded(switchAllowed, initialVehicleIds, fleetManager,

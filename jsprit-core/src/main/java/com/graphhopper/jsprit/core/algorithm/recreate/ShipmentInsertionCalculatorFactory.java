@@ -23,8 +23,26 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 
 public class ShipmentInsertionCalculatorFactory implements JobInsertionCostsCalculatorFactory {
+
+    private InsertionPositionFilter positionFilter;
+
+    /**
+     * Sets the position filter for reducing position evaluations in shipment insertion.
+     *
+     * @param filter the position filter, or null to disable filtering
+     * @return this factory for chaining
+     */
+    public ShipmentInsertionCalculatorFactory setPositionFilter(InsertionPositionFilter filter) {
+        this.positionFilter = filter;
+        return this;
+    }
+
     @Override
     public JobInsertionCostsCalculator create(VehicleRoutingProblem vrp, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, JobActivityFactory jobActivityFactory, ConstraintManager constraintManager) {
-        return new ShipmentInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityInsertionCostsCalculator, constraintManager, jobActivityFactory);
+        ShipmentInsertionCalculator calculator = new ShipmentInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityInsertionCostsCalculator, constraintManager, jobActivityFactory);
+        if (positionFilter != null) {
+            calculator.setPositionFilter(positionFilter);
+        }
+        return calculator;
     }
 }

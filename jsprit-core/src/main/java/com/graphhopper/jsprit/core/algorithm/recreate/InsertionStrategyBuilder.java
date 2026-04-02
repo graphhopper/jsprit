@@ -79,6 +79,8 @@ public class InsertionStrategyBuilder {
 
     private JobInsertionCostsCalculatorFactory breakInsertionCalculatorFactory;
 
+    private InsertionPositionFilter positionFilter;
+
     private Random random = RandomNumberGeneration.getRandom();
 
     public InsertionStrategyBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
@@ -101,6 +103,20 @@ public class InsertionStrategyBuilder {
 
     public InsertionStrategyBuilder setBreakInsertionCalculator(JobInsertionCostsCalculatorFactory breakInsertionCalculator) {
         this.breakInsertionCalculatorFactory = breakInsertionCalculator;
+        return this;
+    }
+
+    /**
+     * Sets the position filter for reducing position evaluations in shipment insertion.
+     * <p>
+     * Position filtering selects a subset of candidate positions to evaluate
+     * for shipment pickup and delivery, reducing the O(p²) complexity.
+     *
+     * @param positionFilter the position filter, or null to disable filtering
+     * @return this builder
+     */
+    public InsertionStrategyBuilder setPositionFilter(InsertionPositionFilter positionFilter) {
+        this.positionFilter = positionFilter;
         return this;
     }
 
@@ -204,6 +220,8 @@ public class InsertionStrategyBuilder {
             calcBuilder.setServiceCalculatorFactory(serviceInsertionCalculatorFactory);
         if (breakInsertionCalculatorFactory != null)
             calcBuilder.setBreakCalculatorFactory(breakInsertionCalculatorFactory);
+        if (positionFilter != null)
+            calcBuilder.setPositionFilter(positionFilter);
         calcBuilder.setConstraintManager(constraintManager);
         calcBuilder.setStateManager(stateManager);
         calcBuilder.setVehicleRoutingProblem(vrp);

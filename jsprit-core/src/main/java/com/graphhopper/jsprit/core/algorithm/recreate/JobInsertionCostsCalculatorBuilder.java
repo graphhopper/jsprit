@@ -19,7 +19,6 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.algorithm.listener.VehicleRoutingAlgorithmListeners.PrioritizedVRAListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListener;
-import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
@@ -96,6 +95,8 @@ public class JobInsertionCostsCalculatorBuilder {
 
     private JobInsertionCostsCalculatorFactory breakCalculatorFactory = new BreakInsertionCalculatorFactory();
 
+    private InsertionPositionFilter positionFilter;
+
     /**
      * Constructs the builder.
      * <p>
@@ -126,6 +127,18 @@ public class JobInsertionCostsCalculatorBuilder {
     public JobInsertionCostsCalculatorBuilder setBreakCalculatorFactory(JobInsertionCostsCalculatorFactory breakCalculatorFactory) {
         if (breakCalculatorFactory == null) return this;
         this.breakCalculatorFactory = breakCalculatorFactory;
+        return this;
+    }
+
+    /**
+     * Sets the position filter for reducing position evaluations in shipment insertion.
+     * This is beneficial for shipments which have O(p^2) complexity.
+     *
+     * @param positionFilter the position filter, or null to disable filtering
+     * @return this builder
+     */
+    public JobInsertionCostsCalculatorBuilder setPositionFilter(InsertionPositionFilter positionFilter) {
+        this.positionFilter = positionFilter;
         return this;
     }
 
@@ -285,6 +298,11 @@ public class JobInsertionCostsCalculatorBuilder {
         }
 
         JobActivityFactory activityFactory = job -> vrp.copyAndGetActivities(job);
+
+        // Configure position filter on shipment factory if available
+        if (positionFilter != null && shipmentCalculatorFactory instanceof ShipmentInsertionCalculatorFactory) {
+            ((ShipmentInsertionCalculatorFactory) shipmentCalculatorFactory).setPositionFilter(positionFilter);
+        }
 
         JobInsertionCostsCalculator shipmentInsertion = shipmentCalculatorFactory.create(vrp, actInsertionCalc, activityFactory, constraintManager);
         JobInsertionCostsCalculator serviceInsertion = serviceCalculatorFactory.create(vrp, actInsertionCalc, activityFactory, constraintManager);

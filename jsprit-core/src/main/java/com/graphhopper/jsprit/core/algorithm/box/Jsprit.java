@@ -182,6 +182,11 @@ public class Jsprit {
         REGRET_K_STRATEGY("regret.k.strategy"),
         SPATIAL_FILTER("regret.spatial_filter"),
         SPATIAL_FILTER_K("regret.spatial_filter_k"),
+        /**
+         * @deprecated Learning is now handled via {@link RouteFilterTuner} algorithm listener.
+         * This parameter is ignored.
+         */
+        @Deprecated
         SPATIAL_FILTER_LEARNING_ROUNDS("regret.spatial_filter_learning_rounds"),
         MAX_TRANSPORT_COSTS("max_transport_costs"),
         CONSTRUCTION("construction"),
@@ -250,6 +255,10 @@ public class Jsprit {
         private JobInsertionCostsCalculatorFactory serviceCalculatorFactory = null;
 
         private JobInsertionCostsCalculatorFactory shipmentCalculatorFactory = null;
+
+        private InsertionPositionFilter positionFilter = null;
+
+        private InsertionRouteFilter routeFilter = null;
 
         // Independent operator selection
         private final List<WeightedOperator<InsertionOperatorFactory>> insertionOperators = new ArrayList<>();
@@ -470,6 +479,54 @@ public class Jsprit {
         }
 
         /**
+         * Sets the position filter for reducing position evaluations in shipment insertion.
+         * <p>
+         * Position filtering selects a subset of candidate positions to evaluate
+         * for shipment pickup and delivery, reducing the O(p²) complexity.
+         * <p>
+         * Example:
+         * <pre>
+         * SpatialPositionFilter filter = new SpatialPositionFilter(vrp.getTransportCosts(), 5);
+         * Jsprit.Builder.newInstance(vrp)
+         *     .setPositionFilter(filter)
+         *     .buildAlgorithm();
+         * </pre>
+         *
+         * @param filter the position filter, or null to disable filtering
+         * @return this builder
+         * @see SpatialPositionFilter
+         */
+        public Builder setPositionFilter(InsertionPositionFilter filter) {
+            this.positionFilter = filter;
+            return this;
+        }
+
+        /**
+         * Sets the route filter for reducing route evaluations in regret insertion.
+         * <p>
+         * Route filtering selects a subset of routes to evaluate for each job,
+         * reducing complexity from O(R) to O(k) where R is the number of routes.
+         * <p>
+         * Example with AdaptiveSpatialFilter (includes learning phase):
+         * <pre>
+         * // 50 learning iterations, then filter to 10 nearest routes
+         * AdaptiveSpatialFilter filter = new AdaptiveSpatialFilter(50, 10);
+         * Jsprit.Builder.newInstance(vrp)
+         *     .setRouteFilter(filter)
+         *     .buildAlgorithm();
+         * </pre>
+         *
+         * @param filter the route filter, or null to disable filtering
+         * @return this builder
+         * @see InsertionRouteFilter
+         * @see AdaptiveSpatialFilter
+         */
+        public Builder setRouteFilter(InsertionRouteFilter filter) {
+            this.routeFilter = filter;
+            return this;
+        }
+
+        /**
          * Adds an insertion operator with the specified weight.
          *
          * <p>When insertion operators are registered, they are selected independently
@@ -662,6 +719,10 @@ public class Jsprit {
 
     private final JobInsertionCostsCalculatorFactory shipmentCalculatorFactory;
 
+    private final InsertionPositionFilter positionFilter;
+
+    private final InsertionRouteFilter routeFilter;
+
     private VehicleFleetManager vehicleFleetManager;
 
     // Independent operator selection
@@ -682,6 +743,8 @@ public class Jsprit {
         this.jobFilter = builder.jobFilter;
         this.shipmentCalculatorFactory = builder.shipmentCalculatorFactory;
         this.serviceCalculatorFactory = builder.serviceCalculatorFactory;
+        this.positionFilter = builder.positionFilter;
+        this.routeFilter = builder.routeFilter;
         regretScorer = builder.regretScorer;
         regretScoringFunction = builder.regretScoringFunction;
         customStrategies.putAll(builder.customStrategies);
@@ -718,6 +781,9 @@ public class Jsprit {
 
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp) {
         ini(vrp);
+
+        final JobInsertionCostsCalculatorFactory shipmentFactory = this.shipmentCalculatorFactory;
+
         boolean isInfinite = vrp.getFleetSize().equals(VehicleRoutingProblem.FleetSize.INFINITE);
         if (vehicleFleetManager == null) {
             if (isInfinite) {
@@ -864,12 +930,12 @@ public class Jsprit {
 
         boolean fastRegret = Boolean.parseBoolean(getProperty(Parameter.FAST_REGRET.toString()));
 
-        // Create adaptive spatial filter for fast regret insertion
-        AdaptiveSpatialFilter spatialFilter = null;
-        if (fastRegret && toBoolean(getProperty(Parameter.SPATIAL_FILTER.toString()))) {
+        // Determine route filter: user-provided or create from properties
+        InsertionRouteFilter effectiveRouteFilter = this.routeFilter;
+        if (effectiveRouteFilter == null && fastRegret && toBoolean(getProperty(Parameter.SPATIAL_FILTER.toString()))) {
             int spatialFilterK = toInteger(getProperty(Parameter.SPATIAL_FILTER_K.toString()));
-            int spatialFilterLearningRounds = toInteger(getProperty(Parameter.SPATIAL_FILTER_LEARNING_ROUNDS.toString()));
-            spatialFilter = new AdaptiveSpatialFilter(spatialFilterLearningRounds, spatialFilterK);
+            // Note: SPATIAL_FILTER_LEARNING_ROUNDS is deprecated - use RouteFilterTuner listener for adaptive behavior
+            effectiveRouteFilter = new AdaptiveSpatialFilter(spatialFilterK);
         }
 
         if (es != null) {
@@ -882,13 +948,14 @@ public class Jsprit {
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                         .setServiceInsertionCalculator(this.serviceCalculatorFactory)
-                        .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
+                        .setShipmentInsertionCalculatorFactory(shipmentFactory)
+                        .setPositionFilter(positionFilter)
                     .build();
                 regretInsertion.setRegretScoringFunction(regretScoringFunction);
                 regretInsertion.setRegretKScoringFunction(regretKScoringFunction);
                 regretInsertion.setRegretK(regretK);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
-                regretInsertion.setSpatialFilter(spatialFilter);
+                regretInsertion.setRouteFilter(effectiveRouteFilter);
                 regret = regretInsertion;
             }
             else {
@@ -899,7 +966,8 @@ public class Jsprit {
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                         .setServiceInsertionCalculator(this.serviceCalculatorFactory)
-                        .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
+                        .setShipmentInsertionCalculatorFactory(shipmentFactory)
+                        .setPositionFilter(positionFilter)
                     .build();
                 regretInsertion.setRegretScoringFunction(regretScoringFunction);
                 regretInsertion.setRegretKScoringFunction(regretKScoringFunction);
@@ -915,13 +983,14 @@ public class Jsprit {
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                         .setServiceInsertionCalculator(this.serviceCalculatorFactory)
-                        .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
+                        .setShipmentInsertionCalculatorFactory(shipmentFactory)
+                        .setPositionFilter(positionFilter)
                     .build();
                 regretInsertion.setRegretScoringFunction(regretScoringFunction);
                 regretInsertion.setRegretKScoringFunction(regretKScoringFunction);
                 regretInsertion.setRegretK(regretK);
                 regretInsertion.setDependencyTypes(constraintManager.getDependencyTypes());
-                regretInsertion.setSpatialFilter(spatialFilter);
+                regretInsertion.setRouteFilter(effectiveRouteFilter);
                 regret = regretInsertion;
             }
             else{
@@ -931,7 +1000,7 @@ public class Jsprit {
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                         .setServiceInsertionCalculator(this.serviceCalculatorFactory)
-                        .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
+                        .setShipmentInsertionCalculatorFactory(shipmentFactory)
                         .build();
                 regretInsertion.setRegretScoringFunction(regretScoringFunction);
                 regretInsertion.setRegretKScoringFunction(regretKScoringFunction);
@@ -949,7 +1018,8 @@ public class Jsprit {
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                 .setActivityInsertionCostCalculator(activityInsertion)
                     .setServiceInsertionCalculator(this.serviceCalculatorFactory)
-                    .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
+                    .setShipmentInsertionCalculatorFactory(shipmentFactory)
+                    .setPositionFilter(positionFilter)
                 .build();
             best = bestInsertion;
         } else {
@@ -960,7 +1030,8 @@ public class Jsprit {
                 .setConcurrentMode(es, noThreads)
                 .setActivityInsertionCostCalculator(activityInsertion)
                     .setServiceInsertionCalculator(this.serviceCalculatorFactory)
-                    .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
+                    .setShipmentInsertionCalculatorFactory(shipmentFactory)
+                    .setPositionFilter(positionFilter)
                 .build();
             best = bestInsertion;
         }
@@ -975,7 +1046,8 @@ public class Jsprit {
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .setServiceInsertionCalculator(this.serviceCalculatorFactory)
-                    .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
+                    .setShipmentInsertionCalculatorFactory(shipmentFactory)
+                    .setPositionFilter(positionFilter)
                     .build();
         } else {
             cheapest = (CheapestInsertionConcurrent) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
@@ -985,7 +1057,8 @@ public class Jsprit {
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
                     .setServiceInsertionCalculator(this.serviceCalculatorFactory)
-                    .setShipmentInsertionCalculatorFactory(this.shipmentCalculatorFactory)
+                    .setShipmentInsertionCalculatorFactory(shipmentFactory)
+                    .setPositionFilter(positionFilter)
                     .build();
         }
         cheapest.setRandom(random);
