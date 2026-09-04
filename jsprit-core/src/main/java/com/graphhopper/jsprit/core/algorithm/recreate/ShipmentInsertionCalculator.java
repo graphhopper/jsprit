@@ -207,6 +207,7 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                 pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
                 pickupActivityContext.setInsertionIndex(i);
                 insertionContext.setActivityContext(pickupActivityContext);
+                insertionContext.setRelatedActivityContext(null);
                 ConstraintsStatus pickupShipmentConstraintStatus = fulfilled(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime, failedActivityConstraints, constraintManager);
                 if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)) {
                     pickupInsertionNotFulfilledBreak = false;
@@ -455,6 +456,7 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                 pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
                 pickupActivityContext.setInsertionIndex(i);
                 insertionContext.setActivityContext(pickupActivityContext);
+                insertionContext.setRelatedActivityContext(null);
 
                 ConstraintsStatus pickupStatus = fulfilled(insertionContext, prevAct, pickupShipment, nextAct,
                         prevActEndTime, failedActivityConstraints, constraintManager);
