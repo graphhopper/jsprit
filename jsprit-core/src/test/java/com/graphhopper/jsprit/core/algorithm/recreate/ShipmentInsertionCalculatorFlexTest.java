@@ -46,6 +46,7 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.CostFactory;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -315,5 +316,46 @@ class ShipmentInsertionCalculatorFlexTest {
         InsertionData iData = serviceInsertionCalc.getInsertionData(route, service, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
         // routeActVisitor.visit(route);
         assertEquals(3, iData.getDeliveryInsertionIndex());
+    }
+
+
+
+    @Test
+    @DisplayName("Clear related activity context for pickup shipment activity")
+    void clearRelatedActivityContextFromPreviousLoop() {
+        Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("10,0")).build();
+        Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
+        Shipment shipment3 = Shipment.Builder.newInstance("s3").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,0").build()).setDeliveryLocation(Location.newInstance("9,9")).build();
+        VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
+        VehicleRoutingProblem vrp = vrpBuilder.addJob(shipment).addJob(shipment2).addJob(shipment3).build();
+        VehicleRoute route = VehicleRoute.emptyRoute();
+        route.setVehicleAndDepartureTime(vehicle, 0.0);
+        Inserter inserter = new Inserter(new InsertionListeners(), vrp);
+        inserter.insertJob(shipment, new InsertionData(0, 0, 0, vehicle, null), route);
+        inserter.insertJob(shipment2, new InsertionData(0, 1, 2, vehicle, null), route);
+        StateManager stateManager = new StateManager(vrp);
+        stateManager.updateLoadStates();
+        stateManager.informInsertionStarts(Arrays.asList(route), null);
+        ConstraintManager constraintManager = new ConstraintManager(vrp, stateManager);
+        ActivityInsertionCostsCalculator calculator = new EmptyRelatedContextOnPickupShipmentChecker(activityInsertionCostsCalculator);
+        ShipmentInsertionCalculatorFlex insertionCalculator = new ShipmentInsertionCalculatorFlex(routingCosts, activityCosts, calculator, constraintManager);
+        insertionCalculator.setJobActivityFactory(vrp.getJobActivityFactory());
+        insertionCalculator.getInsertionData(route, shipment3, vehicle, 0.0, DriverImpl.noDriver(), Double.MAX_VALUE);
+    }
+
+    private static class EmptyRelatedContextOnPickupShipmentChecker implements ActivityInsertionCostsCalculator {
+        private final ActivityInsertionCostsCalculator delegate;
+
+        private EmptyRelatedContextOnPickupShipmentChecker(ActivityInsertionCostsCalculator delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public double getCosts(JobInsertionContext iContext, TourActivity prevAct, TourActivity nextAct, TourActivity newAct, double depTimeAtPrevAct) {
+            if (newAct instanceof PickupShipment pickupShipment && iContext.getRelatedActivityContext() != null) {
+                Assertions.fail("Pickup shipment insertion has unexpected related activity context");
+            }
+            return delegate.getCosts(iContext, prevAct, nextAct, newAct, depTimeAtPrevAct);
+        }
     }
 }
