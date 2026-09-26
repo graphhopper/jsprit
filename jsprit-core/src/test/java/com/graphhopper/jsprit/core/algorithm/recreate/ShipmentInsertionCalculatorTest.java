@@ -24,6 +24,7 @@ import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
+import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.PickupAndDeliverShipmentLoadActivityLevelConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.ShipmentPickupsFirstConstraint;
@@ -55,6 +56,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -124,6 +126,45 @@ class ShipmentInsertionCalculatorTest {
         insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
         InsertionData iData = insertionCalculator.getInsertionData(route, shipment, vehicle, 0.0, null, Double.MAX_VALUE);
         assertEquals(40.0, iData.getInsertionCost(), 0.05);
+    }
+
+    @Test
+    @DisplayName("When Evaluating Pickup Positions _ related Activity Context Should Be Cleared")
+    void whenEvaluatingPickupPositions_relatedActivityContextShouldBeCleared() {
+        Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1)
+            .setPickupLocation(Location.Builder.newInstance().setId("0,10").build())
+            .setDeliveryLocation(Location.newInstance("10,0")).build();
+        Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1)
+            .setPickupLocation(Location.Builder.newInstance().setId("10,10").build())
+            .setDeliveryLocation(Location.newInstance("0,0")).build();
+        VehicleRoute route = VehicleRoute.emptyRoute();
+        when(vehicleRoutingProblem.copyAndGetActivities(shipment)).thenReturn(getTourActivities(shipment));
+        new Inserter(new InsertionListeners(), vehicleRoutingProblem).insertJob(shipment, new InsertionData(0, 0, 0, vehicle, null), route);
+
+        List<Boolean> pickupRelatedContextIsNull = new ArrayList<>();
+        constraintManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
+        constraintManager.addConstraint(new HardActivityConstraint() {
+            @Override
+            public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct,
+                                               TourActivity nextAct, double prevActDepTime) {
+                if (newAct instanceof PickupShipment) {
+                    pickupRelatedContextIsNull.add(iFacts.getRelatedActivityContext() == null);
+                }
+                return ConstraintsStatus.FULFILLED;
+            }
+        }, ConstraintManager.Priority.HIGH);
+
+        JobActivityFactory activityFactory = mock(JobActivityFactory.class);
+        List<AbstractActivity> activities = new ArrayList<>();
+        activities.add(new PickupShipment(shipment2));
+        activities.add(new DeliverShipment(shipment2));
+        when(activityFactory.createActivities(shipment2)).thenReturn(activities);
+        insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, activityFactory);
+        insertionCalculator.getInsertionData(route, shipment2, vehicle, 0.0, null, Double.MAX_VALUE);
+
+        assertFalse(pickupRelatedContextIsNull.isEmpty(), "expected at least one pickup evaluation");
+        assertTrue(pickupRelatedContextIsNull.stream().allMatch(Boolean::booleanValue),
+            "relatedActivityContext must be null while evaluating pickup positions");
     }
 
     @Test
