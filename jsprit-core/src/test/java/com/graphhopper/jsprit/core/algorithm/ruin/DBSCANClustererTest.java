@@ -133,4 +133,26 @@ class DBSCANClustererTest {
             assertEquals(2, clusters.get(0).size());
         }
     }
+
+    @Test
+    @DisplayName("Clusters Should Not Depend On Number Of Previous Calls")
+    void clustersShouldNotDependOnNumberOfPreviousCalls() {
+        // Earlier versions assigned LocationWrapper ids from a JVM-global counter and cached
+        // distances under (id1 << 20) | id2. Once the counter passed 2^20 (i.e. after ~2^20 jobs
+        // had been clustered in the same JVM), cache keys collided and clusters became wrong.
+        Service s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance(1, 1)).build();
+        Service s2 = Service.Builder.newInstance("s2").setLocation(Location.newInstance(10, 10)).build();
+        Service s3 = Service.Builder.newInstance("s3").setLocation(Location.newInstance(9, 9)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance(0, 0)).build();
+        VehicleRoute r = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3).build();
+        DBSCANClusterer c = new DBSCANClusterer(new EuclideanCosts());
+        c.setEpsDistance(3);
+
+        int calls = (1 << 20) / 3 + 1000;
+        for (int i = 0; i < calls; i++) {
+            List<List<Job>> clusters = c.getClusters(r);
+            assertEquals(1, clusters.size(), "call " + i);
+            assertEquals(2, clusters.get(0).size(), "call " + i);
+        }
+    }
 }
