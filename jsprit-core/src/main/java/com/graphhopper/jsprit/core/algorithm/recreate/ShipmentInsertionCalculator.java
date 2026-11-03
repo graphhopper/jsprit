@@ -323,6 +323,8 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         }
         InsertionData insertionData = new InsertionData(bestCost, pickupInsertionIndex, deliveryInsertionIndex, newVehicle, newDriver);
         insertionData.setCostBreakdown(bestBreakdown);
+        insertionData.setSelectedPickupTimeWindow(bestPickupTimeWindow);
+        insertionData.setSelectedTimeWindow(bestDeliveryTimeWindow);
         pickupShipment.setTheoreticalEarliestOperationStartTime(bestPickupTimeWindow.getStart());
         pickupShipment.setTheoreticalLatestOperationStartTime(bestPickupTimeWindow.getEnd());
         deliverShipment.setTheoreticalEarliestOperationStartTime(bestDeliveryTimeWindow.getStart());
@@ -528,6 +530,8 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                             breakdown.add("PickupInsertion", pickupAIC);
                             breakdown.add("DeliveryInsertion", deliveryAIC);
                             insertionData.setCostBreakdown(breakdown);
+                            insertionData.setSelectedPickupTimeWindow(pickupTimeWindow);
+                            insertionData.setSelectedTimeWindow(deliveryTimeWindow);
 
                             // Create fresh activities for this position's events
                             TourActivity pickupForPosition = activityFactory.createActivities(shipment).get(0);

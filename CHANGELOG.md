@@ -2,6 +2,15 @@
 
 All notable changes to jsprit will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- `InsertionData.getSelectedTimeWindow()` and `getSelectedPickupTimeWindow()`: the time windows the service and
+  shipment insertion calculators chose among a job's windows at the selected position. Callers that build their
+  own activity from an insertion result (instead of applying its events) can set the chosen window on it; the
+  job's first window may be closed at that position.
+
 ## [2.0.0] - 2026-03-27
 
 ### Breaking Changes

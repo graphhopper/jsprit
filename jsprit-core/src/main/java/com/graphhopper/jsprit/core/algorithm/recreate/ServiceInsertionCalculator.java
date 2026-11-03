@@ -180,6 +180,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         }
         InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
         insertionData.setCostBreakdown(bestBreakdown);
+        insertionData.setSelectedTimeWindow(bestTimeWindow);
         deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(bestTimeWindow.getStart());
         deliveryAct2Insert.setTheoreticalLatestOperationStartTime(bestTimeWindow.getEnd());
         insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, deliveryAct2Insert, insertionIndex));
@@ -272,6 +273,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
                     breakdown.merge(actBreakdown);
                     breakdown.add("ActivityInsertion", additionalTransportationCosts);
                     insertionData.setCostBreakdown(breakdown);
+                    insertionData.setSelectedTimeWindow(timeWindow);
 
                     // Create fresh activity for this position's events
                     TourActivity actForPosition = activityFactory.createActivities(service).getFirst();

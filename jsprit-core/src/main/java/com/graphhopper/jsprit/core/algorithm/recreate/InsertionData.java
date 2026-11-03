@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.driver.Driver;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 import java.util.ArrayList;
@@ -87,6 +88,10 @@ public class InsertionData {
     private InsertionCostBreakdown costBreakdown;
 
     private List<Event> events = new ArrayList<Event>();
+
+    private TimeWindow selectedTimeWindow;
+
+    private TimeWindow selectedPickupTimeWindow;
 
     List<Event> getEvents() {
         return events;
@@ -193,6 +198,29 @@ public class InsertionData {
      *
      * @return the cost breakdown, or null if not captured
      */
+    /**
+     * The time window the insertion calculator chose for the job's activity (a service, or the delivery of a
+     * shipment) among the job's time windows at the selected position; null when no window was chosen, e.g. for
+     * a break or when no insertion was found. Callers that build their own activity from this result (instead of
+     * applying the events) set this window on it, not the job's first one.
+     */
+    public TimeWindow getSelectedTimeWindow() {
+        return selectedTimeWindow;
+    }
+
+    public void setSelectedTimeWindow(TimeWindow selectedTimeWindow) {
+        this.selectedTimeWindow = selectedTimeWindow;
+    }
+
+    /** The time window chosen for a shipment's pickup among its pickup windows; null for services and breaks. */
+    public TimeWindow getSelectedPickupTimeWindow() {
+        return selectedPickupTimeWindow;
+    }
+
+    public void setSelectedPickupTimeWindow(TimeWindow selectedPickupTimeWindow) {
+        this.selectedPickupTimeWindow = selectedPickupTimeWindow;
+    }
+
     public InsertionCostBreakdown getCostBreakdown() {
         return costBreakdown;
     }
