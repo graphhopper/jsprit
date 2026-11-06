@@ -77,13 +77,30 @@ public class UnassignedJobReasonTracker implements JobUnassignedListener {
 
     @Override
     public void informJobUnassigned(Job unassigned, Collection<String> failedConstraintNames) {
-        if (!this.failedConstraintNamesFrequencyMapping.containsKey(unassigned.getId())) {
-            this.failedConstraintNamesFrequencyMapping.put(unassigned.getId(), new Frequency());
+        Frequency frequency = this.failedConstraintNamesFrequencyMapping.get(unassigned.getId());
+        if (frequency == null) {
+            frequency = new Frequency();
+            this.failedConstraintNamesFrequencyMapping.put(unassigned.getId(), frequency);
         }
+        // the names arrive in runs (one entry per failed insertion position, the same constraint for most of a route),
+        // so each run goes into the frequency as one increment instead of one tree update per entry; counts are unchanged
+        String run = null;
+        long runLength = 0;
         for (String r : failedConstraintNames) {
-            if (failedConstraintNamesToBeIgnored.contains(r)) continue;
-            this.failedConstraintNamesFrequencyMapping.get(unassigned.getId()).addValue(r);
+            if (r.equals(run)) {
+                runLength++;
+                continue;
+            }
+            addRun(frequency, run, runLength);
+            run = r;
+            runLength = 1;
         }
+        addRun(frequency, run, runLength);
+    }
+
+    private void addRun(Frequency frequency, String name, long count) {
+        if (count == 0 || failedConstraintNamesToBeIgnored.contains(name)) return;
+        frequency.incrementValue(name, count);
     }
 
     public void put(String simpleNameOfFailedConstraint, int code, String reason) {

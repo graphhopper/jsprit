@@ -28,11 +28,18 @@ import java.util.List;
 
 class HardActivityLevelConstraintManager implements HardActivityConstraint {
 
-    private Collection<HardActivityConstraint> criticalConstraints = new ArrayList<HardActivityConstraint>();
+    private final List<HardActivityConstraint> criticalConstraints = new ArrayList<HardActivityConstraint>();
 
-    private Collection<HardActivityConstraint> highPrioConstraints = new ArrayList<HardActivityConstraint>();
+    private final List<HardActivityConstraint> highPrioConstraints = new ArrayList<HardActivityConstraint>();
 
-    private Collection<HardActivityConstraint> lowPrioConstraints = new ArrayList<HardActivityConstraint>();
+    private final List<HardActivityConstraint> lowPrioConstraints = new ArrayList<HardActivityConstraint>();
+
+    // live read-only views, created once: the insertion calculators walk these per position, a fresh wrapper per call was an allocation per position
+    private final List<HardActivityConstraint> criticalView = Collections.unmodifiableList(criticalConstraints);
+
+    private final List<HardActivityConstraint> highPrioView = Collections.unmodifiableList(highPrioConstraints);
+
+    private final List<HardActivityConstraint> lowPrioView = Collections.unmodifiableList(lowPrioConstraints);
 
     private int numActivityConstraints = 0;
 
@@ -51,16 +58,16 @@ class HardActivityLevelConstraintManager implements HardActivityConstraint {
         return numActivityConstraints != 0;
     }
 
-    Collection<HardActivityConstraint> getCriticalConstraints() {
-        return Collections.unmodifiableCollection(criticalConstraints);
+    List<HardActivityConstraint> getCriticalConstraints() {
+        return criticalView;
     }
 
-    Collection<HardActivityConstraint> getHighPrioConstraints() {
-        return Collections.unmodifiableCollection(highPrioConstraints);
+    List<HardActivityConstraint> getHighPrioConstraints() {
+        return highPrioView;
     }
 
-    Collection<HardActivityConstraint> getLowPrioConstraints() {
-        return Collections.unmodifiableCollection(lowPrioConstraints);
+    List<HardActivityConstraint> getLowPrioConstraints() {
+        return lowPrioView;
     }
 
     Collection<HardActivityConstraint> getAllConstraints() {

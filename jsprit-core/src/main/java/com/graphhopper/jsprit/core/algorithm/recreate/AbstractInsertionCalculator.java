@@ -51,8 +51,11 @@ public abstract class AbstractInsertionCalculator implements JobInsertionCostsCa
         if (!constraintManager.hasHardActivityConstraints()) return ConstraintsStatus.FULFILLED;
         ConstraintsStatus notFulfilled = null;
         List<HardConstraint> failed = failedInTier;
-        failed.clear();
-        for (HardActivityConstraint c : constraintManager.getCriticalHardActivityConstraints()) {
+        if (!failed.isEmpty()) failed.clear();
+        // indexed loops over the live list views: no iterator allocation per position
+        List<HardActivityConstraint> critical = constraintManager.getCriticalHardActivityConstraints();
+        for (int i = 0, n = critical.size(); i < n; i++) {
+            HardActivityConstraint c = critical.get(i);
             ConstraintsStatus status = c.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
             if (status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)) {
                 failedActivityConstraints.add(c);
@@ -69,7 +72,9 @@ public abstract class AbstractInsertionCalculator implements JobInsertionCostsCa
             return notFulfilled;
         }
 
-        for (HardActivityConstraint c : constraintManager.getHighPrioHardActivityConstraints()) {
+        List<HardActivityConstraint> highPrio = constraintManager.getHighPrioHardActivityConstraints();
+        for (int i = 0, n = highPrio.size(); i < n; i++) {
+            HardActivityConstraint c = highPrio.get(i);
             ConstraintsStatus status = c.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
             if (status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)) {
                 failedActivityConstraints.add(c);
@@ -86,7 +91,9 @@ public abstract class AbstractInsertionCalculator implements JobInsertionCostsCa
             return notFulfilled;
         }
 
-        for (HardActivityConstraint constraint : constraintManager.getLowPrioHardActivityConstraints()) {
+        List<HardActivityConstraint> lowPrio = constraintManager.getLowPrioHardActivityConstraints();
+        for (int i = 0, n = lowPrio.size(); i < n; i++) {
+            HardActivityConstraint constraint = lowPrio.get(i);
             ConstraintsStatus status = constraint.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
             if (status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK) || status.equals(ConstraintsStatus.NOT_FULFILLED)) {
                 failedActivityConstraints.add(constraint);
@@ -117,10 +124,26 @@ public abstract class AbstractInsertionCalculator implements JobInsertionCostsCa
      */
     protected InsertionData createNoInsertionFoundResult(Collection<HardConstraint> failedConstraints) {
         InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
-        for (HardConstraint failed : failedConstraints) {
-            emptyInsertionData.addFailedConstrainName(failed.getClass().getSimpleName());
-        }
+        addFailedConstraintNames(emptyInsertionData, failedConstraints);
         return emptyInsertionData;
+    }
+
+    /**
+     * The failed list holds one entry per failed position, so on a route where a constraint fails everywhere it is
+     * hundreds of references to the same few constraints in runs; the name is resolved once per run instead of once per
+     * entry (getSimpleName goes through the class's reflection data). The names list keeps one entry per failed position,
+     * so the unassigned-reason frequencies are unchanged.
+     */
+    static void addFailedConstraintNames(InsertionData insertionData, Collection<HardConstraint> failedConstraints) {
+        HardConstraint previous = null;
+        String name = null;
+        for (HardConstraint failed : failedConstraints) {
+            if (failed != previous) {
+                name = failed.getClass().getSimpleName();
+                previous = failed;
+            }
+            insertionData.addFailedConstrainName(name);
+        }
     }
 
     /**

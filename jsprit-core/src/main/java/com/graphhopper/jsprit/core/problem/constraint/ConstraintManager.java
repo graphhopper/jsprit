@@ -85,15 +85,15 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
         return hardRouteConstraintManager.getConstraints();
     }
 
-    public Collection<HardActivityConstraint> getCriticalHardActivityConstraints() {
+    public List<HardActivityConstraint> getCriticalHardActivityConstraints() {
         return actLevelConstraintManager.getCriticalConstraints();
     }
 
-    public Collection<HardActivityConstraint> getHighPrioHardActivityConstraints() {
+    public List<HardActivityConstraint> getHighPrioHardActivityConstraints() {
         return actLevelConstraintManager.getHighPrioConstraints();
     }
 
-    public Collection<HardActivityConstraint> getLowPrioHardActivityConstraints() {
+    public List<HardActivityConstraint> getLowPrioHardActivityConstraints() {
         return actLevelConstraintManager.getLowPrioConstraints();
     }
 //    public Collection<HardActivityConstraint> getHardActivityConstraints() {

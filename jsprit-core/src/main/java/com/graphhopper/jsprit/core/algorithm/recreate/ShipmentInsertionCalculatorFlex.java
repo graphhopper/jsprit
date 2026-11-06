@@ -258,9 +258,7 @@ public final class ShipmentInsertionCalculatorFlex extends AbstractInsertionCalc
 
         if (pickupInsertionIndex == InsertionData.NO_INDEX) {
             InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
-            for (HardConstraint failed : failedActivityConstraints) {
-                emptyInsertionData.addFailedConstrainName(failed.getClass().getSimpleName());
-            }
+            addFailedConstraintNames(emptyInsertionData, failedActivityConstraints);
             return emptyInsertionData;
         }
         InsertionData insertionData = new InsertionData(bestCost, pickupInsertionIndex, deliveryInsertionIndex, newVehicle, newDriver);
