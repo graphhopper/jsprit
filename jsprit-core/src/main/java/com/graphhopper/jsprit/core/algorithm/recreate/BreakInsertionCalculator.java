@@ -129,6 +129,7 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
 
         double bestCost = bestKnownCosts;
         InsertionCostBreakdown bestBreakdown = null;
+        double[] actCosts = constraintManager.newActivityCostsScratch();
 
 		/*
         generate new start and end for new vehicle
@@ -160,9 +161,7 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
                 ConstraintsStatus status = hardActivityLevelConstraint.fulfilled(insertionContext, prevAct, breakAct2Insert, nextAct, prevActStartTime);
                 if (status.equals(ConstraintsStatus.FULFILLED)) {
                     //from job2insert induced costs at activity level
-                    InsertionCostBreakdown actBreakdown = constraintManager.getActivityCostsBreakdown(
-                            insertionContext, prevAct, breakAct2Insert, nextAct, prevActStartTime);
-                    double additionalICostsAtActLevel = actBreakdown.getTotal();
+                    double additionalICostsAtActLevel = constraintManager.getActivityCosts(insertionContext, prevAct, breakAct2Insert, nextAct, prevActStartTime, actCosts);
                     double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, breakAct2Insert, prevActStartTime);
                     double totalCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
                     if (totalCost < bestCost) {
@@ -172,7 +171,7 @@ final class BreakInsertionCalculator implements JobInsertionCostsCalculator {
                         // Build complete breakdown for this position
                         bestBreakdown = new InsertionCostBreakdown();
                         bestBreakdown.merge(routeBreakdown);
-                        bestBreakdown.merge(actBreakdown);
+                        bestBreakdown.merge(constraintManager.activityBreakdownOf(actCosts));
                         bestBreakdown.add("BreakInsertion", additionalTransportationCosts);
                     }
                     breakThis = false;

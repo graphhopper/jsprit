@@ -242,6 +242,28 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
      * @param depTime Departure time at previous activity
      * @return Breakdown of costs per constraint
      */
+    /**
+     * A scratch array for {@link #getActivityCosts(JobInsertionContext, TourActivity, TourActivity, TourActivity, double, double[])}:
+     * one slot per soft activity constraint. Allocate it once per insertion evaluation (per job and route), not per position;
+     * the calculators are shared between threads, so it must not be a field of theirs.
+     */
+    public double[] newActivityCostsScratch() {
+        return new double[softActivityConstraintManager.size()];
+    }
+
+    /**
+     * Soft activity costs of one position, evaluated exactly once per constraint, with the single values recorded in
+     * {@code scratch} so that {@link #activityBreakdownOf(double[])} can build the breakdown later for the position that
+     * wins, instead of building a map with concatenated names for every feasible position.
+     */
+    public double getActivityCosts(JobInsertionContext context, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double depTime, double[] scratch) {
+        return softActivityConstraintManager.getCosts(context, prevAct, newAct, nextAct, depTime, scratch);
+    }
+
+    public InsertionCostBreakdown activityBreakdownOf(double[] scratch) {
+        return softActivityConstraintManager.breakdownOf(scratch);
+    }
+
     public InsertionCostBreakdown getActivityCostsBreakdown(JobInsertionContext context,
                                                             TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double depTime) {
         InsertionCostBreakdown breakdown = new InsertionCostBreakdown();

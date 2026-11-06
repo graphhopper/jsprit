@@ -99,6 +99,8 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         if (noInsertion != null) return noInsertion;
 
         Collection<HardConstraint> failedActivityConstraints = new ArrayList<>();
+        List<HardConstraint> failedInTier = new ArrayList<>();
+        double[] actCosts = constraintManager.newActivityCostsScratch();
 
         /*
         check soft constraints at route level
@@ -143,11 +145,9 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
                 deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
                 activityContext.setInsertionIndex(actIndex);
                 insertionContext.setActivityContext(activityContext);
-                ConstraintsStatus status = fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime, failedActivityConstraints, constraintManager);
+                ConstraintsStatus status = fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime, failedActivityConstraints, constraintManager, failedInTier);
                 if (status.equals(ConstraintsStatus.FULFILLED)) {
-                    InsertionCostBreakdown actBreakdown = constraintManager.getActivityCostsBreakdown(
-                            insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
-                    double additionalICostsAtActLevel = actBreakdown.getTotal();
+                    double additionalICostsAtActLevel = constraintManager.getActivityCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime, actCosts);
                     double additionalTransportationCosts = activityInsertionCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
                     double totalCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
                     if (totalCost < bestCost) {
@@ -157,7 +157,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
                         // Build complete breakdown for this position
                         bestBreakdown = new InsertionCostBreakdown();
                         bestBreakdown.merge(routeBreakdown);
-                        bestBreakdown.merge(actBreakdown);
+                        bestBreakdown.merge(constraintManager.activityBreakdownOf(actCosts));
                         bestBreakdown.add("ActivityInsertion", additionalTransportationCosts);
                     }
                     not_fulfilled_break = false;
@@ -212,6 +212,8 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         }
 
         Collection<HardConstraint> failedActivityConstraints = new ArrayList<>();
+        List<HardConstraint> failedInTier = new ArrayList<>();
+        double[] actCosts = constraintManager.newActivityCostsScratch();
 
         // Calculate route-level costs (same for all positions)
         InsertionCostBreakdown routeBreakdown = constraintManager.getRouteCostsBreakdown(insertionContext);
@@ -252,14 +254,12 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
                 activityContext.setInsertionIndex(actIndex);
                 insertionContext.setActivityContext(activityContext);
 
-                ConstraintsStatus status = fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct,
-                        prevActStartTime, failedActivityConstraints, constraintManager);
+                ConstraintsStatus status = fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime, failedActivityConstraints, constraintManager, failedInTier);
 
                 if (status.equals(ConstraintsStatus.FULFILLED)) {
                     // Calculate costs for this position
-                    InsertionCostBreakdown actBreakdown = constraintManager.getActivityCostsBreakdown(
-                            insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime);
-                    double additionalICostsAtActLevel = actBreakdown.getTotal();
+                    double additionalICostsAtActLevel = constraintManager.getActivityCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime, actCosts);
+                    InsertionCostBreakdown actBreakdown = constraintManager.activityBreakdownOf(actCosts);
                     double additionalTransportationCosts = activityInsertionCostsCalculator.getCosts(
                             insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
                     double totalCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;

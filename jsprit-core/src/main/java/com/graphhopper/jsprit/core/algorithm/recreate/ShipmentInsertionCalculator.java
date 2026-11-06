@@ -149,6 +149,9 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         int activitiesSize = activities.size();
 
         List<HardConstraint> failedActivityConstraints = new ArrayList<>();
+        List<HardConstraint> failedInTier = new ArrayList<>();
+        double[] pickupActCosts = constraintManager.newActivityCostsScratch();
+        double[] deliveryActCosts = constraintManager.newActivityCostsScratch();
         // Reuse ActivityContext instances - safe because they're method-local
         ActivityContext pickupActivityContext = new ActivityContext();
         ActivityContext deliveryActivityContext = new ActivityContext();
@@ -207,7 +210,7 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                 pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
                 pickupActivityContext.setInsertionIndex(i);
                 insertionContext.setActivityContext(pickupActivityContext);
-                ConstraintsStatus pickupShipmentConstraintStatus = fulfilled(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime, failedActivityConstraints, constraintManager);
+                ConstraintsStatus pickupShipmentConstraintStatus = fulfilled(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime, failedActivityConstraints, constraintManager, failedInTier);
                 if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)) {
                     pickupInsertionNotFulfilledBreak = false;
                     continue;
@@ -216,9 +219,7 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                 } else if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)) {
                     pickupInsertionNotFulfilledBreak = false;
                 }
-                InsertionCostBreakdown pickupActBreakdown = constraintManager.getActivityCostsBreakdown(
-                        insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime);
-                double additionalPickupICosts = pickupActBreakdown.getTotal();
+                double additionalPickupICosts = constraintManager.getActivityCosts(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime, pickupActCosts);
                 double pickupAIC = calculate(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime);
 
                 TourActivity prevAct_deliveryLoop = pickupShipment;
@@ -263,11 +264,9 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                             deliverShipment.setTheoreticalLatestOperationStartTime(deliveryTimeWindow.getEnd());
                             deliveryActivityContext.setInsertionIndex(j);
                             insertionContext.setActivityContext(deliveryActivityContext);
-                            ConstraintsStatus deliverShipmentConstraintStatus = fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop, failedActivityConstraints, constraintManager);
+                            ConstraintsStatus deliverShipmentConstraintStatus = fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop, failedActivityConstraints, constraintManager, failedInTier);
                             if (deliverShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)) {
-                                InsertionCostBreakdown deliveryActBreakdown = constraintManager.getActivityCostsBreakdown(
-                                        insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
-                                double additionalDeliveryICosts = deliveryActBreakdown.getTotal();
+                                double additionalDeliveryICosts = constraintManager.getActivityCosts(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop, deliveryActCosts);
                                 double deliveryAIC = calculate(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
                                 double totalActivityInsertionCosts = pickupAIC + deliveryAIC
                                         + additionalICostsAtRouteLevel + additionalPickupICosts + additionalDeliveryICosts;
@@ -282,8 +281,8 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                                     // Build complete breakdown for this position
                                     bestBreakdown = new InsertionCostBreakdown();
                                     bestBreakdown.merge(routeBreakdown);
-                                    bestBreakdown.merge(pickupActBreakdown);
-                                    bestBreakdown.merge(deliveryActBreakdown);
+                                    bestBreakdown.merge(constraintManager.activityBreakdownOf(pickupActCosts));
+                                    bestBreakdown.merge(constraintManager.activityBreakdownOf(deliveryActCosts));
                                     bestBreakdown.add("PickupInsertion", pickupAIC);
                                     bestBreakdown.add("DeliveryInsertion", deliveryAIC);
                                 }
@@ -438,6 +437,9 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         int activitiesSize = activities.size();
 
         List<HardConstraint> failedActivityConstraints = new ArrayList<>();
+        List<HardConstraint> failedInTier = new ArrayList<>();
+        double[] pickupActCosts = constraintManager.newActivityCostsScratch();
+        double[] deliveryActCosts = constraintManager.newActivityCostsScratch();
         // Reuse ActivityContext instances - safe because they're method-local
         ActivityContext pickupActivityContext = new ActivityContext();
         ActivityContext deliveryActivityContext = new ActivityContext();
@@ -459,7 +461,7 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                 insertionContext.setActivityContext(pickupActivityContext);
 
                 ConstraintsStatus pickupStatus = fulfilled(insertionContext, prevAct, pickupShipment, nextAct,
-                        prevActEndTime, failedActivityConstraints, constraintManager);
+                        prevActEndTime, failedActivityConstraints, constraintManager, failedInTier);
 
                 if (pickupStatus.equals(ConstraintsStatus.NOT_FULFILLED)) {
                     pickupInsertionNotFulfilledBreak = false;
@@ -470,9 +472,8 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                     pickupInsertionNotFulfilledBreak = false;
                 }
 
-                InsertionCostBreakdown pickupActBreakdown = constraintManager.getActivityCostsBreakdown(
-                        insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime);
-                double additionalPickupICosts = pickupActBreakdown.getTotal();
+                double additionalPickupICosts = constraintManager.getActivityCosts(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime, pickupActCosts);
+                InsertionCostBreakdown pickupActBreakdown = constraintManager.activityBreakdownOf(pickupActCosts);
                 double pickupAIC = calculate(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime);
 
                 TourActivity prevAct_deliveryLoop = pickupShipment;
@@ -508,12 +509,11 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                         insertionContext.setActivityContext(deliveryActivityContext);
 
                         ConstraintsStatus deliveryStatus = fulfilled(insertionContext, prevAct_deliveryLoop, deliverShipment,
-                                nextAct_deliveryLoop, prevActEndTime_deliveryLoop, failedActivityConstraints, constraintManager);
+                                nextAct_deliveryLoop, prevActEndTime_deliveryLoop, failedActivityConstraints, constraintManager, failedInTier);
 
                         if (deliveryStatus.equals(ConstraintsStatus.FULFILLED)) {
-                            InsertionCostBreakdown deliveryActBreakdown = constraintManager.getActivityCostsBreakdown(
-                                    insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
-                            double additionalDeliveryICosts = deliveryActBreakdown.getTotal();
+                            double additionalDeliveryICosts = constraintManager.getActivityCosts(insertionContext, prevAct_deliveryLoop, deliverShipment, nextAct_deliveryLoop, prevActEndTime_deliveryLoop, deliveryActCosts);
+                            InsertionCostBreakdown deliveryActBreakdown = constraintManager.activityBreakdownOf(deliveryActCosts);
                             double deliveryAIC = calculate(insertionContext, prevAct_deliveryLoop, deliverShipment,
                                     nextAct_deliveryLoop, prevActEndTime_deliveryLoop);
                             double totalCost = pickupAIC + deliveryAIC + additionalICostsAtRouteLevel

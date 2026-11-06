@@ -40,9 +40,18 @@ public abstract class AbstractInsertionCalculator implements JobInsertionCostsCa
      * Check if activity constraints are fulfilled
      */
     protected ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime, Collection<HardConstraint> failedActivityConstraints, ConstraintManager constraintManager) {
+        return fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime, failedActivityConstraints, constraintManager, new ArrayList<>());
+    }
+
+    /**
+     * @param failedInTier scratch list for the constraints that failed within the tier being evaluated; cleared here,
+     *                     handed in by the caller so that it is allocated once per insertion evaluation and not per position
+     */
+    protected ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime, Collection<HardConstraint> failedActivityConstraints, ConstraintManager constraintManager, List<HardConstraint> failedInTier) {
         if (!constraintManager.hasHardActivityConstraints()) return ConstraintsStatus.FULFILLED;
         ConstraintsStatus notFulfilled = null;
-        List<HardConstraint> failed = new ArrayList<>();
+        List<HardConstraint> failed = failedInTier;
+        failed.clear();
         for (HardActivityConstraint c : constraintManager.getCriticalHardActivityConstraints()) {
             ConstraintsStatus status = c.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
             if (status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)) {
