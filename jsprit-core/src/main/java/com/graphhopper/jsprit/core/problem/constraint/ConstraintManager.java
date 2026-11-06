@@ -19,7 +19,6 @@ package com.graphhopper.jsprit.core.problem.constraint;
 
 import com.graphhopper.jsprit.core.algorithm.recreate.InsertionCostBreakdown;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
@@ -63,18 +62,18 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 
     private boolean skillconstraintSet = false;
 
-    private final DependencyType[] dependencyTypes;
+    private final JobDependencies jobDependencies;
 
     public ConstraintManager(VehicleRoutingProblem vrp, RouteAndActivityStateGetter stateManager) {
         this.vrp = vrp;
         this.stateManager = stateManager;
-        dependencyTypes = new DependencyType[vrp.getJobs().size() + 1];
+        jobDependencies = new JobDependencies(vrp);
     }
 
     public ConstraintManager(VehicleRoutingProblem vrp, RouteAndActivityStateGetter stateManager, Collection<Constraint> constraints) {
         this.vrp = vrp;
         this.stateManager = stateManager;
-        dependencyTypes = new DependencyType[vrp.getJobs().size() + 1];
+        jobDependencies = new JobDependencies(vrp);
         resolveConstraints(constraints);
     }
 
@@ -102,22 +101,15 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 //    }
 
     public DependencyType[] getDependencyTypes() {
-        return dependencyTypes;
+        return jobDependencies.getDependencyTypes();
     }
 
-    public void setDependencyType(String jobId, DependencyType dependencyType){
-        Job job = vrp.getJobs().get(jobId);
-        if(job != null) {
-            dependencyTypes[vrp.getJobIndex(job)] = dependencyType;
-        }
+    public void setDependencyType(String jobId, DependencyType dependencyType) {
+        jobDependencies.setDependencyType(jobId, dependencyType);
     }
 
-    public DependencyType getDependencyType(String jobId){
-        Job job = vrp.getJobs().get(jobId);
-        if(job != null){
-            return dependencyTypes[vrp.getJobIndex(job)];
-        }
-        return DependencyType.NO_TYPE;
+    public DependencyType getDependencyType(String jobId) {
+        return jobDependencies.getDependencyType(jobId);
     }
 
     private void resolveConstraints(Collection<Constraint> constraints) {

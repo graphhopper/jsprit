@@ -20,6 +20,13 @@ package com.graphhopper.jsprit.core.algorithm.state;
 
 public class InternalStates {
 
+    /**
+     * Number of state indices reserved for jsprit's own states; {@link StateManager#createStateId(String)}
+     * hands out indices from here on. Indices 16..20 are free for future internal states. This is the one
+     * place that defines the boundary (StateFactory and StateManager used to carry their own numbers).
+     */
+    public static final int RESERVED_STATE_IDS = 21;
+
 
     public final static StateId MAXLOAD = new StateFactory.StateIdImpl("max_load", 0);
 

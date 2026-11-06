@@ -39,7 +39,7 @@ class StateFactory {
 
     static StateId createId(String name, int index) {
         if (reservedIds.contains(name)) throwReservedIdException(name);
-        if (index < 10) throwReservedIdException(name);
+        if (index < InternalStates.RESERVED_STATE_IDS) throwReservedIdException(name);
         return new StateIdImpl(name, index);
     }
 
