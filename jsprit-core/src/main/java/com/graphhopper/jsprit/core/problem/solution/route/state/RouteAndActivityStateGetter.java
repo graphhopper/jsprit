@@ -33,4 +33,29 @@ public interface RouteAndActivityStateGetter {
 
     public <T> T getRouteState(VehicleRoute route, Vehicle vehicle, StateId stateId, Class<T> type);
 
+    /**
+     * Primitive access to a double state: the value, or {@link Double#NaN} if no state is set
+     * (the generic getters return null in that case). Implementations with primitive storage
+     * override this without boxing.
+     */
+    default double getActivityDouble(TourActivity act, StateId stateId) {
+        Double d = getActivityState(act, stateId, Double.class);
+        return d == null ? Double.NaN : d;
+    }
+
+    default double getActivityDouble(TourActivity act, Vehicle vehicle, StateId stateId) {
+        Double d = getActivityState(act, vehicle, stateId, Double.class);
+        return d == null ? Double.NaN : d;
+    }
+
+    default double getRouteDouble(VehicleRoute route, StateId stateId) {
+        Double d = getRouteState(route, stateId, Double.class);
+        return d == null ? Double.NaN : d;
+    }
+
+    default double getRouteDouble(VehicleRoute route, Vehicle vehicle, StateId stateId) {
+        Double d = getRouteState(route, vehicle, stateId, Double.class);
+        return d == null ? Double.NaN : d;
+    }
+
 }

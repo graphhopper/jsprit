@@ -100,8 +100,8 @@ public class LocalActivityInsertionCostsCalculator implements ActivityInsertionC
             double actCost_nextAct = activityCosts.getActivityCost(nextAct, arrTime_nextAct, iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
 
             double endTimeDelay_nextAct = Math.max(0, endTime_nextAct_new - endTime_nextAct_old);
-            Double futureWaiting = stateManager.getActivityState(nextAct, iFacts.getRoute().getVehicle(), InternalStates.FUTURE_WAITING, Double.class);
-            if (futureWaiting == null) futureWaiting = 0.;
+            double futureWaiting = stateManager.getActivityDouble(nextAct, iFacts.getRoute().getVehicle(), InternalStates.FUTURE_WAITING);
+            if (Double.isNaN(futureWaiting)) futureWaiting = 0.;
             double waitingTime_savings_timeUnit = Math.min(futureWaiting, endTimeDelay_nextAct);
             double waitingTime_savings = waitingTime_savings_timeUnit * iFacts.getRoute().getVehicle().getType().getVehicleCostParams().perWaitingTimeUnit;
             oldCosts += solutionCompletenessRatio * activityCostsWeight * waitingTime_savings;

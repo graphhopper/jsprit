@@ -27,22 +27,25 @@ public class InternalStates {
      */
     public static final int RESERVED_STATE_IDS = 21;
 
+    /** Number of internal double states (compact double indices 0..7); createDoubleStateId continues from here. */
+    public static final int RESERVED_DOUBLE_STATE_IDS = 8;
+
 
     public final static StateId MAXLOAD = new StateFactory.StateIdImpl("max_load", 0);
 
     public final static StateId LOAD = new StateFactory.StateIdImpl("load", 1);
 
-    public final static StateId COSTS = new StateFactory.StateIdImpl("costs", 2);
+    public final static StateId COSTS = new StateFactory.StateIdImpl("costs", 2, 0);
 
     public final static StateId LOAD_AT_BEGINNING = new StateFactory.StateIdImpl("load_at_beginning", 3);
 
     public final static StateId LOAD_AT_END = new StateFactory.StateIdImpl("load_at_end", 4);
 
-    public final static StateId DURATION = new StateFactory.StateIdImpl("duration", 5);
+    public final static StateId DURATION = new StateFactory.StateIdImpl("duration", 5, 1);
 
-    public final static StateId LATEST_OPERATION_START_TIME = new StateFactory.StateIdImpl("latest_operation_start_time", 6);
+    public final static StateId LATEST_OPERATION_START_TIME = new StateFactory.StateIdImpl("latest_operation_start_time", 6, 2);
 
-    public final static StateId EARLIEST_OPERATION_START_TIME = new StateFactory.StateIdImpl("earliest_operation_start_time", 7);
+    public final static StateId EARLIEST_OPERATION_START_TIME = new StateFactory.StateIdImpl("earliest_operation_start_time", 7, 3);
 
     public final static StateId FUTURE_MAXLOAD = new StateFactory.StateIdImpl("future_max_load", 8);
 
@@ -50,13 +53,13 @@ public class InternalStates {
 
     public static final StateId SKILLS = new StateFactory.StateIdImpl("skills", 10);
 
-    public static final StateId WAITING = new StateFactory.StateIdImpl("waiting", 11);
+    public static final StateId WAITING = new StateFactory.StateIdImpl("waiting", 11, 4);
 
-    public static final StateId TIME_SLACK = new StateFactory.StateIdImpl("time_slack", 12);
+    public static final StateId TIME_SLACK = new StateFactory.StateIdImpl("time_slack", 12, 5);
 
-    public static final StateId FUTURE_WAITING = new StateFactory.StateIdImpl("future_waiting", 13);
+    public static final StateId FUTURE_WAITING = new StateFactory.StateIdImpl("future_waiting", 13, 6);
 
-    public static final StateId EARLIEST_WITHOUT_WAITING = new StateFactory.StateIdImpl("earliest_without_waiting", 14);
+    public static final StateId EARLIEST_WITHOUT_WAITING = new StateFactory.StateIdImpl("earliest_without_waiting", 14, 7);
 
     public static final StateId SWITCH_NOT_FEASIBLE = new StateFactory.StateIdImpl("switch_not_feasible", 15);
 }

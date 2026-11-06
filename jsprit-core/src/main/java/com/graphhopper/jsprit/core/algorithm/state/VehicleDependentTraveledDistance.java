@@ -100,7 +100,7 @@ public class VehicleDependentTraveledDistance implements StateUpdater, ActivityV
             State old = states.get(v.getVehicleTypeIdentifier());
             double distance = old.getDistance();
             distance += transportDistance.getDistance(old.getPrevLocation(), activity.getLocation(), 0, v);
-            stateManager.putActivityState(activity, v, traveledDistanceId, distance);
+            stateManager.putActivityDouble(activity, v, traveledDistanceId, distance);
             states.put(v.getVehicleTypeIdentifier(), new State(activity.getLocation(), distance));
         }
     }
@@ -113,7 +113,7 @@ public class VehicleDependentTraveledDistance implements StateUpdater, ActivityV
             if (v.isReturnToDepot()) {
                 distance += transportDistance.getDistance(old.getPrevLocation(), v.getEndLocation(), 0, v);
             }
-            stateManager.putRouteState(route, v, traveledDistanceId, distance);
+            stateManager.putRouteDouble(route, v, traveledDistanceId, distance);
         }
     }
 

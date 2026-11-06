@@ -166,7 +166,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
             }
 
             double minSlackTimeAtEnd = minSlackTime(openDeliveries);
-            stateManager.putRouteState(route, v, minSlackId, minSlackTimeAtEnd);
+            stateManager.putRouteDouble(route, v, minSlackId, minSlackTimeAtEnd);
             stateManager.putRouteState(route, v, openJobsId, new HashMap<>(openDeliveries));
             List<TourActivity> acts = new ArrayList<>(this.route.getActivities());
             Collections.reverse(acts);
@@ -177,7 +177,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
                     double minSlackTime = minSlackTime(openDeliveries);
 //                    double latestStart = actStart(act, v) + minSlackTime;
                     stateManager.putActivityState(act, v, openJobsId, new HashMap<>(openDeliveries));
-                    stateManager.putActivityState(act, v, minSlackId, minSlackTime);
+                    stateManager.putActivityDouble(act, v, minSlackId, minSlackTime);
                 } else {
                     if (slackTimesPerVehicle.get(vehicleIndex).containsKey(act)) {
                         double slackTime = slackTimesPerVehicle.get(vehicleIndex).get(act);
@@ -186,7 +186,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
                     double minSlackTime = minSlackTime(openDeliveries);
 //                    double latestStart = actStart(act, v) + minSlackTime;
                     stateManager.putActivityState(act, v, openJobsId, new HashMap<>(openDeliveries));
-                    stateManager.putActivityState(act, v, minSlackId, minSlackTime);
+                    stateManager.putActivityDouble(act, v, minSlackId, minSlackTime);
                 }
             }
         }
@@ -211,7 +211,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
             }
 
             double minSlackTimeAtEnd = minSlackTime(openDeliveries);
-            stateManager.putRouteState(route, v, minSlackId, routeEnd + minSlackTimeAtEnd);
+            stateManager.putRouteDouble(route, v, minSlackId, routeEnd + minSlackTimeAtEnd);
             List<TourActivity> acts = new ArrayList<>(activities);
             Collections.reverse(acts);
             for (TourActivity act : acts) {
@@ -220,7 +220,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
                     openDeliveries.remove(job);
                     double minSlackTime = minSlackTime(openDeliveries);
                     double latestStart = actStart(act, v) + minSlackTime;
-                    stateManager.putActivityState(act, v, minSlackId, latestStart);
+                    stateManager.putActivityDouble(act, v, minSlackId, latestStart);
                 } else {
                     if (slackTimesPerVehicle.get(vehicleIndex).containsKey(act)) {
                         double slackTime = slackTimesPerVehicle.get(vehicleIndex).get(act);
@@ -228,7 +228,7 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
                     }
                     double minSlackTime = minSlackTime(openDeliveries);
                     double latestStart = actStart(act, v) + minSlackTime;
-                    stateManager.putActivityState(act, v, minSlackId, latestStart);
+                    stateManager.putActivityDouble(act, v, minSlackId, latestStart);
                 }
             }
         }

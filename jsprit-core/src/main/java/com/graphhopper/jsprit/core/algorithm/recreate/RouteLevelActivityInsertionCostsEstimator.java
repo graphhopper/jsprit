@@ -70,13 +70,13 @@ class RouteLevelActivityInsertionCostsEstimator implements ActivityInsertionCost
     }
 
     private double actCostsOld(VehicleRoute vehicleRoute, TourActivity act) {
-        Double cost_at_act;
+        double cost_at_act;
         if (act instanceof End) {
-            cost_at_act = stateManager.getRouteState(vehicleRoute, InternalStates.COSTS, Double.class);
+            cost_at_act = stateManager.getRouteDouble(vehicleRoute, InternalStates.COSTS);
         } else {
-            cost_at_act = stateManager.getActivityState(act, InternalStates.COSTS, Double.class);
+            cost_at_act = stateManager.getActivityDouble(act, InternalStates.COSTS);
         }
-        if (cost_at_act == null) cost_at_act = 0.;
+        if (Double.isNaN(cost_at_act)) cost_at_act = 0.;
         return cost_at_act;
     }
 

@@ -50,7 +50,7 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
         double latestVehicleArrival = iFacts.getNewVehicle().getLatestArrival();
-        Double latestArrTimeAtNextAct;
+        double latestArrTimeAtNextAct;
         Location prevLocation = prevAct.getLocation();
         if (prevAct instanceof ActWithoutStaticLocation)
             prevLocation = ((ActWithoutStaticLocation) prevAct).getPreviousLocation();
@@ -66,8 +66,8 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
                 nextLocation = newLocation;
             }
         } else {
-            latestArrTimeAtNextAct = states.getActivityState(nextAct, iFacts.getNewVehicle(), InternalStates.LATEST_OPERATION_START_TIME, Double.class);
-            if (latestArrTimeAtNextAct == null) {//otherwise set it to theoretical_latest_operation_startTime
+            latestArrTimeAtNextAct = states.getActivityDouble(nextAct, iFacts.getNewVehicle(), InternalStates.LATEST_OPERATION_START_TIME);
+            if (Double.isNaN(latestArrTimeAtNextAct)) {//otherwise set it to theoretical_latest_operation_startTime
                 latestArrTimeAtNextAct = nextAct.getTheoreticalLatestOperationStartTime();
             }
 //            nextLocation = nextAct.getLocation();

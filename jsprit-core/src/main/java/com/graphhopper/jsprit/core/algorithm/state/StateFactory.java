@@ -38,9 +38,13 @@ class StateFactory {
     }
 
     static StateId createId(String name, int index) {
+        return createId(name, index, -1);
+    }
+
+    static StateId createId(String name, int index, int doubleIndex) {
         if (reservedIds.contains(name)) throwReservedIdException(name);
         if (index < InternalStates.RESERVED_STATE_IDS) throwReservedIdException(name);
-        return new StateIdImpl(name, index);
+        return new StateIdImpl(name, index, doubleIndex);
     }
 
 
@@ -61,8 +65,15 @@ class StateFactory {
 
         private int index;
 
+        private final int doubleIndex;
+
         public int getIndex() {
             return index;
+        }
+
+        @Override
+        public int getDoubleIndex() {
+            return doubleIndex;
         }
 
         /* (non-Javadoc)
@@ -99,9 +110,14 @@ class StateFactory {
         private String name;
 
         public StateIdImpl(String name, int index) {
+            this(name, index, -1);
+        }
+
+        public StateIdImpl(String name, int index, int doubleIndex) {
             super();
             this.name = name;
             this.index = index;
+            this.doubleIndex = doubleIndex;
         }
 
         public String toString() {
