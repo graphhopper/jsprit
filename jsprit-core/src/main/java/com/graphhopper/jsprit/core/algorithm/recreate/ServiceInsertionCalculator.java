@@ -99,7 +99,6 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         if (noInsertion != null) return noInsertion;
 
         Collection<HardConstraint> failedActivityConstraints = new ArrayList<>();
-        List<HardConstraint> failedInTier = new ArrayList<>();
         double[] actCosts = constraintManager.newActivityCostsScratch();
 
         /*
@@ -145,7 +144,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
                 deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
                 activityContext.setInsertionIndex(actIndex);
                 insertionContext.setActivityContext(activityContext);
-                ConstraintsStatus status = fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime, failedActivityConstraints, constraintManager, failedInTier);
+                ConstraintsStatus status = fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime, failedActivityConstraints, constraintManager);
                 if (status.equals(ConstraintsStatus.FULFILLED)) {
                     double additionalICostsAtActLevel = constraintManager.getActivityCosts(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime, actCosts);
                     double additionalTransportationCosts = activityInsertionCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
@@ -210,7 +209,6 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         }
 
         Collection<HardConstraint> failedActivityConstraints = new ArrayList<>();
-        List<HardConstraint> failedInTier = new ArrayList<>();
         double[] actCosts = constraintManager.newActivityCostsScratch();
 
         // Calculate route-level costs (same for all positions)
@@ -252,7 +250,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
                 activityContext.setInsertionIndex(actIndex);
                 insertionContext.setActivityContext(activityContext);
 
-                ConstraintsStatus status = fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime, failedActivityConstraints, constraintManager, failedInTier);
+                ConstraintsStatus status = fulfilled(insertionContext, prevAct, deliveryAct2Insert, nextAct, prevActStartTime, failedActivityConstraints, constraintManager);
 
                 if (status.equals(ConstraintsStatus.FULFILLED)) {
                     // Calculate costs for this position

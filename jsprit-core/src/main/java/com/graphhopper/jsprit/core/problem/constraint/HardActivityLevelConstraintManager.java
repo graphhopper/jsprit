@@ -27,10 +27,10 @@ import java.util.List;
 
 
 /**
- * The hard activity constraints in their three tiers, see {@link ConstraintManager.Priority} for the evaluation protocol.
- * This is the only implementation of that protocol; the insertion calculators call
- * {@link #fulfilled(JobInsertionContext, TourActivity, TourActivity, TourActivity, double, Collection, List)} to also
- * learn which constraints failed.
+ * The hard activity constraints in their three tiers, see {@link ConstraintManager.Priority} for the protocol. This is
+ * the only implementation of that protocol; the insertion calculators call
+ * {@link #fulfilled(JobInsertionContext, TourActivity, TourActivity, TourActivity, double, Collection)} to also learn
+ * which constraints failed.
  */
 class HardActivityLevelConstraintManager implements HardActivityConstraint {
 
@@ -47,6 +47,9 @@ class HardActivityLevelConstraintManager implements HardActivityConstraint {
 
     private final List<HardActivityConstraint> lowPrioView = Collections.unmodifiableList(lowPrioConstraints);
 
+    /** the three tiers as arrays for the per-position loop, registration order within a tier; rebuilt on every add */
+    private HardActivityConstraint[][] tiers = new HardActivityConstraint[][]{{}, {}, {}};
+
     private int numActivityConstraints = 0;
 
     public void addConstraint(HardActivityConstraint constraint, ConstraintManager.Priority priority) {
@@ -57,6 +60,8 @@ class HardActivityLevelConstraintManager implements HardActivityConstraint {
         } else {
             lowPrioConstraints.add(constraint);
         }
+        tiers = new HardActivityConstraint[][]{criticalConstraints.toArray(new HardActivityConstraint[0]),
+            highPrioConstraints.toArray(new HardActivityConstraint[0]), lowPrioConstraints.toArray(new HardActivityConstraint[0])};
         numActivityConstraints++;
     }
 
@@ -86,64 +91,32 @@ class HardActivityLevelConstraintManager implements HardActivityConstraint {
 
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        return fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime, null, null);
+        return fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime, null);
     }
 
     /**
-     * Evaluates the tiers as described at {@link ConstraintManager.Priority} and, if {@code failedConstraints} is given,
-     * records the constraints that made the position infeasible: all constraints of the deciding tier that returned
-     * NOT_FULFILLED, or only the one that returned NOT_FULFILLED_BREAK.
-     *
-     * @param failedConstraints sink for the failed constraints, null when the caller does not care
-     * @param failedInTier      scratch list reused across positions (the per-tier failures before the tier's verdict is
-     *                          known); may be null, then one is allocated when needed
+     * The protocol of {@link ConstraintManager.Priority}: tier by tier, CRITICAL first; within a tier the constraints
+     * are asked in registration order, after the first NOT_FULFILLED only those that
+     * {@link HardActivityConstraint#canPruneRemainingPositions()} are still asked, a NOT_FULFILLED_BREAK ends the check
+     * at once, and a tier with a failure is the last one asked. If {@code failedConstraints} is given, every constraint
+     * that answered NOT_FULFILLED or NOT_FULFILLED_BREAK is recorded there.
      */
     ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime,
-                                Collection<HardConstraint> failedConstraints, List<HardConstraint> failedInTier) {
-        if (numActivityConstraints == 0) return ConstraintsStatus.FULFILLED;
-        if (failedConstraints != null) {
-            if (failedInTier == null) failedInTier = new ArrayList<>();
-            else if (!failedInTier.isEmpty()) failedInTier.clear();
-        }
-        ConstraintsStatus status = fulfilledInTier(criticalConstraints, iFacts, prevAct, newAct, nextAct, prevActDepTime, failedConstraints, failedInTier);
-        if (status != ConstraintsStatus.FULFILLED) return status;
-        status = fulfilledInTier(highPrioConstraints, iFacts, prevAct, newAct, nextAct, prevActDepTime, failedConstraints, failedInTier);
-        if (status != ConstraintsStatus.FULFILLED) return status;
-        // the low tier stops at the first failure
-        for (int i = 0, n = lowPrioConstraints.size(); i < n; i++) {
-            HardActivityConstraint c = lowPrioConstraints.get(i);
-            status = c.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
-            if (status != ConstraintsStatus.FULFILLED) {
+                                Collection<HardConstraint> failedConstraints) {
+        HardActivityConstraint[][] tiers = this.tiers;
+        for (int t = 0; t < tiers.length; t++) {
+            HardActivityConstraint[] tier = tiers[t];
+            ConstraintsStatus verdict = ConstraintsStatus.FULFILLED;
+            for (int i = 0; i < tier.length; i++) {
+                HardActivityConstraint c = tier[i];
+                if (verdict != ConstraintsStatus.FULFILLED && !c.canPruneRemainingPositions()) continue;
+                ConstraintsStatus status = c.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
+                if (status == ConstraintsStatus.FULFILLED) continue;
                 if (failedConstraints != null) failedConstraints.add(c);
-                return status;
+                if (status == ConstraintsStatus.NOT_FULFILLED_BREAK) return status;
+                verdict = status;
             }
-        }
-        return ConstraintsStatus.FULFILLED;
-    }
-
-    /**
-     * One of the two upper tiers: every constraint is asked, NOT_FULFILLED_BREAK ends the evaluation at once (the
-     * NOT_FULFILLED collected before it in this tier are dropped), otherwise the tier fails with NOT_FULFILLED if any
-     * constraint did. Indexed loops: no iterator per position.
-     */
-    private static ConstraintsStatus fulfilledInTier(List<HardActivityConstraint> tier, JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime,
-                                                     Collection<HardConstraint> failedConstraints, List<HardConstraint> failedInTier) {
-        ConstraintsStatus notFulfilled = null;
-        for (int i = 0, n = tier.size(); i < n; i++) {
-            HardActivityConstraint c = tier.get(i);
-            ConstraintsStatus status = c.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
-            if (status == ConstraintsStatus.NOT_FULFILLED_BREAK) {
-                if (failedConstraints != null) failedConstraints.add(c);
-                return status;
-            }
-            if (status == ConstraintsStatus.NOT_FULFILLED) {
-                if (failedConstraints != null) failedInTier.add(c);
-                notFulfilled = status;
-            }
-        }
-        if (notFulfilled != null) {
-            if (failedConstraints != null) failedConstraints.addAll(failedInTier);
-            return notFulfilled;
+            if (verdict != ConstraintsStatus.FULFILLED) return verdict;
         }
         return ConstraintsStatus.FULFILLED;
     }

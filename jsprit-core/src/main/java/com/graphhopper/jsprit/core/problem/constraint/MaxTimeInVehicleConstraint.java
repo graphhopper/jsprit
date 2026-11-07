@@ -153,4 +153,9 @@ public class MaxTimeInVehicleConstraint implements HardActivityConstraint {
         return Math.max(arrTime, act.getTheoreticalEarliestOperationStartTime());
     }
 
+
+    @Override
+    public boolean canPruneRemainingPositions() {
+        return false;
+    }
 }

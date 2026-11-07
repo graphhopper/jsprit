@@ -37,11 +37,10 @@ public abstract class AbstractInsertionCalculator implements JobInsertionCostsCa
     }
 
     /**
-     * The tiered hard activity constraint check of {@link ConstraintManager#fulfilled(JobInsertionContext, TourActivity, TourActivity, TourActivity, double, Collection, List)};
-     * {@code failedInTier} is the caller's scratch list, kept across positions.
+     * The hard activity constraint check of {@link ConstraintManager#fulfilled(JobInsertionContext, TourActivity, TourActivity, TourActivity, double, Collection)}.
      */
-    protected ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime, Collection<HardConstraint> failedActivityConstraints, ConstraintManager constraintManager, List<HardConstraint> failedInTier) {
-        return constraintManager.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime, failedActivityConstraints, failedInTier);
+    protected ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime, Collection<HardConstraint> failedActivityConstraints, ConstraintManager constraintManager) {
+        return constraintManager.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime, failedActivityConstraints);
     }
 
 

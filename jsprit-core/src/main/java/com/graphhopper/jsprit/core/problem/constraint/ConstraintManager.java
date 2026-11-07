@@ -40,18 +40,17 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 
     /**
      * The tier of a hard activity constraint. A position is checked tier by tier, CRITICAL first, and the first tier
-     * with a failure decides:
-     * <ul>
-     * <li>in CRITICAL and HIGH every constraint of the tier is asked (so all failures are known for the unassigned
-     * reasons), unless one returns NOT_FULFILLED_BREAK, which ends the check at once; the tier fails with NOT_FULFILLED
-     * if any constraint returned it,</li>
-     * <li>LOW stops at the first failing constraint,</li>
-     * <li>a later tier is only reached when the earlier ones passed.</li>
-     * </ul>
-     * Within a tier the constraints run in registration order; expensive checks therefore belong behind cheap ones and
-     * in a later tier than constraints that fail often. The recorded failures (see
-     * {@link #fulfilled(JobInsertionContext, TourActivity, TourActivity, TourActivity, double, Collection, List)}) follow
-     * this protocol: a NOT_FULFILLED_BREAK is recorded alone, even if constraints before it in the same tier failed.
+     * with a failure decides; a later tier is only asked when the earlier ones passed. Within a tier the constraints
+     * run in registration order; once one has answered NOT_FULFILLED, only constraints whose
+     * {@link HardActivityConstraint#canPruneRemainingPositions()} is true are still asked, because they may answer
+     * NOT_FULFILLED_BREAK (no feasible position further down the route) and end the position loop; a
+     * NOT_FULFILLED_BREAK ends the check at once.
+     * <p>
+     * The tiers bound that search for a break: an expensive constraint in a later tier is never asked at a position an
+     * earlier tier has already rejected (a time window check with its matrix lookups behind a cheap distance limit, for
+     * example). Cheap checks and checks that fail often therefore belong in CRITICAL, expensive ones behind them. The
+     * tiers do not change which positions are feasible, only how much work finding out takes and which constraints the
+     * unassigned reasons name: recorded are all constraints that failed and were asked.
      */
     public enum Priority {
         CRITICAL, HIGH, LOW
@@ -197,18 +196,17 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        return actLevelConstraintManager.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime, null, null);
+        return actLevelConstraintManager.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime, null);
     }
 
     /**
      * Like {@link #fulfilled(JobInsertionContext, TourActivity, TourActivity, TourActivity, double)}, and adds the
      * constraints that made the position infeasible to {@code failedConstraints} (see {@link Priority} for which ones
-     * these are). {@code failedInTier} is a scratch list the caller keeps across positions so that no list is allocated
-     * per position; it may be null.
+     * these are).
      */
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime,
-                                       Collection<HardConstraint> failedConstraints, List<HardConstraint> failedInTier) {
-        return actLevelConstraintManager.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime, failedConstraints, failedInTier);
+                                       Collection<HardConstraint> failedConstraints) {
+        return actLevelConstraintManager.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime, failedConstraints);
     }
 
     public Collection<Constraint> getConstraints() {

@@ -148,7 +148,6 @@ public final class ShipmentInsertionCalculatorFlex extends AbstractInsertionCalc
         List<TourActivity> activities = currentRoute.getTourActivities().getActivities();
 
         List<HardConstraint> failedActivityConstraints = new ArrayList<>();
-        List<HardConstraint> failedInTier = new ArrayList<>();
         while (!tourEnd) {
             TourActivity nextAct;
             if (i < activities.size()) {
@@ -166,7 +165,7 @@ public final class ShipmentInsertionCalculatorFlex extends AbstractInsertionCalc
                     ActivityContext activityContext = new ActivityContext();
                     activityContext.setInsertionIndex(i);
                     insertionContext.setActivityContext(activityContext);
-                    ConstraintsStatus pickupShipmentConstraintStatus = fulfilled(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime, failedActivityConstraints, constraintManager, failedInTier);
+                    ConstraintsStatus pickupShipmentConstraintStatus = fulfilled(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime, failedActivityConstraints, constraintManager);
                     if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)) {
                         pickupInsertionNotFulfilledBreak = false;
                         continue;
@@ -217,7 +216,7 @@ public final class ShipmentInsertionCalculatorFlex extends AbstractInsertionCalc
                                 ActivityContext activityContext_ = new ActivityContext();
                                 activityContext_.setInsertionIndex(j);
                                 insertionContext.setActivityContext(activityContext_);
-                                ConstraintsStatus deliverShipmentConstraintStatus = fulfilled(insertionContext, prevActForDeliveryLoop, deliverShipment, nextActForDeliveryLoop, prevActEndTimeForDeliveryLoop, failedActivityConstraints, constraintManager, failedInTier);
+                                ConstraintsStatus deliverShipmentConstraintStatus = fulfilled(insertionContext, prevActForDeliveryLoop, deliverShipment, nextActForDeliveryLoop, prevActEndTimeForDeliveryLoop, failedActivityConstraints, constraintManager);
                                 if (deliverShipmentConstraintStatus.equals(ConstraintsStatus.FULFILLED)) {
                                     double additionalDeliveryICosts = softActivityConstraint.getCosts(insertionContext, prevActForDeliveryLoop, deliverShipment, nextActForDeliveryLoop, prevActEndTimeForDeliveryLoop);
                                     double deliveryAIC = calculate(insertionContext, prevActForDeliveryLoop, deliverShipment, nextActForDeliveryLoop, prevActEndTimeForDeliveryLoop);

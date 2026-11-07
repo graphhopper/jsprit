@@ -80,4 +80,15 @@ public interface HardActivityConstraint extends HardConstraint {
      */
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime);
 
+    /**
+     * Whether {@link #fulfilled} can return {@link ConstraintsStatus#NOT_FULFILLED_BREAK}, i.e. whether this constraint
+     * can tell that no position further down the route is feasible either. Once a position is known to be infeasible,
+     * only constraints of the same {@link ConstraintManager.Priority} that can prune are still asked there (to find such
+     * a break); a constraint that returns false is skipped, which saves its evaluation. The default is true, the safe
+     * assumption; a constraint that only ever answers FULFILLED or NOT_FULFILLED should return false.
+     */
+    default boolean canPruneRemainingPositions() {
+        return true;
+    }
+
 }
