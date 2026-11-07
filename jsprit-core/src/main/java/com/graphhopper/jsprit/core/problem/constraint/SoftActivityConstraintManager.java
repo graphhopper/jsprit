@@ -34,6 +34,8 @@ class SoftActivityConstraintManager implements SoftActivityConstraint {
     /** "Activity:" + simple class name per constraint, computed once; the breakdown used to concatenate it per position. */
     private final List<String> breakdownNames = new ArrayList<>();
 
+    private final Collection<SoftActivityConstraint> view = Collections.unmodifiableCollection(softConstraints);
+
     public void addConstraint(SoftActivityConstraint constraint) {
         softConstraints.add(constraint);
         breakdownNames.add("Activity:" + constraint.getClass().getSimpleName());
@@ -68,14 +70,14 @@ class SoftActivityConstraintManager implements SoftActivityConstraint {
     }
 
     Collection<SoftActivityConstraint> getConstraints() {
-        return Collections.unmodifiableCollection(softConstraints);
+        return view;
     }
 
     @Override
     public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
         double sumCosts = 0.0;
-        for (SoftActivityConstraint c : softConstraints) {
-            sumCosts += c.getCosts(iFacts, prevAct, newAct, nextAct, prevActDepTime);
+        for (int i = 0, n = softConstraints.size(); i < n; i++) {
+            sumCosts += softConstraints.get(i).getCosts(iFacts, prevAct, newAct, nextAct, prevActDepTime);
         }
         return sumCosts;
     }

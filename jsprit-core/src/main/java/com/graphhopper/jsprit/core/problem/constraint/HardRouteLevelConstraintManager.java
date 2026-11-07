@@ -20,26 +20,29 @@ package com.graphhopper.jsprit.core.problem.constraint;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 
 class HardRouteLevelConstraintManager implements HardRouteConstraint {
 
-    private Collection<HardRouteConstraint> hardConstraints = new ArrayList<HardRouteConstraint>();
+    private final List<HardRouteConstraint> hardConstraints = new ArrayList<>();
+
+    // live read-only view, created once: the calculators walk it per job and route
+    private final List<HardRouteConstraint> view = Collections.unmodifiableList(hardConstraints);
 
     public void addConstraint(HardRouteConstraint constraint) {
         hardConstraints.add(constraint);
     }
 
-    Collection<HardRouteConstraint> getConstraints() {
-        return Collections.unmodifiableCollection(hardConstraints);
+    List<HardRouteConstraint> getConstraints() {
+        return view;
     }
 
     @Override
     public boolean fulfilled(JobInsertionContext insertionContext) {
-        for (HardRouteConstraint constraint : hardConstraints) {
-            if (!constraint.fulfilled(insertionContext)) {
+        for (int i = 0, n = hardConstraints.size(); i < n; i++) {
+            if (!hardConstraints.get(i).fulfilled(insertionContext)) {
                 return false;
             }
         }

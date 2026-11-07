@@ -17,31 +17,51 @@
  */
 package com.graphhopper.jsprit.core.problem.constraint;
 
+import com.graphhopper.jsprit.core.algorithm.recreate.InsertionCostBreakdown;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 class SoftRouteConstraintManager implements SoftRouteConstraint {
 
-    private Collection<SoftRouteConstraint> softConstraints = new ArrayList<SoftRouteConstraint>();
+    private final List<SoftRouteConstraint> softConstraints = new ArrayList<>();
+
+    /** "Route:" + simple class name per constraint, computed once; the breakdown used to concatenate it per job and route. */
+    private final List<String> breakdownNames = new ArrayList<>();
+
+    private final Collection<SoftRouteConstraint> view = Collections.unmodifiableCollection(softConstraints);
 
     public void addConstraint(SoftRouteConstraint constraint) {
         softConstraints.add(constraint);
+        breakdownNames.add("Route:" + constraint.getClass().getSimpleName());
     }
 
     Collection<SoftRouteConstraint> getConstraints() {
-        return Collections.unmodifiableCollection(softConstraints);
+        return view;
     }
 
     @Override
     public double getCosts(JobInsertionContext insertionContext) {
         double sumCosts = 0.0;
-        for (SoftRouteConstraint c : softConstraints) {
-            sumCosts += c.getCosts(insertionContext);
+        for (int i = 0, n = softConstraints.size(); i < n; i++) {
+            sumCosts += softConstraints.get(i).getCosts(insertionContext);
         }
         return sumCosts;
+    }
+
+    /** Every constraint's costs for the route of the context, by name, zero costs left out. */
+    InsertionCostBreakdown getCostsBreakdown(JobInsertionContext insertionContext) {
+        InsertionCostBreakdown breakdown = new InsertionCostBreakdown();
+        for (int i = 0, n = softConstraints.size(); i < n; i++) {
+            double cost = softConstraints.get(i).getCosts(insertionContext);
+            if (cost != 0) {
+                breakdown.add(breakdownNames.get(i), cost);
+            }
+        }
+        return breakdown;
     }
 
 }

@@ -1,7 +1,6 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
-import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
 import com.graphhopper.jsprit.core.problem.constraint.HardConstraint;
 import com.graphhopper.jsprit.core.problem.constraint.HardRouteConstraint;
@@ -12,7 +11,6 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,7 +24,9 @@ public abstract class AbstractInsertionCalculator implements JobInsertionCostsCa
      * Check if route constraints are fulfilled
      */
     protected InsertionData checkRouteConstraints(JobInsertionContext insertionContext, ConstraintManager constraintManager) {
-        for (HardRouteConstraint hardRouteConstraint : constraintManager.getHardRouteConstraints()) {
+        List<HardRouteConstraint> routeConstraints = constraintManager.getHardRouteConstraints();
+        for (int i = 0, n = routeConstraints.size(); i < n; i++) {
+            HardRouteConstraint hardRouteConstraint = routeConstraints.get(i);
             if (!hardRouteConstraint.fulfilled(insertionContext)) {
                 InsertionData emptyInsertionData = new InsertionData.NoInsertionFound();
                 emptyInsertionData.addFailedConstrainName(hardRouteConstraint.getClass().getSimpleName());
@@ -37,71 +37,13 @@ public abstract class AbstractInsertionCalculator implements JobInsertionCostsCa
     }
 
     /**
-     * Check if activity constraints are fulfilled
-     */
-    protected ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime, Collection<HardConstraint> failedActivityConstraints, ConstraintManager constraintManager) {
-        return fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime, failedActivityConstraints, constraintManager, new ArrayList<>());
-    }
-
-    /**
-     * @param failedInTier scratch list for the constraints that failed within the tier being evaluated; cleared here,
-     *                     handed in by the caller so that it is allocated once per insertion evaluation and not per position
+     * The tiered hard activity constraint check of {@link ConstraintManager#fulfilled(JobInsertionContext, TourActivity, TourActivity, TourActivity, double, Collection, List)};
+     * {@code failedInTier} is the caller's scratch list, kept across positions.
      */
     protected ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime, Collection<HardConstraint> failedActivityConstraints, ConstraintManager constraintManager, List<HardConstraint> failedInTier) {
-        if (!constraintManager.hasHardActivityConstraints()) return ConstraintsStatus.FULFILLED;
-        ConstraintsStatus notFulfilled = null;
-        List<HardConstraint> failed = failedInTier;
-        if (!failed.isEmpty()) failed.clear();
-        // indexed loops over the live list views: no iterator allocation per position
-        List<HardActivityConstraint> critical = constraintManager.getCriticalHardActivityConstraints();
-        for (int i = 0, n = critical.size(); i < n; i++) {
-            HardActivityConstraint c = critical.get(i);
-            ConstraintsStatus status = c.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
-            if (status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)) {
-                failedActivityConstraints.add(c);
-                return status;
-            } else {
-                if (status.equals(ConstraintsStatus.NOT_FULFILLED)) {
-                    failed.add(c);
-                    notFulfilled = status;
-                }
-            }
-        }
-        if (notFulfilled != null) {
-            failedActivityConstraints.addAll(failed);
-            return notFulfilled;
-        }
-
-        List<HardActivityConstraint> highPrio = constraintManager.getHighPrioHardActivityConstraints();
-        for (int i = 0, n = highPrio.size(); i < n; i++) {
-            HardActivityConstraint c = highPrio.get(i);
-            ConstraintsStatus status = c.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
-            if (status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK)) {
-                failedActivityConstraints.add(c);
-                return status;
-            } else {
-                if (status.equals(ConstraintsStatus.NOT_FULFILLED)) {
-                    failed.add(c);
-                    notFulfilled = status;
-                }
-            }
-        }
-        if (notFulfilled != null) {
-            failedActivityConstraints.addAll(failed);
-            return notFulfilled;
-        }
-
-        List<HardActivityConstraint> lowPrio = constraintManager.getLowPrioHardActivityConstraints();
-        for (int i = 0, n = lowPrio.size(); i < n; i++) {
-            HardActivityConstraint constraint = lowPrio.get(i);
-            ConstraintsStatus status = constraint.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
-            if (status.equals(ConstraintsStatus.NOT_FULFILLED_BREAK) || status.equals(ConstraintsStatus.NOT_FULFILLED)) {
-                failedActivityConstraints.add(constraint);
-                return status;
-            }
-        }
-        return ConstraintsStatus.FULFILLED;
+        return constraintManager.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime, failedActivityConstraints, failedInTier);
     }
+
 
     /**
      * Creates a Start activity for a vehicle at a given departure time

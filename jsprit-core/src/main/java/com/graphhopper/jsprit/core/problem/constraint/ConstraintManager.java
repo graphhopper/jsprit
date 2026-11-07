@@ -38,11 +38,26 @@ import java.util.List;
 public class ConstraintManager implements HardActivityConstraint, HardRouteConstraint, SoftActivityConstraint, SoftRouteConstraint {
 
 
-    public static enum Priority {
+    /**
+     * The tier of a hard activity constraint. A position is checked tier by tier, CRITICAL first, and the first tier
+     * with a failure decides:
+     * <ul>
+     * <li>in CRITICAL and HIGH every constraint of the tier is asked (so all failures are known for the unassigned
+     * reasons), unless one returns NOT_FULFILLED_BREAK, which ends the check at once; the tier fails with NOT_FULFILLED
+     * if any constraint returned it,</li>
+     * <li>LOW stops at the first failing constraint,</li>
+     * <li>a later tier is only reached when the earlier ones passed.</li>
+     * </ul>
+     * Within a tier the constraints run in registration order; expensive checks therefore belong behind cheap ones and
+     * in a later tier than constraints that fail often. The recorded failures (see
+     * {@link #fulfilled(JobInsertionContext, TourActivity, TourActivity, TourActivity, double, Collection, List)}) follow
+     * this protocol: a NOT_FULFILLED_BREAK is recorded alone, even if constraints before it in the same tier failed.
+     */
+    public enum Priority {
         CRITICAL, HIGH, LOW
     }
 
-    private static Logger log = LoggerFactory.getLogger(ConstraintManager.class);
+    private static final Logger log = LoggerFactory.getLogger(ConstraintManager.class);
 
     private HardActivityLevelConstraintManager actLevelConstraintManager = new HardActivityLevelConstraintManager();
 
@@ -81,7 +96,7 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
         return actLevelConstraintManager.hasHardActivityConstraints();
     }
 
-    public Collection<HardRouteConstraint> getHardRouteConstraints() {
+    public List<HardRouteConstraint> getHardRouteConstraints() {
         return hardRouteConstraintManager.getConstraints();
     }
 
@@ -96,9 +111,6 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
     public List<HardActivityConstraint> getLowPrioHardActivityConstraints() {
         return actLevelConstraintManager.getLowPrioConstraints();
     }
-//    public Collection<HardActivityConstraint> getHardActivityConstraints() {
-//        return actLevelConstraintManager.g;
-//    }
 
     public DependencyType[] getDependencyTypes() {
         return jobDependencies.getDependencyTypes();
@@ -132,7 +144,7 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
                 constraintTypeKnown = true;
             }
             if (!constraintTypeKnown) {
-                log.warn("constraint " + c + " unknown thus ignores the constraint. currently, a constraint must implement either HardActivityStateLevelConstraint or HardRouteStateLevelConstraint");
+                log.warn("constraint {} implements none of HardActivityConstraint, HardRouteConstraint, SoftActivityConstraint, SoftRouteConstraint and is ignored", c);
             }
         }
 
@@ -162,8 +174,6 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
         }
     }
 
-//	public void add
-
     public void addConstraint(HardActivityConstraint actLevelConstraint, Priority priority) {
         actLevelConstraintManager.addConstraint(actLevelConstraint, priority);
     }
@@ -187,7 +197,18 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        return actLevelConstraintManager.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime);
+        return actLevelConstraintManager.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime, null, null);
+    }
+
+    /**
+     * Like {@link #fulfilled(JobInsertionContext, TourActivity, TourActivity, TourActivity, double)}, and adds the
+     * constraints that made the position infeasible to {@code failedConstraints} (see {@link Priority} for which ones
+     * these are). {@code failedInTier} is a scratch list the caller keeps across positions so that no list is allocated
+     * per position; it may be null.
+     */
+    public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime,
+                                       Collection<HardConstraint> failedConstraints, List<HardConstraint> failedInTier) {
+        return actLevelConstraintManager.fulfilled(iFacts, prevAct, newAct, nextAct, prevActDepTime, failedConstraints, failedInTier);
     }
 
     public Collection<Constraint> getConstraints() {
@@ -222,26 +243,9 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
      * @return Breakdown of costs per constraint
      */
     public InsertionCostBreakdown getRouteCostsBreakdown(JobInsertionContext context) {
-        InsertionCostBreakdown breakdown = new InsertionCostBreakdown();
-        for (SoftRouteConstraint c : getSoftRouteConstraints()) {
-            double cost = c.getCosts(context);
-            if (cost != 0) {
-                breakdown.add("Route:" + c.getClass().getSimpleName(), cost);
-            }
-        }
-        return breakdown;
+        return softRouteConstraintManager.getCostsBreakdown(context);
     }
 
-    /**
-     * Get activity-level soft constraint costs with breakdown by constraint.
-     *
-     * @param context The job insertion context
-     * @param prevAct Previous activity
-     * @param newAct  New activity being inserted
-     * @param nextAct Next activity
-     * @param depTime Departure time at previous activity
-     * @return Breakdown of costs per constraint
-     */
     /**
      * A scratch array for {@link #getActivityCosts(JobInsertionContext, TourActivity, TourActivity, TourActivity, double, double[])}:
      * one slot per soft activity constraint. Allocate it once per insertion evaluation (per job and route), not per position;
@@ -262,18 +266,6 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 
     public InsertionCostBreakdown activityBreakdownOf(double[] scratch) {
         return softActivityConstraintManager.breakdownOf(scratch);
-    }
-
-    public InsertionCostBreakdown getActivityCostsBreakdown(JobInsertionContext context,
-                                                            TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double depTime) {
-        InsertionCostBreakdown breakdown = new InsertionCostBreakdown();
-        for (SoftActivityConstraint c : getSoftActivityConstraints()) {
-            double cost = c.getCosts(context, prevAct, newAct, nextAct, depTime);
-            if (cost != 0) {
-                breakdown.add("Activity:" + c.getClass().getSimpleName(), cost);
-            }
-        }
-        return breakdown;
     }
 
     @Override
