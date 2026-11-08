@@ -165,6 +165,7 @@ public final class ShipmentInsertionCalculatorFlex extends AbstractInsertionCalc
                     ActivityContext activityContext = new ActivityContext();
                     activityContext.setInsertionIndex(i);
                     insertionContext.setActivityContext(activityContext);
+                    insertionContext.setRelatedActivityContext(null);
                     ConstraintsStatus pickupShipmentConstraintStatus = fulfilled(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime, failedActivityConstraints, constraintManager);
                     if (pickupShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)) {
                         pickupInsertionNotFulfilledBreak = false;
