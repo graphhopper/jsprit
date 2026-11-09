@@ -23,8 +23,20 @@ import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 
 public class ServiceInsertionCalculatorFactory implements JobInsertionCostsCalculatorFactory {
+
+    private ParallelInsertionScan parallelScan;
+
+    /** Scans the positions of long routes on the algorithm's ForkJoinPool, see {@link ParallelInsertionScan}; null keeps the sequential scan. */
+    public ServiceInsertionCalculatorFactory setParallelScan(ParallelInsertionScan parallelScan) {
+        this.parallelScan = parallelScan;
+        return this;
+    }
     @Override
     public JobInsertionCostsCalculator create(VehicleRoutingProblem vrp, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, JobActivityFactory jobActivityFactory, ConstraintManager constraintManager) {
-        return new ServiceInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityInsertionCostsCalculator, constraintManager, jobActivityFactory);
+        ServiceInsertionCalculator calculator = new ServiceInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityInsertionCostsCalculator, constraintManager, jobActivityFactory);
+        if (parallelScan != null) {
+            calculator.setParallelScan(parallelScan);
+        }
+        return calculator;
     }
 }

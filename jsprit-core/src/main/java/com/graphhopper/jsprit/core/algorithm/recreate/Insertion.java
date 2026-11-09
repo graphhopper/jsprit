@@ -67,6 +67,7 @@ public final class Insertion {
             InsertionStrategyBuilder builder = new InsertionStrategyBuilder(
                 ctx.vrp(), ctx.fleetManager(), ctx.stateManager(), ctx.constraintManager())
                 .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
+                .setParallelScan(ctx.parallelScan())
                 .setFastRegret(true)
                 .setActivityInsertionCostCalculator(ctx.activityInsertionCalculator())
                 .setRandom(ctx.random());
@@ -130,6 +131,7 @@ public final class Insertion {
             InsertionStrategyBuilder builder = new InsertionStrategyBuilder(
                 ctx.vrp(), ctx.fleetManager(), ctx.stateManager(), ctx.constraintManager())
                 .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
+                .setParallelScan(ctx.parallelScan())
                 .setFastRegret(true)  // Still use fast implementation, just without filtering
                 .setActivityInsertionCostCalculator(ctx.activityInsertionCalculator())
                 .setRandom(ctx.random());
@@ -177,6 +179,7 @@ public final class Insertion {
             InsertionStrategyBuilder builder = new InsertionStrategyBuilder(
                 ctx.vrp(), ctx.fleetManager(), ctx.stateManager(), ctx.constraintManager())
                 .setInsertionStrategy(InsertionStrategyBuilder.Strategy.BEST)
+                .setParallelScan(ctx.parallelScan())
                 .setActivityInsertionCostCalculator(ctx.activityInsertionCalculator())
                 .setRandom(ctx.random());
 
@@ -201,6 +204,7 @@ public final class Insertion {
             InsertionStrategyBuilder builder = new InsertionStrategyBuilder(
                 ctx.vrp(), ctx.fleetManager(), ctx.stateManager(), ctx.constraintManager())
                 .setInsertionStrategy(InsertionStrategyBuilder.Strategy.CHEAPEST)
+                .setParallelScan(ctx.parallelScan())
                 .setActivityInsertionCostCalculator(ctx.activityInsertionCalculator())
                 .setRandom(ctx.random());
 
@@ -242,6 +246,7 @@ public final class Insertion {
             InsertionStrategyBuilder builder = new InsertionStrategyBuilder(
                 ctx.vrp(), ctx.fleetManager(), ctx.stateManager(), ctx.constraintManager())
                 .setInsertionStrategy(InsertionStrategyBuilder.Strategy.POSITION_BASED_REGRET_FAST)
+                .setParallelScan(ctx.parallelScan())
                 .setPositionBasedRegretK(k)
                 .setTopRoutesToExpand(topRoutesToExpand)
                 .setActivityInsertionCostCalculator(ctx.activityInsertionCalculator())

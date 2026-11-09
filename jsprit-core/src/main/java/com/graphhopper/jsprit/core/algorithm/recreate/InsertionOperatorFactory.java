@@ -97,7 +97,8 @@ public interface InsertionOperatorFactory {
         ScoringFunction scoringFunction,
         Random random,
         ExecutorService executorService,
-        int numThreads
+        int numThreads,
+        ParallelInsertionScan parallelScan
     ) {
         public boolean isConcurrent() {
             return executorService != null && numThreads > 1;

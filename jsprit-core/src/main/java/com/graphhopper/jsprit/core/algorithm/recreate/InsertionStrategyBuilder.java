@@ -81,6 +81,8 @@ public class InsertionStrategyBuilder {
 
     private InsertionPositionFilter positionFilter;
 
+    private ParallelInsertionScan parallelScan;
+
     private Random random = RandomNumberGeneration.getRandom();
 
     public InsertionStrategyBuilder(VehicleRoutingProblem vrp, VehicleFleetManager vehicleFleetManager, StateManager stateManager, ConstraintManager constraintManager) {
@@ -204,6 +206,12 @@ public class InsertionStrategyBuilder {
         return this;
     }
 
+    /** Scans the positions of long routes on the algorithm's ForkJoinPool, see {@link ParallelInsertionScan}; null keeps the sequential scan. */
+    public InsertionStrategyBuilder setParallelScan(ParallelInsertionScan parallelScan) {
+        this.parallelScan = parallelScan;
+        return this;
+    }
+
 
     public InsertionStrategy build() {
         List<InsertionListener> iListeners = new ArrayList<>();
@@ -222,6 +230,8 @@ public class InsertionStrategyBuilder {
             calcBuilder.setBreakCalculatorFactory(breakInsertionCalculatorFactory);
         if (positionFilter != null)
             calcBuilder.setPositionFilter(positionFilter);
+        if (parallelScan != null)
+            calcBuilder.setParallelScan(parallelScan);
         calcBuilder.setConstraintManager(constraintManager);
         calcBuilder.setStateManager(stateManager);
         calcBuilder.setVehicleRoutingProblem(vrp);

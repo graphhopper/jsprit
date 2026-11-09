@@ -50,7 +50,7 @@ import com.graphhopper.jsprit.core.util.Solutions;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 
 public class Jsprit {
@@ -162,6 +162,8 @@ public class Jsprit {
         FIXED_COST_PARAM("fixed_cost_param"), VEHICLE_SWITCH("vehicle_switch"), REGRET_TIME_WINDOW_SCORER("regret.tw_scorer"),
         REGRET_DISTANCE_SCORER("regret.distance_scorer"), INITIAL_THRESHOLD("initial_threshold"), ITERATIONS("iterations"),
         THREADS("threads"),
+        PARALLEL_SCAN_MIN_SHIPMENT_ACTIVITIES("insertion.parallel_scan.min_shipment_activities"),
+        PARALLEL_SCAN_MIN_SERVICE_ACTIVITIES("insertion.parallel_scan.min_service_activities"),
         RANDOM_REGRET_MIN_SHARE("random_regret.min_share"),
         RANDOM_REGRET_MAX_SHARE("random_regret.max_share"),
         RANDOM_BEST_MIN_SHARE("random_best.min_share"),
@@ -327,6 +329,8 @@ public class Jsprit {
             defaults.put(Parameter.REGRET_DISTANCE_SCORER.toString(), ".05");
             defaults.put(Parameter.REGRET_TIME_WINDOW_SCORER.toString(), "-.1");
             defaults.put(Parameter.THREADS.toString(), "1");
+            defaults.put(Parameter.PARALLEL_SCAN_MIN_SHIPMENT_ACTIVITIES.toString(), String.valueOf(ParallelInsertionScan.DEFAULT_MIN_SHIPMENT_ACTIVITIES));
+            defaults.put(Parameter.PARALLEL_SCAN_MIN_SERVICE_ACTIVITIES.toString(), String.valueOf(ParallelInsertionScan.DEFAULT_MIN_SERVICE_ACTIVITIES));
             int minShare = (int) Math.min(20, Math.max(3, vrp.getJobs().size() * 0.05));
             int maxShare = (int) Math.min(50, Math.max(5, vrp.getJobs().size() * 0.3));
             defaults.put(Parameter.RADIAL_MIN_SHARE.toString(), String.valueOf(minShare));
@@ -835,9 +839,14 @@ public class Jsprit {
         if (noThreads > 1) {
             if (es == null) {
                 setupExecutorInternally = true;
-                es = Executors.newFixedThreadPool(noThreads);
+                // a ForkJoinPool, so that the insertion calculators can split long routes over it (nested tasks would deadlock a fixed pool)
+                es = new ForkJoinPool(noThreads);
             }
         }
+        // the position scan of long routes on several threads; null when the executor is not a ForkJoinPool or there is one thread
+        ParallelInsertionScan parallelScan = ParallelInsertionScan.of(es, noThreads,
+            toInteger(getProperty(Parameter.PARALLEL_SCAN_MIN_SHIPMENT_ACTIVITIES.toString())),
+            toInteger(getProperty(Parameter.PARALLEL_SCAN_MIN_SERVICE_ACTIVITIES.toString())));
 
         double fixedCostParam = toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString()));
         IncreasingAbsoluteFixedCosts increasingAbsoluteFixedCosts = null;
@@ -969,6 +978,7 @@ public class Jsprit {
             if (fastRegret) {
                 RegretInsertionConcurrentFast regretInsertion = (RegretInsertionConcurrentFast) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
+                    .setParallelScan(parallelScan)
                     .setConcurrentMode(es, noThreads)
                     .setFastRegret(true)
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
@@ -988,6 +998,7 @@ public class Jsprit {
             else {
                 RegretInsertionConcurrent regretInsertion = (RegretInsertionConcurrent) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
+                    .setParallelScan(parallelScan)
                     .setConcurrentMode(es, noThreads)
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
@@ -1005,6 +1016,7 @@ public class Jsprit {
             if(fastRegret) {
                 RegretInsertionFast regretInsertion = (RegretInsertionFast) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
+                    .setParallelScan(parallelScan)
                     .setFastRegret(true)
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
@@ -1023,6 +1035,7 @@ public class Jsprit {
             else{
                 RegretInsertion regretInsertion = (RegretInsertion) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionStrategyBuilder.Strategy.REGRET)
+                    .setParallelScan(parallelScan)
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .considerFixedCosts(toDouble(getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
@@ -1041,6 +1054,7 @@ public class Jsprit {
         if ((vrp.getVehicles().size() == 1 && !isInfinite) || vrp.getJobs().size() < 100 || es == null) {
             BestInsertion bestInsertion = (BestInsertion) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                 .setInsertionStrategy(InsertionStrategyBuilder.Strategy.BEST)
+                .setParallelScan(parallelScan)
                 .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                 .setActivityInsertionCostCalculator(activityInsertion)
@@ -1052,6 +1066,7 @@ public class Jsprit {
         } else {
             BestInsertionConcurrent bestInsertion = (BestInsertionConcurrent) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                 .setInsertionStrategy(InsertionStrategyBuilder.Strategy.BEST)
+                .setParallelScan(parallelScan)
                 .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
                 .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                 .setConcurrentMode(es, noThreads)
@@ -1069,6 +1084,7 @@ public class Jsprit {
         if (es == null) {
             cheapest = (CheapestInsertion) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionStrategyBuilder.Strategy.CHEAPEST)
+                    .setParallelScan(parallelScan)
                     .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
                     .setActivityInsertionCostCalculator(activityInsertion)
@@ -1079,6 +1095,7 @@ public class Jsprit {
         } else {
             cheapest = (CheapestInsertionConcurrent) new InsertionStrategyBuilder(vrp, vehicleFleetManager, stateManager, constraintManager)
                     .setInsertionStrategy(InsertionStrategyBuilder.Strategy.CHEAPEST)
+                    .setParallelScan(parallelScan)
                     .setConcurrentMode(es, noThreads)
                     .considerFixedCosts(Double.valueOf(properties.getProperty(Parameter.FIXED_COST_PARAM.toString())))
                     .setAllowVehicleSwitch(toBoolean(getProperty(Parameter.VEHICLE_SWITCH.toString())))
@@ -1230,7 +1247,7 @@ public class Jsprit {
             InsertionOperatorFactory.Context insertionContext = new InsertionOperatorFactory.Context(
                 vrp, vehicleFleetManager, stateManager, constraintManager,
                 activityInsertion, regretScorer,
-                random, es, noThreads != null ? noThreads : 1
+                random, es, noThreads != null ? noThreads : 1, parallelScan
             );
 
             RuinOperatorFactory.Context ruinContext = new RuinOperatorFactory.Context(

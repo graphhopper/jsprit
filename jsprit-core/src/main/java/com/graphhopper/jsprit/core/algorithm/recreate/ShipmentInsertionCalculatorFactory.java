@@ -26,6 +26,14 @@ public class ShipmentInsertionCalculatorFactory implements JobInsertionCostsCalc
 
     private InsertionPositionFilter positionFilter;
 
+    private ParallelInsertionScan parallelScan;
+
+    /** Scans the pickup positions of long routes on the algorithm's ForkJoinPool, see {@link ParallelInsertionScan}; null keeps the sequential scan. */
+    public ShipmentInsertionCalculatorFactory setParallelScan(ParallelInsertionScan parallelScan) {
+        this.parallelScan = parallelScan;
+        return this;
+    }
+
     /**
      * Sets the position filter for reducing position evaluations in shipment insertion.
      *
@@ -42,6 +50,9 @@ public class ShipmentInsertionCalculatorFactory implements JobInsertionCostsCalc
         ShipmentInsertionCalculator calculator = new ShipmentInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityInsertionCostsCalculator, constraintManager, jobActivityFactory);
         if (positionFilter != null) {
             calculator.setPositionFilter(positionFilter);
+        }
+        if (parallelScan != null) {
+            calculator.setParallelScan(parallelScan);
         }
         return calculator;
     }

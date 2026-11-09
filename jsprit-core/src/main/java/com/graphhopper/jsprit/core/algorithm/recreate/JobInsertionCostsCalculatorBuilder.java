@@ -98,6 +98,8 @@ public class JobInsertionCostsCalculatorBuilder {
 
     private InsertionPositionFilter positionFilter;
 
+    private ParallelInsertionScan parallelScan;
+
     /**
      * Constructs the builder.
      * <p>
@@ -138,6 +140,12 @@ public class JobInsertionCostsCalculatorBuilder {
      * @param positionFilter the position filter, or null to disable filtering
      * @return this builder
      */
+    /** Scans the positions of long routes on the algorithm's ForkJoinPool, see {@link ParallelInsertionScan}; applied to jsprit's own service and shipment calculators. */
+    public JobInsertionCostsCalculatorBuilder setParallelScan(ParallelInsertionScan parallelScan) {
+        this.parallelScan = parallelScan;
+        return this;
+    }
+
     public JobInsertionCostsCalculatorBuilder setPositionFilter(InsertionPositionFilter positionFilter) {
         this.positionFilter = positionFilter;
         return this;
@@ -306,6 +314,10 @@ public class JobInsertionCostsCalculatorBuilder {
         // Configure position filter on shipment factory if available
         if (positionFilter != null && shipmentCalculatorFactory instanceof ShipmentInsertionCalculatorFactory) {
             ((ShipmentInsertionCalculatorFactory) shipmentCalculatorFactory).setPositionFilter(positionFilter);
+        }
+        if (parallelScan != null) {
+            if (shipmentCalculatorFactory instanceof ShipmentInsertionCalculatorFactory shipmentFactory) shipmentFactory.setParallelScan(parallelScan);
+            if (serviceCalculatorFactory instanceof ServiceInsertionCalculatorFactory serviceFactory) serviceFactory.setParallelScan(parallelScan);
         }
 
         JobInsertionCostsCalculator shipmentInsertion = shipmentCalculatorFactory.create(vrp, actInsertionCalc, activityFactory, constraintManager);
