@@ -32,7 +32,12 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
 
     @Override
     public void visit(VehicleRoute route) {
-        begin(route);
+        visit(route, vehiclesToUpdate.get(route));
+    }
+
+    /** the update of {@link #visit(VehicleRoute)} for the given vehicles only, e.g. for a vehicle that became available again */
+    public void visit(VehicleRoute route, Collection<Vehicle> onlyVehicles) {
+        begin(route, onlyVehicles);
         Iterator<TourActivity> revIterator = route.getTourActivities().reverseActivityIterator();
         while (revIterator.hasNext()) {
             visit(revIterator.next());
@@ -95,6 +100,20 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
     }
 
     /**
+     * Updates only the vehicles {@link RelevantVehiclesToUpdate} names for a route and, when a switch releases a vehicle
+     * type that had no free vehicle, brings the other routes up to date for that vehicle.
+     */
+    public void setVehiclesToUpdate(RelevantVehiclesToUpdate relevantVehicles) {
+        this.vehiclesToUpdate = relevantVehicles;
+        relevantVehicles.addReleaseListener((vehicle, routes, switchedRoute) -> {
+            List<Vehicle> only = Collections.singletonList(vehicle);
+            for (VehicleRoute r : routes) {
+                if (r != switchedRoute) visit(r, only);
+            }
+        });
+    }
+
+    /**
      * Get vehicle type key index from VRP's index map.
      */
     @SuppressWarnings("deprecation")
@@ -103,8 +122,12 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
     }
 
     void begin(VehicleRoute route) {
+        begin(route, vehiclesToUpdate.get(route));
+    }
+
+    private void begin(VehicleRoute route, Collection<Vehicle> vehiclesToUpdate) {
         this.route = route;
-        vehicles = vehiclesToUpdate.get(route);
+        vehicles = vehiclesToUpdate;
 
         // Store activities in a list for backward pass to look up previous activity
         activities = new ArrayList<>(route.getTourActivities().getActivities());

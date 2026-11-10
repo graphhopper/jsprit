@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author schroeder
  */
-public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
+public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener, VehicleSwitchedListener {
 
     private RouteActivityVisitor routeActivityVisitor = new RouteActivityVisitor();
 
@@ -881,6 +881,12 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     @Override
     public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes, Collection<Job> badJobs) {
         insertionListeners.informInsertionEndsListeners(vehicleRoutes, badJobs);
+    }
+
+    /** a route changed its vehicle during a recreate; the state updaters that track the fleet's free vehicles listen to this */
+    @Override
+    public void vehicleSwitched(VehicleRoute vehicleRoute, Vehicle oldVehicle, Vehicle newVehicle) {
+        insertionListeners.informVehicleSwitched(vehicleRoute, oldVehicle, newVehicle);
     }
 
     /**

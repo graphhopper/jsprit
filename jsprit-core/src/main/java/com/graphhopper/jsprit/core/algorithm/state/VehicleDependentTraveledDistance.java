@@ -63,7 +63,32 @@ public class VehicleDependentTraveledDistance implements StateUpdater, ActivityV
 
     private List<Vehicle> uniqueVehicles;
 
+    private UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate vehiclesToUpdate = route -> uniqueVehicles;
+
+    private Collection<Vehicle> vehicles;
+
     private Map<VehicleTypeKey, State> states;
+
+    /**
+     * Updates only the vehicles {@link RelevantVehiclesToUpdate} names for a route (its own and one per vehicle type
+     * with a free vehicle) instead of every vehicle type, and brings the other routes up to date for a vehicle whose
+     * type a switch made available again.
+     */
+    public void setVehiclesToUpdate(RelevantVehiclesToUpdate relevantVehicles) {
+        this.vehiclesToUpdate = relevantVehicles;
+        relevantVehicles.addReleaseListener((vehicle, routes, switchedRoute) -> {
+            List<Vehicle> only = Collections.singletonList(vehicle);
+            for (VehicleRoute r : routes) {
+                if (r != switchedRoute) update(r, only);
+            }
+        });
+    }
+
+    private void update(VehicleRoute route, Collection<Vehicle> onlyVehicles) {
+        begin(route, onlyVehicles);
+        for (TourActivity act : route.getActivities()) visit(act);
+        finish();
+    }
 
     public VehicleDependentTraveledDistance(TransportDistance transportCostMatrices, StateManager stateManager, StateId distanceInRouteId, Collection<Vehicle> vehicles) {
         this.transportDistance = transportCostMatrices;
@@ -86,9 +111,14 @@ public class VehicleDependentTraveledDistance implements StateUpdater, ActivityV
 
     @Override
     public void begin(VehicleRoute route) {
+        begin(route, vehiclesToUpdate.get(route));
+    }
+
+    private void begin(VehicleRoute route, Collection<Vehicle> vehiclesToUpdate) {
         this.route = route;
+        this.vehicles = vehiclesToUpdate;
         states = new HashMap<>();
-        for (Vehicle v : uniqueVehicles) {
+        for (Vehicle v : vehicles) {
             State state = new State(v.getStartLocation(), 0);
             states.put(v.getVehicleTypeIdentifier(), state);
         }
@@ -96,7 +126,7 @@ public class VehicleDependentTraveledDistance implements StateUpdater, ActivityV
 
     @Override
     public void visit(TourActivity activity) {
-        for (Vehicle v : uniqueVehicles) {
+        for (Vehicle v : vehicles) {
             State old = states.get(v.getVehicleTypeIdentifier());
             double distance = old.getDistance();
             distance += transportDistance.getDistance(old.getPrevLocation(), activity.getLocation(), 0, v);
@@ -107,7 +137,7 @@ public class VehicleDependentTraveledDistance implements StateUpdater, ActivityV
 
     @Override
     public void finish() {
-        for (Vehicle v : uniqueVehicles) {
+        for (Vehicle v : vehicles) {
             State old = states.get(v.getVehicleTypeIdentifier());
             double distance = old.getDistance();
             if (v.isReturnToDepot()) {
