@@ -38,19 +38,16 @@ public class DBSCANClusterer {
 
     private static class LocationWrapper implements Clusterable {
 
-        private static int objCounter = 0;
-
         private final Job job;
 
         private final List<Location> locations;
 
         private final int id;
 
-        public LocationWrapper(Job job, List<Location> locations) {
+        public LocationWrapper(Job job, List<Location> locations, int id) {
             this.locations = locations;
-            objCounter++;
             this.job = job;
-            this.id = objCounter;
+            this.id = id;
         }
 
         public List<Location> getLocations() {
@@ -73,7 +70,7 @@ public class DBSCANClusterer {
 
         private final VehicleRoutingTransportCosts costs;
 
-        // Cache for computed distances: key = (id1 << 20) | id2 (assuming ids < 2^20)
+        // Cache for computed distances: key = (min(id1, id2) << 32) | max(id1, id2)
         private final Map<Long, Double> distanceCache;
 
         public MyDistance(List<LocationWrapper> locations, VehicleRoutingTransportCosts costs) {
@@ -91,7 +88,9 @@ public class DBSCANClusterer {
             int id2 = (int) doubles1[0];
 
             // Create symmetric cache key (order-independent)
-            long cacheKey = id1 < id2 ? ((long) id1 << 20) | id2 : ((long) id2 << 20) | id1;
+            int lo = Math.min(id1, id2);
+            int hi = Math.max(id1, id2);
+            long cacheKey = ((long) lo << 32) | (hi & 0xffffffffL);
 
             Double cached = distanceCache.get(cacheKey);
             if (cached != null) {
@@ -164,8 +163,10 @@ public class DBSCANClusterer {
                 jobs2locations.get(job).add(act.getLocation());
             }
         }
+        // ids are local to this call (1..n); they must not be shared across calls or threads
+        int nextId = 0;
         for (Job j : jobs2locations.keySet()) {
-            locations.add(new LocationWrapper(j, jobs2locations.get(j)));
+            locations.add(new LocationWrapper(j, jobs2locations.get(j), ++nextId));
         }
         return locations;
     }
