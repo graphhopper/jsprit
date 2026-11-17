@@ -56,6 +56,8 @@ import java.util.concurrent.Executors;
 public class Jsprit {
 
     private final ActivityInsertionCostsCalculator activityInsertion;
+
+    private final JobNeighborhoods sharedJobNeighborhoods;
     private final JobFilter jobFilter;
 
     public enum Construction {
@@ -237,6 +239,8 @@ public class Jsprit {
         private Random random = RandomNumberGeneration.newInstance();
 
         private ActivityInsertionCostsCalculator activityInsertionCalculator;
+
+        private JobNeighborhoods jobNeighborhoods;
 
         private SolutionAcceptor solutionAcceptor;
 
@@ -444,6 +448,18 @@ public class Jsprit {
 
         public Builder setActivityInsertionCalculator(ActivityInsertionCostsCalculator activityInsertionCalculator) {
             this.activityInsertionCalculator = activityInsertionCalculator;
+            return this;
+        }
+
+        /**
+         * Hands in the job neighborhoods the ruin operators and the regret scoring work on, already initialised.
+         * Without it every algorithm computes its own (each job against each job, sorted), which depends on
+         * nothing but the problem and its transport costs: who builds several algorithms for one problem
+         * computes them once with {@link Jsprit#createJobNeighborhoods(VehicleRoutingProblem)} and shares them.
+         * They are only read after {@link JobNeighborhoods#initialise()}, so sharing is safe across threads.
+         */
+        public Builder setJobNeighborhoods(JobNeighborhoods jobNeighborhoods) {
+            this.jobNeighborhoods = jobNeighborhoods;
             return this;
         }
 
@@ -729,6 +745,17 @@ public class Jsprit {
     private final List<Builder.WeightedOperator<InsertionOperatorFactory>> insertionOperators;
     private final List<Builder.WeightedOperator<RuinOperatorFactory>> ruinOperators;
 
+    /**
+     * The initialised job neighborhoods an algorithm of this class computes for the problem when none are handed in
+     * with {@link Builder#setJobNeighborhoods(JobNeighborhoods)}: average distance of services and shipments on the
+     * problem's transport costs, the nearer half of the jobs for each job.
+     */
+    public static JobNeighborhoods createJobNeighborhoods(VehicleRoutingProblem vrp) {
+        JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()), (int) (vrp.getJobs().values().size() * 0.5));
+        jobNeighborhoods.initialise();
+        return jobNeighborhoods;
+    }
+
     private Jsprit(Builder builder) {
         this.stateManager = builder.stateManager;
         this.constraintManager = builder.constraintManager;
@@ -739,6 +766,7 @@ public class Jsprit {
         this.objectiveFunction = builder.objectiveFunction;
         this.random = builder.random;
         this.activityInsertion = builder.activityInsertionCalculator;
+        this.sharedJobNeighborhoods = builder.jobNeighborhoods;
         this.acceptor = builder.solutionAcceptor;
         this.jobFilter = builder.jobFilter;
         this.shipmentCalculatorFactory = builder.shipmentCalculatorFactory;
@@ -822,8 +850,7 @@ public class Jsprit {
         double noiseLevel = toDouble(getProperty(Parameter.INSERTION_NOISE_LEVEL.toString()));
         double noiseProbability = toDouble(getProperty(Parameter.INSERTION_NOISE_PROB.toString()));
 
-        JobNeighborhoods jobNeighborhoods = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()), (int) (vrp.getJobs().values().size() * 0.5));
-        jobNeighborhoods.initialise();
+        JobNeighborhoods jobNeighborhoods = sharedJobNeighborhoods != null ? sharedJobNeighborhoods : createJobNeighborhoods(vrp);
 
         final double maxCosts;
         if (properties.containsKey(Parameter.MAX_TRANSPORT_COSTS.toString())) {
