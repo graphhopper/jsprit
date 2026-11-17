@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author schroeder
  */
-public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener, VehicleSwitchedListener {
+public class StateManager implements RouteAndActivityStateGetter, IterationStartsListener, RuinListener, InsertionStartsListener, JobInsertedListener, InsertionEndsListener {
 
     private RouteActivityVisitor routeActivityVisitor = new RouteActivityVisitor();
 
@@ -125,6 +125,152 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     private final Map<VehicleRoute, VehicleDependentRouteStates> vehicleDependentRouteStateMap;
 
     private final VehicleRoutingProblem vrp;
+
+    /** system property: reading a vehicle-dependent state that is missing for the asked vehicle only throws, see {@link #setFailOnMissingVehicleState(boolean)} */
+    public static final String FAIL_ON_MISSING_VEHICLE_STATE = "jsprit.states.failOnMissing";
+
+    /** system property, "count" or "compare": every state manager reports to {@link StateUpdateStats#GLOBAL}, see {@link #trackRouteChanges(boolean)} */
+    public static final String TRACK_ROUTE_CHANGES = "jsprit.states.trackRouteChanges";
+
+    private boolean failOnMissingVehicleState = Boolean.getBoolean(FAIL_ON_MISSING_VEHICLE_STATE);
+
+    private RouteChangeTracker routeChangeTracker;
+
+    private final BitSet sparseStates = new BitSet();
+
+    /**
+     * Verification mode, off by default. A vehicle-dependent state is written per vehicle type; when it is
+     * read for a vehicle type it was not written for, although the same state of the same activity or route
+     * exists for another vehicle type, the read throws instead of answering "no state". Constraints treat
+     * "no state" as "no limit", so an updater that covers too few vehicles otherwise goes unnoticed. A state
+     * that exists for no vehicle type at all (empty route, updater not registered) still reads as "no state".
+     * States whose absence is the answer are exempt, see {@link #declareSparse(StateId)}.
+     */
+    public void setFailOnMissingVehicleState(boolean failOnMissingVehicleState) {
+        this.failOnMissingVehicleState = failOnMissingVehicleState;
+    }
+
+    /**
+     * Diagnostics, off by default: counts at every insertion start how many routes are unchanged since their
+     * states were last computed and, with compareStates, whether computing the states of an unchanged route
+     * again yields the stored values. The search is not affected.
+     */
+    public StateUpdateStats trackRouteChanges(boolean compareStates) {
+        routeChangeTracker = new RouteChangeTracker(this, new StateUpdateStats(), compareStates);
+        return routeChangeTracker.getStats();
+    }
+
+    /**
+     * Declares a vehicle-dependent state as sparse: it is written only for the vehicle types it applies to and
+     * its absence for the others is meaningful (a flag such as "switch not feasible", a state kept for the
+     * route's own vehicle only). The verification mode does not complain about such a state.
+     */
+    public void declareSparse(StateId stateId) {
+        sparseStates.set(stateId.getIndex());
+    }
+
+    private String stateName(StateId stateId) {
+        return stateId.toString();
+    }
+
+    private IllegalStateException missingVehicleState(String where, Vehicle vehicle, StateId stateId, int others) {
+        return new IllegalStateException("state " + stateName(stateId) + " of " + where + " is not set for vehicle " + vehicle.getId()
+            + " (type key index " + getTypeKeyIndex(vehicle) + ") but for " + others + " other vehicle type(s): its updater does not cover every vehicle the state is read for");
+    }
+
+    private void checkMissing(TourActivity act, Vehicle vehicle, StateId stateId) {
+        if (sparseStates.get(stateId.getIndex())) return;
+        int others = 0;
+        int actIndex = act.getIndex();
+        if (stateId.isDouble()) {
+            for (boolean[] set : vehicleDependentActivityDoublesSet[actIndex]) if (set[stateId.getDoubleIndex()]) others++;
+        } else {
+            for (Object[] states : vehicleDependentActivityStates[actIndex]) if (states[stateId.getIndex()] != null) others++;
+        }
+        if (others > 0) throw missingVehicleState("activity " + actIndex + " (" + act + ")", vehicle, stateId, others);
+    }
+
+    private void checkMissing(VehicleRoute route, VehicleDependentRouteStates states, Vehicle vehicle, StateId stateId) {
+        if (sparseStates.get(stateId.getIndex())) return;
+        int others = 0;
+        if (stateId.isDouble()) {
+            for (boolean[] set : states.set) if (set[stateId.getDoubleIndex()]) others++;
+        } else {
+            for (Object[] objects : states.objects) if (objects[stateId.getIndex()] != null) others++;
+        }
+        if (others > 0) throw missingVehicleState("the route of vehicle " + route.getVehicle().getId(), vehicle, stateId, others);
+    }
+
+    /** name of the state with this index, for diagnostics */
+    String stateName(int index) {
+        return stateNames(false).getOrDefault(index, "state#" + index);
+    }
+
+    /** name of the double state with this double index, for diagnostics */
+    String doubleStateName(int doubleIndex) {
+        return stateNames(true).getOrDefault(doubleIndex, "double#" + doubleIndex);
+    }
+
+    private Map<Integer, String> stateNames(boolean byDoubleIndex) {
+        Map<Integer, String> names = new HashMap<>();
+        List<StateId> ids = new ArrayList<>(createdStateIds.values());
+        ids.addAll(Arrays.asList(InternalStates.MAXLOAD, InternalStates.LOAD, InternalStates.COSTS, InternalStates.LOAD_AT_BEGINNING,
+            InternalStates.LOAD_AT_END, InternalStates.DURATION, InternalStates.LATEST_OPERATION_START_TIME,
+            InternalStates.EARLIEST_OPERATION_START_TIME, InternalStates.FUTURE_MAXLOAD, InternalStates.PAST_MAXLOAD, InternalStates.SKILLS,
+            InternalStates.WAITING, InternalStates.TIME_SLACK, InternalStates.FUTURE_WAITING, InternalStates.EARLIEST_WITHOUT_WAITING,
+            InternalStates.SWITCH_NOT_FEASIBLE));
+        for (StateId id : ids) {
+            if (!byDoubleIndex) names.put(id.getIndex(), id.toString());
+            else if (id.isDouble()) names.put(id.getDoubleIndex(), id.toString());
+        }
+        return names;
+    }
+
+    RouteChangeTracker.Slots copyActivitySlots(int actIndex) {
+        RouteChangeTracker.Slots slots = new RouteChangeTracker.Slots();
+        slots.objects = activityStates[actIndex].clone();
+        slots.doubles = activityDoubles[actIndex].clone();
+        slots.set = activityDoublesSet[actIndex].clone();
+        slots.vObjects = deepCopy(vehicleDependentActivityStates[actIndex]);
+        slots.vDoubles = deepCopy(vehicleDependentActivityDoubles[actIndex]);
+        slots.vSet = deepCopy(vehicleDependentActivityDoublesSet[actIndex]);
+        return slots;
+    }
+
+    RouteChangeTracker.Slots copyRouteSlots(VehicleRoute route) {
+        RouteChangeTracker.Slots slots = new RouteChangeTracker.Slots();
+        RouteStates states = routeStateMap.get(route);
+        if (states != null) {
+            slots.objects = states.objects.clone();
+            slots.doubles = states.doubles.clone();
+            slots.set = states.set.clone();
+        }
+        VehicleDependentRouteStates vStates = vehicleDependentRouteStateMap.get(route);
+        if (vStates != null) {
+            slots.vObjects = deepCopy(vStates.objects);
+            slots.vDoubles = deepCopy(vStates.doubles);
+            slots.vSet = deepCopy(vStates.set);
+        }
+        return slots;
+    }
+
+    private static Object[][] deepCopy(Object[][] rows) {
+        Object[][] copy = new Object[rows.length][];
+        for (int i = 0; i < rows.length; i++) copy[i] = rows[i].clone();
+        return copy;
+    }
+
+    private static double[][] deepCopy(double[][] rows) {
+        double[][] copy = new double[rows.length][];
+        for (int i = 0; i < rows.length; i++) copy[i] = rows[i].clone();
+        return copy;
+    }
+
+    private static boolean[][] deepCopy(boolean[][] rows) {
+        boolean[][] copy = new boolean[rows.length][];
+        for (int i = 0; i < rows.length; i++) copy[i] = rows[i].clone();
+        return copy;
+    }
 
     int getMaxIndexOfVehicleTypeIdentifiers() {
         return nuVehicleTypeKeys;
@@ -252,6 +398,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         routeStateMap = new HashMap<>();
         vehicleDependentRouteStateMap = new HashMap<>();
         problemStates = new Object[initialStateArrayLength];
+        declareSparse(InternalStates.SWITCH_NOT_FEASIBLE);
+        String track = System.getProperty(TRACK_ROUTE_CHANGES);
+        if (track != null) routeChangeTracker = new RouteChangeTracker(this, StateUpdateStats.GLOBAL, "compare".equals(track));
     }
 
     private int getNuVehicleTypes(VehicleRoutingProblem vrp) {
@@ -416,7 +565,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         if (act.getIndex() < 0) return null; //act.getIndex() < 0 indicates that act is either Start (-1) or End (-2)
         int typeKeyIndex = getTypeKeyIndex(vehicle);
         if (stateId.isDouble()) {
-            if (!vehicleDependentActivityDoublesSet[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()]) return null;
+            if (!vehicleDependentActivityDoublesSet[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()]) {
+                if (failOnMissingVehicleState) checkMissing(act, vehicle, stateId);
+                return null;
+            }
             return type.cast(vehicleDependentActivityDoubles[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()]);
         }
         T state;
@@ -426,6 +578,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             Object state_class = vehicleDependentActivityStates[act.getIndex()][typeKeyIndex][stateId.getIndex()];
             throw getClassCastException(e, stateId, type.toString(), state_class.getClass().toString());
         }
+        if (state == null && failOnMissingVehicleState) checkMissing(act, vehicle, stateId);
         return state;
     }
 
@@ -435,10 +588,13 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         if (act.getIndex() < 0) return Double.NaN;
         int typeKeyIndex = getTypeKeyIndex(vehicle);
         if (stateId.isDouble()) {
-            return vehicleDependentActivityDoublesSet[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()]
-                ? vehicleDependentActivityDoubles[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()] : Double.NaN;
+            if (vehicleDependentActivityDoublesSet[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()])
+                return vehicleDependentActivityDoubles[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()];
+            if (failOnMissingVehicleState) checkMissing(act, vehicle, stateId);
+            return Double.NaN;
         }
         Object state = vehicleDependentActivityStates[act.getIndex()][typeKeyIndex][stateId.getIndex()];
+        if (state == null && failOnMissingVehicleState) checkMissing(act, vehicle, stateId);
         return state == null ? Double.NaN : (Double) state;
     }
 
@@ -515,9 +671,13 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         int typeKeyIndex = getTypeKeyIndex(vehicle);
         int stateIndex = stateId.getIndex();
         if (stateId.isDouble()) {
-            if (!states.set[typeKeyIndex][stateId.getDoubleIndex()]) return null;
+            if (!states.set[typeKeyIndex][stateId.getDoubleIndex()]) {
+                if (failOnMissingVehicleState) checkMissing(route, states, vehicle, stateId);
+                return null;
+            }
             return type.cast(states.doubles[typeKeyIndex][stateId.getDoubleIndex()]);
         }
+        if (failOnMissingVehicleState && states.objects[typeKeyIndex][stateIndex] == null) checkMissing(route, states, vehicle, stateId);
         try {
             return type.cast(states.objects[typeKeyIndex][stateIndex]);
         } catch (ClassCastException e) {
@@ -531,8 +691,13 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         if (states == null) return Double.NaN;
         int typeKeyIndex = getTypeKeyIndex(vehicle);
         int stateIndex = stateId.getIndex();
-        if (stateId.isDouble()) return states.set[typeKeyIndex][stateId.getDoubleIndex()] ? states.doubles[typeKeyIndex][stateId.getDoubleIndex()] : Double.NaN;
+        if (stateId.isDouble()) {
+            if (states.set[typeKeyIndex][stateId.getDoubleIndex()]) return states.doubles[typeKeyIndex][stateId.getDoubleIndex()];
+            if (failOnMissingVehicleState) checkMissing(route, states, vehicle, stateId);
+            return Double.NaN;
+        }
         Object state = states.objects[typeKeyIndex][stateIndex];
+        if (state == null && failOnMissingVehicleState) checkMissing(route, states, vehicle, stateId);
         return state == null ? Double.NaN : (Double) state;
     }
 
@@ -839,10 +1004,12 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         }
         routeActivityVisitor.visit(inRoute);
         revRouteActivityVisitor.visit(inRoute);
+        if (routeChangeTracker != null) routeChangeTracker.record(inRoute);
     }
 
     @Override
     public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
+        if (routeChangeTracker != null) routeChangeTracker.beforeInsertionStart(vehicleRoutes);
         insertionListeners.informInsertionStarts(vehicleRoutes, unassignedJobs);
         for (VehicleRoute route : vehicleRoutes) {
             for (RouteVisitor v : routeVisitors) {
@@ -851,6 +1018,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             routeActivityVisitor.visit(route);
             revRouteActivityVisitor.visit(route);
         }
+        if (routeChangeTracker != null) routeChangeTracker.afterInsertionStart(vehicleRoutes);
     }
 
     public void reCalculateStates(VehicleRoute route){
@@ -859,6 +1027,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     @Override
     public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
+        if (routeChangeTracker != null) routeChangeTracker.beforeClear();
         clear();
     }
 
@@ -881,12 +1050,6 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     @Override
     public void informInsertionEnds(Collection<VehicleRoute> vehicleRoutes, Collection<Job> badJobs) {
         insertionListeners.informInsertionEndsListeners(vehicleRoutes, badJobs);
-    }
-
-    /** a route changed its vehicle during a recreate; the state updaters that track the fleet's free vehicles listen to this */
-    @Override
-    public void vehicleSwitched(VehicleRoute vehicleRoute, Vehicle oldVehicle, Vehicle newVehicle) {
-        insertionListeners.informVehicleSwitched(vehicleRoute, oldVehicle, newVehicle);
     }
 
     /**
