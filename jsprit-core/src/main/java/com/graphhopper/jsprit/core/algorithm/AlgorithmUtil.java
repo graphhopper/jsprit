@@ -50,23 +50,9 @@ public class AlgorithmUtil {
         stateManager.updateLoadStates();
         stateManager.updateTimeWindowStates();
         UpdateVehicleDependentPracticalTimeWindows twUpdater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts());
-        twUpdater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
-
-            Map<VehicleTypeKey, Vehicle> uniqueTypes = new HashMap<>();
-
-            @Override
-            public Collection<Vehicle> get(VehicleRoute vehicleRoute) {
-                if (uniqueTypes.isEmpty()) {
-                    for (Vehicle v : vrp.getVehicles()) {
-                        if (!uniqueTypes.containsKey(v.getVehicleTypeIdentifier())) {
-                            uniqueTypes.put(v.getVehicleTypeIdentifier(), v);
-                        }
-                    }
-                }
-                return new ArrayList<>(uniqueTypes.values());
-            }
-
-        });
+        // one vehicle per state class: vehicles of a class share their vehicle-dependent states
+        // (asked per route, not here: declared vehicle classes are only known once all updaters are registered)
+        twUpdater.setVehiclesToUpdate(vehicleRoute -> stateManager.getVehicleClasses().representatives());
         stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
         stateManager.addStateUpdater(twUpdater);
         stateManager.updateSkillStates();

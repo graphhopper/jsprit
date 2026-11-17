@@ -25,10 +25,11 @@ import com.graphhopper.jsprit.core.problem.solution.route.RouteVisitor;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleDependent;
 
 import java.util.*;
 
-public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor, StateUpdater {
+public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor, StateUpdater, VehicleDependent {
 
     @Override
     public void visit(VehicleRoute route) {
@@ -62,15 +63,15 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
 
     private VehicleRoute route;
 
-    private final double[] vehicleDependentLatestArrTimesPrevAct;
+    private double[] vehicleDependentLatestArrTimesPrevAct;
 
-    private final double[] vehicleDependentEarliestDepartureTimesPrevAct;
+    private double[] vehicleDependentEarliestDepartureTimesPrevAct;
 
-    private final Location[] vehicleDependentLocationPrevActBackward;
+    private Location[] vehicleDependentLocationPrevActBackward;
 
-    private final Location[] vehicleDependentLocationPrevActForward;
+    private Location[] vehicleDependentLocationPrevActForward;
 
-    private final TourActivity[] vehicleDependentPrevActForward;
+    private TourActivity[] vehicleDependentPrevActForward;
 
     private Collection<Vehicle> vehicles;
 
@@ -83,28 +84,37 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
         this.stateManager = stateManager;
         this.transportCosts = tpCosts;
         this.activityCosts = activityCosts;
-        vehicleDependentLatestArrTimesPrevAct = new double[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
-        vehicleDependentEarliestDepartureTimesPrevAct = new double[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
-        vehicleDependentLocationPrevActBackward = new Location[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
-        vehicleDependentLocationPrevActForward = new Location[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
-        vehicleDependentPrevActForward = new TourActivity[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
     }
 
     public void setVehiclesToUpdate(VehiclesToUpdate vehiclesToUpdate) {
         this.vehiclesToUpdate = vehiclesToUpdate;
     }
 
-    /**
-     * Get vehicle type key index from VRP's index map.
-     */
-    @SuppressWarnings("deprecation")
+    /** the vehicle's state class, the vehicle dimension of the state manager */
     private int getTypeKeyIndex(Vehicle vehicle) {
-        return stateManager.getVrp().getVehicleTypeKeyIndex(vehicle.getVehicleTypeIdentifier());
+        return stateManager.getVehicleClasses().classOf(vehicle);
+    }
+
+    /** what the time-window states read from a vehicle, directly and through the cost functions */
+    @Override
+    public Object vehicleKey(Vehicle vehicle) {
+        return Arrays.asList(vehicle.getEarliestDeparture(), vehicle.getLatestArrival(),
+            VehicleDependent.locationKey(transportCosts, vehicle.getStartLocation()), VehicleDependent.locationKey(transportCosts, vehicle.getEndLocation()),
+            vehicle.isReturnToDepot(), VehicleDependent.keyOf(transportCosts, vehicle), VehicleDependent.keyOf(activityCosts, vehicle));
     }
 
     void begin(VehicleRoute route) {
         this.route = route;
         vehicles = vehiclesToUpdate.get(route);
+        if (vehicleDependentPrevActForward == null) {
+            // not in the constructor: the number of vehicle classes may only be known once all updaters are registered
+            int classes = stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1;
+            vehicleDependentLatestArrTimesPrevAct = new double[classes];
+            vehicleDependentEarliestDepartureTimesPrevAct = new double[classes];
+            vehicleDependentLocationPrevActBackward = new Location[classes];
+            vehicleDependentLocationPrevActForward = new Location[classes];
+            vehicleDependentPrevActForward = new TourActivity[classes];
+        }
 
         // Store activities in a list for backward pass to look up previous activity
         activities = new ArrayList<>(route.getTourActivities().getActivities());

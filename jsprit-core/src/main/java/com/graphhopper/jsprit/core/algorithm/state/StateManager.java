@@ -34,6 +34,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.ReverseActivi
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleClasses;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleDependent;
 
 import java.util.*;
 
@@ -73,7 +75,32 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private int nuActivities;
 
+    /** number of vehicle classes plus margin; 0 until the classes are known */
     private int nuVehicleTypeKeys;
+
+    /** null until the declared classes are fixed, see {@link #withDeclaredVehicleClasses(VehicleRoutingProblem)} */
+    private VehicleClasses vehicleClasses;
+
+    /** what the registered updaters read from a vehicle; only collected for declared classes */
+    private final List<VehicleDependent> vehicleKeyParts = new ArrayList<>();
+
+    private final boolean declaredVehicleClasses;
+
+    private int vehicleClassCount() {
+        if (vehicleClasses == null) fixVehicleClasses();
+        return nuVehicleTypeKeys;
+    }
+
+    private VehicleClasses fixVehicleClasses() {
+        final List<VehicleDependent> parts = new ArrayList<>(vehicleKeyParts);
+        vehicleClasses = VehicleClasses.by(vrp.getVehicles(), vehicle -> {
+            List<Object> key = new ArrayList<>(parts.size());
+            for (VehicleDependent part : parts) key.add(part.vehicleKey(vehicle));
+            return key;
+        });
+        nuVehicleTypeKeys = Math.max(3, vehicleClasses.size() + 1);
+        return vehicleClasses;
+    }
 
     /*
      * Storage. Every state id has one index; object states and double states share that index
@@ -90,11 +117,63 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private boolean[][] activityDoublesSet;
 
-    private Object[][][] vehicleDependentActivityStates;
+    /*
+     * Vehicle-dependent activity states: one flat array per state id, indexed activity * classes + vehicle
+     * class, allocated when the id is first written with a vehicle. Only the few ids that are
+     * vehicle-dependent pay for the vehicle dimension, and clearing is one fill per such id.
+     */
+    private Object[][] vehicleDependentActivityStates;
 
-    private double[][][] vehicleDependentActivityDoubles;
+    private double[][] vehicleDependentActivityDoubles;
 
-    private boolean[][][] vehicleDependentActivityDoublesSet;
+    private boolean[][] vehicleDependentActivityDoublesSet;
+
+    private int vehicleSlot(int actIndex, int vehicleClass) {
+        // a flat index would silently land in the next activity's slots
+        if (vehicleClass < 0 || vehicleClass >= vehicleClassCount())
+            throw new IndexOutOfBoundsException("vehicle class " + vehicleClass + " is outside [0, " + vehicleClassCount() + ")");
+        return actIndex * vehicleClassCount() + vehicleClass;
+    }
+
+    private boolean isVehicleDoubleSet(int actIndex, int vehicleClass, int doubleIndex) {
+        boolean[] set = vehicleDependentActivityDoublesSet[doubleIndex];
+        return set != null && set[vehicleSlot(actIndex, vehicleClass)];
+    }
+
+    /** only valid if {@link #isVehicleDoubleSet(int, int, int)} */
+    private double vehicleDouble(int actIndex, int vehicleClass, int doubleIndex) {
+        return vehicleDependentActivityDoubles[doubleIndex][vehicleSlot(actIndex, vehicleClass)];
+    }
+
+    private void putVehicleDouble(int actIndex, int vehicleClass, int doubleIndex, double value) {
+        double[] values = vehicleDependentActivityDoubles[doubleIndex];
+        if (values == null) {
+            values = vehicleDependentActivityDoubles[doubleIndex] = new double[nuActivities * vehicleClassCount()];
+            vehicleDependentActivityDoublesSet[doubleIndex] = new boolean[nuActivities * vehicleClassCount()];
+        }
+        int slot = vehicleSlot(actIndex, vehicleClass);
+        values[slot] = value;
+        vehicleDependentActivityDoublesSet[doubleIndex][slot] = true;
+    }
+
+    private void unsetVehicleDouble(int actIndex, int vehicleClass, int doubleIndex) {
+        boolean[] set = vehicleDependentActivityDoublesSet[doubleIndex];
+        if (set != null) set[vehicleSlot(actIndex, vehicleClass)] = false;
+    }
+
+    private Object vehicleObject(int actIndex, int vehicleClass, int stateIndex) {
+        Object[] values = vehicleDependentActivityStates[stateIndex];
+        return values == null ? null : values[vehicleSlot(actIndex, vehicleClass)];
+    }
+
+    private void putVehicleObject(int actIndex, int vehicleClass, int stateIndex, Object value) {
+        Object[] values = vehicleDependentActivityStates[stateIndex];
+        if (values == null) {
+            if (value == null) return;
+            values = vehicleDependentActivityStates[stateIndex] = new Object[nuActivities * vehicleClassCount()];
+        }
+        values[vehicleSlot(actIndex, vehicleClass)] = value;
+    }
 
     private static final class RouteStates {
         final Object[] objects;
@@ -175,7 +254,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private IllegalStateException missingVehicleState(String where, Vehicle vehicle, StateId stateId, int others) {
         return new IllegalStateException("state " + stateName(stateId) + " of " + where + " is not set for vehicle " + vehicle.getId()
-            + " (type key index " + getTypeKeyIndex(vehicle) + ") but for " + others + " other vehicle type(s): its updater does not cover every vehicle the state is read for");
+            + " (vehicle class " + getTypeKeyIndex(vehicle) + ") but for " + others + " other vehicle type(s): its updater does not cover every vehicle the state is read for");
     }
 
     private void checkMissing(TourActivity act, Vehicle vehicle, StateId stateId) {
@@ -183,9 +262,9 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         int others = 0;
         int actIndex = act.getIndex();
         if (stateId.isDouble()) {
-            for (boolean[] set : vehicleDependentActivityDoublesSet[actIndex]) if (set[stateId.getDoubleIndex()]) others++;
+            for (int k = 0; k < vehicleClassCount(); k++) if (isVehicleDoubleSet(actIndex, k, stateId.getDoubleIndex())) others++;
         } else {
-            for (Object[] states : vehicleDependentActivityStates[actIndex]) if (states[stateId.getIndex()] != null) others++;
+            for (int k = 0; k < vehicleClassCount(); k++) if (vehicleObject(actIndex, k, stateId.getIndex()) != null) others++;
         }
         if (others > 0) throw missingVehicleState("activity " + actIndex + " (" + act + ")", vehicle, stateId, others);
     }
@@ -231,9 +310,18 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         slots.objects = activityStates[actIndex].clone();
         slots.doubles = activityDoubles[actIndex].clone();
         slots.set = activityDoublesSet[actIndex].clone();
-        slots.vObjects = deepCopy(vehicleDependentActivityStates[actIndex]);
-        slots.vDoubles = deepCopy(vehicleDependentActivityDoubles[actIndex]);
-        slots.vSet = deepCopy(vehicleDependentActivityDoublesSet[actIndex]);
+        slots.vObjects = new Object[vehicleClassCount()][vehicleDependentActivityStates.length];
+        slots.vDoubles = new double[vehicleClassCount()][vehicleDependentActivityDoubles.length];
+        slots.vSet = new boolean[vehicleClassCount()][vehicleDependentActivityDoubles.length];
+        for (int k = 0; k < vehicleClassCount(); k++) {
+            for (int i = 0; i < vehicleDependentActivityStates.length; i++) slots.vObjects[k][i] = vehicleObject(actIndex, k, i);
+            for (int i = 0; i < vehicleDependentActivityDoubles.length; i++) {
+                if (isVehicleDoubleSet(actIndex, k, i)) {
+                    slots.vSet[k][i] = true;
+                    slots.vDoubles[k][i] = vehicleDouble(actIndex, k, i);
+                }
+            }
+        }
         return slots;
     }
 
@@ -273,7 +361,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     }
 
     int getMaxIndexOfVehicleTypeIdentifiers() {
-        return nuVehicleTypeKeys;
+        return vehicleClassCount();
     }
 
     public VehicleRoutingProblem getVrp() {
@@ -291,9 +379,34 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         return index;
     }
 
-    @SuppressWarnings("deprecation")
+    /** the vehicle dimension of the vehicle-dependent states: the vehicle's class */
     private int getTypeKeyIndex(Vehicle vehicle) {
-        return vrp.getVehicleTypeKeyIndex(vehicle.getVehicleTypeIdentifier());
+        VehicleClasses classes = vehicleClasses;
+        if (classes == null) classes = fixVehicleClasses();
+        return classes.classOf(vehicle);
+    }
+
+    /**
+     * The partition of the fleet that decides which vehicles share their vehicle-dependent states. State
+     * updaters compute vehicle-dependent states for its {@link VehicleClasses#representatives()}.
+     */
+    public VehicleClasses getVehicleClasses() {
+        return vehicleClasses != null ? vehicleClasses : fixVehicleClasses();
+    }
+
+    /**
+     * A state manager whose vehicle classes follow from what its updaters declare: every registered state updater
+     * that implements {@link VehicleDependent} names what it reads from a vehicle, and two vehicles share their
+     * vehicle-dependent states if they are equal in all of that. An updater that reads a new vehicle attribute
+     * brings its own key; there is no central list to keep in step.
+     * <p>
+     * The classes are fixed when they are first needed (the first vehicle-dependent state is written or read,
+     * or {@link #getVehicleClasses()} is called); registering a {@link VehicleDependent} updater after that throws.
+     * An updater that writes vehicle-dependent states and does not implement {@link VehicleDependent} is not seen
+     * here: its states are shared by vehicles it may tell apart. Use this only when every such updater declares.
+     */
+    public static StateManager withDeclaredVehicleClasses(VehicleRoutingProblem vehicleRoutingProblem) {
+        return new StateManager(vehicleRoutingProblem, null, true);
     }
 
     /**
@@ -355,11 +468,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         for (int i = 0; i < activityStates.length; i++) {
             activityStates[i] = Arrays.copyOf(activityStates[i], newLength);
         }
-        for (int i = 0; i < vehicleDependentActivityStates.length; i++) {
-            for (int j = 0; j < vehicleDependentActivityStates[i].length; j++) {
-                vehicleDependentActivityStates[i][j] = Arrays.copyOf(vehicleDependentActivityStates[i][j], newLength);
-            }
-        }
+        vehicleDependentActivityStates = Arrays.copyOf(vehicleDependentActivityStates, newLength);
         problemStates = Arrays.copyOf(problemStates, newLength);
     }
 
@@ -368,12 +477,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
             activityDoubles[i] = Arrays.copyOf(activityDoubles[i], newLength);
             activityDoublesSet[i] = Arrays.copyOf(activityDoublesSet[i], newLength);
         }
-        for (int i = 0; i < vehicleDependentActivityDoubles.length; i++) {
-            for (int j = 0; j < vehicleDependentActivityDoubles[i].length; j++) {
-                vehicleDependentActivityDoubles[i][j] = Arrays.copyOf(vehicleDependentActivityDoubles[i][j], newLength);
-                vehicleDependentActivityDoublesSet[i][j] = Arrays.copyOf(vehicleDependentActivityDoublesSet[i][j], newLength);
-            }
-        }
+        vehicleDependentActivityDoubles = Arrays.copyOf(vehicleDependentActivityDoubles, newLength);
+        vehicleDependentActivityDoublesSet = Arrays.copyOf(vehicleDependentActivityDoublesSet, newLength);
     }
 
     /**
@@ -382,33 +487,42 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param vehicleRoutingProblem the corresponding VehicleRoutingProblem
      */
     public StateManager(VehicleRoutingProblem vehicleRoutingProblem) {
+        this(vehicleRoutingProblem, VehicleClasses.byTypeKey(vehicleRoutingProblem));
+    }
+
+    /**
+     * Constructs the stateManager with vehicle classes of the caller's choice: vehicles of one class share their
+     * vehicle-dependent states. The classes must tell apart any two vehicles for which a state updater can
+     * compute different values; with the default, {@link VehicleClasses#byTypeKey(VehicleRoutingProblem)}, that
+     * is type, start and end location, operating times, skills and the return flag.
+     */
+    public StateManager(VehicleRoutingProblem vehicleRoutingProblem, VehicleClasses vehicleClasses) {
+        this(vehicleRoutingProblem, vehicleClasses, false);
+        if (vehicleClasses == null) throw new IllegalArgumentException("vehicle classes must not be null");
+    }
+
+    private StateManager(VehicleRoutingProblem vehicleRoutingProblem, VehicleClasses vehicleClasses, boolean declaredVehicleClasses) {
+        this.vehicleClasses = vehicleClasses;
+        this.declaredVehicleClasses = declaredVehicleClasses;
         stateIndexCounter = RESERVED_STATE_IDS;
         doubleStateIndexCounter = InternalStates.RESERVED_DOUBLE_STATE_IDS;
         int initialStateArrayLength = 30;
         int initialDoubleStateArrayLength = 16;
         this.vrp = vehicleRoutingProblem;
         nuActivities = Math.max(10, vrp.getNuActivities() + 1);
-        nuVehicleTypeKeys = Math.max(3, getNuVehicleTypes(vrp) + 2);
+        if (vehicleClasses != null) nuVehicleTypeKeys = Math.max(3, vehicleClasses.size() + 1);
         activityStates = new Object[nuActivities][initialStateArrayLength];
         activityDoubles = new double[nuActivities][initialDoubleStateArrayLength];
         activityDoublesSet = new boolean[nuActivities][initialDoubleStateArrayLength];
-        vehicleDependentActivityStates = new Object[nuActivities][nuVehicleTypeKeys][initialStateArrayLength];
-        vehicleDependentActivityDoubles = new double[nuActivities][nuVehicleTypeKeys][initialDoubleStateArrayLength];
-        vehicleDependentActivityDoublesSet = new boolean[nuActivities][nuVehicleTypeKeys][initialDoubleStateArrayLength];
+        vehicleDependentActivityStates = new Object[initialStateArrayLength][];
+        vehicleDependentActivityDoubles = new double[initialDoubleStateArrayLength][];
+        vehicleDependentActivityDoublesSet = new boolean[initialDoubleStateArrayLength][];
         routeStateMap = new HashMap<>();
         vehicleDependentRouteStateMap = new HashMap<>();
         problemStates = new Object[initialStateArrayLength];
         declareSparse(InternalStates.SWITCH_NOT_FEASIBLE);
         String track = System.getProperty(TRACK_ROUTE_CHANGES);
         if (track != null) routeChangeTracker = new RouteChangeTracker(this, StateUpdateStats.GLOBAL, "compare".equals(track));
-    }
-
-    private int getNuVehicleTypes(VehicleRoutingProblem vrp) {
-        int maxIndex = 0;
-        for (Vehicle v : vrp.getVehicles()) {
-            maxIndex = Math.max(maxIndex, getTypeKeyIndex(v));
-        }
-        return maxIndex;
     }
 
     /**
@@ -442,27 +556,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     public void clear() {
         fill_twoDimArr(activityStates, null);
         fill_twoDimArr(activityDoublesSet);
-        fill_threeDimArr(vehicleDependentActivityStates, null);
-        fill_threeDimArr(vehicleDependentActivityDoublesSet);
+        for (Object[] values : vehicleDependentActivityStates) if (values != null) Arrays.fill(values, null);
+        for (boolean[] set : vehicleDependentActivityDoublesSet) if (set != null) Arrays.fill(set, false);
         routeStateMap.clear();
         vehicleDependentRouteStateMap.clear();
         Arrays.fill(problemStates, null);
-    }
-
-    private void fill_threeDimArr(Object[][][] states, Object o) {
-        for (Object[][] twoDimArr : states) {
-            for (Object[] oneDimArr : twoDimArr) {
-                Arrays.fill(oneDimArr, o);
-            }
-        }
-    }
-
-    private void fill_threeDimArr(boolean[][][] set) {
-        for (boolean[][] twoDimArr : set) {
-            for (boolean[] oneDimArr : twoDimArr) {
-                Arrays.fill(oneDimArr, false);
-            }
-        }
     }
 
     private void fill_twoDimArr(Object[][] states, Object o) {
@@ -534,8 +632,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         checkActivityIndex(act);
         if (act.getIndex() < 0) return false;
         int typeKeyIndex = getTypeKeyIndex(vehicle);
-        if (stateId.isDouble()) return vehicleDependentActivityDoublesSet[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()];
-        return vehicleDependentActivityStates[act.getIndex()][typeKeyIndex][stateId.getIndex()] != null;
+        if (stateId.isDouble()) return isVehicleDoubleSet(act.getIndex(), typeKeyIndex, stateId.getDoubleIndex());
+        return vehicleObject(act.getIndex(), typeKeyIndex, stateId.getIndex()) != null;
     }
 
     /**
@@ -565,17 +663,17 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         if (act.getIndex() < 0) return null; //act.getIndex() < 0 indicates that act is either Start (-1) or End (-2)
         int typeKeyIndex = getTypeKeyIndex(vehicle);
         if (stateId.isDouble()) {
-            if (!vehicleDependentActivityDoublesSet[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()]) {
+            if (!isVehicleDoubleSet(act.getIndex(), typeKeyIndex, stateId.getDoubleIndex())) {
                 if (failOnMissingVehicleState) checkMissing(act, vehicle, stateId);
                 return null;
             }
-            return type.cast(vehicleDependentActivityDoubles[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()]);
+            return type.cast(vehicleDouble(act.getIndex(), typeKeyIndex, stateId.getDoubleIndex()));
         }
         T state;
         try {
-            state = type.cast(vehicleDependentActivityStates[act.getIndex()][typeKeyIndex][stateId.getIndex()]);
+            state = type.cast(vehicleObject(act.getIndex(), typeKeyIndex, stateId.getIndex()));
         } catch (ClassCastException e) {
-            Object state_class = vehicleDependentActivityStates[act.getIndex()][typeKeyIndex][stateId.getIndex()];
+            Object state_class = vehicleObject(act.getIndex(), typeKeyIndex, stateId.getIndex());
             throw getClassCastException(e, stateId, type.toString(), state_class.getClass().toString());
         }
         if (state == null && failOnMissingVehicleState) checkMissing(act, vehicle, stateId);
@@ -588,12 +686,12 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         if (act.getIndex() < 0) return Double.NaN;
         int typeKeyIndex = getTypeKeyIndex(vehicle);
         if (stateId.isDouble()) {
-            if (vehicleDependentActivityDoublesSet[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()])
-                return vehicleDependentActivityDoubles[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()];
+            if (isVehicleDoubleSet(act.getIndex(), typeKeyIndex, stateId.getDoubleIndex()))
+                return vehicleDouble(act.getIndex(), typeKeyIndex, stateId.getDoubleIndex());
             if (failOnMissingVehicleState) checkMissing(act, vehicle, stateId);
             return Double.NaN;
         }
-        Object state = vehicleDependentActivityStates[act.getIndex()][typeKeyIndex][stateId.getIndex()];
+        Object state = vehicleObject(act.getIndex(), typeKeyIndex, stateId.getIndex());
         if (state == null && failOnMissingVehicleState) checkMissing(act, vehicle, stateId);
         return state == null ? Double.NaN : (Double) state;
     }
@@ -788,24 +886,22 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         int typeKeyIndex = getTypeKeyIndex(vehicle);
         if (stateId.isDouble()) {
             if (state == null) {
-                vehicleDependentActivityDoublesSet[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()] = false;
+                unsetVehicleDouble(act.getIndex(), typeKeyIndex, stateId.getDoubleIndex());
             } else {
-                vehicleDependentActivityDoubles[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()] = (Double) state;
-                vehicleDependentActivityDoublesSet[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()] = true;
+                putVehicleDouble(act.getIndex(), typeKeyIndex, stateId.getDoubleIndex(), (Double) state);
             }
             return;
         }
-        vehicleDependentActivityStates[act.getIndex()][typeKeyIndex][stateId.getIndex()] = state;
+        putVehicleObject(act.getIndex(), typeKeyIndex, stateId.getIndex(), state);
     }
 
     void putInternalActivityDouble(TourActivity act, Vehicle vehicle, StateId stateId, double state) {
         int typeKeyIndex = getTypeKeyIndex(vehicle);
         if (stateId.isDouble()) {
-            vehicleDependentActivityDoubles[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()] = state;
-            vehicleDependentActivityDoublesSet[act.getIndex()][typeKeyIndex][stateId.getDoubleIndex()] = true;
+            putVehicleDouble(act.getIndex(), typeKeyIndex, stateId.getDoubleIndex(), state);
             return;
         }
-        vehicleDependentActivityStates[act.getIndex()][typeKeyIndex][stateId.getIndex()] = state;
+        putVehicleObject(act.getIndex(), typeKeyIndex, stateId.getIndex(), state);
     }
 
     /**
@@ -867,7 +963,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
     private VehicleDependentRouteStates vehicleDependentRouteStates(VehicleRoute route) {
         VehicleDependentRouteStates states = vehicleDependentRouteStateMap.get(route);
         if (states == null) {
-            states = new VehicleDependentRouteStates(nuVehicleTypeKeys, stateIndexCounter, doubleStateIndexCounter);
+            states = new VehicleDependentRouteStates(vehicleClassCount(), stateIndexCounter, doubleStateIndexCounter);
             vehicleDependentRouteStateMap.put(route, states);
         }
         return states;
@@ -940,6 +1036,12 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
      * @param updater the update to be added
      */
     public void addStateUpdater(StateUpdater updater) {
+        if (declaredVehicleClasses && updater instanceof VehicleDependent) {
+            if (vehicleClasses != null)
+                throw new IllegalStateException("the vehicle classes are already fixed; register " + updater.getClass().getSimpleName()
+                    + " before the first vehicle-dependent state is written or read");
+            vehicleKeyParts.add((VehicleDependent) updater);
+        }
         if (updater instanceof ActivityVisitor) addActivityVisitor((ActivityVisitor) updater);
         if (updater instanceof ReverseActivityVisitor) addActivityVisitor((ReverseActivityVisitor) updater);
         if (updater instanceof RouteVisitor) addRouteVisitor((RouteVisitor) updater);

@@ -25,13 +25,14 @@ import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.*;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleDependent;
 
 import java.util.*;
 
 /**
  * Created by schroeder on 15/09/16.
  */
-public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
+public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor, VehicleDependent {
 
     private Map<Integer, Map<Job, Double>> openPickupEndTimesPerVehicle = new HashMap<>();
 
@@ -66,20 +67,21 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
         this.minSlackId = slackTimeId;
         this.openJobsId = openJobsId;
         this.transportTime = transportTime;
-        prevActEndTimes = new double[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
-        prevActLocations = new Location[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
-        prevActs = new TourActivity[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
         this.activityCosts = activityCosts;
     }
 
-    /**
-     * Get vehicle type key index from VRP's index map.
-     */
-    @SuppressWarnings("deprecation")
+    /** the vehicle's state class, the vehicle dimension of the state manager */
     private int getTypeKeyIndex(Vehicle v) {
-        return stateManager.getVrp().getVehicleTypeKeyIndex(v.getVehicleTypeIdentifier());
+        return stateManager.getVehicleClasses().classOf(v);
     }
 
+
+    /** what the slack states read from a vehicle, directly and through the cost functions */
+    @Override
+    public Object vehicleKey(Vehicle vehicle) {
+        return Arrays.asList(vehicle.getEarliestDeparture(), VehicleDependent.locationKey(transportTime, vehicle.getStartLocation()),
+            VehicleDependent.keyOf(transportTime, vehicle), VehicleDependent.keyOf(activityCosts, vehicle));
+    }
 
     public void setVehiclesToUpdate(UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate vehiclesToUpdate) {
         this.vehiclesToUpdate = vehiclesToUpdate;
@@ -93,6 +95,13 @@ public class UpdateMaxTimeInVehicle implements StateUpdater, ActivityVisitor{
         actStartTimesPerVehicle.clear();
         vehicles = vehiclesToUpdate.get(route);
         this.route = route;
+        if (prevActs == null) {
+            // not in the constructor: the number of vehicle classes may only be known once all updaters are registered
+            int classes = stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1;
+            prevActEndTimes = new double[classes];
+            prevActLocations = new Location[classes];
+            prevActs = new TourActivity[classes];
+        }
         for(Vehicle v : vehicles) {
             int vehicleIndex = getTypeKeyIndex(v);
             openPickupEndTimesPerVehicle.put(vehicleIndex, new HashMap<>());

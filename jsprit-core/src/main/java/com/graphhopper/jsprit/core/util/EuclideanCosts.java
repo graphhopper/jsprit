@@ -24,12 +24,13 @@ import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleDependent;
 
 
 /**
  * @author stefan schroeder
  */
-public class EuclideanCosts extends AbstractForwardVehicleRoutingTransportCosts {
+public class EuclideanCosts extends AbstractForwardVehicleRoutingTransportCosts implements VehicleDependent {
 
     public int speed = 1;
 
@@ -38,6 +39,12 @@ public class EuclideanCosts extends AbstractForwardVehicleRoutingTransportCosts 
     @Override
     public String toString() {
         return "[name=crowFlyCosts]";
+    }
+
+    /** Times and distances are the same for every vehicle. A subclass that makes them vehicle-dependent has to override this. */
+    @Override
+    public Object vehicleKey(Vehicle vehicle) {
+        return "";
     }
 
     @Override

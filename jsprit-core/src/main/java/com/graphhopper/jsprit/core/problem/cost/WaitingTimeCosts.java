@@ -21,11 +21,19 @@ package com.graphhopper.jsprit.core.problem.cost;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleDependent;
 
 /**
  * Created by schroeder on 23/07/15.
  */
-public class WaitingTimeCosts implements VehicleRoutingActivityCosts {
+public class WaitingTimeCosts implements VehicleRoutingActivityCosts, VehicleDependent {
+
+    /** The activity duration is the same for every vehicle. */
+    @Override
+    public Object vehicleKey(Vehicle vehicle) {
+        return "";
+    }
+
 
     @Override
     public double getActivityCost(TourActivity tourAct, double arrivalTime, Driver driver, Vehicle vehicle) {
