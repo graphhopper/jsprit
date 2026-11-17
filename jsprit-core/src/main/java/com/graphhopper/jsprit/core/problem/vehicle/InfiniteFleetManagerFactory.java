@@ -28,6 +28,8 @@ public class InfiniteFleetManagerFactory implements VehicleFleetManagerFactory {
 
     private Collection<Vehicle> vehicles;
 
+    private VehicleClasses vehicleClasses;
+
 
     /**
      * Constructs the factory.
@@ -40,11 +42,20 @@ public class InfiniteFleetManagerFactory implements VehicleFleetManagerFactory {
     }
 
     /**
+     * Which vehicles are interchangeable for an insertion: the fleet manager offers one vehicle per class.
+     * Default: {@link VehicleClasses#fleetDefault(Collection)}.
+     */
+    public InfiniteFleetManagerFactory setVehicleClasses(VehicleClasses vehicleClasses) {
+        this.vehicleClasses = vehicleClasses;
+        return this;
+    }
+
+    /**
      * Creates the infinite fleetmanager.
      */
     @Override
     public VehicleFleetManager createFleetManager() {
-        return new InfiniteVehicles(vehicles);
+        return new InfiniteVehicles(vehicleClasses != null ? vehicleClasses : VehicleClasses.fleetDefault(vehicles));
     }
 
 }

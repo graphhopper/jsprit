@@ -69,6 +69,12 @@ public interface Vehicle extends HasId, HasIndex {
 
     Location getEndLocation();
 
+    /**
+     * @deprecated the type key answered two questions with one set of fields: which vehicles share their
+     * vehicle-dependent states and which are interchangeable for an insertion. Both are {@link VehicleClasses}
+     * now (state manager and fleet manager); the key only feeds their defaults and goes with the next major.
+     */
+    @Deprecated
     VehicleTypeKey getVehicleTypeIdentifier();
 
     Skills getSkills();

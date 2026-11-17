@@ -929,7 +929,9 @@ public class VehicleRoutingProblem {
      *
      * @param typeKey the vehicle type key
      * @return the index (1-based), or fallback to typeKey.getIndex() if not found in VRP
+     * @deprecated see {@link com.graphhopper.jsprit.core.problem.vehicle.Vehicle#getVehicleTypeIdentifier()}
      */
+    @Deprecated
     @SuppressWarnings("deprecation")
     public int getVehicleTypeKeyIndex(VehicleTypeKey typeKey) {
         Integer index = typeKeyToIndex.get(typeKey);
@@ -944,7 +946,9 @@ public class VehicleRoutingProblem {
      * Returns the number of vehicle type keys (distinct vehicle types by type, location, time windows).
      *
      * @return number of vehicle type keys
+     * @deprecated see {@link com.graphhopper.jsprit.core.problem.vehicle.Vehicle#getVehicleTypeIdentifier()}
      */
+    @Deprecated
     public int getNuVehicleTypeKeys() {
         return typeKeyToIndex.size();
     }
@@ -953,7 +957,9 @@ public class VehicleRoutingProblem {
      * Returns the maximum vehicle type key index.
      *
      * @return max type key index
+     * @deprecated see {@link com.graphhopper.jsprit.core.problem.vehicle.Vehicle#getVehicleTypeIdentifier()}
      */
+    @Deprecated
     public int getMaxVehicleTypeKeyIndex() {
         int maxIndex = 0;
         for (Integer index : typeKeyToIndex.values()) {

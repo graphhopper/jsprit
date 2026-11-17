@@ -17,55 +17,71 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+
 import java.util.Collection;
 
-
+/**
+ * Offers the vehicles an insertion may use: per class of interchangeable vehicles one that is free.
+ * <p>
+ * <b>Classes.</b> A {@link VehicleClasses} partition of the fleet (default
+ * {@link VehicleClasses#fleetDefault(Collection)}): two vehicles belong to one class only if no constraint, cost
+ * function or state updater can tell them apart.
+ * <p>
+ * <b>Vehicles in use.</b> There is no lock / unlock: the fleet manager reads from the routes which vehicles are
+ * in use. It is told about routes by the {@link com.graphhopper.jsprit.core.algorithm.state.StateManager}, with
+ * the calls every insertion path makes anyway to keep the route states right:
+ * <ul>
+ * <li>{@code informInsertionStarts(routes, ..)} -> {@link #reset(Collection)}: the routes are the solution</li>
+ * <li>{@code informJobInserted(.., route, ..)} and {@code reCalculateStates(route)} -> {@link #sync(VehicleRoute)}</li>
+ * </ul>
+ * The two are joined where an insertion calculator is built from a fleet manager and a state manager
+ * ({@code JobInsertionCostsCalculatorBuilder}). All three updates are idempotent and independent of the order
+ * they are called in.
+ */
 public interface VehicleFleetManager {
 
     /**
-     * Locks vehicle.
-     * <p>
-     * <p>This indicates that this vehicle is being used. Thus it is not in list of available vehicles.
-     *
-     * @param vehicle to lock
-     */
-    void lock(Vehicle vehicle);
-
-    /**
-     * Unlocks vehicle.
-     * <p>
-     * <p>This indicates that this vehicle is not being used anymore. Thus it is in list of available vehicles.
-     *
-     * @param vehicle to unlock
-     */
-    void unlock(Vehicle vehicle);
-
-    /**
-     * Returns true if locked.
-     *
-     * @param vehicle vehicle to lock
-     * @return true if locked
-     */
-    boolean isLocked(Vehicle vehicle);
-
-    /**
-     * Unlocks all locked vehicles.
-     */
-    void unlockAll();
-
-    /**
-     * Returns a collection of available vehicles.
-     * <p>
-     * <p>Note that this does not return ALL available vehicles that were added to the fleetmanager. Vehicles are clustered according
-     * to {@link VehicleTypeKey}. If there are two unlocked vehicle with the same VehicleTypeKey then only one of them will be returned.
-     * This is to avoid returning too many vehicles that are basically equal.
-     * <p>Look at {@link VehicleTypeKey} to figure out whether two vehicles are equal or not.
-     *
-     * @return collection of available vehicles
+     * One free vehicle per class: the free vehicle that comes first in the fleet. Classes without a free
+     * vehicle are left out.
      */
     Collection<Vehicle> getAvailableVehicles();
 
-    Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType);
+    /**
+     * As {@link #getAvailableVehicles()}, without the class of the given vehicle.
+     */
+    Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisClass);
 
-    Vehicle getAvailableVehicle(VehicleTypeKey vehicleTypeIdentifier);
+    /**
+     * The first free vehicle of the class of the given vehicle, or null if all vehicles of the class are in use.
+     */
+    Vehicle getAvailableVehicle(Vehicle sameClassAs);
+
+    /**
+     * @return true if a route has this vehicle
+     */
+    boolean isInUse(Vehicle vehicle);
+
+    /**
+     * The given routes are the solution: their vehicles are in use, every other vehicle is free.
+     */
+    void reset(Collection<VehicleRoute> routes);
+
+    /**
+     * The route may have changed its vehicle: the vehicle it had when it was last seen is free, the one it has
+     * now is in use. A route that has not been seen before is added.
+     */
+    void sync(VehicleRoute route);
+
+    /**
+     * The route is no longer part of the solution: its vehicle is free.
+     */
+    void release(VehicleRoute route);
+
+    /**
+     * Verification mode only (system property {@code jsprit.states.failOnMissing}): throws if the route has a
+     * vehicle that is not recorded as used by this route, i.e. the route got its vehicle without one of the
+     * updates above. No-op otherwise.
+     */
+    void verify(VehicleRoute route);
 }

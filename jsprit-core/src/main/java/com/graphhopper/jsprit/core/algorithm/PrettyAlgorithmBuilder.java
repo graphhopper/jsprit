@@ -22,7 +22,6 @@ import com.graphhopper.jsprit.core.algorithm.acceptor.SchrimpfAcceptance;
 import com.graphhopper.jsprit.core.algorithm.acceptor.SolutionAcceptor;
 import com.graphhopper.jsprit.core.algorithm.listener.AlgorithmStartsListener;
 import com.graphhopper.jsprit.core.algorithm.recreate.InsertionStrategy;
-import com.graphhopper.jsprit.core.algorithm.recreate.VehicleSwitched;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
@@ -89,19 +88,13 @@ public class PrettyAlgorithmBuilder {
         }
         VehicleRoutingAlgorithm vra = new VehicleRoutingAlgorithm(vrp, searchStrategyManager, objectiveFunction);
         vra.addListener(stateManager);
+        // the fleet manager reads the vehicles in use from the routes (the state manager tells it about them);
+        // empty routes are taken out of the solution here
         RemoveEmptyVehicles removeEmptyVehicles = new RemoveEmptyVehicles(fleetManager);
-        ResetAndIniFleetManager resetAndIniFleetManager = new ResetAndIniFleetManager(fleetManager);
-        VehicleSwitched vehicleSwitched = new VehicleSwitched(fleetManager);
         vra.addListener(removeEmptyVehicles);
-        vra.addListener(resetAndIniFleetManager);
-        vra.addListener(vehicleSwitched);
         if (iniInsertionStrategy != null) {
             if (!iniInsertionStrategy.getListeners().contains(removeEmptyVehicles))
                 iniInsertionStrategy.addListener(removeEmptyVehicles);
-            if (!iniInsertionStrategy.getListeners().contains(resetAndIniFleetManager))
-                iniInsertionStrategy.addListener(resetAndIniFleetManager);
-            if (!iniInsertionStrategy.getListeners().contains(vehicleSwitched))
-                iniInsertionStrategy.addListener(vehicleSwitched);
             if (!iniInsertionStrategy.getListeners().contains(stateManager))
                 iniInsertionStrategy.addListener(stateManager);
             vra.addListener((AlgorithmStartsListener) (problem, algorithm, solutions) -> {

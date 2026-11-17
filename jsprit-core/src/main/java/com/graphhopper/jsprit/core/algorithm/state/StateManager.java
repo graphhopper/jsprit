@@ -34,6 +34,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.ReverseActivi
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleClasses;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleDependent;
 
@@ -1098,8 +1099,28 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         insertionListeners.addListener(insertionListener);
     }
 
+    /*
+     * Vehicles in use. A fleet manager reads them from the routes, and it hears about routes through the calls
+     * that keep the route states right: every code path that gives a route a vehicle has to make one of them anyway.
+     */
+    private VehicleFleetManager[] fleetManagers = new VehicleFleetManager[0];
+
+    /**
+     * From now on the fleet manager is reset with the routes of every
+     * {@link #informInsertionStarts(Collection, Collection)} (they are taken to be the whole solution) and
+     * synchronised with the route of every {@link #informJobInserted(Job, VehicleRoute, InsertionData)} and
+     * {@link #reCalculateStates(VehicleRoute)}. Called where an insertion calculator is built from a fleet
+     * manager and this state manager; adding the same fleet manager twice has no effect.
+     */
+    public void addFleetManager(VehicleFleetManager fleetManager) {
+        for (VehicleFleetManager known : fleetManagers) if (known == fleetManager) return;
+        fleetManagers = Arrays.copyOf(fleetManagers, fleetManagers.length + 1);
+        fleetManagers[fleetManagers.length - 1] = fleetManager;
+    }
+
     @Override
     public void informJobInserted(Job job2insert, VehicleRoute inRoute, InsertionData insertionData) {
+        for (VehicleFleetManager fleetManager : fleetManagers) fleetManager.sync(inRoute);
         insertionListeners.informJobInserted(job2insert, inRoute, insertionData);
         for (RouteVisitor v : routeVisitors) {
             v.visit(inRoute);
@@ -1111,6 +1132,11 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     @Override
     public void informInsertionStarts(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
+        for (VehicleFleetManager fleetManager : fleetManagers) fleetManager.reset(vehicleRoutes);
+        updateStates(vehicleRoutes, unassignedJobs);
+    }
+
+    private void updateStates(Collection<VehicleRoute> vehicleRoutes, Collection<Job> unassignedJobs) {
         if (routeChangeTracker != null) routeChangeTracker.beforeInsertionStart(vehicleRoutes);
         insertionListeners.informInsertionStarts(vehicleRoutes, unassignedJobs);
         for (VehicleRoute route : vehicleRoutes) {
@@ -1123,8 +1149,14 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         if (routeChangeTracker != null) routeChangeTracker.afterInsertionStart(vehicleRoutes);
     }
 
+    /**
+     * Recomputes the states of one route after it was changed outside the insertion flow. Unlike
+     * {@link #informInsertionStarts(Collection, Collection)} this does not say that the route is the whole
+     * solution: the vehicles of the other routes stay in use.
+     */
     public void reCalculateStates(VehicleRoute route){
-        informInsertionStarts(Arrays.asList(route), Collections.emptyList());
+        for (VehicleFleetManager fleetManager : fleetManagers) fleetManager.sync(route);
+        updateStates(Arrays.asList(route), Collections.emptyList());
     }
 
     @Override

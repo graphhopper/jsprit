@@ -43,6 +43,35 @@ public abstract class VehicleClasses {
     /** One vehicle per class, in the order of the classes' first vehicle in the fleet. */
     public abstract List<Vehicle> representatives();
 
+    /** The vehicles of the class in fleet order; empty for a class number no vehicle has. */
+    public abstract List<Vehicle> members(int vehicleClass);
+
+    /**
+     * What a fleet manager uses by default to decide which vehicles are interchangeable for an insertion:
+     * type, start and end location, earliest start, latest end, skills, return flag (the fields of the
+     * deprecated {@link VehicleTypeKey}) and the vehicle's break (time windows and duration). A problem with
+     * further vehicle attributes that constraints or costs read has to bring its own classes.
+     */
+    public static VehicleClasses fleetDefault(Collection<? extends Vehicle> vehicles) {
+        return by(vehicles, VehicleClasses::defaultFleetKey);
+    }
+
+    private static Object defaultFleetKey(Vehicle v) {
+        List<Object> key = new ArrayList<>(9);
+        key.add(v.getType().getTypeId());
+        key.add(v.getStartLocation() == null ? null : v.getStartLocation().getId());
+        key.add(v.getEndLocation() == null ? null : v.getEndLocation().getId());
+        key.add(v.getEarliestDeparture());
+        key.add(v.getLatestArrival());
+        key.add(v.getSkills());
+        key.add(v.isReturnToDepot());
+        if (v.getBreak() != null) {
+            key.add(new ArrayList<>(v.getBreak().getTimeWindows()));
+            key.add(v.getBreak().getServiceDuration());
+        }
+        return key;
+    }
+
     /**
      * Vehicles with equal {@link Vehicle#getVehicleTypeIdentifier()} form a class; the class number is the
      * problem's type key index. This is what the state manager did before classes existed.
@@ -67,16 +96,27 @@ public abstract class VehicleClasses {
 
         private final List<Vehicle> representatives;
 
+        private final List<List<Vehicle>> members = new ArrayList<>();
+
         ByTypeKey(VehicleRoutingProblem vrp) {
             this.vrp = vrp;
             int max = 0;
             Map<VehicleTypeKey, Vehicle> byKey = new LinkedHashMap<>();
             for (Vehicle v : vrp.getVehicles()) {
-                max = Math.max(max, classOf(v));
+                int c = classOf(v);
+                max = Math.max(max, c);
                 byKey.putIfAbsent(v.getVehicleTypeIdentifier(), v);
+                while (members.size() <= c) members.add(new ArrayList<>());
+                members.get(c).add(v);
             }
             size = max + 1;
+            while (members.size() < size) members.add(new ArrayList<>());
             representatives = Collections.unmodifiableList(new ArrayList<>(byKey.values()));
+        }
+
+        @Override
+        public List<Vehicle> members(int vehicleClass) {
+            return Collections.unmodifiableList(members.get(vehicleClass));
         }
 
         @Override
@@ -105,6 +145,8 @@ public abstract class VehicleClasses {
 
         private final List<Vehicle> representatives;
 
+        private final List<List<Vehicle>> members = new ArrayList<>();
+
         ByKey(Collection<? extends Vehicle> vehicles, Function<Vehicle, ?> key) {
             this.key = key;
             List<Vehicle> reps = new ArrayList<>();
@@ -115,10 +157,16 @@ public abstract class VehicleClasses {
                     c = reps.size();
                     classOfKey.put(k, c);
                     reps.add(v);
+                    members.add(new ArrayList<>());
                 }
-                classOfVehicle.put(v, c);
+                if (classOfVehicle.put(v, c) == null) members.get(c).add(v);
             }
             representatives = Collections.unmodifiableList(reps);
+        }
+
+        @Override
+        public List<Vehicle> members(int vehicleClass) {
+            return Collections.unmodifiableList(members.get(vehicleClass));
         }
 
         @Override

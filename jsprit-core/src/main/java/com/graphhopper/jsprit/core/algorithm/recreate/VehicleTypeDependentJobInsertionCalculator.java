@@ -155,6 +155,7 @@ final class VehicleTypeDependentJobInsertionCalculator implements JobInsertionCo
         List<Vehicle> relevantVehicles = new ArrayList<>();
 
         if (route.hasVehicle()) {
+            fleetManager.verify(route);
             Vehicle currentVehicle = route.getVehicle();
             relevantVehicles.add(currentVehicle);
             if (vehicleSwitchAllowed && !isVehicleWithInitialRoute(currentVehicle)) {

@@ -17,234 +17,175 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
-import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-
+/**
+ * Finite fleet: per class the free vehicle that comes first in the fleet. Which vehicles are in use is taken
+ * from the routes.
+ */
 class VehicleFleetManagerImpl implements VehicleFleetManager {
 
-    public VehicleFleetManagerImpl newInstance(Collection<Vehicle> vehicles) {
-        return new VehicleFleetManagerImpl(vehicles);
-    }
+    static final String VERIFY = "jsprit.states.failOnMissing";
 
-    static class TypeContainer {
+    private final VehicleClasses classes;
 
-        private ArrayList<Vehicle> vehicleList;
+    /** per class: position in the class' member list -> free */
+    private final BitSet[] free;
 
-        private int index = 0;
+    /** position of a vehicle in its class' member list */
+    private final IdentityHashMap<Vehicle, Integer> position = new IdentityHashMap<>();
 
-        TypeContainer() {
-            super();
-            vehicleList = new ArrayList<>();
+    /** the vehicle each known route had when it was last seen */
+    private final IdentityHashMap<VehicleRoute, Vehicle> vehicleOfRoute = new IdentityHashMap<>();
+
+    private final boolean empty;
+
+    private boolean verify = Boolean.getBoolean(VERIFY);
+
+    VehicleFleetManagerImpl(Collection<Vehicle> vehicles, VehicleClasses classes) {
+        this.classes = classes;
+        this.empty = vehicles.isEmpty();
+        Set<Vehicle> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+        for (Vehicle v : vehicles) {
+            if (v.getType() == null) throw new IllegalStateException("vehicle needs type");
+            if (!seen.add(v)) throw new IllegalStateException("cannot add vehicle twice " + v.getId());
         }
-
-        void add(Vehicle vehicle) {
-            if (vehicleList.contains(vehicle)) {
-                throw new IllegalStateException("cannot add vehicle twice " + vehicle.getId());
+        free = new BitSet[classes.size()];
+        for (int c = 0; c < free.length; c++) {
+            List<Vehicle> members = classes.members(c);
+            free[c] = new BitSet(members.size());
+            for (int i = 0; i < members.size(); i++) {
+                if (!seen.contains(members.get(i))) continue;
+                position.put(members.get(i), i);
+                free[c].set(i);
             }
-            vehicleList.add(vehicle);
         }
-
-        void remove(Vehicle vehicle) {
-            vehicleList.remove(vehicle);
+        for (Vehicle v : vehicles) {
+            if (!position.containsKey(v))
+                throw new IllegalStateException("vehicle " + v.getId() + " is not part of the fleet the vehicle classes were built from");
         }
-
-        Vehicle getVehicle() {
-            if(index >= vehicleList.size()) index = 0;
-            return vehicleList.get(index);
-        }
-
-        void incIndex(){
-            index++;
-        }
-
-        boolean isEmpty() {
-            return vehicleList.isEmpty();
-        }
-
     }
 
-    private static Logger logger = LoggerFactory.getLogger(VehicleFleetManagerImpl.class);
-
-    private Collection<Vehicle> vehicles;
-
-    private TypeContainer[] vehicleTypes;
-
-    private boolean[] locked;
-
-    private Vehicle[] vehicleArr;
-
-    private final VehicleRoutingProblem vrp;
-
-    /**
-     * @deprecated Use {@link #VehicleFleetManagerImpl(Collection, VehicleRoutingProblem)} instead.
-     */
-    @Deprecated
-    VehicleFleetManagerImpl(Collection<Vehicle> vehicles) {
-        this(vehicles, null);
-    }
-
-    VehicleFleetManagerImpl(Collection<Vehicle> vehicles, VehicleRoutingProblem vrp) {
-        super();
-        this.vehicles = vehicles;
-        this.vrp = vrp;
-        int arrSize = vehicles.size() + 2;
-        locked = new boolean[arrSize];
-        vehicleArr = new Vehicle[arrSize];
-    }
-
-    private int getVehicleIndex(Vehicle vehicle) {
-        if (vrp != null) {
-            return vrp.getVehicleIndex(vehicle);
-        }
-        // Fallback to deprecated method for backwards compatibility
-        return vehicle.getIndex();
-    }
-
-    @SuppressWarnings("deprecation")
-    private int getTypeKeyIndex(VehicleTypeKey typeKey) {
-        if (vrp != null) {
-            return vrp.getVehicleTypeKeyIndex(typeKey);
-        }
-        // Fallback to deprecated method for backwards compatibility
-        return typeKey.getIndex();
-    }
-
-    void init(){
-        initializeVehicleTypes();
-        logger.debug("initialise {}",this);
+    void setVerify(boolean verify) {
+        this.verify = verify;
     }
 
     @Override
     public String toString() {
-        return "[name=finiteVehicles]";
+        return "[name=finiteVehicles][classes=" + classes.size() + "]";
     }
 
-    private void initializeVehicleTypes() {
-        int maxTypeIndex = 0;
-        for(Vehicle v : vehicles){
-            int typeKeyIndex = getTypeKeyIndex(v.getVehicleTypeIdentifier());
-            if (typeKeyIndex > maxTypeIndex) {
-                maxTypeIndex = typeKeyIndex;
-            }
-        }
-        vehicleTypes = new TypeContainer[maxTypeIndex+1];
-        for(int i=0;i< vehicleTypes.length;i++){
-            TypeContainer typeContainer = new TypeContainer();
-            vehicleTypes[i] = typeContainer;
-        }
-        for (Vehicle v : vehicles) {
-            vehicleArr[getVehicleIndex(v)] = v;
-            addVehicle(v);
-        }
+    private boolean notManaged(Vehicle vehicle) {
+        return vehicle == null || empty || vehicle instanceof VehicleImpl.NoVehicle;
     }
 
-    private void addVehicle(Vehicle v) {
-        if (v.getType() == null) {
-            throw new IllegalStateException("vehicle needs type");
-        }
-        vehicleTypes[getTypeKeyIndex(v.getVehicleTypeIdentifier())].add(v);
+    private int positionOf(Vehicle vehicle) {
+        Integer p = position.get(vehicle);
+        if (p == null) throw new IllegalStateException("vehicle " + vehicle.getId() + " is not part of this fleet");
+        return p;
     }
 
-    private void removeVehicle(Vehicle v) {
-        vehicleTypes[getTypeKeyIndex(v.getVehicleTypeIdentifier())].remove(v);
+    private void take(Vehicle vehicle) {
+        if (notManaged(vehicle)) return;
+        free[classes.classOf(vehicle)].clear(positionOf(vehicle));
     }
 
+    private void free(Vehicle vehicle) {
+        if (notManaged(vehicle)) return;
+        free[classes.classOf(vehicle)].set(positionOf(vehicle));
+    }
 
-    /**
-     * Returns a collection of available vehicles.
-     * <p>
-     * <p>If there is no vehicle with a certain type and location anymore, it looks up whether a penalty vehicle has been specified with
-     * this type and location. If so, it returns this penalty vehicle. If not, no vehicle with this type and location is returned.
-     */
+    private Vehicle firstFree(int vehicleClass) {
+        int first = free[vehicleClass].nextSetBit(0);
+        return first < 0 ? null : classes.members(vehicleClass).get(first);
+    }
+
     @Override
     public Collection<Vehicle> getAvailableVehicles() {
-        List<Vehicle> vehicles = new ArrayList<>();
-        for (TypeContainer vehicleType : vehicleTypes) {
-            if (!vehicleType.isEmpty()) {
-                vehicles.add(vehicleType.getVehicle());
-            }
+        if (verify) verifyKnownRoutes();
+        List<Vehicle> vehicles = new ArrayList<>(free.length);
+        for (int c = 0; c < free.length; c++) {
+            Vehicle v = firstFree(c);
+            if (v != null) vehicles.add(v);
         }
         return vehicles;
     }
 
     @Override
-    public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
-        List<Vehicle> vehicles = new ArrayList<>();
-        int excludeTypeIndex = getTypeKeyIndex(withoutThisType.getVehicleTypeIdentifier());
-        for(int i=0;i< vehicleTypes.length;i++){
-            if (!vehicleTypes[i].isEmpty() && i != excludeTypeIndex) {
-                vehicles.add(vehicleTypes[i].getVehicle());
-            }
+    public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisClass) {
+        if (verify) verifyKnownRoutes();
+        int exclude = classes.classOf(withoutThisClass);
+        List<Vehicle> vehicles = new ArrayList<>(free.length);
+        for (int c = 0; c < free.length; c++) {
+            if (c == exclude) continue;
+            Vehicle v = firstFree(c);
+            if (v != null) vehicles.add(v);
         }
         return vehicles;
     }
 
-
     @Override
-    public Vehicle getAvailableVehicle(VehicleTypeKey vehicleTypeIdentifier) {
-        int typeKeyIndex = getTypeKeyIndex(vehicleTypeIdentifier);
-        if (!vehicleTypes[typeKeyIndex].isEmpty()) {
-            return vehicleTypes[typeKeyIndex].getVehicle();
-        }
-        return null;
+    public Vehicle getAvailableVehicle(Vehicle sameClassAs) {
+        if (verify) verifyKnownRoutes();
+        return firstFree(classes.classOf(sameClassAs));
     }
 
-    /* (non-Javadoc)
-     * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#lock(org.matsim.contrib.freight.vrp.basics.Vehicle)
-     */
     @Override
-    public void lock(Vehicle vehicle) {
-        if (vehicles.isEmpty() || vehicle instanceof VehicleImpl.NoVehicle) {
-            return;
-        }
-        int index = getVehicleIndex(vehicle);
-        if (locked[index]) {
-            throw new IllegalStateException("cannot lock vehicle twice " + vehicle.getId());
-        }
-        else{
-            locked[index] = true;
-            removeVehicle(vehicle);
-        }
+    public boolean isInUse(Vehicle vehicle) {
+        if (notManaged(vehicle)) return false;
+        return !free[classes.classOf(vehicle)].get(positionOf(vehicle));
     }
 
-    /* (non-Javadoc)
-     * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#unlock(org.matsim.contrib.freight.vrp.basics.Vehicle)
-     */
     @Override
-    public void unlock(Vehicle vehicle) {
-        if (vehicle == null || vehicles.isEmpty() || vehicle instanceof VehicleImpl.NoVehicle) {
-            return;
-        }
-        locked[getVehicleIndex(vehicle)] = false;
-        addVehicle(vehicle);
-    }
-
-    /* (non-Javadoc)
-     * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#isLocked(org.matsim.contrib.freight.vrp.basics.Vehicle)
-     */
-    @Override
-    public boolean isLocked(Vehicle vehicle) {
-        return locked[getVehicleIndex(vehicle)];
-    }
-
-    /* (non-Javadoc)
-     * @see org.matsim.contrib.freight.vrp.basics.VehicleFleetManager#unlockAll()
-     */
-    @Override
-    public void unlockAll() {
-        for(int i=0;i<vehicleArr.length;i++){
-            if(locked[i]){
-                unlock(vehicleArr[i]);
+    public void reset(Collection<VehicleRoute> routes) {
+        vehicleOfRoute.clear();
+        for (int c = 0; c < free.length; c++) {
+            free[c].clear();
+            List<Vehicle> members = classes.members(c);
+            for (int i = 0; i < members.size(); i++) {
+                if (position.containsKey(members.get(i))) free[c].set(i);
             }
         }
-        for (TypeContainer vehicleType : vehicleTypes) {
-            vehicleType.incIndex();
+        for (VehicleRoute route : routes) sync(route);
+    }
+
+    @Override
+    public void sync(VehicleRoute route) {
+        Vehicle now = route.getVehicle();
+        Vehicle before = vehicleOfRoute.get(route);
+        if (before == now) return;
+        if (before != null) free(before);
+        if (notManaged(now)) {
+            vehicleOfRoute.remove(route);
+        } else {
+            take(now);
+            vehicleOfRoute.put(route, now);
+        }
+    }
+
+    @Override
+    public void release(VehicleRoute route) {
+        Vehicle before = vehicleOfRoute.remove(route);
+        if (before != null) free(before);
+    }
+
+    @Override
+    public void verify(VehicleRoute route) {
+        if (!verify || notManaged(route.getVehicle())) return;
+        if (vehicleOfRoute.get(route) != route.getVehicle())
+            throw new IllegalStateException("fleet usage out of date: route with vehicle " + route.getVehicle().getId()
+                + " is " + (vehicleOfRoute.containsKey(route) ? "recorded with vehicle " + vehicleOfRoute.get(route).getId() : "unknown")
+                + ". A route got or changed its vehicle without StateManager.informInsertionStarts / informJobInserted / reCalculateStates");
+    }
+
+    private void verifyKnownRoutes() {
+        for (Map.Entry<VehicleRoute, Vehicle> e : vehicleOfRoute.entrySet()) {
+            if (e.getKey().getVehicle() != e.getValue())
+                throw new IllegalStateException("fleet usage out of date: a route recorded with vehicle " + e.getValue().getId()
+                    + " now has vehicle " + (e.getKey().getVehicle() == null ? null : e.getKey().getVehicle().getId())
+                    + ". The vehicle was changed without StateManager.informJobInserted / reCalculateStates");
         }
     }
 

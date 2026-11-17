@@ -26,7 +26,9 @@ import com.graphhopper.jsprit.core.problem.Skills;
  * <p>Two vehicles are equal if they share the same type, the same start and end-location and the same earliestStart and latestStart.
  *
  * @author stefan
+ * @deprecated see {@link Vehicle#getVehicleTypeIdentifier()}: use {@link VehicleClasses}
  */
+@Deprecated
 public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
 
     public final String type;

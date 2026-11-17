@@ -17,29 +17,25 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
-
-
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-
-
+/**
+ * Infinite fleet: one vehicle per class, never in use.
+ */
 class InfiniteVehicles implements VehicleFleetManager {
 
-    private static Logger logger = LoggerFactory.getLogger(InfiniteVehicles.class);
-
-    private Map<VehicleTypeKey, Vehicle> types = new HashMap<>();
-
+    private final VehicleClasses classes;
 
     InfiniteVehicles(Collection<Vehicle> vehicles) {
-        extractTypes(vehicles);
-        logger.debug("initialise " + this);
+        this(VehicleClasses.fleetDefault(vehicles));
+    }
+
+    InfiniteVehicles(VehicleClasses classes) {
+        this.classes = classes;
     }
 
     @Override
@@ -47,56 +43,45 @@ class InfiniteVehicles implements VehicleFleetManager {
         return "[name=infiniteVehicle]";
     }
 
-    private void extractTypes(Collection<Vehicle> vehicles) {
-        for (Vehicle v : vehicles) {
-//            VehicleTypeKey typeKey = new VehicleTypeKey(v.getType().getTypeId(), v.getStartLocation().getId(), v.getEndLocation().getId(), v.getEarliestDeparture(), v.getLatestArrival(), v.getSkills(), v.isReturnToDepot());
-            types.put(v.getVehicleTypeIdentifier(), v);
-//			sortedTypes.add(typeKey);
-        }
-    }
-
-
     @Override
-    public void lock(Vehicle vehicle) {
-
-    }
-
-    @Override
-    public void unlock(Vehicle vehicle) {
-
-    }
-
-
-    @Override
-    public boolean isLocked(Vehicle vehicle) {
+    public boolean isInUse(Vehicle vehicle) {
         return false;
     }
 
     @Override
-    public void unlockAll() {
-
-    }
-
-    @Override
     public Collection<Vehicle> getAvailableVehicles() {
-        return types.values();
+        return classes.representatives();
     }
 
     @Override
-    public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
-        Collection<Vehicle> vehicles = new ArrayList<>();
-        VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocation().getId(), withoutThisType.getEndLocation().getId(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills(), withoutThisType.isReturnToDepot());
-        for (VehicleTypeKey key : types.keySet()) {
-            if (!key.equals(thisKey)) {
-                vehicles.add(types.get(key));
-            }
+    public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisClass) {
+        int exclude = classes.classOf(withoutThisClass);
+        List<Vehicle> vehicles = new ArrayList<>(classes.size());
+        for (Vehicle v : classes.representatives()) {
+            if (classes.classOf(v) != exclude) vehicles.add(v);
         }
         return vehicles;
     }
 
     @Override
-    public Vehicle getAvailableVehicle(VehicleTypeKey vehicleTypeIdentifier) {
-        return types.get(vehicleTypeIdentifier);
+    public Vehicle getAvailableVehicle(Vehicle sameClassAs) {
+        return classes.members(classes.classOf(sameClassAs)).get(0);
+    }
+
+    @Override
+    public void reset(Collection<VehicleRoute> routes) {
+    }
+
+    @Override
+    public void sync(VehicleRoute route) {
+    }
+
+    @Override
+    public void release(VehicleRoute route) {
+    }
+
+    @Override
+    public void verify(VehicleRoute route) {
     }
 
 }

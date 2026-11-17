@@ -26,6 +26,7 @@ import com.graphhopper.jsprit.core.problem.job.*;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleFleetManager;
 
 import java.util.ArrayList;
@@ -237,6 +238,9 @@ public class JobInsertionCostsCalculatorBuilder {
             throw new IllegalStateException("states is null, but is must be set (this.setStateManager(states))");
         if (fleetManager == null)
             throw new IllegalStateException("fleetManager is null, but it must be set (this.setVehicleFleetManager(fleetManager))");
+        // this is where a fleet manager and a state manager are joined: from here on the fleet manager hears
+        // about every route the state manager is told about, and knows which vehicles are in use
+        if (states instanceof StateManager) ((StateManager) states).addFleetManager(fleetManager);
 
         CalculatorPlusListeners result;
         if (local) {

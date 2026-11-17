@@ -45,7 +45,7 @@ public class RemoveEmptyVehicles implements InsertionEndsListener {
         for (Iterator<VehicleRoute> iterator = vehicleRoutes.iterator(); iterator.hasNext(); ) {
             VehicleRoute route = iterator.next();
             if (route.isEmpty()) {
-                fleetManager.unlock(route.getVehicle());
+                fleetManager.release(route);
                 iterator.remove();
             }
         }

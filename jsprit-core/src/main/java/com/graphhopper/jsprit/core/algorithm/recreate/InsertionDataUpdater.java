@@ -96,8 +96,8 @@ class InsertionDataUpdater {
                     }
                 }
                 if(versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle()) {
-                    if (fleetManager.isLocked(versionedIData.getiData().getSelectedVehicle())) {
-                        Vehicle available = fleetManager.getAvailableVehicle(versionedIData.getiData().getSelectedVehicle().getVehicleTypeIdentifier());
+                    if (fleetManager.isInUse(versionedIData.getiData().getSelectedVehicle())) {
+                        Vehicle available = fleetManager.getAvailableVehicle(versionedIData.getiData().getSelectedVehicle());
                         if (available != null) {
                             InsertionData oldData = versionedIData.getiData();
                             InsertionData newData = new InsertionData(oldData.getInsertionCost(), oldData.getPickupInsertionIndex(),
@@ -335,8 +335,8 @@ class InsertionDataUpdater {
                 // Handle locked vehicles
                 InsertionData effectiveData = iData;
                 if (iData.getSelectedVehicle() != route.getVehicle()) {
-                    if (fleetManager.isLocked(iData.getSelectedVehicle())) {
-                        Vehicle available = fleetManager.getAvailableVehicle(iData.getSelectedVehicle().getVehicleTypeIdentifier());
+                    if (fleetManager.isInUse(iData.getSelectedVehicle())) {
+                        Vehicle available = fleetManager.getAvailableVehicle(iData.getSelectedVehicle());
                         if (available != null) {
                             effectiveData = createReplacementData(iData, route, available);
                         } else {
@@ -425,8 +425,8 @@ class InsertionDataUpdater {
                 // Handle locked vehicles
                 InsertionData effectiveData = iData;
                 if (iData.getSelectedVehicle() != route.getVehicle()) {
-                    if (fleetManager.isLocked(iData.getSelectedVehicle())) {
-                        Vehicle available = fleetManager.getAvailableVehicle(iData.getSelectedVehicle().getVehicleTypeIdentifier());
+                    if (fleetManager.isInUse(iData.getSelectedVehicle())) {
+                        Vehicle available = fleetManager.getAvailableVehicle(iData.getSelectedVehicle());
                         if (available != null) {
                             effectiveData = createReplacementData(iData, route, available);
                         } else {
@@ -523,8 +523,8 @@ class InsertionDataUpdater {
                 // Handle locked vehicles
                 VersionedInsertionData effectiveData = versionedIData;
                 if (versionedIData.getiData().getSelectedVehicle() != versionedIData.getRoute().getVehicle()) {
-                    if (fleetManager.isLocked(versionedIData.getiData().getSelectedVehicle())) {
-                        Vehicle available = fleetManager.getAvailableVehicle(versionedIData.getiData().getSelectedVehicle().getVehicleTypeIdentifier());
+                    if (fleetManager.isInUse(versionedIData.getiData().getSelectedVehicle())) {
+                        Vehicle available = fleetManager.getAvailableVehicle(versionedIData.getiData().getSelectedVehicle());
                         if (available != null) {
                             InsertionData oldData = versionedIData.getiData();
                             InsertionData newData = new InsertionData(oldData.getInsertionCost(), oldData.getPickupInsertionIndex(),

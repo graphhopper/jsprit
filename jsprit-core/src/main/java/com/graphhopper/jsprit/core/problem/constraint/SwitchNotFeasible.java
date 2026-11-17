@@ -21,6 +21,9 @@ package com.graphhopper.jsprit.core.problem.constraint;
 import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
+import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleClasses;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 
 /**
  * Created by schroeder on 19/09/15.
@@ -36,9 +39,17 @@ public class SwitchNotFeasible implements HardRouteConstraint {
     @Override
     public boolean fulfilled(JobInsertionContext insertionContext) {
         Boolean notFeasible = stateManager.getRouteState(insertionContext.getRoute(), insertionContext.getNewVehicle(), InternalStates.SWITCH_NOT_FEASIBLE, Boolean.class);
-        if (notFeasible == null || insertionContext.getRoute().getVehicle().getVehicleTypeIdentifier().equals(insertionContext.getNewVehicle().getVehicleTypeIdentifier()))
+        if (notFeasible == null || sameStateClass(insertionContext.getRoute().getVehicle(), insertionContext.getNewVehicle()))
             return true;
         else return !notFeasible;
+    }
+
+    /* the state is kept per state class: for the class of the route's own vehicle it says nothing about a switch */
+    private boolean sameStateClass(Vehicle routeVehicle, Vehicle newVehicle) {
+        if (routeVehicle == newVehicle) return true;
+        if (routeVehicle == null || routeVehicle instanceof VehicleImpl.NoVehicle) return false;
+        VehicleClasses classes = stateManager.getVehicleClasses();
+        return classes.classOf(routeVehicle) == classes.classOf(newVehicle);
     }
 
 }

@@ -30,6 +30,8 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory {
 
     private Collection<Vehicle> vehicles;
 
+    private VehicleClasses vehicleClasses;
+
     /**
      * Constucts the factory.
      *
@@ -38,6 +40,15 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory {
     public FiniteFleetManagerFactory(Collection<Vehicle> vehicles) {
         super();
         this.vehicles = vehicles;
+    }
+
+    /**
+     * Which vehicles are interchangeable for an insertion: the fleet manager offers one free vehicle per
+     * class. Default: {@link VehicleClasses#fleetDefault(Collection)}.
+     */
+    public FiniteFleetManagerFactory setVehicleClasses(VehicleClasses vehicleClasses) {
+        this.vehicleClasses = vehicleClasses;
+        return this;
     }
 
     /**
@@ -64,9 +75,7 @@ public class FiniteFleetManagerFactory implements VehicleFleetManagerFactory {
     public VehicleFleetManager createFleetManager(VehicleRoutingProblem vrp) {
         if (vehicles == null) throw new IllegalStateException("vehicles is null. this must not be.");
         if (vehicles.isEmpty()) throw new IllegalStateException("vehicle-collection is empty. this must not be");
-        VehicleFleetManagerImpl vehicleFleetManager = new VehicleFleetManagerImpl(vehicles, vrp);
-        vehicleFleetManager.init();
-        return vehicleFleetManager;
+        return new VehicleFleetManagerImpl(vehicles, vehicleClasses != null ? vehicleClasses : VehicleClasses.fleetDefault(vehicles));
     }
 
 }
