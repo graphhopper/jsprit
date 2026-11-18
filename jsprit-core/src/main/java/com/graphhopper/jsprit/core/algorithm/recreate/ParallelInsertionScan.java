@@ -161,8 +161,8 @@ public final class ParallelInsertionScan {
 
     /**
      * Range bounds for a shipment scan: pickup position i costs the delivery loop over the positions - i
-     * positions behind it, so the ranges are cut where the cumulative triangular work is equal, and the
-     * first range is the longest. Returns {@code tasks + 1} increasing bounds from 0 to {@code positions}.
+     * positions behind it, so the ranges are cut where the cumulative triangular work is equal: the
+     * first range is the shortest, the last one the longest. Returns {@code tasks + 1} increasing bounds from 0 to {@code positions}.
      */
     public static int[] triangularBounds(int positions, int tasks) {
         if (tasks < 1) throw new IllegalArgumentException("tasks must be at least 1");
