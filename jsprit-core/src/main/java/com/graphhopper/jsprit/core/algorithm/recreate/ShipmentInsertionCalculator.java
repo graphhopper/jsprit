@@ -152,15 +152,25 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         int tasks = parallelScan == null ? 1 : parallelScan.shipmentTasks(positions);
         Range best;
         if (tasks > 1) {
-            ParallelInsertionScan.Shared shared = new ParallelInsertionScan.Shared(bestKnownCosts);
+            // the bound every range prunes with is fixed before the ranges start, so what a range skips does not
+            // depend on how far the other ranges have got
+            List<Range> seeds = seedInsertions(scan, positions);
+            double seedCost = bestKnownCosts;
+            for (Range seed : seeds) {
+                if (seed.pickupInsertionIndex != InsertionData.NO_INDEX && seed.bestCost < seedCost) seedCost = seed.bestCost;
+            }
+            final double bound = seedCost;
+            ParallelInsertionScan.Shared shared = new ParallelInsertionScan.Shared();
             List<Range> ranges = parallelScan.run(ParallelInsertionScan.triangularBounds(positions, tasks), (from, to) -> {
                 List<AbstractActivity> copies = activityFactory.createActivities(shipment);
                 Range range = new Range(scan, copies.get(0), copies.get(1), from, to);
                 range.shared = shared;
+                range.bound = bound;
                 range.scan();
                 return range;
             });
             best = Range.mergeInOrder(ranges);
+            for (Range seed : seeds) best.takeIfBetter(seed);
         } else {
             best = new Range(scan, pickupShipment, deliverShipment, 0, positions);
             best.scan();
@@ -181,6 +191,52 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
         addActivitiesAndVehicleSwitch(insertionData, currentRoute, newVehicle, pickupShipment, best.pickupInsertionIndex, deliverShipment, best.deliveryInsertionIndex, newVehicleDepartureTime);
         return insertionData;
+    }
+
+    /** Pickup positions that are evaluated completely before a parallel scan starts; their cheapest insertion is the bound of the ranges. */
+    private static final int SEED_POSITIONS = 2;
+
+    /**
+     * The start of a parallel scan, on the calling thread: the pickup part of the insertion costs at every position
+     * (no delivery is tried, so this is one cheap pass) and the complete evaluation of the {@link #SEED_POSITIONS}
+     * positions where the pickup is cheapest. Their best insertion bounds the ranges: a pickup that alone costs more
+     * is skipped. The ranges used to tell each other their best insertion while they ran; what a range skipped then
+     * depended on the timing of the threads, and with equally cheap insertions the result did, too.
+     *
+     * @return the evaluated seed positions in position order, empty if no pickup is possible anywhere
+     */
+    private List<Range> seedInsertions(Scan scan, int positions) {
+        double[] pickupCosts = new double[positions];
+        java.util.Arrays.fill(pickupCosts, Double.MAX_VALUE);
+        List<AbstractActivity> activities = activityFactory.createActivities(scan.shipment);
+        Range pickups = new Range(scan, activities.get(0), activities.get(1), 0, positions);
+        pickups.pickupCosts = pickupCosts;
+        pickups.scan();
+        int[] chosen = new int[SEED_POSITIONS];
+        int n = 0;
+        while (n < SEED_POSITIONS) {
+            int cheapest = -1;
+            for (int i = 0; i < positions; i++) {
+                if (pickupCosts[i] >= scan.bestKnownCosts || contains(chosen, n, i)) continue;
+                if (cheapest < 0 || pickupCosts[i] < pickupCosts[cheapest]) cheapest = i;
+            }
+            if (cheapest < 0) break;
+            chosen[n++] = cheapest;
+        }
+        java.util.Arrays.sort(chosen, 0, n);
+        List<Range> seeds = new ArrayList<>(n);
+        for (int k = 0; k < n; k++) {
+            List<AbstractActivity> copies = activityFactory.createActivities(scan.shipment);
+            Range seed = new Range(scan, copies.get(0), copies.get(1), chosen[k], chosen[k] + 1);
+            seed.scan();
+            seeds.add(seed);
+        }
+        return seeds;
+    }
+
+    private static boolean contains(int[] values, int length, int value) {
+        for (int i = 0; i < length; i++) if (values[i] == value) return true;
+        return false;
     }
 
     /** What every range of one shipment evaluation shares, all of it read-only while the ranges run. */
@@ -215,6 +271,10 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
         int brokeAt = -1;
         /** What the ranges of one parallel evaluation tell each other (see {@link ParallelInsertionScan.Shared}); null when the range is the whole route. */
         ParallelInsertionScan.Shared shared;
+        /** Costs of an insertion known before the scan started (see {@link #seedInsertions}); a pickup that alone costs more is skipped. */
+        double bound = Double.MAX_VALUE;
+        /** Pickup-only pass: the cheapest pickup part per position is written here and no delivery is tried; null otherwise. */
+        double[] pickupCosts;
 
         Range(Scan s, TourActivity pickupShipment, TourActivity deliverShipment, int from, int to) {
             this.s = s;
@@ -251,6 +311,25 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                 merged.brokeAt = other.brokeAt;
             }
             return merged;
+        }
+
+        /**
+         * Takes the insertion of a seed position if it is cheaper, or equally expensive at an earlier pickup position.
+         * A seed whose delivery lowers the costs is skipped by the ranges (its pickup alone costs more than the bound
+         * it sets), so it is merged in here.
+         */
+        void takeIfBetter(Range seed) {
+            if (seed.pickupInsertionIndex == InsertionData.NO_INDEX) return;
+            if (brokeAt >= 0 && seed.pickupInsertionIndex > brokeAt) return;
+            boolean earlierTie = seed.bestCost == bestCost && pickupInsertionIndex != InsertionData.NO_INDEX && seed.pickupInsertionIndex < pickupInsertionIndex;
+            if (seed.bestCost < bestCost || earlierTie) {
+                bestCost = seed.bestCost;
+                bestBreakdown = seed.bestBreakdown;
+                pickupInsertionIndex = seed.pickupInsertionIndex;
+                deliveryInsertionIndex = seed.deliveryInsertionIndex;
+                bestPickupTimeWindow = seed.bestPickupTimeWindow;
+                bestDeliveryTimeWindow = seed.bestDeliveryTimeWindow;
+            }
         }
 
         void scan() {
@@ -330,6 +409,11 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                     }
                     double additionalPickupICosts = constraintManager.getActivityCosts(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime, pickupActCosts);
                     double pickupAIC = calculate(insertionContext, prevAct, pickupShipment, nextAct, prevActEndTime);
+                    if (pickupCosts != null) {
+                        double pickupPart = pickupAIC + additionalPickupICosts + additionalICostsAtRouteLevel;
+                        if (pickupPart < pickupCosts[i]) pickupCosts[i] = pickupPart;
+                        continue;
+                    }
 
                     TourActivity prevAct_deliveryLoop = pickupShipment;
                     double shipmentPickupArrTime = prevActEndTime + transportCosts.getTransportTime(prevAct.getLocation(), pickupShipment.getLocation(), prevActEndTime, newDriver, newVehicle);
@@ -345,10 +429,9 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
                     if (bestCost <= pickupAIC + additionalPickupICosts + additionalICostsAtRouteLevel) {
                         continue;
                     }
-                    // another range already holds something strictly cheaper than anything behind this pickup can
-                    // be: skip the delivery loop (an equally expensive candidate is still evaluated, so the merge can
-                    // prefer the earlier position exactly like the sequential loop)
-                    if (shared != null && shared.bestCost() < pickupAIC + additionalPickupICosts + additionalICostsAtRouteLevel) {
+                    // the insertion found before the ranges started is strictly cheaper than this pickup alone: skip
+                    // the delivery loop (an equally expensive candidate is still evaluated, so the earlier position wins)
+                    if (bound < pickupAIC + additionalPickupICosts + additionalICostsAtRouteLevel) {
                         continue;
                     }
 
@@ -387,7 +470,6 @@ final class ShipmentInsertionCalculator extends AbstractInsertionCalculator {
 
                                     if (totalActivityInsertionCosts < bestCost) {
                                         bestCost = totalActivityInsertionCosts;
-                                        if (shared != null) shared.offer(bestCost);
                                         pickupInsertionIndex = i;
                                         deliveryInsertionIndex = j;
                                         bestPickupTimeWindow = pickupTimeWindow;

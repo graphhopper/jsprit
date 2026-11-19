@@ -24,7 +24,6 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Scans the insertion positions of one long route on several threads.
@@ -34,11 +33,13 @@ import java.util.concurrent.atomic.AtomicLong;
  * and the states are read-only while a job is evaluated, and the running timing can be picked up at any
  * position from the activity end times the state manager caches on the route. So the position range is
  * cut into pieces, each piece is scanned by one task of the algorithm's {@link ForkJoinPool} with its own
- * scratch objects, and the pieces are merged in position order. The merge reproduces the sequential scan
- * exactly: the cheapest insertion wins, among equal costs the earliest position, and once a piece has hit
- * the position where the sequential loop would have stopped (every time window answered
- * {@code NOT_FULFILLED_BREAK}) the later pieces are discarded. The result does not depend on the number
- * of threads.
+ * scratch objects, and the pieces are merged in position order: the cheapest insertion wins, among equal
+ * costs the earliest position, and once a piece has hit the position where the sequential loop would have
+ * stopped (every time window answered {@code NOT_FULFILLED_BREAK}) the later pieces are discarded.
+ * <p>
+ * The result is the same on every run with the same number of threads. It is the sequential result wherever
+ * a delivery never lowers the insertion costs; where it does (rounding to a few 1e-15 is enough), the
+ * sequential loop's pruning by its running best and the pieces' pruning can skip different positions.
  * <p>
  * The pieces call the hard and soft constraints, the activity insertion cost calculator, the transport
  * costs and a position filter from several threads at once, so these must be stateless or thread-safe
@@ -79,19 +80,13 @@ public final class ParallelInsertionScan {
     }
 
     /**
-     * What the ranges of one evaluation tell each other while they run: the earliest position at which a
-     * range broke off (the sequential loop would never have looked behind it, so the ranges behind stop at
-     * once instead of computing results the merge discards) and the cheapest insertion found so far (a range
-     * skips a pickup whose own costs already exceed it; strictly, so that an equally expensive candidate at
-     * an earlier position still wins the merge as it would in the sequential loop).
+     * What the ranges of one evaluation tell each other while they run: the earliest position at which a range
+     * broke off. The sequential loop would never have looked behind it, so the ranges behind stop at once instead
+     * of computing results the merge discards. Nothing else is shared: what a range evaluates must not depend on
+     * how far the others have got, or the result depends on the timing of the threads.
      */
     public static final class Shared {
         private final AtomicInteger stopAt = new AtomicInteger(Integer.MAX_VALUE);
-        private final AtomicLong bestCostBits;
-
-        public Shared(double bestKnownCosts) {
-            bestCostBits = new AtomicLong(Double.doubleToRawLongBits(bestKnownCosts));
-        }
 
         /** A range broke off at {@code position}: nothing behind it counts. */
         public void stopAt(int position) {
@@ -101,21 +96,6 @@ public final class ParallelInsertionScan {
         /** Whether a range has broken off before {@code position}. */
         public boolean stopsBefore(int position) {
             return position > stopAt.get();
-        }
-
-        /** A range found an insertion costing {@code cost}. */
-        public void offer(double cost) {
-            long bits = Double.doubleToRawLongBits(cost);
-            long current = bestCostBits.get();
-            while (cost < Double.longBitsToDouble(current)) {
-                if (bestCostBits.compareAndSet(current, bits)) return;
-                current = bestCostBits.get();
-            }
-        }
-
-        /** The cheapest insertion any range has found so far, or the best known costs the evaluation started with. */
-        public double bestCost() {
-            return Double.longBitsToDouble(bestCostBits.get());
         }
     }
 

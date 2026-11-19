@@ -36,44 +36,54 @@ class ConcurrentInsertionNoiseMaker implements SoftActivityConstraint, Iteration
 
     private final double noiseProbability;
 
-    private boolean makeNoise = false;
+    private volatile boolean makeNoise = false;
 
-    private double noiseLevel = 0.1;
+    private final double noiseLevel;
 
     private Random random = RandomNumberGeneration.newInstance();
 
-    private Random[] randomArray;
+    private final double maxCosts;
 
-    private double maxCosts;
+    /** Drawn once per iteration; with the three activities of a position it determines the position's noise. */
+    private volatile long iterationSeed;
 
     ConcurrentInsertionNoiseMaker(VehicleRoutingProblem vrp, double maxCosts, double noiseLevel, double noiseProbability) {
         this.noiseLevel = noiseLevel;
         this.noiseProbability = noiseProbability;
         this.maxCosts = maxCosts;
-        randomArray = new Random[vrp.getNuActivities() + 2];
-        for (int i = 0; i < randomArray.length; i++) {
-            Random r = new Random();
-            r.setSeed(random.nextLong());
-            randomArray[i] = r;
-        }
     }
 
     @Override
     public void informIterationStarts(int i, VehicleRoutingProblem problem, Collection<VehicleRoutingProblemSolution> solutions) {
-        if (random.nextDouble() < noiseProbability) {
-            makeNoise = true;
-        } else makeNoise = false;
+        makeNoise = random.nextDouble() < noiseProbability;
+        iterationSeed = random.nextLong();
     }
 
+    /**
+     * The noise of a position is a function of the iteration and of the activities before, at and behind the
+     * position - not the next value of a random generator. Positions are evaluated by several threads, and with a
+     * generator the noise of a position depended on how many evaluations had run before it and in which order, so
+     * two runs of the same problem with the same seed differed.
+     */
     @Override
     public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        if (makeNoise) {
-            return noiseLevel * maxCosts * randomArray[newAct.getIndex()].nextDouble();
-        }
-        return 0;
+        if (!makeNoise) return 0;
+        long h = iterationSeed;
+        h = mix(h ^ (newAct.getIndex() * 0x9E3779B97F4A7C15L));
+        h = mix(h ^ (prevAct.getIndex() * 0xC2B2AE3D27D4EB4FL));
+        h = mix(h ^ (nextAct.getIndex() * 0x165667B19E3779F9L));
+        return noiseLevel * maxCosts * ((h >>> 11) * 0x1.0p-53);
+    }
+
+    /** The finalizer of SplitMix64: spreads the bits of its argument over the whole word. */
+    private static long mix(long z) {
+        z = (z ^ (z >>> 30)) * 0xBF58476D1CE4E5B9L;
+        z = (z ^ (z >>> 27)) * 0x94D049BB133111EBL;
+        return z ^ (z >>> 31);
     }
 
     public void setRandom(Random random) {
         this.random = random;
     }
+
 }

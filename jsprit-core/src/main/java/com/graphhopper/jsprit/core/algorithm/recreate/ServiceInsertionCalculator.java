@@ -133,7 +133,7 @@ final class ServiceInsertionCalculator extends AbstractInsertionCalculator {
         int tasks = parallelScan == null ? 1 : parallelScan.serviceTasks(positions);
         Range best;
         if (tasks > 1) {
-            ParallelInsertionScan.Shared shared = new ParallelInsertionScan.Shared(bestKnownCosts);
+            ParallelInsertionScan.Shared shared = new ParallelInsertionScan.Shared();
             List<Range> ranges = parallelScan.run(ParallelInsertionScan.linearBounds(positions, tasks), (from, to) -> {
                 Range range = new Range(scan, activityFactory.createActivities(service).getFirst(), from, to);
                 range.shared = shared;

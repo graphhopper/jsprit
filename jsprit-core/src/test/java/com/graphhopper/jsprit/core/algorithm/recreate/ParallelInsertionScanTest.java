@@ -213,6 +213,38 @@ class ParallelInsertionScanTest {
         assertEquals(activityIds(sequential), activityIds(parallel));
     }
 
+    @Test
+    @DisplayName("the whole algorithm with insertion noise: the same problem and seed give the same solution on every run")
+    void repeatedRunsIdentical() {
+        for (long seed : new long[]{3, 11}) {
+            Random random = new Random(seed);
+            List<Shipment> shipments = randomShipments(random, 70, seed % 2 == 1);
+            VehicleImpl vehicle = vehicle(12, 100_000);
+            VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addVehicle(vehicle).addAllJobs(new ArrayList<>(shipments))
+                .setRoutingCost(CostFactory.createEuclideanCosts()).setFleetSize(VehicleRoutingProblem.FleetSize.FINITE).build();
+            VehicleRoutingProblemSolution first = solveWithNoise(vrp);
+            for (int run = 0; run < 4; run++) {
+                VehicleRoutingProblemSolution again = solveWithNoise(vrp);
+                assertEquals(first.getCost(), again.getCost(), 0.0, "seed " + seed + " run " + run);
+                assertEquals(activityIds(first), activityIds(again), "seed " + seed + " run " + run);
+            }
+        }
+    }
+
+    /** Every evaluation is split into ranges, and every other iteration inserts with noise. */
+    private static VehicleRoutingProblemSolution solveWithNoise(VehicleRoutingProblem vrp) {
+        VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
+            .setExecutorService(POOL, 4)
+            .setRandom(new Random(42))
+            .setProperty(Jsprit.Parameter.INSERTION_NOISE_PROB, "0.5")
+            .setProperty(Jsprit.Parameter.INSERTION_NOISE_LEVEL, "0.05")
+            .setProperty(Jsprit.Parameter.PARALLEL_SCAN_MIN_SHIPMENT_ACTIVITIES, "1")
+            .setProperty(Jsprit.Parameter.PARALLEL_SCAN_MIN_SERVICE_ACTIVITIES, "1")
+            .buildAlgorithm();
+        vra.setMaxIterations(80);
+        return Solutions.bestOf(vra.searchSolutions());
+    }
+
     private static VehicleRoutingProblemSolution solve(VehicleRoutingProblem vrp, int minActivities) {
         VehicleRoutingAlgorithm vra = Jsprit.Builder.newInstance(vrp)
             .setExecutorService(POOL, 4)
